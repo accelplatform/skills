@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "test-helpers_en.md",
+      "to": "test-helpers.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "test-helpers_zh_CN.md",
+      "to": "test-helpers.md"
+    }
+  ]
+}

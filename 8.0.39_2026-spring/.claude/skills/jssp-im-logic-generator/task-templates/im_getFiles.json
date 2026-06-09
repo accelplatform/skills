@@ -1,0 +1,182 @@
+{
+  "kind": "task",
+  "keyId": "im_getFiles",
+  "flowElementSample": {
+    "executeId": "im_getFiles1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_getFiles",
+      "version": null
+    },
+    "label": "ファイル取得",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "recursive": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 420,
+      "y": 2310
+    },
+    "id": "f2c34be6-ff91-4b39-bc6e-ccd888d57674",
+    "z": 121,
+    "attrs": {
+      "rect.body": {
+        "fill": "#0096a6"
+      },
+      "rect.icon": {
+        "fill": "#0096a6"
+      },
+      "rect.title": {
+        "fill": "#00bbd3"
+      },
+      "rect.label": {
+        "fill": "#25c5d9"
+      },
+      "text.title": {
+        "text": "im_getFiles1"
+      },
+      "text.label": {
+        "text": "ファイル取得"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_getFiles"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "recursive",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "再帰",
+        "text": "配下のファイルを含めて取得する",
+        "options": [
+          {
+            "name": "recursive",
+            "label": "recursive",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "storage",
+        "basic": true,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "storage",
+        "basic": true,
+        "required": false,
+        "listingType": "list"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "recursive": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_getFiles1",
+    "label": "ファイル取得",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

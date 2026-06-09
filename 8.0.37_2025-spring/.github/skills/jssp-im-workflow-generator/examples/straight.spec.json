@@ -1,0 +1,19 @@
+{
+  "workflowName": "purchase_request",
+  "shortName": "pur_req",
+  "names": {
+    "en": "Purchase Request",
+    "ja": "購買申請",
+    "zh_CN": "采购申请"
+  },
+  "screenBasePath": "sample/purchase_request/workflow",
+  "pattern": "straight",
+  "generationDate": "2026/04/10",
+  "nodes": [
+    { "id": "start", "type": "start" },
+    { "id": "apply", "type": "apply", "plugin": { "suffix": "role", "targetCode": "im_workflow_user" } },
+    { "id": "01", "type": "approve", "name": "Manager", "plugin": { "suffix": "apply_user_department_and_post", "targetCode": "ps003" } },
+    { "id": "02", "type": "approve", "name": "Director", "plugin": { "suffix": "apply_user_department_and_post", "targetCode": "ps002" } },
+    { "id": "end", "type": "end" }
+  ]
+}

@@ -1,0 +1,324 @@
+# flow_definition.json Structure Reference
+
+## Top Level
+
+```jsonc
+{
+  "flowCategories": [ /* Category definitions */ ],
+  "flowDefinitions": [
+    "<Flow definition 1 as JSON.stringify string>",
+    "<Flow definition 2 as JSON.stringify string>"
+  ]
+}
+```
+
+Each element of `flowDefinitions` is a **string-escaped flow definition JSON**.
+`JSON.parse` is required when reading.
+
+## flowCategories Elements
+
+```jsonc
+{
+  "categoryId": "imprtl_portlet_info",
+  "categoryName": "Information Portlet",
+  "sortNumber": 0,
+  "localizes": {
+    "ja":   { "locale":"ja",    "categoryName":"お知らせポートレット" },
+    "en":   { "locale":"en",    "categoryName":"Information Portlet" },
+    "zh_CN":{ "locale":"zh_CN", "categoryName":"门户组件" }
+  },
+  "parentId": "imprtl_portlet",
+  "displayName": "お知らせポートレット"
+}
+```
+
+## Flow Definition Structure (After Parsing)
+
+```jsonc
+{
+  "flowId": "...",
+  "version": 1,
+  "categoryId": "...",
+  "flowName": "...",
+  "localizes": {},
+  "notes": "",
+  "versionComment": null,
+  "transaction": true,
+  "validateRepositoryData": false,
+  "mappingOrder": "SOURCE_HIERARCHY",
+  "constants": [
+    { "name":"ERROR_NO_ARTICLE_FOUND_JA", "value":"...", "typeId":"string", "description":"", "common":false }
+  ],
+  "variablesDataDefinition": { /* Type definition (described below) */ },
+  "flowElements": [ /* Array of tasks or sequences */ ],
+  "inputDataDefinition":  { /* Type definition */ },
+  "outputDataDefinition": { /* Type definition */ },
+  "additional": {
+    "ui": "<JointJS graph as JSON.stringify string>"
+  }
+}
+```
+
+## Type Definition (Common for input/output/variables)
+
+```jsonc
+{
+  "entrypoint": {
+    "typeId": "root",          // References typeDefinitions[].id
+    "basic": false,
+    "required": false,
+    "listingType": "none"      // "none" | "list" | "array"
+  },
+  "typeDefinitions": [
+    {
+      "id": "root",
+      "properties": [
+        { "typeId":"string",  "name":"foo", "listingType":"none", "required":true,  "basic":true },
+        { "typeId":"imrepo_entity_xxx", "name":"input", "listingType":"none", "required":false, "basic":false }
+      ]
+    },
+    { "id": "string",  "properties": [] },
+    { "id": "integer", "properties": [] },
+    { "id": "imrepo_entity_xxx", "properties": [ /* Entity fields */ ] }
+  ]
+}
+```
+
+- **basic** = `true` for primitives, `false` for complex types
+- **listingType** = `"none"` / `"list"` / `"array"` (see [data-types.md](data-types.md#listingtype) for selection criteria)
+- **typeId** can be primitives (`string` / `integer` / `boolean` / `long` / `double` / `bigdecimal` / `date` / `imdatetime`, etc.), entity reference types (`imrepo_entity_*`), or flow-local types (`im_logic_object_*`). See [data-types.md](data-types.md) for the full list
+
+## flowElements
+
+Two types of elements are mixed.
+
+### Task Elements
+
+`key.type` is `"application"` for regular tasks and `"localUserDefinition"` for user-defined tasks.
+
+```jsonc
+{
+  "executeId": "im_repositorySearchEntityCount1",
+  "alias": null,
+  "key": { "type":"application", "id":"im_repositorySearchEntityCount", "version": null },
+  "label": "Get Entity Data Count",
+  "comment": "",
+  "properties": { "continueOnError": false, "entityId": "..." },
+  "mappingDefinition": {
+    "mappingRules": [
+      { "id":"<uuid>", "target":"<path>", "source": { /* described below */ } }
+    ]
+  }
+}
+```
+
+### sequence Elements (Connection Lines)
+
+```jsonc
+{
+  "executeId": "im_start_im_repositorySearchEntityCount1",
+  "alias": null,
+  "key": { "type":"application", "id":"im_sequence", "version": null },
+  "label": null,
+  "comment": null,
+  "properties": {
+    "startPoint": "im_start",
+    "endPoint": "im_repositorySearchEntityCount1",
+    "condition": "${...}"   // Optional. Branch condition from gateway
+  },
+  "mappingDefinition": null
+}
+```
+
+## mappingRules.source type
+
+- **`value`**: Value reference
+  ```jsonc
+  { "type":"value", "name":null, "path":"$input/foo/bar", "arguments":null }
+  ```
+- **`function`**: Function call (recursively holds source in arguments)
+  ```jsonc
+  {
+    "type":"function",
+    "name":"im_array_size",
+    "path":null,
+    "arguments":[
+      { "type":"value", "name":null, "path":"im_repositorySearchEntityData1", "arguments":null }
+    ]
+  }
+  ```
+
+See [source-paths.md](source-paths.md) for `path` root conventions.
+
+## additional.ui (JointJS Graph)
+
+```jsonc
+{
+  "version": 2,
+  "graph": {
+    "cells": [
+      { "type":"devs.StartModel", /* ... */ },
+      { "type":"devs.ProcModel",  /* ... */ },
+      { "type":"devs.EndModel",   /* ... */ },
+      { "type":"link", /* corresponds to sequence */ }
+    ]
+  },
+  "dataMap":   { "<cellUuid>": { /* metadata, common, typical, mapping, (elementId) */ } },
+  "optionMap": { "<cellUuid>": { "title":"...", "label":"...", "inNum":1, "outNum":1 } }
+}
+```
+
+### Synchronization Rules (Required)
+
+- A **task cell** corresponding to each task element `flowElements[i]` must exist in `graph.cells[]`
+- The task cell's **`id`** is a UUID (deterministically generated by `build-flow.js`)
+- The task cell's **`attrs."text.title".text`** matches the executeId
+- **`dataMap` and `optionMap` are keyed by cell.id (UUID)** (link cells are excluded)
+- Each sequence element has a corresponding **link cell** (`source.id` / `target.id` are the UUIDs of the task cells at both ends)
+- **`flowElements[].mappingDefinition.mappingRules` and `dataMap[cellId].mapping.json.connectors` must be synchronized** (described below)
+
+`build-flow.js` automatically guarantees this synchronization.
+
+### Additional dataMap Fields for User-Defined Tasks
+
+User-defined tasks (`key.type = "localUserDefinition"`) have a different `dataMap` structure from regular tasks:
+
+- **`metadata.key`**: `{ "type": "localUserDefinition", "id": "<definitionId>" }` — Contains the actual `definitionId`, not the sample ID from the template
+- **`metadata.inputDataDefinition` / `outputDataDefinition`**: Synchronized with the type definition in `properties.definition.definitionData`
+- **`metadata.pairElementKey`**: Points to the start/end pair for Database Fetch. The start element (`<definitionId>`) references the end element `$<definitionId>$`, and the end element (`$<definitionId>$`) references the start element `<definitionId>`
+- **`metadata.iconId`**: The task's icon ID (e.g., `"im_generic"`)
+- **`elementId` (top level)**: Internal task ID. **Required** for IM-LogicDesigner to resolve metadata
+
+```jsonc
+{
+  "metadata": {
+    "key": { "type": "localUserDefinition", "id": "my_js_task" },
+    "inputDataDefinition": { ... },
+    "outputDataDefinition": { ... },
+    "pairElementKey": { ... },   // Database Fetch only
+    "iconId": "im_generic"
+  },
+  "common": { ... },
+  "typical": { ... },             // User-defined: copy of flowElement.properties
+  "mapping": { ... },
+  "elementId": "im_scriptExecutor" // ★ Top level. Referenced by IM-LogicDesigner
+}
+```
+
+| definitionType | elementId |
+|---|---|
+| javascript | `im_scriptExecutor` |
+| rest | `im_httpclient` |
+| sql | `im_queryExecutor` |
+| db_fetch | `im_startDbFetch` |
+
+### dataMap[cellId].mapping.json — Mapping Information in UI
+
+**IM-LogicDesigner reads this (not `flowElements[].mappingDefinition.mappingRules`) to draw and save the mapping lines in the UI.**
+Both must always be kept in sync.
+
+```jsonc
+{
+  "inputKeys": ["$input","$variable","$const","$account_context","im_xxx1"],
+  "additionalKeys": [],
+  "json": {
+    "version": 1,
+    "attrs": {},
+    "connectors": [
+      {
+        "id": "<same UUID as mappingRule.id>",
+        "source": {
+          "id": "<port UUID>",
+          "type": "$input",                 // Fixed (JointJS port type)
+          "path": "$input\tresourceURI",    // ★ Separator is TAB ("\t")
+          "port": "out"
+        },
+        "target": {
+          "id": "<port UUID>",
+          "type": "$output",                // Fixed
+          "path": "im_authorizeAuthz1\tresourceURI",  // ★ TAB separator
+          "port": "in"
+        }
+      }
+    ],
+    "size": { "width": 400, "height": 500 }
+  }
+}
+```
+
+Key points:
+
+- **path separator is TAB (`\t`)** — Different from the `/` separator in `mappingRules.source.path`. `build-flow.js` converts automatically.
+- **connector `id` must match `mappingRule.id`**
+- **`inputKeys`** must include all roots referenced in `mappingRules` (`$input` / `$account_context` / `<upstream task executeId>`, etc.). Standard includes `$input` / `$variable` / `$const`.
+- **`source.type` / `target.type`** are JointJS internal port types. Always fixed as `"$input"` / `"$output"` (not the actual data origins).
+
+`build-flow.js` automatically generates this structure from `mappingRules`.
+
+### connector Representation for function source
+
+When `source.type === "function"`, the connector source takes a different form:
+
+```jsonc
+{
+  "id": "<same UUID as mappingRule.id>",
+  "source": {
+    "id": "<port UUID>",
+    "type": "im_array_size",      // ★ Function name goes here (not "$input")
+    "port": "out"                  // path field does not exist
+  },
+  "target": {
+    "id": "<port UUID>",
+    "type": "$output",
+    "path": "$output\tdata\tarticleCount",
+    "port": "in"
+  }
+}
+```
+
+- **`source.type`** = function name (e.g., `"im_array_size"`)
+- **`source.path`** = absent (function arguments exist only in `flowElements[].mappingRules[].source.arguments`, not in connectors)
+- There is no need to include the function name in `inputKeys` (only the task executeIds referenced in arguments, etc.)
+
+## How to Add task-templates
+
+Add a new `task-templates/<keyId>.json`.
+The format refers to existing files.
+Minimum required fields:
+
+```jsonc
+{
+  "kind": "task",
+  "keyId": "im_xxx",
+  "flowElementSample": {
+    /* Task element template (executeId will be overwritten with a sequential number, so a sample value is OK) */
+    "executeId": "im_xxx1",
+    "alias": null,
+    "key": { "type":"application", "id":"im_xxx", "version":null },
+    "label": "...",
+    "comment": "",
+    "properties": { /* Default properties */ },
+    "mappingDefinition": { "mappingRules": [] }
+  },
+  "cellSample": {
+    /* JointJS devs.ProcModel cell template (id, position, z will be overwritten) */
+    "type": "devs.ProcModel",
+    "size": { "width": 280, "height": 50 },
+    "inPorts": ["in"],
+    "outPorts": ["out"],
+    "position": { "x": 0, "y": 0 },
+    "id": "placeholder",
+    "z": 1,
+    "attrs": { /* ... text.title, text.label, ports ... */ }
+  },
+  "dataMapMetadata": {
+    /* Contents of dataMap[cellId].metadata (key, elementProperties, inputDataDefinition, outputDataDefinition) */
+  },
+  "dataMapTypical": { /* Default properties */ },
+  "dataMapMappingDefaults": { "inputKeys": [...], "additionalKeys": [], "json": {} },
+  "optionMap": { "title":"im_xxx1", "label":"...", "inNum":1, "outNum":1 }
+}
+```
+
+Existing templates are extracted from `flow_definition.json` actually saved in IM-LogicDesigner.
+When adding a new task, it is most reliable to export once from IM-LogicDesigner and then extract.

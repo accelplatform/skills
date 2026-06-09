@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "jssp-file-structure_en.md",
+      "to": "jssp-file-structure.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "jssp-file-structure_zh_CN.md",
+      "to": "jssp-file-structure.md"
+    }
+  ]
+}

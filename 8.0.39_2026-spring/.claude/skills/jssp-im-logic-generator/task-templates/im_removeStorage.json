@@ -1,0 +1,185 @@
+{
+  "kind": "task",
+  "keyId": "im_removeStorage",
+  "flowElementSample": {
+    "executeId": "im_removeStorage1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_removeStorage",
+      "version": null
+    },
+    "label": "ファイルおよびディレクトリの削除",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "recursive": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 320,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 780,
+      "y": 400
+    },
+    "id": "a594cc56-445d-4efa-924c-9c4d00110f95",
+    "z": 139,
+    "attrs": {
+      "rect.body": {
+        "width": 320,
+        "fill": "#0096a6"
+      },
+      "rect.icon": {
+        "fill": "#0096a6"
+      },
+      "rect.title": {
+        "width": 270,
+        "fill": "#00bbd3"
+      },
+      "rect.label": {
+        "width": 270,
+        "fill": "#25c5d9"
+      },
+      "text.title": {
+        "text": "im_removeStorage1"
+      },
+      "text.label": {
+        "text": "ファイルおよびディレクトリの削除"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_removeStorage"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "recursive",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "再帰",
+        "text": "配下の要素を含めて再帰的に処理する",
+        "options": [
+          {
+            "name": "recursive",
+            "label": "recursive",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "storage",
+        "basic": true,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "storage",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "recursive": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_removeStorage1",
+    "label": "ファイルおよびディレクトリの削除",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

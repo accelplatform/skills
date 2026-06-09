@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "validate-xsd_ja.md",
+      "to": "validate-xsd.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "validate-xsd_en.md",
+      "to": "validate-xsd.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "validate-xsd_zh_CN.md",
+      "to": "validate-xsd.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{AGENT_ROOT}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": ".claude"
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": ".github"
+        }
+      ]
+    }
+  ]
+}

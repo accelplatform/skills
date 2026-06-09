@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "getMappingFunction Response",
+  "description": "マッピング関数の完全定義。引数スキーマと戻り値型を含む。",
+  "type": "object",
+  "required": [
+    "name",
+    "label",
+    "description",
+    "returnType",
+    "arguments"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "関数名。mappingRules.source.name および connector.source.type で使用する"
+    },
+    "label": {
+      "type": "string",
+      "description": "関数の表示名（日本語）"
+    },
+    "category": {
+      "type": "string",
+      "description": "関数のカテゴリ"
+    },
+    "description": {
+      "type": "string",
+      "description": "関数の機能説明（日本語）"
+    },
+    "returnType": {
+      "type": "string",
+      "description": "戻り値の型ID",
+      "examples": [
+        "integer",
+        "string",
+        "boolean",
+        "bigdecimal",
+        "date",
+        "imdatetime",
+        "any"
+      ]
+    },
+    "returnListingType": {
+      "type": "string",
+      "enum": [
+        "none",
+        "list"
+      ],
+      "default": "none",
+      "description": "戻り値が配列なら list"
+    },
+    "arguments": {
+      "type": "array",
+      "description": "引数定義の配列（順序が意味を持つ）。mappingRules.source.arguments[] と 1:1 対応",
+      "items": {
+        "$ref": "#/$defs/functionArgument"
+      }
+    },
+    "examples": {
+      "type": "array",
+      "description": "使用例。コーディングエージェントが正しい spec を組み立てるための参考",
+      "items": {
+        "$ref": "#/$defs/usageExample"
+      }
+    }
+  },
+  "$defs": {
+    "functionArgument": {
+      "type": "object",
+      "required": [
+        "index",
+        "name",
+        "description",
+        "acceptedTypes"
+      ],
+      "properties": {
+        "index": {
+          "type": "integer",
+          "description": "引数の位置（0始まり）。source.arguments[] のインデックスに対応"
+        },
+        "name": {
+          "type": "string",
+          "description": "引数名（説明用）",
+          "examples": [
+            "target",
+            "startIndex",
+            "endIndex",
+            "separator"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "引数の説明（日本語）"
+        },
+        "required": {
+          "type": "boolean",
+          "default": true,
+          "description": "必須引数か"
+        },
+        "acceptedTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "受け付ける型ID。any の場合は全型受付",
+          "examples": [
+            [
+              "string"
+            ],
+            [
+              "integer",
+              "bigdecimal"
+            ],
+            [
+              "any"
+            ]
+          ]
+        },
+        "acceptedListingType": {
+          "type": "string",
+          "enum": [
+            "none",
+            "list",
+            "any"
+          ],
+          "default": "any",
+          "description": "none = 単一値のみ, list = 配列のみ, any = どちらも可"
+        }
+      }
+    },
+    "usageExample": {
+      "type": "object",
+      "required": [
+        "description",
+        "source"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "例の説明"
+        },
+        "source": {
+          "$ref": "#/$defs/mappingSource",
+          "description": "この関数を使った mappingRules.source の例"
+        }
+      }
+    },
+    "mappingSource": {
+      "type": "object",
+      "required": [
+        "type",
+        "name"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "value",
+            "function"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "function の場合: 関数名。value の場合: null"
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "value の場合: / 区切りパス。function の場合: null"
+        },
+        "arguments": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "description": "function の場合: 引数（再帰的に mappingSource の配列）",
+          "items": {
+            "$ref": "#/$defs/mappingSource"
+          }
+        }
+      }
+    }
+  }
+}

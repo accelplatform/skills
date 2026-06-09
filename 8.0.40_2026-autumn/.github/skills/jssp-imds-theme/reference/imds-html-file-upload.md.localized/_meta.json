@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "imds-html-file-upload_en.md",
+      "to": "imds-html-file-upload.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imds-html-file-upload_zh_CN.md",
+      "to": "imds-html-file-upload.md"
+    }
+  ]
+}

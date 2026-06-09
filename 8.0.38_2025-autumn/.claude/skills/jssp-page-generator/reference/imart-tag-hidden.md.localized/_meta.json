@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "imart-tag-hidden_en.md",
+      "to": "imart-tag-hidden.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imart-tag-hidden_zh_CN.md",
+      "to": "imart-tag-hidden.md"
+    }
+  ]
+}

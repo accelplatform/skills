@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "type": "directory",
+  "conditions": {
+    "version": "8.0.38"
+  },
+  "replacements": [
+    {
+      "type": "regex",
+      "pattern": "\\{\\{GROUP_ID\\}\\}",
+      "replacement": "{{$group}}",
+      "condition": {
+        "version": "8.0.38"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
+      "replacement": "{{$artifactId}}",
+      "condition": {
+        "version": "8.0.38"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_NAME\\}\\}",
+      "replacement": "{{$name}}",
+      "condition": {
+        "version": "8.0.38"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
+      "replacement": "{{$projectVersion}}",
+      "condition": {
+        "version": "8.0.38"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_DESCRIPTION\\}\\}",
+      "replacement": "{{$description}}",
+      "condition": {
+        "version": "8.0.38"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{XML-VALIDATOR-MAVEN-PLUGIN-VERSION\\}\\}",
+      "replacement": "1.0.0",
+      "condition": {
+        "version": "8.0.38"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{JAVA-FORMATTER-MAVEN-PLUGIN-VERSION\\}\\}",
+      "replacement": "1.0.0",
+      "condition": {
+        "version": "8.0.38"
+      }
+    }
+  ]
+}

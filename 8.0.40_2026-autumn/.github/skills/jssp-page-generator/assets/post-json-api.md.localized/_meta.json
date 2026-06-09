@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "post-json-api_ja.md",
+      "to": "post-json-api.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "post-json-api_en.md",
+      "to": "post-json-api.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "post-json-api_zh_CN.md",
+      "to": "post-json-api.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{AGENT_RULES}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": "rules"
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": "instructions"
+        }
+      ]
+    }
+  ]
+}

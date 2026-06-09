@@ -1,0 +1,374 @@
+{
+  "kind": "task",
+  "keyId": "im_getDayInfoSummaries",
+  "flowElementSample": {
+    "executeId": "im_getDayInfoSummaries1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_getDayInfoSummaries",
+      "version": null
+    },
+    "label": "カレンダー（日付情報）の取得",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 280,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 1220,
+      "y": 2690
+    },
+    "id": "ccf9eb88-82f3-4ce6-a762-e47046ca72ef",
+    "z": 258,
+    "attrs": {
+      "rect.body": {
+        "width": 280,
+        "fill": "#303f9f"
+      },
+      "rect.icon": {
+        "fill": "#303f9f"
+      },
+      "rect.title": {
+        "width": 230,
+        "fill": "#3e50b4"
+      },
+      "rect.label": {
+        "width": 230,
+        "fill": "#5b6abf"
+      },
+      "text.title": {
+        "text": "im_getDayInfoSummaries1"
+      },
+      "text.label": {
+        "text": "カレンダー（日付情報）の取得"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_getDayInfoSummaries"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_calendar_GetDayInfoSummariesTaskInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "calendar",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_calendar_GetDayInfoSummariesTaskInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "calendarId",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "calendar",
+              "name": "end",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "locale",
+              "name": "locale",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "calendar",
+              "name": "start",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "locale",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_calendar_GetDayInfoSummariesTaskResultObject",
+        "basic": false,
+        "required": false,
+        "listingType": "list"
+      },
+      "typeDefinitions": [
+        {
+          "id": "calendar",
+          "properties": []
+        },
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_calendar_GetDayInfoSummariesTaskResultDayInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "color",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "dataType",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "dayInfoId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "dayInfoName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "dayInfoSetId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "dayOfMonth",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "dayOfWeek",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "dayOfWeekInMonth",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "fullYear",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "long",
+              "name": "mergeSortKey",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "month",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "long",
+              "name": "sortKey",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "validEndYear",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "validStartYear",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "weekOfMonth",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "long",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_calendar_GetDayInfoSummariesTaskResultObject",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "color",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "calendar",
+              "name": "currentDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "dayInfoNames",
+              "listingType": "list",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_calendar_GetDayInfoSummariesTaskResultDayInfo",
+              "name": "dayInfos",
+              "listingType": "list",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "boolean",
+              "name": "holiday",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_getDayInfoSummaries1",
+    "label": "カレンダー（日付情報）の取得",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

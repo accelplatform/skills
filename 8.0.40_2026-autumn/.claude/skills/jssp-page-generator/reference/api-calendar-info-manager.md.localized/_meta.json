@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-calendar-info-manager_en.md",
+      "to": "api-calendar-info-manager.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-calendar-info-manager_zh_CN.md",
+      "to": "api-calendar-info-manager.md"
+    }
+  ]
+}

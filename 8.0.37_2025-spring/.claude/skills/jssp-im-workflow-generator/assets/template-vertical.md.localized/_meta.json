@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "template-vertical_en.md",
+      "to": "template-vertical.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "template-vertical_zh_CN.md",
+      "to": "template-vertical.md"
+    }
+  ]
+}

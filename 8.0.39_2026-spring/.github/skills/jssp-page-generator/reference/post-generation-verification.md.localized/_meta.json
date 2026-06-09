@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "post-generation-verification_ja.md",
+      "to": "post-generation-verification.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "post-generation-verification_en.md",
+      "to": "post-generation-verification.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "post-generation-verification_zh_CN.md",
+      "to": "post-generation-verification.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{AGENT_ROOT}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": ".claude"
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": ".github"
+        }
+      ]
+    }
+  ]
+}

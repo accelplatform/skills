@@ -1,0 +1,81 @@
+{
+  "feature": "sample_oauth",
+  "errorCodeProduct": "IWP",
+
+  "scopes": [
+    {
+      "id": "sample_oauth_user_read",
+      "defaultSubject": "Sample OAuth user-read scope",
+      "localizations": {
+        "ja": {
+          "subject": "サンプル：ユーザ情報参照",
+          "text": "アカウント情報の参照を許可します。"
+        },
+        "en": {
+          "subject": "Sample: Read user information",
+          "text": "Allows read access to account information."
+        },
+        "zh_CN": {
+          "subject": "示例：用户信息参照",
+          "text": "允许查阅账户信息。"
+        }
+      }
+    }
+  ],
+
+  "resources": [
+    {
+      "id": "sample-oauth-get-user",
+      "path": "/oauth/sample_oauth/get_user",
+      "type": "jssp",
+      "file": "get_user",
+      "authz": "welcome-all",
+      "scopes": ["sample_oauth_user_read"],
+      "api": {
+        "title": "ユーザ情報取得 REST-API（OAuth 公開版）",
+        "description": "リクエストパラメータ userCd を受け取り、対象ユーザのアカウント情報を JSON で返却する。\nOAuth アクセストークンによる認証が必要（scope: sample_oauth_user_read）。",
+        "logPrefix": "sample_oauth/get_user",
+        "allowedMethods": ["GET"],
+        "parameters": [
+          {
+            "name": "userCd",
+            "required": true,
+            "maxLength": 100,
+            "pattern": "^[0-9A-Za-z_@.+!\\-]+$",
+            "patternMessage": "userCd の形式が正しくありません。"
+          }
+        ],
+        "extraErrorCodes": [
+          { "name": "USER_NOT_FOUND", "code": "00004" }
+        ]
+      }
+    }
+  ],
+
+  "clients": [
+    {
+      "clientId": "sample-oauth-client",
+      "grantType": "authorization_code",
+      "clientSecret": "change-me-in-production",
+      "redirectUri": "https://example.com/sample_oauth/callback",
+      "accessTokenValiditySeconds": 3600,
+      "codeChallenge": "S256",
+      "defaultName": "Sample OAuth Client",
+      "localizations": {
+        "ja": {
+          "clientName": "サンプル OAuth クライアント",
+          "description": "OAuth REST-API のサンプル用クライアントです。"
+        },
+        "en": {
+          "clientName": "Sample OAuth Client",
+          "description": "Sample client for the OAuth REST-API."
+        },
+        "zh_CN": {
+          "clientName": "示例 OAuth 客户端",
+          "description": "用于 OAuth REST-API 的示例客户端。"
+        }
+      },
+      "scopes": ["sample_oauth_user_read"]
+    }
+  ]
+}

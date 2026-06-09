@@ -1,0 +1,167 @@
+{
+  "kind": "task",
+  "keyId": "im_runJobScheduler",
+  "flowElementSample": {
+    "executeId": "im_runJobScheduler1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_runJobScheduler",
+      "version": null
+    },
+    "label": "ジョブネット即時実行",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 820,
+      "y": 1050
+    },
+    "id": "57045751-e406-494d-92be-c2c0795cb26d",
+    "z": 154,
+    "attrs": {
+      "rect.body": {
+        "width": 240,
+        "fill": "#679e37"
+      },
+      "rect.icon": {
+        "fill": "#679e37"
+      },
+      "rect.title": {
+        "width": 190,
+        "fill": "#8ac249"
+      },
+      "rect.label": {
+        "width": 190,
+        "fill": "#9bcb64"
+      },
+      "text.title": {
+        "text": "im_runJobScheduler1"
+      },
+      "text.label": {
+        "text": "ジョブネット即時実行"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_runJobScheduler"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "string",
+        "basic": true,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_runJobScheduler1",
+    "label": "ジョブネット即時実行",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

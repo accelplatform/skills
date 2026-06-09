@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.38"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "java-formatter_en.md",
+      "to": "java-formatter.instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "java-formatter_zh_CN.md",
+      "to": "java-formatter.instructions.md"
+    }
+  ]
+}

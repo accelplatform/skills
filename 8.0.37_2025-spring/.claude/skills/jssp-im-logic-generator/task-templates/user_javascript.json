@@ -1,0 +1,316 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-javascript",
+  "definitionType": "javascript",
+  "flowElementSample": {
+    "executeId": "sample-javascript",
+    "alias": "sample_javascript",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-javascript",
+      "version": null
+    },
+    "label": "サンプル JavaScript 定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-javascript",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "javascript",
+        "definitionName": "Sample JavaScript Definition",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_scriptExecutor",
+          "iconId": null,
+          "elementProperties": {
+            "script": "/**\r\n * run.\r\n *\r\n * @param input {Object} - task input data.\r\n * @return {Object} task result.\r\n */\r\nfunction run(input) {\r\n\r\n\tDebug.console(input.param1, input.param2);\r\n\r\n\treturn {\r\n\t\tmessage: 'hello world.' + input.param1 + '/' + input.param2\r\n\t};\r\n}\r\n"
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "param1",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "param2",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "message",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプル JavaScript 定義",
+          "en": "Sample JavaScript Definition",
+          "zh_CN": "示例 JavaScript 定义"
+        }
+      },
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 70,
+      "y": 190
+    },
+    "id": "751cc744-97a8-4853-a035-7e42a4087ddd",
+    "z": 5,
+    "attrs": {
+      "rect.body": {
+        "width": 240
+      },
+      "rect.title": {
+        "width": 190
+      },
+      "rect.label": {
+        "width": 190
+      },
+      "text.title": {
+        "text": "sample_javascript"
+      },
+      "text.label": {
+        "text": "サンプル JavaScript 定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-javascript"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "param1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "param2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "message",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-javascript",
+      "version": 1,
+      "definitionType": "javascript",
+      "definitionName": "Sample JavaScript Definition",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_scriptExecutor",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "param1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "param2",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "message",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "script": "/**\r\n * run.\r\n *\r\n * @param input {Object} - task input data.\r\n * @return {Object} task result.\r\n */\r\nfunction run(input) {\r\n\r\n\tDebug.console(input.param1, input.param2);\r\n\r\n\treturn {\r\n\t\tmessage: 'hello world.' + input.param1 + '/' + input.param2\r\n\t};\r\n}\r\n"
+        }
+      },
+      "localize": {
+        "ja": "サンプル JavaScript 定義",
+        "en": "Sample JavaScript Definition",
+        "zh_CN": "示例 JavaScript 定义"
+      }
+    },
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_javascript",
+    "label": "サンプル JavaScript 定義",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

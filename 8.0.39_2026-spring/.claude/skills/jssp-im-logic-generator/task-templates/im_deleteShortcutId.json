@@ -1,0 +1,167 @@
+{
+  "kind": "task",
+  "keyId": "im_deleteShortcutId",
+  "flowElementSample": {
+    "executeId": "im_deleteShortcutId1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_deleteShortcutId",
+      "version": null
+    },
+    "label": "ショートカットID削除",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 820,
+      "y": 1670
+    },
+    "id": "090d3db3-0f29-4024-bd9f-9a40a19b9f0d",
+    "z": 169,
+    "attrs": {
+      "rect.body": {
+        "width": 240,
+        "fill": "#679e37"
+      },
+      "rect.icon": {
+        "fill": "#679e37"
+      },
+      "rect.title": {
+        "width": 190,
+        "fill": "#8ac249"
+      },
+      "rect.label": {
+        "width": 190,
+        "fill": "#9bcb64"
+      },
+      "text.title": {
+        "text": "im_deleteShortcutId1"
+      },
+      "text.label": {
+        "text": "ショートカットID削除"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_deleteShortcutId"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "string",
+        "basic": true,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_deleteShortcutId1",
+    "label": "ショートカットID削除",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

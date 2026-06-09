@@ -1,0 +1,219 @@
+{
+  "outputDir": "src/main/conf/message/sample/expense_report",
+  "captions": [
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.APPLY.TITLE",
+      "en": "Expense Report",
+      "ja": "経費精算申請",
+      "zh_CN": "费用报销申请"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.APPROVE.TITLE",
+      "en": "Expense Report Approval",
+      "ja": "経費精算申請 承認",
+      "zh_CN": "费用报销申请 审批"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.DETAIL.TITLE",
+      "en": "Expense Report Detail",
+      "ja": "経費精算申請 詳細",
+      "zh_CN": "费用报销申请 详情"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.SUBTITLE",
+      "en": "Expense Report Workflow",
+      "ja": "経費精算ワークフロー",
+      "zh_CN": "费用报销工作流"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.SECTION.APPLY.INFO",
+      "en": "Application Information",
+      "ja": "申請情報",
+      "zh_CN": "申请信息"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.LABEL.PURPOSE",
+      "en": "Purpose",
+      "ja": "使用目的",
+      "zh_CN": "使用目的"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.LABEL.AMOUNT.WITH.UNIT",
+      "en": "Amount (JPY)",
+      "ja": "金額（円）",
+      "zh_CN": "金额（日元）"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.LABEL.AMOUNT",
+      "en": "Amount",
+      "ja": "金額",
+      "zh_CN": "金额"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.LABEL.REMARKS",
+      "en": "Remarks",
+      "ja": "備考",
+      "zh_CN": "备注"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.LABEL.STATUS",
+      "en": "Status",
+      "ja": "ステータス",
+      "zh_CN": "状态"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.LABEL.REQUIRED",
+      "en": "Required",
+      "ja": "必須",
+      "zh_CN": "必填"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.OPTION.PLACEHOLDER",
+      "en": "Please select",
+      "ja": "選択してください",
+      "zh_CN": "请选择"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.OPTION.TRANSPORT",
+      "en": "Transportation",
+      "ja": "交通費",
+      "zh_CN": "交通费"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.OPTION.ACCOMMODATION",
+      "en": "Accommodation",
+      "ja": "宿泊費",
+      "zh_CN": "住宿费"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.OPTION.ENTERTAINMENT",
+      "en": "Entertainment",
+      "ja": "接待費",
+      "zh_CN": "接待费"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.OPTION.SUPPLIES",
+      "en": "Supplies",
+      "ja": "消耗品費",
+      "zh_CN": "消耗品费"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.OPTION.OTHER",
+      "en": "Other",
+      "ja": "その他",
+      "zh_CN": "其他"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.BUTTON.APPLY",
+      "en": "Submit",
+      "ja": "申請",
+      "zh_CN": "申请"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.BUTTON.TEMP.SAVE",
+      "en": "Save Draft",
+      "ja": "一時保存",
+      "zh_CN": "临时保存"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.BUTTON.REAPPLY",
+      "en": "Resubmit",
+      "ja": "再申請",
+      "zh_CN": "重新申请"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.BUTTON.PROCESS",
+      "en": "Process",
+      "ja": "処理",
+      "zh_CN": "处理"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.STATUS.APPLYING",
+      "en": "Pending",
+      "ja": "申請中",
+      "zh_CN": "申请中"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.STATUS.APPROVED",
+      "en": "Approved",
+      "ja": "承認済み",
+      "zh_CN": "已审批"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.STATUS.DENIED",
+      "en": "Denied",
+      "ja": "否認",
+      "zh_CN": "否决"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.STATUS.OTHER.END",
+      "en": "Other End",
+      "ja": "その他終了",
+      "zh_CN": "其他终了"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.UNIT.YEN",
+      "en": "JPY",
+      "ja": "円",
+      "zh_CN": "日元"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.UNIT.YEN.WITH.SPACE",
+      "en": " JPY",
+      "ja": " 円",
+      "zh_CN": " 日元"
+    },
+    {
+      "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.MATTER.NAME.PREFIX",
+      "en": "ExpenseReport_",
+      "ja": "経費精算申請_",
+      "zh_CN": "费用报销申请_"
+    }
+  ],
+  "messages": [
+    {
+      "key": "MSG.E.IWP.SAMPLE.EXPENSE.REPORT.REQUIRED.PURPOSE",
+      "en": "Purpose is required.",
+      "ja": "使用目的は必須です。",
+      "zh_CN": "使用目的为必填项。"
+    },
+    {
+      "key": "MSG.E.IWP.SAMPLE.EXPENSE.REPORT.REQUIRED.AMOUNT",
+      "en": "Amount is required.",
+      "ja": "金額は必須です。",
+      "zh_CN": "金额为必填项。"
+    },
+    {
+      "key": "MSG.E.IWP.SAMPLE.EXPENSE.REPORT.INVALID.AMOUNT",
+      "en": "Amount must be a positive integer.",
+      "ja": "金額は1以上の整数を入力してください。",
+      "zh_CN": "请输入1以上的整数金额。"
+    },
+    {
+      "key": "MSG.E.IWP.SAMPLE.EXPENSE.REPORT.SYSTEM.ERROR",
+      "en": "An unexpected error occurred.",
+      "ja": "予期しないエラーが発生しました。",
+      "zh_CN": "发生了意外错误。"
+    }
+  ],
+  "logMessages": [
+    {
+      "key": "E.IWP.SAMPLE.EXPENSE.REPORT.00001",
+      "en": "An error occurred while displaying the application screen.",
+      "ja": "申請画面表示中にエラーが発生しました。",
+      "zh_CN": "显示申请画面时发生错误。"
+    },
+    {
+      "key": "E.IWP.SAMPLE.EXPENSE.REPORT.00002",
+      "en": "An error occurred while displaying the approval screen.",
+      "ja": "承認画面表示中にエラーが発生しました。",
+      "zh_CN": "显示审批画面时发生错误。"
+    },
+    {
+      "key": "E.IWP.SAMPLE.EXPENSE.REPORT.00003",
+      "en": "An error occurred while displaying the detail screen.",
+      "ja": "詳細画面表示中にエラーが発生しました。",
+      "zh_CN": "显示详情画面时发生错误。"
+    }
+  ]
+}

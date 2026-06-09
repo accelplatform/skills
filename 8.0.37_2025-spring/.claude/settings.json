@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Read(src/**)",
+      "Edit(src/**)",
+      "Read(docs/**)",
+      "Edit(docs/**)",
+      "Read(.claude/**)",
+      "Edit(pom.xml)",
+      "Edit(module.xml)",
+      "Edit(lessons.md)",
+      "Edit(message*.properties)",
+      "Edit(.project)",
+      "Bash(mvn *)",
+      "Bash(git *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Bash(mvn deploy *)",
+      "Bash(mvn * deploy *)",
+      "Bash(mvn * deploy)",
+      "Bash(git push *)",
+      "Bash(git * push *)",
+      "Bash(git * push)",
+      "Bash(git clean *)",
+      "Bash(git reset --hard *)",
+      "Bash(git reset --hard)",
+      "Bash(git checkout -- *)",
+      "Bash(git branch -D *)",
+      "Bash(git branch -d *)",
+      "Bash(git rebase *)",
+      "Bash(git stash drop *)",
+      "Bash(git stash drop)",
+      "Bash(git stash clear)",
+      "Bash(git * --force *)",
+      "Bash(git * --force)",
+      "Bash(git * -f *)",
+      "Bash(git * -f)",
+      "Bash(chmod *)",
+      "Bash(chown *)",
+      "Bash(mvn exec:*)"
+    ]
+  },
+  "enabledPlugins": {
+    "example-skills@anthropic-agent-skills": true
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mvn -q -s settings.xml xml-validator:hook -Dsettings=.accel/settings.json -Dagent=claude-code",
+            "timeout": 30,
+            "statusMessage": "Running XML validation..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mvn -q -s settings.xml -Dorg.slf4j.simpleLogger.logFile=System.err java-formatter:hook -Dsettings=.accel/settings.json",
+            "timeout": 60,
+            "statusMessage": "Running Java formatter..."
+          }
+        ]
+      }
+    ]
+  }
+}

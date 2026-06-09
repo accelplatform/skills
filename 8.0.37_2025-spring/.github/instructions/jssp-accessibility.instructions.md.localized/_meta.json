@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "jssp-accessibility_ja.instructions.md",
+      "to": "jssp-accessibility.instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "jssp-accessibility_en.instructions.md",
+      "to": "jssp-accessibility.instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "jssp-accessibility_zh_CN.instructions.md",
+      "to": "jssp-accessibility.instructions.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{AGENT_RULES}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": "rules"
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": "instructions"
+        }
+      ]
+    }
+  ]
+}

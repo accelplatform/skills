@@ -1,0 +1,527 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-template",
+  "definitionType": "template",
+  "flowElementSample": {
+    "executeId": "sample-template",
+    "alias": "sample_template",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-template",
+      "version": null
+    },
+    "label": "サンプルテンプレート定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-template",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "template",
+        "definitionName": "Sample Template Definition",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_templateProcessor",
+          "iconId": null,
+          "elementProperties": {
+            "localizedTemplate": {
+              "ja": "",
+              "en": "",
+              "zh_CN": ""
+            },
+            "defaultTemplate": "<#setting url_escaping_charset=\"UTF-8\">\r\n<#-- mail body (variable example) -->\r\nHello, ${userName}.\r\nThe list of the goods which are in the cart is as follows.\r\n\r\n<#-- goods list (repeat example) -->\r\n<#list goodsList as goods>\r\n * ${goods.name} x${goods.count} = $${goods.price}-\r\n</#list>\r\n\r\n<#-- special price (branch example) -->\r\n<#if totalPrice gte 100>\r\nBecause the total amount is $100 or more, shipping is free.\r\n</#if>\r\n\r\n<#-- contact information (escape example) -->\r\nWhen you had like to make contact with us, please access ahead of following link.\r\nhttp://<HOST>:<PORT>/<CONTEXT_PATH>/contact/${customerId?url}\r\n\r\nThank you.\r\n"
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "locale",
+                    "name": "locale",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "im_logic_object_1",
+                    "name": "data",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": false
+                  }
+                ]
+              },
+              {
+                "id": "im_logic_object_1",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "userName",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "im_logic_object_2",
+                    "name": "goodsList",
+                    "description": null,
+                    "listingType": "list",
+                    "required": false,
+                    "basic": false
+                  },
+                  {
+                    "typeId": "integer",
+                    "name": "totalPrice",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "customerId",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "im_logic_object_2",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "name",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "integer",
+                    "name": "count",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "integer",
+                    "name": "price",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              },
+              {
+                "id": "integer",
+                "properties": []
+              },
+              {
+                "id": "locale",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "output",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプルテンプレート定義",
+          "en": "Sample Template Definition",
+          "zh_CN": "示例模板定义"
+        }
+      },
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 70,
+      "y": 1060
+    },
+    "id": "40e77a38-633f-4a07-80f9-814a306f5a60",
+    "z": 39,
+    "attrs": {
+      "rect.body": {
+        "width": 240
+      },
+      "rect.title": {
+        "width": 190
+      },
+      "rect.label": {
+        "width": 190
+      },
+      "text.title": {
+        "text": "sample_template"
+      },
+      "text.label": {
+        "text": "サンプルテンプレート定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-template"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "locale",
+              "name": "locale",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "im_logic_object_1",
+              "name": "data",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            }
+          ]
+        },
+        {
+          "id": "im_logic_object_1",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "userName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "im_logic_object_2",
+              "name": "goodsList",
+              "listingType": "list",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "integer",
+              "name": "totalPrice",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "customerId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "im_logic_object_2",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "name",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "count",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "price",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "locale",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "output",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-template",
+      "version": 1,
+      "definitionType": "template",
+      "definitionName": "Sample Template Definition",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_templateProcessor",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "locale",
+                  "typeId": "locale",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "data",
+                  "typeId": "im_logic_object_1",
+                  "listingType": "none",
+                  "basic": false
+                }
+              ]
+            },
+            {
+              "id": "im_logic_object_1",
+              "properties": [
+                {
+                  "name": "userName",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "goodsList",
+                  "typeId": "im_logic_object_2",
+                  "listingType": "list",
+                  "basic": false
+                },
+                {
+                  "name": "totalPrice",
+                  "typeId": "integer",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "customerId",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "im_logic_object_2",
+              "properties": [
+                {
+                  "name": "name",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "count",
+                  "typeId": "integer",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "price",
+                  "typeId": "integer",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            },
+            {
+              "id": "integer",
+              "properties": []
+            },
+            {
+              "id": "locale",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "output",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "localizedTemplate": {
+            "ja": "",
+            "en": "",
+            "zh_CN": ""
+          },
+          "defaultTemplate": "<#setting url_escaping_charset=\"UTF-8\">\r\n<#-- mail body (variable example) -->\r\nHello, ${userName}.\r\nThe list of the goods which are in the cart is as follows.\r\n\r\n<#-- goods list (repeat example) -->\r\n<#list goodsList as goods>\r\n * ${goods.name} x${goods.count} = $${goods.price}-\r\n</#list>\r\n\r\n<#-- special price (branch example) -->\r\n<#if totalPrice gte 100>\r\nBecause the total amount is $100 or more, shipping is free.\r\n</#if>\r\n\r\n<#-- contact information (escape example) -->\r\nWhen you had like to make contact with us, please access ahead of following link.\r\nhttp://<HOST>:<PORT>/<CONTEXT_PATH>/contact/${customerId?url}\r\n\r\nThank you.\r\n"
+        }
+      },
+      "localize": {
+        "ja": "サンプルテンプレート定義",
+        "en": "Sample Template Definition",
+        "zh_CN": "示例模板定义"
+      }
+    },
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_template",
+    "label": "サンプルテンプレート定義",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

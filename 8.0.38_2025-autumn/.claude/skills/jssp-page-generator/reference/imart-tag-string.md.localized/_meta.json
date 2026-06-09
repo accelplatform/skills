@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "imart-tag-string_en.md",
+      "to": "imart-tag-string.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imart-tag-string_zh_CN.md",
+      "to": "imart-tag-string.md"
+    }
+  ]
+}

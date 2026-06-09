@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "secure-token-check_en.md",
+      "to": "secure-token-check.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "secure-token-check_zh_CN.md",
+      "to": "secure-token-check.md"
+    }
+  ]
+}

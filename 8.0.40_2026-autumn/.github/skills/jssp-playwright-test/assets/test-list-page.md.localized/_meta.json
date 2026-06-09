@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "test-list-page_en.md",
+      "to": "test-list-page.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "test-list-page_zh_CN.md",
+      "to": "test-list-page.md"
+    }
+  ]
+}

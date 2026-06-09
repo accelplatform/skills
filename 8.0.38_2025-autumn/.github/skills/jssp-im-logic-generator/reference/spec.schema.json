@@ -1,0 +1,684 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IM-LogicDesigner Spec",
+  "description": "build-flow.js に渡す中間表現（spec.json）のスキーマ。コーディングエージェントがプロンプトから組み立てる。",
+  "type": "object",
+  "required": [
+    "flows"
+  ],
+  "properties": {
+    "featureName": {
+      "type": "string",
+      "description": "zip ファイル名に使用する機能名。im-logicdesigner-data-<featureName>.zip となる。省略時は最初のフローの flowId がフォールバック",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "examples": [
+        "article-count",
+        "authz-check"
+      ]
+    },
+    "flowCategories": {
+      "type": "array",
+      "description": "カテゴリ定義。新規カテゴリを使う場合にのみ指定。テンプレート既存の categoryId は流用しないこと",
+      "items": {
+        "$ref": "#/$defs/flowCategory"
+      }
+    },
+    "flows": {
+      "type": "array",
+      "description": "フロー定義。通常は1件。複雑な場合は複数フローを1ファイルにまとめる",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/flowSpec"
+      }
+    },
+    "routes": {
+      "type": "array",
+      "description": "ルーティング定義。ロジックフローを URL アクセスで実行する場合に指定する。省略時は flow_route.json を生成しない",
+      "items": {
+        "$ref": "#/$defs/routeSpec"
+      }
+    }
+  },
+  "$defs": {
+    "flowCategory": {
+      "type": "object",
+      "required": [
+        "categoryId",
+        "categoryName",
+        "sortNumber"
+      ],
+      "properties": {
+        "categoryId": {
+          "type": "string",
+          "description": "カテゴリID。テンプレート既存の ID（imprtl_portlet_info 等）は使用不可"
+        },
+        "categoryName": {
+          "type": "string",
+          "description": "カテゴリ表示名（英語）"
+        },
+        "sortNumber": {
+          "type": "integer",
+          "default": 0
+        },
+        "localizes": {
+          "$ref": "#/$defs/localizes"
+        },
+        "parentId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "親カテゴリID。ルートなら null"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "デフォルトロケールでの表示名"
+        }
+      }
+    },
+    "flowSpec": {
+      "type": "object",
+      "required": [
+        "flowId",
+        "flowName",
+        "categoryId",
+        "tasks",
+        "edges"
+      ],
+      "properties": {
+        "flowId": {
+          "type": "string",
+          "description": "フロー識別子"
+        },
+        "flowName": {
+          "type": "string",
+          "description": "フロー表示名"
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "紐づくカテゴリID"
+        },
+        "version": {
+          "type": "integer",
+          "default": 1
+        },
+        "localizes": {
+          "$ref": "#/$defs/localizes"
+        },
+        "notes": {
+          "type": "string",
+          "default": ""
+        },
+        "versionComment": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
+        },
+        "transaction": {
+          "type": "boolean",
+          "default": true,
+          "description": "トランザクション制御の有効/無効"
+        },
+        "validateRepositoryData": {
+          "type": "boolean",
+          "default": false
+        },
+        "mappingOrder": {
+          "type": "string",
+          "default": "SOURCE_HIERARCHY",
+          "enum": [
+            "SOURCE_HIERARCHY",
+            "TARGET_HIERARCHY"
+          ]
+        },
+        "constants": {
+          "type": "array",
+          "description": "定数定義",
+          "items": {
+            "$ref": "#/$defs/constant"
+          },
+          "default": []
+        },
+        "variablesDataDefinition": {
+          "$ref": "#/$defs/dataDefinition",
+          "description": "フロー変数の型定義。省略時は空 root"
+        },
+        "inputDataDefinition": {
+          "$ref": "#/$defs/dataDefinition",
+          "description": "入力データの型定義。省略時は空 root"
+        },
+        "outputDataDefinition": {
+          "$ref": "#/$defs/dataDefinition",
+          "description": "出力データの型定義。省略時は空 root"
+        },
+        "tasks": {
+          "type": "array",
+          "description": "タスク定義。順序は問わない（edges で接続する）。im_start と im_end は必須",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/taskSpec"
+          }
+        },
+        "edges": {
+          "type": "array",
+          "description": "タスク間の接続（sequence）定義",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/edgeSpec"
+          }
+        }
+      }
+    },
+    "taskSpec": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "タスク種別ID（key.id）。task-templates に存在する、または MCP getTaskTemplate で取得可能なもの",
+          "examples": [
+            "im_start",
+            "im_end",
+            "im_errorEnd",
+            "im_gateway",
+            "im_authorizeAuthz",
+            "im_logger",
+            "im_repositorySearchEntityData",
+            "im_repositorySearchEntityCount",
+            "im_repositoryEntityDataInsert",
+            "im_repositoryEntityDataUpdate",
+            "user_javascript",
+            "user_rest",
+            "user_sql",
+            "user_db_fetch"
+          ]
+        },
+        "executeId": {
+          "type": "string",
+          "description": "明示的な executeId。省略時は自動採番（<type><連番>）"
+        },
+        "alias": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "エイリアス名"
+        },
+        "label": {
+          "type": "string",
+          "description": "タスクの表示ラベル"
+        },
+        "comment": {
+          "type": "string",
+          "description": "コメント",
+          "default": ""
+        },
+        "properties": {
+          "type": "object",
+          "description": "タスク固有プロパティ。type ごとに異なる",
+          "additionalProperties": true
+        },
+        "defaultRoot": {
+          "type": "string",
+          "description": "im_gateway 専用。デフォルト分岐先。\"<from>-><to>\" 形式または sequence の executeId",
+          "examples": [
+            "im_gateway1->im_errorEnd1"
+          ]
+        },
+        "mappingRules": {
+          "type": "array",
+          "description": "データマッピングルール",
+          "items": {
+            "$ref": "#/$defs/mappingRule"
+          }
+        },
+        "userDefinition": {
+          "$ref": "#/$defs/userDefinition",
+          "description": "ユーザ定義タスク（user_javascript / user_rest / user_sql / user_db_fetch）の定義内容"
+        },
+        "startPoint": {
+          "type": "string",
+          "description": "user_db_fetch_end 専用。対応する DB Fetch 開始要素の executeId"
+        }
+      }
+    },
+    "userDefinition": {
+      "type": "object",
+      "required": [
+        "definitionId",
+        "definitionType"
+      ],
+      "properties": {
+        "definitionId": {
+          "type": "string",
+          "description": "定義ID。executeId および key.id になる"
+        },
+        "definitionType": {
+          "type": "string",
+          "enum": [
+            "javascript",
+            "rest",
+            "sql",
+            "db_fetch",
+            "template"
+          ]
+        },
+        "definitionName": {
+          "type": "string",
+          "description": "定義の表示名（英語）"
+        },
+        "version": {
+          "type": "integer",
+          "default": 1
+        },
+        "categoryId": {
+          "type": "string",
+          "default": ""
+        },
+        "sortNumber": {
+          "type": "integer",
+          "default": 100
+        },
+        "localize": {
+          "type": "object",
+          "description": "ロケール別表示名",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "examples": [
+            {
+              "ja": "サンプル処理",
+              "en": "Sample Process",
+              "zh_CN": "示例处理"
+            }
+          ]
+        },
+        "iconId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "elementProperties": {
+          "type": "object",
+          "description": "種別固有の設定。javascript: script, rest: endpointExpression 等, sql/db_fetch: query 等",
+          "additionalProperties": true
+        },
+        "inputDataDefinition": {
+          "$ref": "#/$defs/dataDefinition",
+          "description": "ユーザ定義の入力型（自由定義）"
+        },
+        "outputDataDefinition": {
+          "$ref": "#/$defs/dataDefinition",
+          "description": "ユーザ定義の出力型（自由定義）"
+        }
+      }
+    },
+    "edgeSpec": {
+      "type": "object",
+      "required": [
+        "from",
+        "to"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "始点タスクの executeId"
+        },
+        "to": {
+          "type": "string",
+          "description": "終点タスクの executeId"
+        },
+        "condition": {
+          "type": "string",
+          "description": "分岐条件（EL式）。gateway からの条件付き接続に使用",
+          "examples": [
+            "${!isEmpty(im_repositorySearchEntityData1)}"
+          ]
+        }
+      }
+    },
+    "mappingRule": {
+      "type": "object",
+      "required": [
+        "target",
+        "source"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "UUID。省略時は build-flow.js が自動生成"
+        },
+        "target": {
+          "type": "string",
+          "description": "出力先パス（/ 区切り）",
+          "examples": [
+            "im_authorizeAuthz1/userCd",
+            "$output/result",
+            "$variable/tempCount"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/mappingSource"
+        }
+      }
+    },
+    "mappingSource": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "value",
+            "function"
+          ],
+          "description": "value = 単純参照, function = 関数呼び出し"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "function の場合: 関数名。value の場合: null",
+          "examples": [
+            "im_array_size"
+          ]
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "value の場合: / 区切り参照パス。function の場合: null",
+          "examples": [
+            "$input/resourceURI",
+            "$account_context/userCd",
+            "$const/ACTION_EXECUTE",
+            "im_authorizeAuthz1/permit"
+          ]
+        },
+        "arguments": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "description": "function の場合: 引数（再帰的に mappingSource の配列）。value の場合: null",
+          "items": {
+            "$ref": "#/$defs/mappingSource"
+          }
+        }
+      }
+    },
+    "constant": {
+      "type": "object",
+      "required": [
+        "name",
+        "value",
+        "typeId"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "定数名。$const/<name> で参照する",
+          "examples": [
+            "ACTION_EXECUTE",
+            "ERROR_MSG_JA"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "定数値"
+        },
+        "typeId": {
+          "type": "string",
+          "description": "値の型ID",
+          "examples": [
+            "string",
+            "integer",
+            "boolean"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "default": ""
+        },
+        "common": {
+          "type": "boolean",
+          "default": false,
+          "description": "共通定数か"
+        }
+      }
+    },
+    "dataDefinition": {
+      "type": "object",
+      "required": [
+        "entrypoint",
+        "typeDefinitions"
+      ],
+      "properties": {
+        "entrypoint": {
+          "$ref": "#/$defs/typeReference"
+        },
+        "typeDefinitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/typeDefinitionEntry"
+          }
+        }
+      }
+    },
+    "typeReference": {
+      "type": "object",
+      "required": [
+        "typeId",
+        "basic",
+        "required",
+        "listingType"
+      ],
+      "properties": {
+        "typeId": {
+          "type": "string"
+        },
+        "basic": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "listingType": {
+          "type": "string",
+          "enum": [
+            "none",
+            "list",
+            "array"
+          ]
+        }
+      }
+    },
+    "typeDefinitionEntry": {
+      "type": "object",
+      "required": [
+        "id",
+        "properties"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "型ID。プリミティブ（string/integer/boolean/long/double/bigdecimal/date/imdatetime 等）、エンティティ型（imrepo_entity_*）、ローカル型（im_logic_object_*）のいずれか。全量は reference/data-types.md 参照"
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "typeId",
+              "name",
+              "listingType",
+              "required",
+              "basic"
+            ],
+            "properties": {
+              "typeId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "listingType": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "list",
+                  "array"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "basic": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "routeSpec": {
+      "type": "object",
+      "required": [
+        "route",
+        "flowId"
+      ],
+      "properties": {
+        "route": {
+          "type": "string",
+          "description": "REST API のルートパス。<BASE-URL>/logic/api/<route> でアクセスできる",
+          "pattern": "^[a-zA-Z0-9_/]+$",
+          "examples": [
+            "im_bloommaker/standard_template/get_user"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "description": "HTTP メソッド",
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+          ],
+          "default": "GET"
+        },
+        "flowId": {
+          "type": "string",
+          "description": "実行するロジックフローの flowId"
+        },
+        "version": {
+          "type": "integer",
+          "description": "フローのバージョン。-1 で最新バージョンを自動選択",
+          "default": -1
+        },
+        "authentication": {
+          "type": "string",
+          "description": "認証方式",
+          "enum": [
+            "IMAuthentication",
+            "Basic",
+            "OAuth"
+          ],
+          "default": "IMAuthentication"
+        },
+        "authenticationParam": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "認証パラメータ。authentication が OAuth の場合に必須。それ以外は null",
+          "enum": [
+            "core",
+            "im-copilot",
+            "im-workflow-rest",
+            "immaster",
+            "journal",
+            "menu",
+            null
+          ],
+          "default": null
+        },
+        "authzUri": {
+          "type": "string",
+          "description": "認可URI。省略時は im-logic-rest://<flowId> を自動生成",
+          "pattern": "^im-logic-rest://.+$"
+        },
+        "secured": {
+          "type": "boolean",
+          "description": "セキュアトークンの使用有無",
+          "default": false
+        },
+        "responseType": {
+          "type": "string",
+          "description": "レスポンス形式。値に応じてフローの outputDataDefinition に定義すべきプロパティが異なる。詳細は routing-response.md 参照",
+          "enum": [
+            "imJsonResponse",
+            "imTextResponse",
+            "imHtmlResponse",
+            "imXmlResponse",
+            "imJsonStringResponse",
+            "imAnyContentTypeResponse",
+            "imFileDownload",
+            "imInlineFile",
+            "imFileBinary"
+          ],
+          "default": "imJsonResponse"
+        },
+        "responseHeader": {
+          "type": "object",
+          "description": "カスタムレスポンスヘッダー",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        }
+      }
+    },
+    "localizes": {
+      "type": "object",
+      "description": "ロケール別の表示名",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "locale"
+        ],
+        "properties": {
+          "locale": {
+            "type": "string",
+            "examples": [
+              "ja",
+              "en",
+              "zh_CN"
+            ]
+          },
+          "categoryName": {
+            "type": "string"
+          },
+          "flowName": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

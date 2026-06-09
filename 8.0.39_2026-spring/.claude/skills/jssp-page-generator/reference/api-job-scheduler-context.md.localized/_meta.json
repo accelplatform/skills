@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-job-scheduler-context_en.md",
+      "to": "api-job-scheduler-context.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-job-scheduler-context_zh_CN.md",
+      "to": "api-job-scheduler-context.md"
+    }
+  ]
+}

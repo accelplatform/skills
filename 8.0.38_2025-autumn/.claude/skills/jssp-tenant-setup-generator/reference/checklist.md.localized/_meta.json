@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "checklist_en.md",
+      "to": "checklist.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "checklist_zh_CN.md",
+      "to": "checklist.md"
+    }
+  ]
+}

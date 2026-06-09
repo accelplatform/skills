@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "jssp-error-handling_en.instructions.md",
+      "to": "jssp-error-handling.instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "jssp-error-handling_zh_CN.instructions.md",
+      "to": "jssp-error-handling.instructions.md"
+    }
+  ]
+}

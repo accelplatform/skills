@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": false,
+    "lib": ["ES5"]
+  },
+  "include": [
+    "**/*.d.ts",
+    "**/*.ts",
+    "**/*.js"
+  ]
+}

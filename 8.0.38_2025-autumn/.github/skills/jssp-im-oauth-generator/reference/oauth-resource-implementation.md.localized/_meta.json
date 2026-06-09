@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "oauth-resource-implementation_ja.md",
+      "to": "oauth-resource-implementation.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "oauth-resource-implementation_en.md",
+      "to": "oauth-resource-implementation.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "oauth-resource-implementation_zh_CN.md",
+      "to": "oauth-resource-implementation.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{AGENT_RULES}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": "rules"
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": "instructions"
+        }
+      ]
+    }
+  ]
+}

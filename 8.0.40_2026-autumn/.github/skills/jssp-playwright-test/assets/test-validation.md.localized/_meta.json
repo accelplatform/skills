@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "test-validation_en.md",
+      "to": "test-validation.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "test-validation_zh_CN.md",
+      "to": "test-validation.md"
+    }
+  ]
+}

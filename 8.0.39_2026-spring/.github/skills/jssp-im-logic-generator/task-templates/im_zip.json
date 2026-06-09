@@ -1,0 +1,201 @@
+{
+  "kind": "task",
+  "keyId": "im_zip",
+  "flowElementSample": {
+    "executeId": "im_zip1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_zip",
+      "version": null
+    },
+    "label": "ZIP圧縮",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "overwrite": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 840,
+      "y": 540
+    },
+    "id": "4d327a17-17a8-492f-8733-d86719e6a9cf",
+    "z": 142,
+    "attrs": {
+      "rect.body": {
+        "fill": "#0096a6"
+      },
+      "rect.icon": {
+        "fill": "#0096a6"
+      },
+      "rect.title": {
+        "fill": "#00bbd3"
+      },
+      "rect.label": {
+        "fill": "#25c5d9"
+      },
+      "text.title": {
+        "text": "im_zip1"
+      },
+      "text.label": {
+        "text": "ZIP圧縮"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_zip"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "overwrite",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "上書きする",
+        "text": "上書きする",
+        "options": [
+          {
+            "name": "overwrite",
+            "label": "overwrite",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_storage_ZipStorageInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_storage_ZipStorageInfo",
+          "properties": [
+            {
+              "typeId": "storage",
+              "name": "target",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "storage",
+              "name": "to",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "storage",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "overwrite": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_zip1",
+    "label": "ZIP圧縮",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

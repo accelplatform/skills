@@ -1,0 +1,14 @@
+/**
+ * 組織分類項目ビジネスキーオブジェクト。
+ *
+ * @since 8.0.37 (2025 Spring)
+ * @see https://api.intra-mart.jp/iap/apilist-ssjs/doc/im_master/DepartmentCtgItmBizKeyInfo/index.html
+ */
+interface DepartmentCtgItmBizKeyInfo {
+  /** 分類コード */
+  categoryCd: string;
+  /** 分類項目コード */
+  categoryItemCd: string;
+  /** 会社コード */
+  companyCd: string;
+}

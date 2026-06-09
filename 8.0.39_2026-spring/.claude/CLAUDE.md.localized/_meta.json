@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "version": ">=8.0.37",
+    "agent": "claude-code"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "CLAUDE_en.md",
+      "to": "CLAUDE.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "CLAUDE_zh_CN.md",
+      "to": "CLAUDE.md"
+    }
+  ]
+}
