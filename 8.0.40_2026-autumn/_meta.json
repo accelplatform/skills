@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "type": "directory",
   "conditions": {
-    "accelplatformVersion": "8.0.40"
+    "version": "8.0.40"
   },
   "replacements": [
     {
@@ -10,7 +10,7 @@
       "pattern": "\\{\\{GROUP_ID\\}\\}",
       "replacement": "{{$group}}",
       "condition": {
-        "accelplatformVersion": "8.0.40"
+        "version": "8.0.40"
       }
     },
     {
@@ -18,7 +18,7 @@
       "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
       "replacement": "{{$artifactId}}",
       "condition": {
-        "accelplatformVersion": "8.0.40"
+        "version": "8.0.40"
       }
     },
     {
@@ -26,7 +26,7 @@
       "pattern": "\\{\\{PROJECT_NAME\\}\\}",
       "replacement": "{{$name}}",
       "condition": {
-        "accelplatformVersion": "8.0.40"
+        "version": "8.0.40"
       }
     },
     {
@@ -34,7 +34,7 @@
       "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
       "replacement": "{{$projectVersion}}",
       "condition": {
-        "accelplatformVersion": "8.0.40"
+        "version": "8.0.40"
       }
     },
     {
@@ -42,7 +42,7 @@
       "pattern": "\\{\\{PROJECT_DESCRIPTION\\}\\}",
       "replacement": "{{$description}}",
       "condition": {
-        "accelplatformVersion": "8.0.40"
+        "version": "8.0.40"
       }
     },
     {
@@ -50,7 +50,7 @@
       "pattern": "\\{\\{XML-VALIDATOR-MAVEN-PLUGIN-VERSION\\}\\}",
       "replacement": "1.0.0",
       "condition": {
-        "accelplatformVersion": "8.0.40"
+        "version": "8.0.40"
       }
     },
     {
@@ -58,7 +58,7 @@
       "pattern": "\\{\\{JAVA-FORMATTER-MAVEN-PLUGIN-VERSION\\}\\}",
       "replacement": "1.0.0",
       "condition": {
-        "accelplatformVersion": "8.0.40"
+        "version": "8.0.40"
       }
     }
   ]
