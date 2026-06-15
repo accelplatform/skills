@@ -35,6 +35,7 @@ When the user makes requests such as:
 | `assets/test-crud-dialog.md` | Test examples for CRUD dialogs (create, edit, delete) |
 | `assets/test-validation.md` | Test examples for validation (required, character type, length, range, duplicate, real-time resolution) |
 | `assets/test-button-style.md` | Test examples for button styles (is-primary / is-danger) and confirmation dialogs |
+| `assets/test-mailpit.md` | E2E testing of mail-sending features with mailpit (verifying mail via the HTTP API, reaching mailpit from behind a proxy, CSRF secure-token retrieval patterns) |
 | `{{AGENT_RULES}}/jssp-testing.instructions.md` | Test perspectives and configuration conventions |
 
 ## Test Design Principles

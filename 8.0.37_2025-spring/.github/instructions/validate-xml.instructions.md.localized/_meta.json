@@ -2,21 +2,21 @@
   "version": "1.0.0",
   "type": "file",
   "conditions": {
-    "version": ">=8.0.38"
+    "accelplatformVersion": ">=8.0.38"
   },
   "rename": [
     {
       "condition": {
         "locale": "en"
       },
-      "from": "validate-xml_en.md",
+      "from": "validate-xml_en.instructions.md",
       "to": "validate-xml.instructions.md"
     },
     {
       "condition": {
         "locale": "zh_CN"
       },
-      "from": "validate-xml_zh_CN.md",
+      "from": "validate-xml_zh_CN.instructions.md",
       "to": "validate-xml.instructions.md"
     }
   ]

@@ -120,7 +120,7 @@ IM-LogicDesigner のロジックフローで使用可能なデータ型（タイ
 | パターン | 説明 | 例 |
 |---|---|---|
 | `imr_entity` | IM-Repository エンティティ | - |
-| `imrepo_entity_*` | エンティティ参照型（resolveEntitySchema で解決） | `imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info` |
+| `imrepo_entity_*` | エンティティ参照型（imLogicResolveEntitySchema で解決） | `imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info` |
 | `im_logic_object_*` | フロー内ローカルオブジェクト型 | `im_logic_object_1` |
 | `jp_co_intra_mart_*` | Java クラスベースの型（タスクの入出力定義内） | `jp_co_intra_mart_foundation_logic_element_authz_AuthorizeAuthzTaskResultObject` |
 | `root` | 型定義のルート（entrypoint から参照） | - |

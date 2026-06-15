@@ -1,0 +1,358 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-html-parse",
+  "definitionType": "htmlparser",
+  "flowElementSample": {
+    "executeId": "sample-html-parse",
+    "alias": "sample_html_parse",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-html-parse",
+      "version": null
+    },
+    "label": "サンプル HTML 解析定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-html-parse",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "htmlparser",
+        "definitionName": "Sample HTML Parse",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_htmlparser",
+          "iconId": null,
+          "elementProperties": {
+            "paths": [
+              {
+                "paramName": "string1",
+                "selector": "body>h1"
+              },
+              {
+                "paramName": "string2",
+                "selector": ".input-label span"
+              }
+            ]
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "binary",
+                    "name": "html",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "charset",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              },
+              {
+                "id": "binary",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "string1",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "string2",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプル HTML 解析定義",
+          "en": "Sample HTML Parse",
+          "zh_CN": "示例 HTML 解析定义"
+        }
+      },
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 90,
+      "y": 470
+    },
+    "id": "c1f6e770-7a8b-4c9d-9e0f-2a3b4c5d6e67",
+    "z": 11,
+    "attrs": {
+      "text.title": {
+        "text": "sample_html_parse"
+      },
+      "text.label": {
+        "text": "サンプル HTML 解析定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-html-parse"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "binary",
+              "name": "html",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "charset",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "binary",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "string1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "string2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-html-parse",
+      "version": 1,
+      "definitionType": "htmlparser",
+      "definitionName": "Sample HTML Parse",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_htmlparser",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "html",
+                  "typeId": "binary",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "charset",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            },
+            {
+              "id": "binary",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "string1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "string2",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "paths": [
+            {
+              "paramName": "string1",
+              "selector": "body>h1"
+            },
+            {
+              "paramName": "string2",
+              "selector": ".input-label span"
+            }
+          ]
+        }
+      },
+      "localize": {
+        "ja": "サンプル HTML 解析定義",
+        "en": "Sample HTML Parse",
+        "zh_CN": "示例 HTML 解析定义"
+      }
+    },
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_html_parse",
+    "label": "サンプル HTML 解析定義",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

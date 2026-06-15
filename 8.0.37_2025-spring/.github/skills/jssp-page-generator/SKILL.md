@@ -169,66 +169,19 @@ DDL 生成時の詳細ルールは本ファイル末尾の「DDL 生成ルール
 
 ---
 
-### ステップ 7: 自動検証スクリプト（JSSP コード）
+### ステップ 7〜10: 生成後検証（サブエージェントに委譲）
 
-生成したファイルに対して `validate-jssp-code.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
+**Agent ツール**を使ってサブエージェントを起動し、検証・修正をすべて委譲する。
+メイン会話のコンテキストを保護するため、検証作業はサブエージェントに完結させること。
 
-```bash
-node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
-```
+サブエージェントへのプロンプトに含める内容:
+- `jssp-page-verifier` スキルを実行すること
+- 対象パス: `src/main/jssp/src/{機能名}/`
+- DDL を生成した場合のみ DDL パス: `src/main/storage/system/products/import/basic/{機能名}/{version}/`
+- エラーが 0 件になるまで修正を繰り返すこと
+- 完了後に各ステップの結果サマリーを返すこと
 
-検出される主なパターン:
-- `db.select()` / `db.execute()` のパラメータが `DbParameter` でラップされていない
-- `DbParameter.number()` に文字列が渡される（`Number()` 変換漏れ）
-- `var` の使用（`let` を使うこと）
-- `imds-selectbox`（存在しないクラス名。正しくは `imds-select`）
-- `imuiCalendar` の altField が hidden input を参照
-- imart タグの value 属性がクォートで囲まれている
-- `include('**/common/**')` による共通モジュールの読み込み（正しくは `load()`）
-- `load('**/*.js')` のように `.js` 拡張子を付けた呼び出し（拡張子は自動付与されるため `.js.js` になり FileNotFoundException）
-- `Transaction.begin(...)` の戻り値を受け取っていない（`DatabaseResult` を無視すると失敗が検知できず「HTTP 200 成功だが DB に入っていない」状態になる）
-- TIMESTAMP/DATE カラムのバインドに `DbParameter.string(startAt|endAt|rangeFrom|rangeTo|...)` のような日時系変数名が使われている（PostgreSQL で型キャストエラー）
-
-> **JSSP-JS-022 警告が出た場合:** 必ず対応する SQL ファイルを開き、該当パラメータが `/*IF param != null*/.../*END*/` で囲まれているかを確認する。囲まれている → 誤検知（レビュー報告に「SQL 側の /*IF*/ ガード確認済み」と明記）。囲まれていない → `DbParameter.string(x || '')` 等の空文字フォールバックに修正する。
-
----
-
-### ステップ 8: DDL 型検証（ステップ 6 で DDL を生成した場合のみ）
-
-DDL ファイルを生成した場合、`validate-ddl.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
-
-```bash
-node .github/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{機能名}/{version}/
-```
-
-検出される主なパターン:
-- PostgreSQL の DDL に `NVARCHAR` / `VARCHAR2` / `NUMBER` / `DATETIME2` / `CLOB` が使われている
-- Oracle の DDL に `VARCHAR(` / `NVARCHAR2` / `DECIMAL` / `DATETIME2` / `TEXT` / `BOOLEAN` が使われている
-- SQLServer の DDL に `VARCHAR(` / `VARCHAR2` / `NUMBER` / `TIMESTAMP` / `CLOB` / `TEXT` / `BOOLEAN` が使われている
-- `CREATE FUNCTION` / `CREATE TRIGGER` / `CREATE PROCEDURE` / `CREATE VIEW` が DDL に含まれている（インポート失敗の原因）
-- `CHECK` / `FOREIGN KEY` / `EXCLUDE` 制約が CREATE TABLE 内または ALTER TABLE で定義されている
-- DDL はテーブル・PK・UNIQUE キー・CREATE INDEX のみを許可する方針
-- 共通 DML ファイル（`*-dml.sql`）に ODBC エスケープ `{d '...'}` / `{t '...'}` / `{ts '...'}` / `{fn ...}` / `{oj ...}` / `{call ...}` が使われている（PostgreSQL で構文エラー）
-
----
-
-### ステップ 9: tsc 型チェック
-
-生成したファイルに対して TypeScript コンパイラによる型検査を実行する。**0 issues になるまで修正を繰り返す。**
-
-```bash
-bash .github/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{機能名}/
-```
-
-検出される主なパターン:
-- `result.data === 0` のような型の不一致（更新件数は `result.countRow`）
-- d.ts に存在しないメソッド・プロパティへのアクセス
-
----
-
-### ステップ 10: 手動チェック
-
-`reference/post-generation-verification.md` の全ステップを実行する。
+サブエージェントが完了したら結果サマリーを確認し、問題がなければステップ 11 へ進む。
 
 ---
 

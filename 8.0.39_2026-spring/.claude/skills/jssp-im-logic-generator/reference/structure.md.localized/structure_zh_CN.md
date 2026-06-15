@@ -211,6 +211,14 @@
 | rest | `im_httpclient` |
 | sql | `im_queryExecutor` |
 | db_fetch | `im_startDbFetch` |
+| template | `im_templateProcessor` |
+| stored | `im_storedExecutor` |
+| csv_fetch | `im_startCsvFetch` |
+| csv_output | `im_csvOutput` |
+| excel_in | `im_excelInput` |
+| excel_out | `im_excelOutput` |
+| xmlparser | `im_xmlparser` |
+| htmlparser | `im_htmlparser` |
 
 ### dataMap[cellId].mapping.json — UI 上的映射信息
 

@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "endpoints_en.md",
+      "to": "endpoints.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "endpoints_zh_CN.md",
+      "to": "endpoints.md"
+    }
+  ]
+}

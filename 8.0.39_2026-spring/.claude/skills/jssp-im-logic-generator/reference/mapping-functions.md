@@ -4,7 +4,7 @@ IM-LogicDesigner の変数間マッピングで使用可能な関数の一覧。
 `mappingRules.source.type = "function"` で使用し、`source.name` に関数名を指定する。
 
 以下は基本関数（52件）。
-追加の関数は MCP `listMappingFunctions` / `getMappingFunction` で取得する。
+追加の関数は MCP `imLogicListMappingFunctions` / `imLogicGetMappingFunction` で取得する。
 
 ## 配列操作（9件）
 

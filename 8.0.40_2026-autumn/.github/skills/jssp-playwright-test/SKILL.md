@@ -35,6 +35,7 @@ intra-mart Accel Platform のプレゼンテーションページ（HTML）に�
 | `assets/test-crud-dialog.md` | CRUD ダイアログ（新規作成・編集・削除）のテスト実例 |
 | `assets/test-validation.md` | バリデーション（必須・文字種・文字数・範囲・重複・リアルタイム解消）のテスト実例 |
 | `assets/test-button-style.md` | ボタンスタイル（is-primary / is-danger）と確認ダイアログのテスト実例 |
+| `assets/test-mailpit.md` | mailpit を使ったメール送信機能の E2E テスト（HTTP API 経由でのメール検証、proxy 配下からの到達設定、CSRF セキュアトークン取得パターン） |
 | `instructions/jssp-testing.instructions.md` | テスト観点・設定規約 |
 
 ## テスト設計の原則

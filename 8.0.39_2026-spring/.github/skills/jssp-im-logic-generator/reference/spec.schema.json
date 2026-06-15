@@ -179,7 +179,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "description": "タスク種別ID（key.id）。task-templates に存在する、または MCP getTaskTemplate で取得可能なもの",
+          "description": "タスク種別ID（key.id）。task-templates に存在する、または MCP imLogicGetTaskTemplate で取得可能なもの",
           "examples": [
             "im_start",
             "im_end",
@@ -194,7 +194,15 @@
             "user_javascript",
             "user_rest",
             "user_sql",
-            "user_db_fetch"
+            "user_db_fetch",
+            "user_template",
+            "user_stored",
+            "user_csv_fetch",
+            "user_csv_output",
+            "user_excel_input",
+            "user_excel_output",
+            "user_xml_parse",
+            "user_html_parse"
           ]
         },
         "executeId": {
@@ -238,7 +246,7 @@
         },
         "userDefinition": {
           "$ref": "#/$defs/userDefinition",
-          "description": "ユーザ定義タスク（user_javascript / user_rest / user_sql / user_db_fetch）の定義内容"
+          "description": "ユーザ定義タスク（user_javascript / user_rest / user_sql / user_db_fetch / user_template / user_stored / user_csv_fetch / user_csv_output / user_excel_input / user_excel_output / user_xml_parse / user_html_parse）の定義内容"
         },
         "startPoint": {
           "type": "string",
@@ -264,7 +272,14 @@
             "rest",
             "sql",
             "db_fetch",
-            "template"
+            "template",
+            "stored",
+            "csv_fetch",
+            "csv_output",
+            "excel_in",
+            "excel_out",
+            "xmlparser",
+            "htmlparser"
           ]
         },
         "definitionName": {

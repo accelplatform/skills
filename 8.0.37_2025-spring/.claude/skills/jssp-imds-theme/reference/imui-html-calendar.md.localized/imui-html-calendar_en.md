@@ -113,3 +113,55 @@ $('#sample-calendar').imuiCalendar('option', 'calendarId', value);
 - Multi-date selection (`multiSelectable`) can only be used with inline display
 - Specify the textbox width with `max-width` according to the date format (approximately `10em` for `yyyy/MM/dd`)
 - When used in an input form, wrap with Field (`imds-field`)
+
+## Date-Time Input (Combining Date + Time)
+
+When accepting a "date-time" value, **split the date and time into separate fields** rather than having the user type everything into a single textbox.
+
+| Element | Component | Notes |
+|---------|-----------|-------|
+| Date part | `<imart type="imuiCalendar">` | Specify `format="yyyy-MM-dd"` (easier for API integration) |
+| Time part | `<input type="time">` | Use `step="900"` to restrict to 15-minute intervals |
+
+### HTML Markup Example
+
+```html
+<div class="imds-field-inline">
+  <input type="text" id=":startDate:" class="imds-textbox" style="max-width: 10em;" />
+  <imart type="imuiCalendar" floatable="true" altField="#\\:startDate\\:" format="yyyy-MM-dd" />
+  <input type="time" id=":startTime:" class="imds-textbox" step="900" style="max-width: 8em;" />
+</div>
+```
+
+### Reading Values (When Sending to API)
+
+```javascript
+const startAt = document.getElementById(':startDate:').value + ' ' + document.getElementById(':startTime:').value + ':00';
+// → "2026-04-21 10:00:00"
+```
+
+### Setting Initial Values (For Edit Screens with Existing Data)
+
+Split the value received from the API in `"YYYY-MM-DD HH:mm:ss"` format and set each field.
+
+```javascript
+function setDateTimeFields(dateFieldId, timeFieldId, dateTimeStr) {
+  if (!dateTimeStr) return;
+  const parts = dateTimeStr.split(' ');
+  document.getElementById(dateFieldId).value = parts[0];
+  document.getElementById(timeFieldId).value = parts[1].substring(0, 5);
+}
+// Usage example
+setDateTimeFields(':startDate:', ':startTime:', result.startAt);
+```
+
+### Validation
+
+```javascript
+if (!document.getElementById(':startDate:').value) {
+  errors.push({ name: 'startDate', message: 'Please enter a start date.' });
+}
+if (!document.getElementById(':startTime:').value) {
+  errors.push({ name: 'startTime', message: 'Please enter a start time.' });
+}
+```

@@ -98,9 +98,94 @@ function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
 // path 区切り "/" を IM-LogicDesigner 内部表現の TAB ('\t') に変換
 function toUiPath(p) { return p.replace(/\//g, '\t'); }
 
+// マッピングパネルのサイズ（関数ノードの水平配置の基準）
+const MAPPING_PANEL_WIDTH = 400;
+const MAPPING_PANEL_HEIGHT = 500;
+// 関数ノードを並べる縦位置（横一列に揃える）
+const FUNCTION_NODE_Y = 40;
+
+// 関数ツリーに含まれる関数ノードの総数（レイアウトの等間隔配置に使用）
+function countFunctionNodes(node) {
+  if (!node || node.type !== 'function') return 0;
+  let n = 1;
+  if (Array.isArray(node.arguments)) {
+    for (const arg of node.arguments) n += countFunctionNodes(arg);
+  }
+  return n;
+}
+
+// 関数ノードとその引数 connector を再帰的に生成する。
+// 戻り値はこの関数ノードのインスタンス UUID（nodeId）と関数名。
+//
+// IM-LogicDesigner の実エクスポート仕様（重要）:
+//   - 1 つの関数インスタンスは 1 つの UUID（nodeId）を持つ。
+//     その関数のすべてのポート（in1 / in2 / ... / out）は connector 上で
+//     同一の id（= nodeId）を共有し、ポートの区別は `port` フィールドだけで行う。
+//   - nodeId は mapping.json.attrs に { x, y }（描画位置）として登録される。
+//     attrs に無い関数ノードはエディタが復元できず、同名関数が 1 ノードに統合され
+//     自己ループになる。
+//   - 値（value）側のポートは connector ごとに一意な UUID を振り、attrs には登録しない。
+//
+// レイアウト:
+//   - 引数を先に処理してから自ノードのランクを採番する（post-order）。
+//     これにより「引数側（深いノード）が左、ルートが右」のデータフロー順に並ぶ。
+//   - x = パネル幅 × rank / (総数 + 1)。総数 1 で中央(50%)、2 で 33%/66%、3 で 25/50/75%。
+//   - y は固定値で横一列に揃える。
+//
+// connectors にはこの関数の各引数への入力 connector が push される。
+//   - 引数が value: source.type = "$input"（ポート方向固定）, source.path = TAB区切り
+//   - 引数が function（ネスト）: 子関数を再帰生成し、子の out → この関数の inK を結線
+function emitFunctionConnectors(node, base, nodeKey, connectors, attrs, ctx) {
+  const fnName = node.name;
+  const nodeId = rid(`${base}/fn/${nodeKey}`);
+  const args = Array.isArray(node.arguments) ? node.arguments : [];
+  args.forEach((arg, k) => {
+    if (!arg || !arg.type) return;
+    if (arg.type === 'value' && arg.path) {
+      connectors.push({
+        id: rid(`${base}/conn/${nodeKey}/arg${k}`),
+        source: {
+          id: rid(`${base}/val/${nodeKey}/arg${k}`),
+          type: '$input',
+          path: toUiPath(arg.path),
+          port: 'out',
+        },
+        target: {
+          id: nodeId,
+          type: fnName,
+          port: `in${k + 1}`,
+        },
+      });
+    } else if (arg.type === 'function' && arg.name) {
+      const child = emitFunctionConnectors(arg, base, `${nodeKey}_${k}`, connectors, attrs, ctx);
+      connectors.push({
+        id: rid(`${base}/conn/${nodeKey}/arg${k}`),
+        source: {
+          id: child.nodeId,
+          type: child.fnName,
+          port: 'out',
+        },
+        target: {
+          id: nodeId,
+          type: fnName,
+          port: `in${k + 1}`,
+        },
+      });
+    }
+  });
+  // post-order でランクを採番し、パネル幅に対して等間隔に配置する
+  ctx.rank += 1;
+  attrs[nodeId] = {
+    x: Math.round(ctx.width * ctx.rank / (ctx.total + 1)),
+    y: FUNCTION_NODE_Y,
+  };
+  return { nodeId, fnName };
+}
+
 // connectors[] と inputKeys を mappingRules から構築（dataMap[cellId].mapping.json 用）
 function buildMappingJson(rules, flowId, executeId) {
   const connectors = [];
+  const attrs = {};
   for (const r of rules) {
     if (!r.source) continue;
     if (r.source.type === 'value' && r.source.path) {
@@ -121,16 +206,21 @@ function buildMappingJson(rules, flowId, executeId) {
         },
       });
     } else if (r.source.type === 'function' && r.source.name) {
-      // function source: source.type = 関数名, path なし
+      // function source: まず引数の connector と関数ノード（attrs）を再帰生成し、
+      // 最後に「ルート関数の出力 → 出力先（$output 側）」の connector を push する。
+      // この出力 connector の id は rule.id と一致させる（バリデータの同期チェック対象）。
+      const base = `${flowId}/${executeId}/conn/${r.id}`;
+      const ctx = { rank: 0, total: countFunctionNodes(r.source), width: MAPPING_PANEL_WIDTH };
+      const root = emitFunctionConnectors(r.source, base, 'root', connectors, attrs, ctx);
       connectors.push({
         id: r.id,
         source: {
-          id: rid(`${flowId}/${executeId}/conn/${r.id}/src`),
-          type: r.source.name,
+          id: root.nodeId,
+          type: root.fnName,
           port: 'out',
         },
         target: {
-          id: rid(`${flowId}/${executeId}/conn/${r.id}/tgt`),
+          id: rid(`${base}/tgt`),
           type: '$output',
           path: toUiPath(r.target),
           port: 'in',
@@ -140,19 +230,27 @@ function buildMappingJson(rules, flowId, executeId) {
   }
   return {
     version: 1,
-    attrs: {},
+    attrs,
     connectors,
-    size: { width: 400, height: 500 },
+    size: { width: MAPPING_PANEL_WIDTH, height: MAPPING_PANEL_HEIGHT },
   };
+}
+
+// source（value / function）を再帰的にたどり、参照しているパスの先頭キーを集める
+function collectPathHeads(source, set) {
+  if (!source || typeof source !== 'object') return;
+  if (source.type === 'value' && typeof source.path === 'string') {
+    const head = source.path.split('/')[0];
+    if (head) set.add(head);
+  } else if (source.type === 'function' && Array.isArray(source.arguments)) {
+    for (const arg of source.arguments) collectPathHeads(arg, set);
+  }
 }
 
 function deriveInputKeys(rules, baseKeys) {
   const set = new Set(baseKeys || ['$input', '$variable', '$const']);
   for (const r of rules) {
-    const p = r.source?.path;
-    if (!p) continue;
-    const head = p.split('/')[0];
-    if (head) set.add(head);
+    collectPathHeads(r.source, set);
   }
   return [...set];
 }
@@ -177,9 +275,10 @@ function buildUserDefinitionProps(spec, tpl) {
   const ud = spec.userDefinition || {};
   const sampleDef = tpl.flowElementSample.properties?.definition || {};
   const sampleData = sampleDef.definitionData || {};
-  return {
+  const definitionId = ud.definitionId || spec.executeId || sampleDef.definitionId;
+  const props = {
     definition: {
-      definitionId: ud.definitionId || spec.executeId || sampleDef.definitionId,
+      definitionId: definitionId,
       version: ud.version ?? sampleDef.version ?? 1,
       categoryId: ud.categoryId ?? sampleDef.categoryId ?? '',
       definitionType: ud.definitionType || sampleDef.definitionType || tpl.definitionType,
@@ -194,8 +293,14 @@ function buildUserDefinitionProps(spec, tpl) {
       },
       localize: completeLocalize(ud.localize || sampleDef.localize || {}, ud.definitionName || sampleDef.definitionName || ''),
     },
-    continueOnError: spec.properties?.continueOnError ?? false,
   };
+  if (tpl.pairEndTemplate) {
+    // ペア型（DB Fetch / CSV Fetch 等）の開始要素は終了要素への参照 endPoint を持つ
+    props.endPoint = `$${definitionId}$`;
+  } else {
+    props.continueOnError = spec.properties?.continueOnError ?? false;
+  }
+  return props;
 }
 
 // Database Fetch 終了要素の properties を構築
@@ -275,12 +380,13 @@ function buildFlow(flowSpec, templates) {
 
   }
 
-  // Database Fetch: 自動的に終了要素を追加（spec に明示不要）
-  const dbFetchStarts = taskInfos.filter(ti => {
+  // ペア型ユーザ定義（DB Fetch / CSV Fetch 等）: 終了要素を自動的に追加（spec に明示不要）
+  const pairedStarts = taskInfos.filter(ti => {
     const tpl = templates[ti.spec.type];
-    return tpl && tpl.definitionType === 'db_fetch' && tpl.kind === 'userDefinition';
+    return tpl && tpl.kind === 'userDefinition' && tpl.pairEndTemplate;
   });
-  for (const ti of dbFetchStarts) {
+  for (const ti of pairedStarts) {
+    const startTpl = templates[ti.spec.type];
     const endExecId = `$${ti.executeId}$`;
     if (byExec[endExecId]) continue; // 既に存在する場合はスキップ
     const endFe = {
@@ -293,7 +399,7 @@ function buildFlow(flowSpec, templates) {
       mappingDefinition: { mappingRules: [] },
     };
     flowElements.push(endFe);
-    const endTi = { spec: { type: 'user_db_fetch_end' }, executeId: endExecId, idx: -1 };
+    const endTi = { spec: { type: startTpl.pairEndTemplate }, executeId: endExecId, idx: -1 };
     taskInfos.push(endTi);
     byExec[endExecId] = endTi;
   }
@@ -435,12 +541,12 @@ function buildFlow(flowSpec, templates) {
     }
   });
 
-  // セルが未生成のタスク（DB Fetch 終了要素など）を補完
+  // セルが未生成のタスク（ペア型ユーザ定義の終了要素など）を補完
   for (const ti of taskInfos) {
     if (cellIdByExec[ti.executeId]) continue;
     const tpl = templates[ti.spec.type];
-    // DB Fetch 終了要素用の ProcModel セルを生成
-    const endTpl = templates['user_db_fetch_end'];
+    // 終了要素用の ProcModel セルを生成（種別に応じた終了テンプレートを優先）
+    const endTpl = templates[ti.spec.type] || templates['user_db_fetch_end'];
     const baseCellSample = (endTpl && endTpl.cellSample) ? deepClone(endTpl.cellSample) : {
       type: 'devs.ProcModel',
       size: { width: 280, height: 50 },
@@ -495,6 +601,19 @@ function buildFlow(flowSpec, templates) {
       const fe = flowElements.find(e => e.executeId === ti.executeId);
       if (fe?.label) om.label = fe.label;
       optionMap[cellId] = om;
+    }
+  }
+
+  // ペア型ユーザ定義（DB Fetch / CSV Fetch 等）: optionMap.pairElementId を
+  // 相手側セルの実 ID に張り替える（テンプレートの固定 UUID は使わない）。
+  // 開始要素は properties.endPoint、終了要素は properties.startPoint で相手を特定する。
+  for (const fe of flowElements) {
+    if (fe.key?.type !== 'localUserDefinition') continue;
+    const cellId = cellIdByExec[fe.executeId];
+    if (!cellId || !optionMap[cellId]) continue;
+    const partnerExec = fe.properties?.endPoint || fe.properties?.startPoint;
+    if (partnerExec && cellIdByExec[partnerExec]) {
+      optionMap[cellId].pairElementId = cellIdByExec[partnerExec];
     }
   }
 

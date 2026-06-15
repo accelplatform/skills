@@ -113,3 +113,55 @@ $('#sample-calendar').imuiCalendar('option', 'calendarId', value);
 - 多日期选择（`multiSelectable`）仅可在内联显示中使用
 - 文本框宽度请根据日期格式用 `max-width` 指定（`yyyy/MM/dd` 格式约为 `10em`）
 - 在输入表单中使用时，用 Field（`imds-field`）进行包裹
+
+## 日期时间输入（日期 + 时刻的组合）
+
+输入「日期时间」时，不要让用户在单个文本框中手动输入，而应**将日期和时刻字段分开**。
+
+| 元素 | 使用组件 | 备注 |
+|------|---------|------|
+| 日期部分 | `<imart type="imuiCalendar">` | 指定 `format="yyyy-MM-dd"`（便于API联动） |
+| 时刻部分 | `<input type="time">` | 使用 `step="900"` 限制为15分钟单位 |
+
+### HTML 标记示例
+
+```html
+<div class="imds-field-inline">
+  <input type="text" id=":startDate:" class="imds-textbox" style="max-width: 10em;" />
+  <imart type="imuiCalendar" floatable="true" altField="#\\:startDate\\:" format="yyyy-MM-dd" />
+  <input type="time" id=":startTime:" class="imds-textbox" step="900" style="max-width: 8em;" />
+</div>
+```
+
+### 值的读取（API发送时）
+
+```javascript
+const startAt = document.getElementById(':startDate:').value + ' ' + document.getElementById(':startTime:').value + ':00';
+// → "2026-04-21 10:00:00"
+```
+
+### 值的初始设置（编辑画面设置现有数据时）
+
+将从API以 `"YYYY-MM-DD HH:mm:ss"` 格式接收的值分割后分别设置。
+
+```javascript
+function setDateTimeFields(dateFieldId, timeFieldId, dateTimeStr) {
+  if (!dateTimeStr) return;
+  const parts = dateTimeStr.split(' ');
+  document.getElementById(dateFieldId).value = parts[0];
+  document.getElementById(timeFieldId).value = parts[1].substring(0, 5);
+}
+// 使用示例
+setDateTimeFields(':startDate:', ':startTime:', result.startAt);
+```
+
+### 验证
+
+```javascript
+if (!document.getElementById(':startDate:').value) {
+  errors.push({ name: 'startDate', message: '请输入开始日期。' });
+}
+if (!document.getElementById(':startTime:').value) {
+  errors.push({ name: 'startTime', message: '请输入开始时刻。' });
+}
+```

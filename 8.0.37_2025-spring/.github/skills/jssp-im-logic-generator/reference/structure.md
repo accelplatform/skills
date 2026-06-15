@@ -211,6 +211,14 @@
 | rest | `im_httpclient` |
 | sql | `im_queryExecutor` |
 | db_fetch | `im_startDbFetch` |
+| template | `im_templateProcessor` |
+| stored | `im_storedExecutor` |
+| csv_fetch | `im_startCsvFetch` |
+| csv_output | `im_csvOutput` |
+| excel_in | `im_excelInput` |
+| excel_out | `im_excelOutput` |
+| xmlparser | `im_xmlparser` |
+| htmlparser | `im_htmlparser` |
 
 ### dataMap[cellId].mapping.json — UI上のマッピング情報
 
@@ -255,30 +263,50 @@
 
 `build-flow.js` は `mappingRules` から自動的にこの構造を生成する。
 
-### function source の connector 表現
+### function source の connector / attrs 表現
 
-`source.type === "function"` の場合、connector の source は異なる形式になる:
+`source.type === "function"` の場合、関数は **マッピングエディタ上のノード**として表現される。
+値マッピング（fixed な入出力ツリー）と違い、関数ノードは可動要素なので **`mapping.json.attrs` にインスタンスとして登録**し、connector はそのインスタンスを参照する。
+
+**最重要ルール（同名関数の衝突回避）:**
+
+1. **1 つの関数インスタンス = 1 つの UUID（nodeId）**。
+   その関数の **すべてのポート（in1 / in2 / … / out）は connector 上で同一の `id`（= nodeId）を共有**し、ポートの区別は `port` フィールドのみで行う。
+2. **nodeId は `mapping.json.attrs` にキーとして登録**し、値は描画位置 `{ "x": <n>, "y": <n> }`。
+   attrs に無い関数ノードはエディタが復元できず、**同名関数が 1 ノードに統合され自己ループ**になる（concat の入れ子等で顕在化）。
+3. **値（value）側のポートは connector ごとに一意な UUID** を振り、attrs には登録しない。
+
+例: `result = concat( concat($input/a, $const/SEP), $input/b )`（inner / outer の 2 インスタンス）
 
 ```jsonc
-{
-  "id": "<mappingRule.id と同じ UUID>",
-  "source": {
-    "id": "<port UUID>",
-    "type": "im_array_size",      // ★ 関数名が入る（"$input" ではない）
-    "port": "out"                  // path フィールドは存在しない
-  },
-  "target": {
-    "id": "<port UUID>",
-    "type": "$output",
-    "path": "$output\tdata\tarticleCount",
-    "port": "in"
-  }
-}
+"attrs": {
+  "<innerNodeId>": { "x": 250, "y": 70 },   // ネストが深いほど左
+  "<outerNodeId>": { "x": 370, "y": 20 }    // ルート（出力に最も近い）は右
+},
+"connectors": [
+  // 1) $input/a → inner.in1
+  { "id":"<uuid>", "source":{ "id":"<valUuid>", "type":"$input", "path":"$input\ta",       "port":"out" },
+                   "target":{ "id":"<innerNodeId>", "type":"im_string_concat", "port":"in1" } },
+  // 2) $const/SEP → inner.in2
+  { "id":"<uuid>", "source":{ "id":"<valUuid>", "type":"$input", "path":"$const\tSEP",      "port":"out" },
+                   "target":{ "id":"<innerNodeId>", "type":"im_string_concat", "port":"in2" } },
+  // 3) inner.out → outer.in1（関数 → 関数。両端とも nodeId を共有）
+  { "id":"<uuid>", "source":{ "id":"<innerNodeId>", "type":"im_string_concat", "port":"out" },
+                   "target":{ "id":"<outerNodeId>", "type":"im_string_concat", "port":"in1" } },
+  // 4) $input/b → outer.in2
+  { "id":"<uuid>", "source":{ "id":"<valUuid>", "type":"$input", "path":"$input\tb",        "port":"out" },
+                   "target":{ "id":"<outerNodeId>", "type":"im_string_concat", "port":"in2" } },
+  // 5) outer.out → $output/result（この出力 connector の id だけ mappingRule.id と一致させる）
+  { "id":"<mappingRule.id>", "source":{ "id":"<outerNodeId>", "type":"im_string_concat", "port":"out" },
+                             "target":{ "id":"<uuid>", "type":"$output", "path":"$output\tresult", "port":"in" } }
+]
 ```
 
-- **`source.type`** = 関数名（`"im_array_size"` 等）
-- **`source.path`** = なし（関数の引数は `flowElements[].mappingRules[].source.arguments` のみに存在し、connector には含まれない）
-- `inputKeys` に関数名を含める必要はない（引数で参照するタスク executeId 等のみ）
+- **`source.type` / `target.type`** = 関数ポートなら関数名、値側なら `$input`、出力先なら `$output`。
+- **`source.path`** = 関数ポートには無し。値ポートのみ TAB 区切りパス。
+- **`port`** = 関数の入力は `in1` / `in2` / …、出力は `out`。値側・出力先は通常 `in` / `out`。
+- **同一マッピングパネルに同名関数を複数置く場合も、上記の nodeId 共有 + attrs 登録で正しく別インスタンスになる**（`build-flow.js` が自動生成する）。
+- バリデータは「`target.type === "$output"` の connector」だけを mappingRule と数・id 照合する。関数引数 connector（`target.type` = 関数名）は別枠で許容される。
 
 ## task-templates の追加方法
 

@@ -169,66 +169,19 @@ For detailed DDL generation rules, refer to the "DDL Generation Rules Detail" se
 
 ---
 
-### Step 7: Automated Validation Script (JSSP Code)
+### Steps 7–10: Post-Generation Verification (Delegated to Sub-Agent)
 
-Run `validate-jssp-code.js` against the generated files. **Repeat fixes until there are 0 errors.**
+Use the **Agent tool** to launch a sub-agent and delegate all verification and fixes to it.
+To protect the main conversation context, let the sub-agent complete all verification work.
 
-```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{feature-name}/
-```
+Content to include in the sub-agent prompt:
+- Run the `jssp-page-verifier` skill
+- Target path: `src/main/jssp/src/{feature-name}/`
+- DDL path (only if DDL was generated): `src/main/storage/system/products/import/basic/{feature-name}/{version}/`
+- Repeat fixes until error count reaches 0
+- Return a result summary of each step upon completion
 
-Common detected patterns:
-- `db.select()` / `db.execute()` parameters not wrapped with `DbParameter`
-- Strings passed to `DbParameter.number()` (missing `Number()` conversion)
-- Use of `var` (use `let` instead)
-- `imds-selectbox` (non-existent class name; correct is `imds-select`)
-- `imuiCalendar` altField referencing a hidden input
-- imart tag `value` attribute enclosed in quotes
-- Loading common modules with `include('**/common/**')` (correct is `load()`)
-- `load('**/*.js')` calls with `.js` extension (extension is auto-added, resulting in `.js.js` and FileNotFoundException)
-- Not receiving the return value of `Transaction.begin(...)` (ignoring `DatabaseResult` prevents failure detection, resulting in "HTTP 200 success but nothing in DB")
-- TIMESTAMP/DATE column bindings using datetime-like variable names such as `DbParameter.string(startAt|endAt|rangeFrom|rangeTo|...)` (causes type cast error in PostgreSQL)
-
-> **If JSSP-JS-022 warning appears:** Open the corresponding SQL file and confirm whether the parameter is wrapped in `/*IF param != null*/.../*END*/`. If wrapped → false positive (note "SQL-side /*IF*/ guard confirmed" in review report). If not wrapped → fix to empty string fallback like `DbParameter.string(x || '')`.
-
----
-
-### Step 8: DDL Type Validation (Only If DDL Was Generated in Step 6)
-
-If DDL files were generated, run `validate-ddl.js`. **Repeat fixes until there are 0 errors.**
-
-```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{feature-name}/{version}/
-```
-
-Common detected patterns:
-- PostgreSQL DDL using `NVARCHAR` / `VARCHAR2` / `NUMBER` / `DATETIME2` / `CLOB`
-- Oracle DDL using `VARCHAR(` / `NVARCHAR2` / `DECIMAL` / `DATETIME2` / `TEXT` / `BOOLEAN`
-- SQLServer DDL using `VARCHAR(` / `VARCHAR2` / `NUMBER` / `TIMESTAMP` / `CLOB` / `TEXT` / `BOOLEAN`
-- `CREATE FUNCTION` / `CREATE TRIGGER` / `CREATE PROCEDURE` / `CREATE VIEW` in DDL (causes import failure)
-- `CHECK` / `FOREIGN KEY` / `EXCLUDE` constraints defined in CREATE TABLE or ALTER TABLE
-- DDL policy: only allow tables, PKs, UNIQUE keys, and CREATE INDEX
-- ODBC escapes `{d '...'}` / `{t '...'}` / `{ts '...'}` / `{fn ...}` / `{oj ...}` / `{call ...}` in shared DML file (`*-dml.sql`) (causes syntax error in PostgreSQL)
-
----
-
-### Step 9: tsc Type Check
-
-Run TypeScript compiler type checking on the generated files. **Repeat fixes until there are 0 issues.**
-
-```bash
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{feature-name}/
-```
-
-Common detected patterns:
-- Type mismatch such as `result.data === 0` (updated count is `result.countRow`)
-- Access to methods or properties not present in d.ts
-
----
-
-### Step 10: Manual Check
-
-Execute all steps in `reference/post-generation-verification.md`.
+After the sub-agent completes, review the result summary and proceed to Step 11 if there are no issues.
 
 ---
 

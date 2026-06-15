@@ -54,9 +54,10 @@ paths:
         // TODO: 在此处添加验证错误的画面显示处理
       }
 
-      // 验证请求参数
-      function validateRequest(request) {
+      // 验证（将逻辑汇总于此）
+      function getValidationErrors() {
         // TODO: 在此处添加验证执行处理
+        return [];
       }
 
       // 创建请求参数
@@ -70,9 +71,8 @@ paths:
 
       // 重置验证错误
       function resetValidationError() {
-        const request = createRequest();
         clearValidationError();
-        const errors = validateRequest(request);
+        const errors = getValidationErrors();
         if (errors.length > 0) {
           showValidationError(errors);
           return false;
@@ -322,80 +322,8 @@ function toggleLocationDetailRequired() {
 
 ## 日期输入（imuiCalendar）
 
-- 日期输入使用 `<imart type="imuiCalendar">` 而非 `<input type="date">`
-- **必须指定 `floatable="true"`。** 未指定时将内联显示（日历始终嵌入画面），无法呈现文本框加日历图标的标准 UI。内联显示仅用于多日期选择等特殊用途
-- `altField` 指定显示用文本框（`<input type="text">`）的 CSS 选择器。不得指定隐藏 input（因为日历图标的显示位置依赖于 altField）
-- HTML 的书写顺序为「显示用文本框 → `<imart type="imuiCalendar">`」。顺序颠倒时图标将显示在文本框左侧
-
-```html
-<!-- 标准模式 -->
-<input type="text" id=":desiredDate:" class="imds-textbox" style="max-width: 10em;" />
-<imart type="imuiCalendar" floatable="true" altField="#\\:desiredDate\\:" format="yyyy/MM/dd" />
-```
-
-## 日期时间输入（imuiCalendar + input type="time"）
-
-让用户输入「日期时间」时，不应让其在单个文本框中手动输入，而应**将日期和时间的文本框分开**。
-
-| 元素 | 使用组件 | 备注 |
-|------|-----------------|------|
-| 日期部分 | `<imart type="imuiCalendar">` | 指定 `format="yyyy-MM-dd"`（便于 API 集成） |
-| 时间部分 | `<input type="time">` | 使用 `step="900"` 限制为 15 分钟间隔 |
-
-### HTML 标记示例
-
-```html
-<!-- 开始日期时间 -->
-<div class="imds-field-inline">
-  <input type="text" id=":startDate:" class="imds-textbox" style="max-width: 10em;" />
-  <imart type="imuiCalendar" floatable="true" altField="#\\:startDate\\:" format="yyyy-MM-dd" />
-  <input type="time" id=":startTime:" class="imds-textbox" step="900" style="max-width: 8em;" />
-</div>
-```
-
-### 读取值（API 发送时）
-
-将日期和时间拼接为 `"YYYY-MM-DD HH:mm:ss"` 格式。
-
-```javascript
-let startDate = document.getElementById(':startDate:').value; // "2026-04-21"
-let startTime = document.getElementById(':startTime:').value; // "10:00"
-let startAt   = startDate + ' ' + startTime + ':00';          // "2026-04-21 10:00:00"
-```
-
-### 设置初始值（在编辑画面中设置现有数据）
-
-将从 API 以 `"YYYY-MM-DD HH:mm:ss"` 格式接收的值拆分后设置。
-`imuiCalendar` 的 altField（`<input type="text">`）可直接通过 `.value` 赋值。
-
-```javascript
-// startAt = '2026-04-21 10:00:00'
-function setDateTimeFields(dateFieldId, timeFieldId, startAt) {
-  if (!startAt) return;
-  let parts = startAt.split(' ');
-  document.getElementById(dateFieldId).value = parts[0];           // "2026-04-21"
-  document.getElementById(timeFieldId).value = parts[1].substring(0, 5); // "10:00"
-}
-
-// 使用示例
-setDateTimeFields(':startDate:', ':startTime:', result.startAt);
-```
-
-### 验证
-
-提交前在客户端确认两个字段的输入。
-
-```javascript
-let startDate = document.getElementById(':startDate:').value;
-let startTime = document.getElementById(':startTime:').value;
-
-if (!startDate) {
-  errors.push({ name: 'startDate', message: '请输入开始日期。' });
-}
-if (!startTime) {
-  errors.push({ name: 'startTime', message: '请输入开始时间。' });
-}
-```
+日期输入使用 `<imart type="imuiCalendar">` 而非 `<input type="date">`。
+使用方法、属性、注意事项及日期时间输入（日期 + 时间的组合）模式，请参考 `skills/jssp-imds-theme/reference/imui-html-calendar.md`。
 
 ## 输入字段的宽度控制
 
@@ -437,73 +365,17 @@ if (!startTime) {
 
 本规则适用于 **所有尺寸相关属性**（`max-width` / `min-width` / `width` / `height` 等），因为它们都可能与 imds 默认样式冲突。
 
-## clearValidationError 的实现模式
+## getValidationErrors 函数的实现模式
 
-### 基本实现
-
-```javascript
-/**
- * 清除验证错误的显示。
- */
-function clearValidationError() {
-  // 输入字段的错误显示
-  document.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
-    element.classList.remove('imds-validation-error');
-  });
-
-  // 错误消息
-  document.querySelectorAll('.imds-error-text').forEach((element) => {
-    element.style.display = 'none';
-  });
-}
-```
-
-## showValidationError 的实现模式
+客户端验证函数。从 DOM 直接读取值并返回错误数组。
+由于 `resetValidationError()` 和 `validateCurrentStep()` 两者都会调用它，因此将逻辑汇总于此。
 
 ### 基本结构
 
 ```javascript
-/**
- * 在画面上显示验证错误消息。
- *
- * @param {Object} errors - validateRequest 的返回值
- */
-function showValidationError(errors) {
-  errors.forEach((error) => {
-    // 输入字段的错误显示
-    const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
-    if (fieldElement) {
-      fieldElement.classList.add('imds-validation-error');
-    }
-
-    // 错误消息
-    const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
-    if (errorElement) {
-      errorElement.textContent = error.message;
-      errorElement.style.display = '';
-    }
-  });
-}
-```
-
-## validateRequest 函数的实现模式
-
-这是 JavaScript 中请求参数验证函数的基本实现模式。
-
-### 基本结构
-
-```javascript
-/**
- * 验证请求参数。
- *
- * @param {Object} request - 请求参数
- */
-function validateRequest(request) {
+function getValidationErrors() {
   const errors = [];
-  // 执行各参数的验证
-  errors.push(...validateParameter1(request));
-  errors.push(...validateParameter2(request));
-  // ... 添加必要的验证
+  // 执行各字段的验证
   return errors;
 }
 ```
@@ -513,105 +385,29 @@ function validateRequest(request) {
 #### 必填检查
 
 ```javascript
-const value = request['parameterName'];
+const value = document.getElementById(':fieldName:').value;
 if (!value || value.length === 0) {
-  errors.push({ name: 'parameterName', message: 'parameterName 是必填项。' });
+  errors.push({ name: 'fieldName', message: 'fieldName 是必填项。' });
 }
 ```
 
-#### 字符串长度检查
+#### 必填 + 字符串长度检查（复合）
 
 ```javascript
-const value = request['parameterName'];
-if (value.length > maxLength) {
-  errors.push({ name: 'parameterName', message: `parameterName 最多 ${maxLength} 个字符。` });
-} else if (value.length < minLength) {
-  errors.push({ name: 'parameterName', message: `parameterName 至少需要 ${minLength} 个字符。` });
-}
-```
-
-#### 数值检查
-
-```javascript
-const value = request['parameterName'];
-if (isNaN(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName 必须是数值。' });
-} else if (value < min || value > max) {
-  errors.push({ name: 'parameterName', message: `parameterName 请指定在 ${min} 到 ${max} 的范围内。` });
-}
-```
-
-#### 正则表达式模式匹配
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^[a-zA-Z0-9_-]+$/;
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName 只能使用字母、数字、连字符和下划线。' });
-}
-```
-
-#### 邮箱地址格式检查
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName 的格式不正确。' });
-}
-```
-
-#### 日期格式检查
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^\d{4}-\d{2}-\d{2}$/;
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName 请以 YYYY-MM-DD 格式指定。' });
-}
-```
-
-#### 用户代码格式检查
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^[0-9A-Za-z_@\.\+\!\-]$/;  // 半角字母数字及 _-@.+!
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName 请以用户代码格式指定。' });
-}
-```
-
-#### 复合模式示例
-
-```javascript
-// 1. 必填检查 + 字符串长度检查
-const userCode = request['userCode'];
+const userCode = document.getElementById(':userCode:').value;
 if (!userCode || userCode.length === 0) {
   errors.push({ name: 'userCode', message: '用户代码是必填项。' });
 } else if (userCode.length > 100) {
   errors.push({ name: 'userCode', message: '用户代码最多 100 个字符。' });
 }
-
-// 2. 可选项检查（仅在值存在时验证）
-const age = request['age'];
-if (age !== undefined && age !== null && age !== '') {
-  if (isNaN(age)) {
-    errors.push({ name: 'age', message: '年龄请以数值输入。' });
-  } else if (age < 0 || age > 150) {
-    errors.push({ name: 'age', message: 'age 请指定在 0 到 150 的范围内。' });
-  }
-}
 ```
+
+其他模式（数值、正则表达式、邮箱、日期格式、可选项等）请参考 `assets/simple-form.md` 中的「验证模式集」。
 
 ### 实现方针
 
-- 发现参数错误时，将错误内容添加到数组，并继续检查下一个参数的错误
-- 明确说明哪个参数有何问题
-- 按以下基本顺序执行检查：
-  1. 必填检查
-  2. 位数检查
-  3. 格式检查
-  4. 与其他参数的关联检查
+- 发现错误时，将其添加到数组并继续检查下一个字段（以便一次显示所有错误）
+- 检查顺序：必填 → 位数 → 格式 → 与其他字段的关联
 - 使用严格相等运算符（`===`）
 
 ## 验证的执行时机
@@ -623,98 +419,37 @@ if (age !== undefined && age !== null && age !== '') {
 
 ### 实现方针
 
+架构概要（完整实现请参考 `assets/simple-form.md`）：
+
 ```javascript
-// 页面加载后的处理
 document.addEventListener('DOMContentLoaded', () => {
-  // 始终执行验证检查的标志
-  let activeValidation = false;
+  let activeValidation = false; // 初次显示时不显示错误
 
-  // 清除验证错误
   function clearValidationError() {
-    document.querySelectorAll('.imds-error-text').forEach((el) => {
-      el.style.display = 'none';
-    });
-    document.querySelectorAll('.imds-validation-error').forEach((el) => {
-      el.classList.remove('imds-validation-error');
-    });
+    document.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => el.classList.remove('imds-validation-error'));
+    document.querySelectorAll('.imds-error-text').forEach((el) => { el.style.display = 'none'; });
   }
-
-  // 显示验证错误
   function showValidationError(errors) {
     errors.forEach((error) => {
-      let errorEl = document.querySelector('.imds-error-text[for=":' + error.name + ':"');
-      if (errorEl) {
-        errorEl.textContent = error.message;
-        errorEl.style.display = '';
-        let field = errorEl.closest('.imds-field');
-        if (field) {
-          field.classList.add('imds-validation-error');
-        }
-      }
+      const field = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+      if (field) field.classList.add('imds-validation-error');
+      const msg = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+      if (msg) { msg.textContent = error.message; msg.style.display = ''; }
     });
-    // 始终执行验证检查
-    activeValidation = true;
+    activeValidation = true; // 从此开始实时重新验证
   }
-
-  // 获取验证错误（共通化）
-  // 将验证对象字段和条件汇总在一处。
-  // 由 validateCurrentStep() 和 resetValidationError() 两者调用。
-  function getValidationErrors() {
-    let errors = [];
-    if (!document.getElementById(':userName:').value.trim()) {
-      errors.push({ name: 'userName', message: '用户名是必填项。' });
-    }
-    // 其他字段同样添加
-    return errors;
-  }
-
-  // 实时重新验证
-  // 一旦发生验证错误，在输入值变更时立即重新验证。
-  function resetValidationError() {
-    clearValidationError();
-    let errors = getValidationErrors();
-    if (errors.length > 0) {
-      showValidationError(errors);
-    }
-  }
-
-  // 执行验证
+  function getValidationErrors() { /* 将验证逻辑汇总在一处 */ return []; }
+  function resetValidationError() { clearValidationError(); showValidationError(getValidationErrors()); }
   function validateCurrentStep() {
     clearValidationError();
-    let errors = getValidationErrors();
-    if (errors.length > 0) {
-      showValidationError(errors);
-      return false;
-    }
+    const errors = getValidationErrors();
+    if (errors.length > 0) { showValidationError(errors); return false; }
     return true;
   }
 
-  // 实时重新验证用事件监听器
-  // 文本输入字段（input、textarea）使用 "input" 事件。
-  // 下拉选择框、日期输入、复选框等使用 "change" 事件。
-  // 为所有验证对象字段注册监听器。
-  [':userName:', ':email:'].forEach((id) => {
-    document.getElementById(id).addEventListener('input', () => {
-      if (activeValidation) {
-        resetValidationError();
-      }
-    });
-  });
-  [':department:', ':prefecture:'].forEach((id) => {
-    document.getElementById(id).addEventListener('change', () => {
-      if (activeValidation) {
-        resetValidationError();
-      }
-    });
-  });
-
-  // 入口点
-  clearValidationError();
-  if ($data.error.code) {
-    imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
-  } else {
-    initializeView($data.result);
-  }
+  // 文本输入："input" / 下拉选择、日期、复选框："change"
+  [':textField:'].forEach((id) => { document.getElementById(id).addEventListener('input', () => { if (activeValidation) resetValidationError(); }); });
+  [':selectField:'].forEach((id) => { document.getElementById(id).addEventListener('change', () => { if (activeValidation) resetValidationError(); }); });
 });
 ```
 
@@ -880,7 +615,7 @@ document.getElementById('register-button').addEventListener('click', () => {
   - 其他情况使用 vanilla JavaScript 的标准 DOM 解析方法获取
 - 对请求参数执行验证检查
   1. 使用 `clearValidationError()` 解除画面上的验证错误
-  2. 使用 `validateRequest()` 执行请求参数的验证检查
+  2. 使用 `getValidationErrors()` 执行验证检查
   3. 验证检查存在错误时，使用 `showValidationError()` 显示验证错误并终止
 - 显示确认消息时使用 `imdsConfirm()`
 - 必须在 `imdsConfirm()` 的第 5 个参数 `options` 中根据操作内容指定 `mode`

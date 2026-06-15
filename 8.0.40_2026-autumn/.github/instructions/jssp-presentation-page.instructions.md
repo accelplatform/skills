@@ -54,9 +54,10 @@ description: "プレゼンテーションページの実装方針"
         // TODO: ここにバリデーションエラーの画面表示処理を追加します
       }
 
-      // リクエストパラメータのバリデーションチェック
-      function validateRequest(request) {
+      // バリデーション（ロジックをここに集約）
+      function getValidationErrors() {
         // TODO: ここにバリデーション実行処理を追加します
+        return [];
       }
 
       // リクエストパラメータを作成
@@ -70,9 +71,8 @@ description: "プレゼンテーションページの実装方針"
 
       // バリデーションエラーのリセット
       function resetValidationError() {
-        const request = createRequest();
         clearValidationError();
-        const errors = validateRequest(request);
+        const errors = getValidationErrors();
         if (errors.length > 0) {
           showValidationError(errors);
           return false;
@@ -320,82 +320,10 @@ function toggleLocationDetailRequired() {
 - `id` が `:fieldName:-label` 形式 → **accessibility 用とみなしチェック対象外**
 - `id` が `fieldName-label` 形式 → **`toggleRequiredMark()` 呼び出しチェックの対象**
 
-## 日付入力（imuiCalendar）
+## 日付入力・日時入力（imuiCalendar）
 
-- 日付入力には `<input type="date">` ではなく `<imart type="imuiCalendar">` を使用する
-- **`floatable="true"` を必ず指定すること。**未指定だとインライン表示（カレンダーが画面に常時埋め込み）になり、テキストボックス＋カレンダーアイコンの標準 UI にならない。インライン表示は複数日選択等の特殊用途のみ使用する
-- `altField` には表示用テキストボックス（`<input type="text">`）の CSS セレクタを指定する。hidden input を指定してはならない（カレンダーアイコンの表示位置が altField に依存するため）
-- HTML の記述順は「表示用テキストボックス → `<imart type="imuiCalendar">` 」とする。逆にするとアイコンがテキストボックスの左側に表示される
-
-```html
-<!-- 標準パターン -->
-<input type="text" id=":desiredDate:" class="imds-textbox" style="max-width: 10em;" />
-<imart type="imuiCalendar" floatable="true" altField="#\\:desiredDate\\:" format="yyyy/MM/dd" />
-```
-
-## 日時入力（imuiCalendar + input type="time"）
-
-「日時」を入力させる場合、1つのテキストボックスに手入力させるのではなく、**日付と時刻のテキストボックスを分けること**。
-
-| 要素 | 使用コンポーネント | 備考 |
-|------|-----------------|------|
-| 日付部分 | `<imart type="imuiCalendar">` | `format="yyyy-MM-dd"` を指定（API連携が容易） |
-| 時刻部分 | `<input type="time">` | `step="900"` で 15 分単位に制限 |
-
-### HTML マークアップ例
-
-```html
-<!-- 開始日時 -->
-<div class="imds-field-inline">
-  <input type="text" id=":startDate:" class="imds-textbox" style="max-width: 10em;" />
-  <imart type="imuiCalendar" floatable="true" altField="#\\:startDate\\:" format="yyyy-MM-dd" />
-  <input type="time" id=":startTime:" class="imds-textbox" step="900" style="max-width: 8em;" />
-</div>
-```
-
-### 値の読み取り（API 送信時）
-
-日付と時刻を結合して `"YYYY-MM-DD HH:mm:ss"` 形式にする。
-
-```javascript
-let startDate = document.getElementById(':startDate:').value; // "2026-04-21"
-let startTime = document.getElementById(':startTime:').value; // "10:00"
-let startAt   = startDate + ' ' + startTime + ':00';          // "2026-04-21 10:00:00"
-```
-
-### 値の初期設定（編集画面で既存データをセット）
-
-API から `"YYYY-MM-DD HH:mm:ss"` 形式で受け取った値を分割してセットする。
-`imuiCalendar` の altField（`<input type="text">`）は `.value` に直接セットすればよい。
-
-```javascript
-// startAt = '2026-04-21 10:00:00'
-function setDateTimeFields(dateFieldId, timeFieldId, startAt) {
-  if (!startAt) return;
-  let parts = startAt.split(' ');
-  document.getElementById(dateFieldId).value = parts[0];           // "2026-04-21"
-  document.getElementById(timeFieldId).value = parts[1].substring(0, 5); // "10:00"
-}
-
-// 使用例
-setDateTimeFields(':startDate:', ':startTime:', result.startAt);
-```
-
-### バリデーション
-
-送信前にクライアント側で両フィールドの入力を確認する。
-
-```javascript
-let startDate = document.getElementById(':startDate:').value;
-let startTime = document.getElementById(':startTime:').value;
-
-if (!startDate) {
-  errors.push({ name: 'startDate', message: '開始日付を入力してください。' });
-}
-if (!startTime) {
-  errors.push({ name: 'startTime', message: '開始時刻を入力してください。' });
-}
-```
+日付入力には `<input type="date">` ではなく `<imart type="imuiCalendar">` を使用する。
+使用方法・属性・注意事項・日時入力（日付 + 時刻の組み合わせ）パターンは `skills/jssp-imds-theme/reference/imui-html-calendar.md` を参照すること。
 
 ## 入力フィールドの幅制御
 
@@ -437,73 +365,17 @@ imds の既定スタイル（例: `.imds-textbox`、`.imds-button`）と CSS 詳
 
 このルールは `max-width` / `min-width` / `width` / `height` 等の **寸法系プロパティ全般** に適用する（imds 既定と衝突する可能性が高いため）。
 
-## clearValidationError の実装パターン
+## getValidationErrors 関数の実装パターン
 
-### 基本実装
-
-```javascript
-/**
- * バリデーションエラーの表示を初期化します。
- */
-function clearValidationError() {
-  // 入力フィールドのエラー表示
-  document.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
-    element.classList.remove('imds-validation-error');
-  });
-
-  // エラーメッセージ
-  document.querySelectorAll('.imds-error-text').forEach((element) => {
-    element.style.display = 'none';
-  });
-}
-```
-
-## showValidationError の実装パターン
+クライアントサイドのバリデーション関数。DOM から直接値を読み取り、エラー配列を返す。
+`resetValidationError()` と `validateCurrentStep()` の両方から呼ばれるため、ここにロジックを集約する。
 
 ### 基本構造
 
 ```javascript
-/**
- * バリデーションエラーメッセージを画面上に表示します。
- *
- * @param {Object} errors - validateRequest の戻り値
- */
-function showValidationError(errors) {
-  errors.forEach((error) => {
-    // 入力フィールドのエラー表示
-    const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
-    if (fieldElement) {
-      fieldElement.classList.add('imds-validation-error');
-    }
-
-    // エラーメッセージ
-    const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
-    if (errorElement) {
-      errorElement.textContent = error.message;
-      errorElement.style.display = '';
-    }
-  });
-}
-```
-
-## validateRequest 関数の実装パターン
-
-JavaScript におけるリクエストパラメータのバリデーション関数の基本的な実装パターンです。
-
-### 基本構造
-
-```javascript
-/**
- * リクエストパラメータの検証を行います。
- *
- * @param {Object} request - リクエストパラメータ
- */
-function validateRequest(request) {
+function getValidationErrors() {
   const errors = [];
-  // 各パラメータのバリデーションを実行
-  errors.push(...validateParameter1(request));
-  errors.push(...validateParameter2(request));
-  // ... 必要なバリデーションを追加
+  // 各フィールドのバリデーションを実行
   return errors;
 }
 ```
@@ -513,105 +385,29 @@ function validateRequest(request) {
 #### 必須チェック
 
 ```javascript
-const value = request['parameterName'];
+const value = document.getElementById(':fieldName:').value;
 if (!value || value.length === 0) {
-  errors.push({ name: 'parameterName', message: 'parameterName は必須です。' });
+  errors.push({ name: 'fieldName', message: 'fieldName は必須です。' });
 }
 ```
 
-#### 文字列長チェック
+#### 必須 + 文字列長チェック（複合）
 
 ```javascript
-const value = request['parameterName'];
-if (value.length > maxLength) {
-  errors.push({ name: 'parameterName', message: `parameterName は最大${maxLength}文字です。` });
-} else if (value.length < minLength) {
-  errors.push({ name: 'parameterName', message: `parameterName は最低${minLength}文字必要です。` });
-}
-```
-
-#### 数値チェック
-
-```javascript
-const value = request['parameterName'];
-if (isNaN(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName は数値である必要があります。' });
-} else if (value < min || value > max) {
-  errors.push({ name: 'parameterName', message: `parameterName は${min}から${max}の範囲で指定してください。` });
-}
-```
-
-#### 正規表現パターンマッチング
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^[a-zA-Z0-9_-]+$/;
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName は英数字、ハイフン、アンダースコアのみ使用できます。' });
-}
-```
-
-#### メールアドレス形式チェック
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName の形式が正しくありません。' });
-}
-```
-
-#### 日付形式チェック
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^\d{4}-\d{2}-\d{2}$/;
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName は YYYY-MM-DD 形式で指定してください。' });
-}
-```
-
-#### ユーザコード形式チェック
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^[0-9A-Za-z_@\.\+\!\-]$/;  // 半角英数字と _-@.+!
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName はユーザコード形式で指定してください。' });
-}
-```
-
-#### 複合パターン例
-
-```javascript
-// 1. 必須チェック + 文字列長チェック
-const userCode = request['userCode'];
+const userCode = document.getElementById(':userCode:').value;
 if (!userCode || userCode.length === 0) {
   errors.push({ name: 'userCode', message: 'ユーザコードは必須です。' });
 } else if (userCode.length > 100) {
   errors.push({ name: 'userCode', message: 'ユーザコードは最大100文字です。' });
 }
-
-// 2. 任意項目のチェック（値が存在する場合のみ検証）
-const age = request['age'];
-if (age !== undefined && age !== null && age !== '') {
-  if (isNaN(age)) {
-    errors.push({ name: 'age', message: '年齢は数値で入力してください。' });
-  } else if (age < 0 || age > 150) {
-    errors.push({ name: 'age', message: 'age は0から150の範囲で指定してください。' });
-  }
-}
 ```
+
+その他のパターン（数値・正規表現・メール・日付形式・任意項目等）は `assets/simple-form.md` の「バリデーションパターン集」を参照すること。
 
 ### 実装方針
 
-- パラメータにエラーが見つかった場合、エラーの内容を配列に追加し、次のパラメータのエラーチェックを続行する
-- どのパラメータがどのように問題なのかを明記する
-- 基本的なチェック（以下順序）から実行する
-  1. 必須チェック
-  2. 桁数チェック
-  3. フォーマットチェック
-  4. 他パラメータとの相関チェック
+- エラーが見つかっても配列に追加して次のフィールドのチェックを続行する（全エラーを一度に表示するため）
+- チェックの順序: 必須 → 桁数 → フォーマット → 他フィールドとの相関
 - 厳密等価演算子（`===`）を使用する
 
 ## バリデーションの実行タイミング
@@ -623,98 +419,37 @@ if (age !== undefined && age !== null && age !== '') {
 
 ### 実装方針
 
+アーキテクチャの概要（完全実装は `assets/simple-form.md` を参照）:
+
 ```javascript
-// ページロード後の処理
 document.addEventListener('DOMContentLoaded', () => {
-  // バリデーションチェック常時実行フラグ
-  let activeValidation = false;
+  let activeValidation = false; // 初回表示時はエラー非表示
 
-  // バリデーションエラークリア
   function clearValidationError() {
-    document.querySelectorAll('.imds-error-text').forEach((el) => {
-      el.style.display = 'none';
-    });
-    document.querySelectorAll('.imds-validation-error').forEach((el) => {
-      el.classList.remove('imds-validation-error');
-    });
+    document.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => el.classList.remove('imds-validation-error'));
+    document.querySelectorAll('.imds-error-text').forEach((el) => { el.style.display = 'none'; });
   }
-
-  // バリデーションエラー表示
   function showValidationError(errors) {
     errors.forEach((error) => {
-      let errorEl = document.querySelector('.imds-error-text[for=":' + error.name + ':"');
-      if (errorEl) {
-        errorEl.textContent = error.message;
-        errorEl.style.display = '';
-        let field = errorEl.closest('.imds-field');
-        if (field) {
-          field.classList.add('imds-validation-error');
-        }
-      }
+      const field = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+      if (field) field.classList.add('imds-validation-error');
+      const msg = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+      if (msg) { msg.textContent = error.message; msg.style.display = ''; }
     });
-    // バリデーションチェックを常時実行
-    activeValidation = true;
+    activeValidation = true; // 以降はリアルタイム再バリデーション
   }
-
-  // バリデーションエラー取得（共通化）
-  // バリデーション対象のフィールドと条件を1箇所にまとめる。
-  // validateCurrentStep() と resetValidationError() の両方から呼び出す。
-  function getValidationErrors() {
-    let errors = [];
-    if (!document.getElementById(':userName:').value.trim()) {
-      errors.push({ name: 'userName', message: 'ユーザ名は必須です。' });
-    }
-    // 他のフィールドも同様に追加
-    return errors;
-  }
-
-  // リアルタイム再バリデーション
-  // 一度バリデーションエラーが発生した後、入力値変更時に即時で再バリデーションを行う。
-  function resetValidationError() {
-    clearValidationError();
-    let errors = getValidationErrors();
-    if (errors.length > 0) {
-      showValidationError(errors);
-    }
-  }
-
-  // バリデーション実行
+  function getValidationErrors() { /* バリデーションロジックを1箇所に集約 */ return []; }
+  function resetValidationError() { clearValidationError(); showValidationError(getValidationErrors()); }
   function validateCurrentStep() {
     clearValidationError();
-    let errors = getValidationErrors();
-    if (errors.length > 0) {
-      showValidationError(errors);
-      return false;
-    }
+    const errors = getValidationErrors();
+    if (errors.length > 0) { showValidationError(errors); return false; }
     return true;
   }
 
-  // リアルタイム再バリデーション用イベントリスナー
-  // テキスト入力フィールド（input, textarea）には "input" イベントを使用する。
-  // セレクトボックス、日付入力、チェックボックス等には "change" イベントを使用する。
-  // バリデーション対象の全フィールドにリスナーを登録すること。
-  [':userName:', ':email:'].forEach((id) => {
-    document.getElementById(id).addEventListener('input', () => {
-      if (activeValidation) {
-        resetValidationError();
-      }
-    });
-  });
-  [':department:', ':prefecture:'].forEach((id) => {
-    document.getElementById(id).addEventListener('change', () => {
-      if (activeValidation) {
-        resetValidationError();
-      }
-    });
-  });
-
-  // エントリーポイント
-  clearValidationError();
-  if ($data.error.code) {
-    imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
-  } else {
-    initializeView($data.result);
-  }
+  // テキスト入力: "input" / セレクト・日付・チェックボックス: "change"
+  [':textField:'].forEach((id) => { document.getElementById(id).addEventListener('input', () => { if (activeValidation) resetValidationError(); }); });
+  [':selectField:'].forEach((id) => { document.getElementById(id).addEventListener('change', () => { if (activeValidation) resetValidationError(); }); });
 });
 ```
 
@@ -880,7 +615,7 @@ document.getElementById('register-button').addEventListener('click', () => {
   - 上記以外の場合は vanilla JavaScript の標準的な DOM 解決方法で取得する
 - リクエストパラメータのバリデーションチェックを行う
   1. `clearValidationError()` で画面上のバリデーションエラーを解除する
-  2. `validateRequest()` でリクエストパラメータのバリデーションチェックを実行する
+  2. `getValidationErrors()` でバリデーションチェックを実行する
   3. バリデーションチェックでエラーがある場合、`showValidationError()` でバリデーションエラーを表示し終了する
 - 確認メッセージを表示する場合は、`imdsConfirm()` を使用する
 - `imdsConfirm()` の第5引数 `options` で、操作内容に応じた `mode` を必ず指定する

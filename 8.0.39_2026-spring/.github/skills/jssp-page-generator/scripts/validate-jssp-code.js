@@ -744,6 +744,70 @@ const COMMON_FUNCTION_RULES = {
         }
         return findings;
       }
+    },
+    {
+      id: 'JSSP-HTML-019',
+      description: 'imuiCalendar の altField に value セッターオーバーライドが未実装（リアルタイム再バリデーション機構あり時のみ）',
+      message: 'imuiCalendar の altField 対象フィールドに Object.defineProperty による value セッターオーバーライドが見当たりません。jQuery .val() ではネイティブ change イベントが発火しないため、カレンダーから日付を選択しても再バリデーションが動作しません（rules/jssp-presentation-page.md「imuiCalendar（altField）」参照）',
+      severity: 'warning',
+      check: function (content, lines) {
+        // 前提条件: リアルタイム再バリデーション機構が同一ファイルにあるか
+        let hasValidationMechanism = /\bactiveValidation\b/.test(content) || /\bresetValidationError\b/.test(content);
+        if (!hasValidationMechanism) return [];
+
+        // imuiCalendar の altField からセレクタを抽出（# 始まりの行のみ対象）
+        let calendars = [];
+        for (let i = 0; i < lines.length; i++) {
+          if (!/type\s*=\s*["']imuiCalendar["']/.test(lines[i])) continue;
+          let m = lines[i].match(/altField\s*=\s*["']([^"']+)["']/);
+          if (!m) continue;
+          let selector = m[1];
+          if (selector.charAt(0) !== '#') continue; // JSSP-HTML-011 が別途報告
+          // # を除いた ID 部分から CSS エスケープを外す（\\: → :, \: → :, \\- → -, など）
+          let id = selector.substring(1).replace(/\\\\/g, '').replace(/\\/g, '');
+          calendars.push({ line: i, id: id });
+        }
+        if (calendars.length === 0) return [];
+
+        // <script> ブロックの中身だけを抽出して JS コード文脈で検査する
+        // （HTML 属性 id=":endDate:" を文字列リテラルと誤検知しないため）
+        let scriptBody = '';
+        let scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+        let sm;
+        while ((sm = scriptRegex.exec(content)) !== null) {
+          scriptBody += '\n' + sm[1];
+        }
+
+        // Object.defineProperty で 'value' プロパティをオーバーライドしている記述があるか
+        let valueOverridePattern = /Object\.defineProperty\s*\([\s\S]{0,300}?['"]value['"]/;
+        let hasValueOverride = valueOverridePattern.test(scriptBody);
+        let findings = [];
+
+        if (!hasValueOverride) {
+          // セッターオーバーライド自体が無い → 全 altField を報告
+          for (let c of calendars) {
+            findings.push({
+              line: c.line,
+              overrideMessage: 'imuiCalendar（altField id="' + c.id + '"）の value セッターオーバーライドが見当たりません。Object.defineProperty(el, "value", { set: function (v) { ... dispatchEvent(new Event("change", { bubbles: true })); } }) で change イベントを発火させ、resetValidationError() を呼んでください'
+            });
+          }
+          return findings;
+        }
+
+        // セッターオーバーライドはあるが、各 altField の ID が <script> 内に登場しているか個別確認
+        for (let c of calendars) {
+          let escapedId = c.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          // JS 文字列リテラル（'id' or "id"）として ID が出現するか
+          let idLiteralPattern = new RegExp("['\"]" + escapedId + "['\"]");
+          if (!idLiteralPattern.test(scriptBody)) {
+            findings.push({
+              line: c.line,
+              overrideMessage: 'imuiCalendar（altField id="' + c.id + '"）が value セッターオーバーライドの対象配列に含まれていないようです。"' + c.id + '" を対象リストに追加し、change イベント発火と resetValidationError() 呼び出しを行ってください'
+            });
+          }
+        }
+        return findings;
+      }
     }
   ]
 };

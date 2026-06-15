@@ -120,7 +120,7 @@ IM-LogicDesigner 逻辑流中可使用的数据类型（类型 ID）的完整列
 | 模式 | 说明 | 示例 |
 |---|---|---|
 | `imr_entity` | IM-Repository 实体 | - |
-| `imrepo_entity_*` | 实体引用类型（通过 resolveEntitySchema 解析） | `imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info` |
+| `imrepo_entity_*` | 实体引用类型（通过 imLogicResolveEntitySchema 解析） | `imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info` |
 | `im_logic_object_*` | 流内本地对象类型 | `im_logic_object_1` |
 | `jp_co_intra_mart_*` | 基于 Java 类的类型（在任务输入输出定义内） | `jp_co_intra_mart_foundation_logic_element_authz_AuthorizeAuthzTaskResultObject` |
 | `root` | 类型定义的根（从 entrypoint 引用） | - |

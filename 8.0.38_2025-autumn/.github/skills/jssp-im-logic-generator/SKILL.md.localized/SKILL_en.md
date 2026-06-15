@@ -36,18 +36,23 @@ jssp-im-logic-generator/
 │   ├── im_immGetCompany.json / im_immGetProfile.json / ...   # Common master tasks
 │   ├── user_javascript.json / user_rest.json / user_sql.json  # User-defined
 │   ├── user_db_fetch.json / user_db_fetch_end.json            # Database Fetch
-│   └── ...(125 task types total + im_sequence + 5 user-defined types)
+│   ├── user_csv_fetch.json / user_csv_fetch_end.json          # CSV Fetch
+│   ├── user_template.json / user_stored.json                  # Template / Stored procedure
+│   ├── user_csv_output.json                                   # CSV Output
+│   ├── user_excel_input.json / user_excel_output.json         # Excel Input / Output
+│   ├── user_xml_parse.json / user_html_parse.json             # XML Parse / HTML Parse
+│   └── ...(125 task types total + im_sequence + 12 user-defined types)
 ├── scripts/
 │   ├── build-flow.js         # spec.json → flow_definition.json generator
 │   └── validate-flow.js      # flow_definition.json validator
 ├── mcp-spec/                 # MCP endpoint specifications
 │   ├── endpoints.md          # Endpoint specifications (5 endpoints: task/entity/function)
 │   └── schemas/              # Response JSON Schemas
-│       ├── listTaskTypes.response.json
-│       ├── getTaskTemplate.response.json
-│       ├── resolveEntitySchema.response.json
-│       ├── listMappingFunctions.response.json
-│       └── getMappingFunction.response.json
+│       ├── imLogicListTaskTypes.response.json
+│       ├── imLogicGetTaskTemplate.response.json
+│       ├── imLogicResolveEntitySchema.response.json
+│       ├── imLogicListMappingFunctions.response.json
+│       └── imLogicGetMappingFunction.response.json
 └── examples/
     └── article_count.spec.json  # Minimal sample spec
 ```
@@ -287,7 +292,7 @@ See [reference/user-definitions.md](reference/user-definitions.md) for details.
 
 ```jsonc
 {
-  "type": "user_javascript",       // user_javascript | user_rest | user_sql | user_db_fetch
+  "type": "user_javascript",       // user_javascript | user_rest | user_sql | user_db_fetch | user_template | user_stored | user_csv_fetch | user_csv_output | user_excel_input | user_excel_output | user_xml_parse | user_html_parse
   "label": "Email sending process",
   "userDefinition": {
     "definitionId": "mail_sender",  // → becomes executeId and key.id
@@ -313,10 +318,19 @@ See [reference/user-definitions.md](reference/user-definitions.md) for details.
 | `user_sql` | `sql` | Arbitrary SQL execution (2WaySQL) |
 | `user_db_fetch` | `db_fetch` | Iterative processing one row at a time |
 | `user_template` | `template` | Text generation with FreeMarker templates |
+| `user_stored` | `stored` | Stored procedure / function call (IN/OUT parameters) |
+| `user_csv_fetch` | `csv_fetch` | Iterative processing of a CSV on storage one row at a time (start/end pair) |
+| `user_csv_output` | `csv_output` | Output a list of records to a CSV file (single task) |
+| `user_excel_input` | `excel_in` | Read cell values / table data from an Excel file (single task) |
+| `user_excel_output` | `excel_out` | Write data into the cells / tables of an Excel file (single task) |
+| `user_xml_parse` | `xmlparser` | Extract values from XML data via XPath (single task) |
+| `user_html_parse` | `htmlparser` | Extract values from HTML data via CSS selectors (single task) |
 
-### Database Fetch Notes
+### Database Fetch / CSV Fetch Notes
 
-- **The end element is auto-generated**. No need to write `user_db_fetch_end` in spec `tasks`
+Notes common to paired user definitions (`user_db_fetch` / `user_csv_fetch`).
+
+- **The end element is auto-generated**. No need to write `user_db_fetch_end` / `user_csv_fetch_end` in spec `tasks`
 - Reference the end element with `$<definitionId>$` in edges
 - Nest loop processing tasks between start and end
 

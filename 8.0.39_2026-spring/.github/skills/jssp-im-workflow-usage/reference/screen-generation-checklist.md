@@ -2,7 +2,7 @@
 
 画面プログラム（.html / .js）の生成完了後、以下のチェックリストで自己検証すること。
 
-**注意:** `validate-workflow-code.js` が自動検出する項目（imds クラス名誤り、pageType 不正値、DbParameter 型変換漏れ、imart タグ属性、imuiCalendar hidden 誤用）は本チェックリストに含めない。スクリプトで検出できない項目のみ記載する。
+**注意:** `validate-workflow-code.js` が自動検出する項目（imds クラス名誤り、pageType 不正値、DbParameter 型変換漏れ、imart タグ属性、imuiCalendar hidden 誤用、imuiCalendar の value セッターオーバーライド漏れ）は本チェックリストに含めない。スクリプトで検出できない項目のみ記載する。
 
 ## 共通（全画面）
 

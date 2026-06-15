@@ -35,6 +35,7 @@ description: 为 intra-mart JSSP 表示页面（HTML）生成 Playwright E2E 测
 | `assets/test-crud-dialog.md` | CRUD 对话框（新建、编辑、删除）的测试实例 |
 | `assets/test-validation.md` | 验证（必填、字符类型、字符数、范围、重复、实时解除）的测试实例 |
 | `assets/test-button-style.md` | 按钮样式（is-primary / is-danger）及确认对话框的测试实例 |
+| `assets/test-mailpit.md` | 使用 mailpit 对邮件发送功能的 E2E 测试（通过 HTTP API 验证邮件、在代理之下访问 mailpit 的方法、获取 CSRF 安全令牌的模式） |
 | `{{AGENT_RULES}}/jssp-testing.md` | 测试观点和配置规范 |
 
 ## 测试设计原则

@@ -174,12 +174,15 @@ function validateFlowDef(flow, idx, r) {
     else if (!def.definitionData.elementId) r.error(ctx, `ユーザ定義タスク "${t.executeId}" に elementId がない`);
   }
 
-  // Database Fetch のペアチェック
-  const dbFetchStarts = userDefTasks.filter(t => t.properties?.definition?.definitionType === 'db_fetch');
-  for (const start of dbFetchStarts) {
+  // ペア型ユーザ定義（DB Fetch / CSV Fetch 等）のペアチェック
+  const fetchStarts = userDefTasks.filter(t => {
+    const dt = t.properties?.definition?.definitionType;
+    return dt === 'db_fetch' || dt === 'csv_fetch';
+  });
+  for (const start of fetchStarts) {
     const endId = `$${start.executeId}$`;
     if (!taskExecIds.has(endId)) {
-      r.error(ctx, `DB Fetch 開始 "${start.executeId}" に対応する終了要素 "${endId}" がない`);
+      r.error(ctx, `フェッチ開始 "${start.executeId}" に対応する終了要素 "${endId}" がない`);
     }
   }
 

@@ -169,66 +169,19 @@ DDL 生成的详细规则，请参考本文件末尾的"DDL 生成规则详情"�
 
 ---
 
-### 步骤 7：自动验证脚本（JSSP 代码）
+### 步骤 7～10：生成后验证（委托给子智能体）
 
-对生成的文件执行 `validate-jssp-code.js`。**反复修正直到错误数为 0。**
+使用 **Agent 工具**启动子智能体，将所有验证和修正工作委托给它。
+为保护主对话上下文，请让子智能体独立完成所有验证工作。
 
-```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{功能名}/
-```
+子智能体提示词中需包含的内容：
+- 执行 `jssp-page-verifier` 技能
+- 目标路径：`src/main/jssp/src/{功能名}/`
+- DDL 路径（仅在生成了 DDL 时）：`src/main/storage/system/products/import/basic/{功能名}/{version}/`
+- 反复修正直到错误数为 0
+- 完成后返回各步骤的结果摘要
 
-常见检测模式：
-- `db.select()` / `db.execute()` 的参数未用 `DbParameter` 包裹
-- 向 `DbParameter.number()` 传递字符串（遗漏 `Number()` 转换）
-- 使用 `var`（应使用 `let`）
-- `imds-selectbox`（不存在的类名，正确为 `imds-select`）
-- `imuiCalendar` 的 altField 引用了隐藏 input
-- imart 标签的 value 属性被引号括起
-- 使用 `include('**/common/**')` 加载公共模块（正确做法是使用 `load()`）
-- `load('**/*.js')` 调用时附带 `.js` 扩展名（扩展名会自动添加，导致变成 `.js.js` 从而引发 FileNotFoundException）
-- 未接收 `Transaction.begin(...)` 的返回值（忽略 `DatabaseResult` 会导致无法检测失败，出现"HTTP 200 成功但数据未写入 DB"的情况）
-- TIMESTAMP/DATE 列的绑定使用了类似日期时间的变量名，如 `DbParameter.string(startAt|endAt|rangeFrom|rangeTo|...)`（在 PostgreSQL 中导致类型转换错误）
-
-> **出现 JSSP-JS-022 警告时：** 必须打开对应的 SQL 文件，确认该参数是否被 `/*IF param != null*/.../*END*/` 包裹。已包裹 → 误报（在审查报告中注明"已确认 SQL 侧 /*IF*/ 保护"）。未包裹 → 修正为 `DbParameter.string(x || '')` 等空字符串回退方式。
-
----
-
-### 步骤 8：DDL 类型验证（仅在步骤 6 中生成了 DDL 时）
-
-若生成了 DDL 文件，执行 `validate-ddl.js`。**反复修正直到错误数为 0。**
-
-```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{功能名}/{version}/
-```
-
-常见检测模式：
-- PostgreSQL DDL 中使用了 `NVARCHAR` / `VARCHAR2` / `NUMBER` / `DATETIME2` / `CLOB`
-- Oracle DDL 中使用了 `VARCHAR(` / `NVARCHAR2` / `DECIMAL` / `DATETIME2` / `TEXT` / `BOOLEAN`
-- SQLServer DDL 中使用了 `VARCHAR(` / `VARCHAR2` / `NUMBER` / `TIMESTAMP` / `CLOB` / `TEXT` / `BOOLEAN`
-- DDL 中包含 `CREATE FUNCTION` / `CREATE TRIGGER` / `CREATE PROCEDURE` / `CREATE VIEW`（导致导入失败）
-- CREATE TABLE 或 ALTER TABLE 中定义了 `CHECK` / `FOREIGN KEY` / `EXCLUDE` 约束
-- DDL 策略：仅允许数据表、PK、UNIQUE 键和 CREATE INDEX
-- 共通 DML 文件（`*-dml.sql`）中使用了 ODBC 转义 `{d '...'}` / `{t '...'}` / `{ts '...'}` / `{fn ...}` / `{oj ...}` / `{call ...}`（在 PostgreSQL 中导致语法错误）
-
----
-
-### 步骤 9：tsc 类型检查
-
-对生成的文件执行 TypeScript 编译器类型检查。**反复修正直到问题数为 0。**
-
-```bash
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{功能名}/
-```
-
-常见检测模式：
-- `result.data === 0` 这样的类型不匹配（更新件数应使用 `result.countRow`）
-- 访问 d.ts 中不存在的方法或属性
-
----
-
-### 步骤 10：手动检查
-
-执行 `reference/post-generation-verification.md` 中的所有步骤。
+子智能体完成后，确认结果摘要，若无问题则进入步骤 11。
 
 ---
 

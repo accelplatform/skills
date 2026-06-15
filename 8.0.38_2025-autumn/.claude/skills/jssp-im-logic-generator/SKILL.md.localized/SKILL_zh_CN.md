@@ -36,18 +36,23 @@ jssp-im-logic-generator/
 │   ├── im_immGetCompany.json / im_immGetProfile.json / ...   # 公共主数据系
 │   ├── user_javascript.json / user_rest.json / user_sql.json  # 用户定义
 │   ├── user_db_fetch.json / user_db_fetch_end.json            # Database Fetch
-│   └── ...（共 125 种任务类型 + im_sequence + 5 种用户定义）
+│   ├── user_csv_fetch.json / user_csv_fetch_end.json          # CSV Fetch
+│   ├── user_template.json / user_stored.json                  # 模板 / 存储过程
+│   ├── user_csv_output.json                                   # CSV 输出
+│   ├── user_excel_input.json / user_excel_output.json         # Excel 输入 / 输出
+│   ├── user_xml_parse.json / user_html_parse.json             # XML 解析 / HTML 解析
+│   └── ...（共 125 种任务类型 + im_sequence + 12 种用户定义）
 ├── scripts/
 │   ├── build-flow.js         # spec.json → flow_definition.json 生成器
 │   └── validate-flow.js      # flow_definition.json 验证器
 ├── mcp-spec/                 # MCP 端点规格
 │   ├── endpoints.md          # 端点规格（5个：任务/实体/函数）
 │   └── schemas/              # 响应 JSON Schema
-│       ├── listTaskTypes.response.json
-│       ├── getTaskTemplate.response.json
-│       ├── resolveEntitySchema.response.json
-│       ├── listMappingFunctions.response.json
-│       └── getMappingFunction.response.json
+│       ├── imLogicListTaskTypes.response.json
+│       ├── imLogicGetTaskTemplate.response.json
+│       ├── imLogicResolveEntitySchema.response.json
+│       ├── imLogicListMappingFunctions.response.json
+│       └── imLogicGetMappingFunction.response.json
 └── examples/
     └── article_count.spec.json  # 最小示例 spec
 ```
@@ -288,7 +293,7 @@ node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 
 ```jsonc
 {
-  "type": "user_javascript",       // user_javascript | user_rest | user_sql | user_db_fetch
+  "type": "user_javascript",       // user_javascript | user_rest | user_sql | user_db_fetch | user_template | user_stored | user_csv_fetch | user_csv_output | user_excel_input | user_excel_output | user_xml_parse | user_html_parse
   "label": "邮件发送处理",
   "userDefinition": {
     "definitionId": "mail_sender",  // → 成为 executeId 和 key.id
@@ -314,10 +319,19 @@ node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 | `user_sql` | `sql` | 任意 SQL 执行（2WaySQL） |
 | `user_db_fetch` | `db_fetch` | 逐行迭代处理 SELECT |
 | `user_template` | `template` | 使用 FreeMarker 模板生成文本 |
+| `user_stored` | `stored` | 调用存储过程／函数（IN/OUT 参数） |
+| `user_csv_fetch` | `csv_fetch` | 逐行迭代处理存储上的 CSV（开始/结束成对） |
+| `user_csv_output` | `csv_output` | 将记录列表输出为 CSV 文件（单体） |
+| `user_excel_input` | `excel_in` | 从 Excel 文件读取单元格值・表格数据（单体） |
+| `user_excel_output` | `excel_out` | 将数据写入 Excel 文件的单元格・表格（单体） |
+| `user_xml_parse` | `xmlparser` | 通过 XPath 从 XML 数据提取值（单体） |
+| `user_html_parse` | `htmlparser` | 通过 CSS 选择器从 HTML 数据提取值（单体） |
 
-### Database Fetch 的注意事项
+### Database Fetch / CSV 提取的注意事项
 
-- **结束元素自动生成**。无需在 spec 的 `tasks` 中编写 `user_db_fetch_end`
+成对型用户定义（`user_db_fetch` / `user_csv_fetch`）的共通注意点。
+
+- **结束元素自动生成**。无需在 spec 的 `tasks` 中编写 `user_db_fetch_end` / `user_csv_fetch_end`
 - 在 edges 中用 `$<definitionId>$` 引用结束元素
 - 将循环内处理任务夹在开始和结束之间
 

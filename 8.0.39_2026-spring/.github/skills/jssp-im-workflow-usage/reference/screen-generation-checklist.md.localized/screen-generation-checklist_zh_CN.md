@@ -2,7 +2,7 @@
 
 画面程序（.html / .js）生成完成后，请使用以下检查清单进行自我验证。
 
-**注意：** `validate-workflow-code.js` 自动检测的项目（imds 类名错误、pageType 无效值、DbParameter 类型转换遗漏、imart 标签属性、imuiCalendar hidden 误用）不包含在本检查清单中。仅记录脚本无法检测的项目。
+**注意：** `validate-workflow-code.js` 自动检测的项目（imds 类名错误、pageType 无效值、DbParameter 类型转换遗漏、imart 标签属性、imuiCalendar hidden 误用、imuiCalendar 的 value setter 重写遗漏）不包含在本检查清单中。仅记录脚本无法检测的项目。
 
 ## 通用（所有画面）
 

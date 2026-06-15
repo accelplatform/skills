@@ -1,0 +1,246 @@
+{
+  "kind": "task",
+  "keyId": "im_generateImage",
+  "flowElementSample": {
+    "executeId": "im_generateImage1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_generateImage",
+      "version": null
+    },
+    "label": "画像生成",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 390,
+      "y": 360
+    },
+    "id": "b1e7c0a2-3f4d-4a8b-9c6e-1d2f3a4b5c6d",
+    "z": 10,
+    "attrs": {
+      "rect.body": {
+        "width": 200,
+        "fill": "#7e57c2"
+      },
+      "rect.icon": {
+        "fill": "#7e57c2"
+      },
+      "rect.title": {
+        "width": 150,
+        "fill": "#9575cd"
+      },
+      "rect.label": {
+        "width": 150,
+        "fill": "#b39ddb"
+      },
+      "text.title": {
+        "text": "im_generateImage1"
+      },
+      "text.label": {
+        "text": "画像生成"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_generateImage"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_system_copilot_logic_element_CreateImageTask$CreateImageParameter",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_system_copilot_logic_element_CreateImageTask$CreateImageParameter",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_system_copilot_logic_element_CreateImageTask$ImageOption",
+              "name": "option",
+              "description": null,
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "prompt",
+              "description": null,
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_system_copilot_logic_element_CreateImageTask$ImageOption",
+          "properties": [
+            {
+              "typeId": "integer",
+              "name": "height",
+              "description": null,
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "model",
+              "description": null,
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "quality",
+              "description": null,
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "width",
+              "description": null,
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "integer",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_system_copilot_logic_element_CreateImageTask$CreateImageResult",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "jp_co_intra_mart_system_copilot_logic_element_CreateImageTask$CreateImageResult",
+          "properties": [
+            {
+              "typeId": "binary",
+              "name": "image",
+              "description": null,
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "binary",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_generateImage1",
+    "label": "画像生成",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

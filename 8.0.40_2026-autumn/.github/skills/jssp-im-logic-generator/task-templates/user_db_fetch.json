@@ -2,6 +2,7 @@
   "kind": "userDefinition",
   "keyId": "sample-db-fetch",
   "definitionType": "db_fetch",
+  "pairEndTemplate": "user_db_fetch_end",
   "flowElementSample": {
     "executeId": "sample-db-fetch",
     "alias": "sample_db_fetch",

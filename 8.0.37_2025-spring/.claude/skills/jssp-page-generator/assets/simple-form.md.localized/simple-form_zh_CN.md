@@ -382,12 +382,12 @@ function transferErrorPage(code, message) {
         activeValidation = true;
       }
 
-      // 验证
-      function validateRequest(request) {
+      // 验证（逻辑集中于此。由 resetValidationError 和 validateCurrentStep 两处调用）
+      function getValidationErrors() {
         const errors = [];
 
         // 用户代码：必填，最多100个字符
-        const userCode = request.userCode;
+        const userCode = document.getElementById(':userCode:').value;
         if (!userCode || userCode.length === 0) {
           errors.push({name: 'userCode', message: '用户代码为必填项。'});
         } else if (userCode.length > 100) {
@@ -395,7 +395,7 @@ function transferErrorPage(code, message) {
         }
 
         // 用户名（姓）：必填，最多30个字符
-        const userLastName = request.userLastName;
+        const userLastName = document.getElementById(':userLastName:').value;
         if (!userLastName || userLastName.length === 0) {
           errors.push({name: 'userLastName', message: '姓为必填项。'});
         } else if (userLastName.length > 30) {
@@ -403,7 +403,7 @@ function transferErrorPage(code, message) {
         }
 
         // 用户名（名）：必填，最多30个字符
-        const userFirstName = request.userFirstName;
+        const userFirstName = document.getElementById(':userFirstName:').value;
         if (!userFirstName || userFirstName.length === 0) {
           errors.push({name: 'userFirstName', message: '名为必填项。'});
         } else if (userFirstName.length > 30) {
@@ -423,11 +423,10 @@ function transferErrorPage(code, message) {
         };
       }
 
-      // 重置验证错误
+      // 重置验证错误（出现错误后，输入变更时重新检查并更新显示）
       function resetValidationError() {
-        const request = createRequest();
         clearValidationError();
-        const errors = validateRequest(request);
+        const errors = getValidationErrors();
         if (errors.length > 0) {
           showValidationError(errors);
           return false;
@@ -842,3 +841,81 @@ function processBusinessLogic(request) {
 ### 生成时的指示示例
 
 当用户请求"创建表单画面"时，参考此assets中的代码，生成适当定制的版本。
+
+---
+
+## 验证模式集
+
+在 `getValidationErrors()` 内使用的各种检查代码片段。
+统一使用直接从DOM读取值的模式。
+
+### 字符串长度检查（上限・下限）
+
+```javascript
+const value = document.getElementById(':fieldName:').value;
+if (value.length > 200) {
+  errors.push({ name: 'fieldName', message: 'fieldName 最多200个字符。' });
+} else if (value.length < 8) {
+  errors.push({ name: 'fieldName', message: 'fieldName 请输入8个字符以上。' });
+}
+```
+
+### 数值检查（NaN・范围）
+
+```javascript
+const value = document.getElementById(':age:').value;
+if (value !== '') {
+  const num = Number(value);
+  if (isNaN(num)) {
+    errors.push({ name: 'age', message: '年龄请输入数值。' });
+  } else if (num < 0 || num > 150) {
+    errors.push({ name: 'age', message: '年龄请输入0〜150的范围。' });
+  }
+}
+```
+
+### 正则表达式模式匹配
+
+```javascript
+const value = document.getElementById(':code:').value;
+if (value && !/^[A-Za-z0-9_-]+$/.test(value)) {
+  errors.push({ name: 'code', message: '代码只能使用半角英数字、连字符、下划线。' });
+}
+```
+
+### 邮箱地址格式
+
+```javascript
+const value = document.getElementById(':email:').value;
+if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+  errors.push({ name: 'email', message: '邮箱地址格式不正确。' });
+}
+```
+
+### 日期格式（YYYY-MM-DD）
+
+```javascript
+const value = document.getElementById(':startDate:').value;
+if (value && !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+  errors.push({ name: 'startDate', message: '开始日期请以 YYYY-MM-DD 格式输入。' });
+}
+```
+
+### 可选项目（仅在有值时检查）
+
+```javascript
+const value = document.getElementById(':memo:').value;
+if (value && value.length > 500) {
+  errors.push({ name: 'memo', message: '备注最多500个字符。' });
+}
+```
+
+### 日期前后关系检查
+
+```javascript
+const startDate = document.getElementById(':startDate:').value;
+const endDate = document.getElementById(':endDate:').value;
+if (startDate && endDate && startDate > endDate) {
+  errors.push({ name: 'endDate', message: '结束日期请指定开始日期之后的日期。' });
+}
+```

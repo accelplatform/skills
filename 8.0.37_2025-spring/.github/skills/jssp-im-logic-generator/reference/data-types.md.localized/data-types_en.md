@@ -120,7 +120,7 @@ These are defined with `id` inside `typeDefinitions` and have fields via `proper
 | Pattern | Description | Example |
 |---|---|---|
 | `imr_entity` | IM-Repository entity | - |
-| `imrepo_entity_*` | Entity reference type (resolved by resolveEntitySchema) | `imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info` |
+| `imrepo_entity_*` | Entity reference type (resolved by imLogicResolveEntitySchema) | `imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info` |
 | `im_logic_object_*` | Flow-local object type | `im_logic_object_1` |
 | `jp_co_intra_mart_*` | Java class-based type (within task input/output definitions) | `jp_co_intra_mart_foundation_logic_element_authz_AuthorizeAuthzTaskResultObject` |
 | `root` | Root of type definition (referenced from entrypoint) | - |

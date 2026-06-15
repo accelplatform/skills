@@ -1,0 +1,364 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-csv-fetch",
+  "definitionType": "csv_fetch",
+  "pairEndTemplate": "user_csv_fetch_end",
+  "flowElementSample": {
+    "executeId": "sample-csv-fetch",
+    "alias": "sample_csv_fetch",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-csv-fetch",
+      "version": null
+    },
+    "label": "[開始]サンプル CSV フェッチ定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-csv-fetch",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "csv_fetch",
+        "definitionName": "Sample CSV Fetch",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_startCsvFetch",
+          "iconId": null,
+          "elementProperties": {
+            "encoding": "UTF-8",
+            "quoteCharacter": "\"",
+            "delimiterCharacter": ",",
+            "endOfLineSymbols": "\n",
+            "skipHeader": true,
+            "mismatchOnError": false
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "storage",
+                    "name": "file",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "storage",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "string1",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "string2",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "string3",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "string4",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプル CSV フェッチ定義",
+          "en": "Sample CSV Fetch",
+          "zh_CN": "示例 CSV 提取定义"
+        }
+      },
+      "endPoint": "$sample-csv-fetch$"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 90,
+      "y": 470
+    },
+    "id": "c5f0e110-1a2b-4c3d-8e4f-5a6b7c8d9e01",
+    "z": 11,
+    "attrs": {
+      "text.title": {
+        "text": "sample_csv_fetch"
+      },
+      "text.label": {
+        "text": "[開始]サンプル CSV フェッチ定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-csv-fetch"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "storage",
+              "name": "file",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "string1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "string2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "string3",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "string4",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "pairElementKey": {
+      "type": "localUserDefinition",
+      "id": "$sample-csv-fetch$"
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-csv-fetch",
+      "version": 1,
+      "definitionType": "csv_fetch",
+      "definitionName": "Sample CSV Fetch",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_startCsvFetch",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "file",
+                  "typeId": "storage",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "storage",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "string1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "string2",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "string3",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "string4",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "encoding": "UTF-8",
+          "quoteCharacter": "\"",
+          "delimiterCharacter": ",",
+          "endOfLineSymbols": "\n",
+          "skipHeader": true,
+          "mismatchOnError": false
+        }
+      },
+      "localize": {
+        "ja": "サンプル CSV フェッチ定義",
+        "en": "Sample CSV Fetch",
+        "zh_CN": "示例 CSV 提取定义"
+      }
+    }
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_csv_fetch",
+    "label": "[開始]サンプル CSV フェッチ定義",
+    "inNum": 1,
+    "outNum": 1,
+    "pairElementId": "d6a1f221-2b3c-4d4e-9f5a-6b7c8d9e0f12"
+  }
+}

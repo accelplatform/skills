@@ -113,3 +113,55 @@ $('#sample-calendar').imuiCalendar('option', 'calendarId', value);
 - 複数日選択（`multiSelectable`）はインライン表示でのみ使用可能
 - テキストボックスの幅は日付フォーマットに合わせて `max-width` を指定すること（`yyyy/MM/dd` の場合 `10em` 程度）
 - 入力フォームで使用する場合は Field（`imds-field`）でラップする
+
+## 日時入力（日付 + 時刻の組み合わせ）
+
+「日時」を入力させる場合、1つのテキストボックスに手入力させるのではなく、**日付と時刻のフィールドを分けること**。
+
+| 要素 | 使用コンポーネント | 備考 |
+|------|-----------------|------|
+| 日付部分 | `<imart type="imuiCalendar">` | `format="yyyy-MM-dd"` を指定（API連携が容易） |
+| 時刻部分 | `<input type="time">` | `step="900"` で 15 分単位に制限 |
+
+### HTML マークアップ例
+
+```html
+<div class="imds-field-inline">
+  <input type="text" id=":startDate:" class="imds-textbox" style="max-width: 10em;" />
+  <imart type="imuiCalendar" floatable="true" altField="#\\:startDate\\:" format="yyyy-MM-dd" />
+  <input type="time" id=":startTime:" class="imds-textbox" step="900" style="max-width: 8em;" />
+</div>
+```
+
+### 値の読み取り（API 送信時）
+
+```javascript
+const startAt = document.getElementById(':startDate:').value + ' ' + document.getElementById(':startTime:').value + ':00';
+// → "2026-04-21 10:00:00"
+```
+
+### 値の初期設定（編集画面で既存データをセット）
+
+API から `"YYYY-MM-DD HH:mm:ss"` 形式で受け取った値を分割してセットする。
+
+```javascript
+function setDateTimeFields(dateFieldId, timeFieldId, dateTimeStr) {
+  if (!dateTimeStr) return;
+  const parts = dateTimeStr.split(' ');
+  document.getElementById(dateFieldId).value = parts[0];
+  document.getElementById(timeFieldId).value = parts[1].substring(0, 5);
+}
+// 使用例
+setDateTimeFields(':startDate:', ':startTime:', result.startAt);
+```
+
+### バリデーション
+
+```javascript
+if (!document.getElementById(':startDate:').value) {
+  errors.push({ name: 'startDate', message: '開始日付を入力してください。' });
+}
+if (!document.getElementById(':startTime:').value) {
+  errors.push({ name: 'startTime', message: '開始時刻を入力してください。' });
+}
+```

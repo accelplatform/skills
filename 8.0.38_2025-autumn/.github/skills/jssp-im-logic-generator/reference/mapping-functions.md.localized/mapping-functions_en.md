@@ -4,7 +4,7 @@ A list of functions available for variable-to-variable mapping in IM-LogicDesign
 Used with `mappingRules.source.type = "function"`, specifying the function name in `source.name`.
 
 The following are the basic functions (52 total).
-Additional functions can be retrieved via MCP `listMappingFunctions` / `getMappingFunction`.
+Additional functions can be retrieved via MCP `imLogicListMappingFunctions` / `imLogicGetMappingFunction`.
 
 ## Array Operations (9 functions)
 

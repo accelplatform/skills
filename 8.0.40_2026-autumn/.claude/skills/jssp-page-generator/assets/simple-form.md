@@ -382,12 +382,12 @@ function transferErrorPage(code, message) {
         activeValidation = true;
       }
 
-      // バリデーション
-      function validateRequest(request) {
+      // バリデーション（ロジックをここに集約。resetValidationError と validateCurrentStep の両方から呼ばれる）
+      function getValidationErrors() {
         const errors = [];
 
         // ユーザコード：必須、最大100文字
-        const userCode = request.userCode;
+        const userCode = document.getElementById(':userCode:').value;
         if (!userCode || userCode.length === 0) {
           errors.push({name: 'userCode', message: 'ユーザコードは必須です。'});
         } else if (userCode.length > 100) {
@@ -395,7 +395,7 @@ function transferErrorPage(code, message) {
         }
 
         // ユーザ名（姓）：必須、最大30文字
-        const userLastName = request.userLastName;
+        const userLastName = document.getElementById(':userLastName:').value;
         if (!userLastName || userLastName.length === 0) {
           errors.push({name: 'userLastName', message: '姓は必須です。'});
         } else if (userLastName.length > 30) {
@@ -403,7 +403,7 @@ function transferErrorPage(code, message) {
         }
 
         // ユーザ名（名）：必須、最大30文字
-        const userFirstName = request.userFirstName;
+        const userFirstName = document.getElementById(':userFirstName:').value;
         if (!userFirstName || userFirstName.length === 0) {
           errors.push({name: 'userFirstName', message: '名は必須です。'});
         } else if (userFirstName.length > 30) {
@@ -423,11 +423,10 @@ function transferErrorPage(code, message) {
         };
       }
 
-      // バリデーションエラーのリセット
+      // バリデーションエラーのリセット（一度エラーが出た後、入力変更時に再チェックして表示を更新する）
       function resetValidationError() {
-        const request = createRequest();
         clearValidationError();
-        const errors = validateRequest(request);
+        const errors = getValidationErrors();
         if (errors.length > 0) {
           showValidationError(errors);
           return false;
@@ -842,3 +841,81 @@ function processBusinessLogic(request) {
 ### 生成時の指示例
 
 ユーザが「フォーム画面を作成して」と依頼した場合、この assets のコードを参考にして適切にカスタマイズして生成する。
+
+---
+
+## バリデーションパターン集
+
+`getValidationErrors()` 内で使用する各種チェックのスニペット。
+DOM から直接値を読み取るパターンで統一する。
+
+### 文字列長チェック（上限・下限）
+
+```javascript
+const value = document.getElementById(':fieldName:').value;
+if (value.length > 200) {
+  errors.push({ name: 'fieldName', message: 'fieldName は最大200文字です。' });
+} else if (value.length < 8) {
+  errors.push({ name: 'fieldName', message: 'fieldName は8文字以上で入力してください。' });
+}
+```
+
+### 数値チェック（NaN・範囲）
+
+```javascript
+const value = document.getElementById(':age:').value;
+if (value !== '') {
+  const num = Number(value);
+  if (isNaN(num)) {
+    errors.push({ name: 'age', message: '年齢は数値で入力してください。' });
+  } else if (num < 0 || num > 150) {
+    errors.push({ name: 'age', message: '年齢は0〜150の範囲で入力してください。' });
+  }
+}
+```
+
+### 正規表現パターンマッチング
+
+```javascript
+const value = document.getElementById(':code:').value;
+if (value && !/^[A-Za-z0-9_-]+$/.test(value)) {
+  errors.push({ name: 'code', message: 'コードは半角英数字・ハイフン・アンダースコアのみ使用できます。' });
+}
+```
+
+### メールアドレス形式
+
+```javascript
+const value = document.getElementById(':email:').value;
+if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+  errors.push({ name: 'email', message: 'メールアドレスの形式が正しくありません。' });
+}
+```
+
+### 日付形式（YYYY-MM-DD）
+
+```javascript
+const value = document.getElementById(':startDate:').value;
+if (value && !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+  errors.push({ name: 'startDate', message: '開始日は YYYY-MM-DD 形式で入力してください。' });
+}
+```
+
+### 任意項目（値がある場合のみチェック）
+
+```javascript
+const value = document.getElementById(':memo:').value;
+if (value && value.length > 500) {
+  errors.push({ name: 'memo', message: 'メモは最大500文字です。' });
+}
+```
+
+### 日付の前後関係チェック
+
+```javascript
+const startDate = document.getElementById(':startDate:').value;
+const endDate = document.getElementById(':endDate:').value;
+if (startDate && endDate && startDate > endDate) {
+  errors.push({ name: 'endDate', message: '終了日は開始日以降を指定してください。' });
+}
+```

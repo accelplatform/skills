@@ -2,7 +2,7 @@
 
 After completing the generation of screen programs (.html / .js), perform self-verification using the following checklist.
 
-**Note:** Items automatically detected by `validate-workflow-code.js` (incorrect imds class names, invalid pageType values, missing DbParameter type conversion, imart tag attributes, imuiCalendar hidden field misuse) are not included in this checklist. Only items that cannot be detected by the script are listed.
+**Note:** Items automatically detected by `validate-workflow-code.js` (incorrect imds class names, invalid pageType values, missing DbParameter type conversion, imart tag attributes, imuiCalendar hidden field misuse, missing imuiCalendar value setter override) are not included in this checklist. Only items that cannot be detected by the script are listed.
 
 ## Common (All Screens)
 

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "imLogicListTaskTypes Response",
+  "description": "タスク種別の一覧。概要のみを含む軽量レスポンス。通常タスク（keyType = application）とユーザ定義タスク（keyType = userDefinition）の両方を含む。",
+  "type": "object",
+  "required": ["taskTypes"],
+  "properties": {
+    "taskTypes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/taskTypeSummary"
+      }
+    }
+  },
+  "$defs": {
+    "taskTypeSummary": {
+      "type": "object",
+      "required": ["keyId", "keyType", "label", "category", "description", "hasEntityId"],
+      "properties": {
+        "keyId": {
+          "type": "string",
+          "description": "タスク種別ID。imLogicGetTaskTemplate の引数に使用する。通常タスク（keyType = application）はタスク種別ID（例: im_authorizeAuthz）、ユーザ定義タスク（keyType = userDefinition）は definitionId（例: mail_sender）",
+          "examples": ["im_authorizeAuthz", "im_repositorySearchEntityData", "mail_sender"]
+        },
+        "keyType": {
+          "type": "string",
+          "enum": ["application", "userDefinition"],
+          "description": "タスクの種別。application = 通常タスク（IM-LogicDesigner 標準）、userDefinition = ユーザ定義タスク（テナント登録）"
+        },
+        "definitionType": {
+          "type": "string",
+          "examples": ["javascript", "rest", "sql", "db_fetch", "template", "stored", "csv_fetch", "csv_output", "excel_in", "excel_out", "xmlparser", "htmlparser"],
+          "description": "ユーザ定義タスク（keyType = userDefinition）のときのみ存在。通常タスク（keyType = application）には含まれない。examples は標準のユーザ定義種別。MCP 経由ではこれら以外のユーザオリジナルの種別文字列が返る場合があるため、enum では制限せず任意の文字列を許容する"
+        },
+        "label": {
+          "type": "string",
+          "description": "タスクの表示名（日本語）",
+          "examples": ["認可判断", "エンティティデータの検索", "メール送信処理"]
+        },
+        "category": {
+          "type": "string",
+          "description": "タスクのカテゴリ。フィルタ用",
+          "examples": ["認可", "リポジトリ", "フロー制御", "データ変換", "ユーザ定義"]
+        },
+        "description": {
+          "type": "string",
+          "description": "タスクの機能説明（日本語）。コーディングエージェントがタスク選択を判断する材料",
+          "examples": ["指定ユーザーの認可権限を判断する"]
+        },
+        "hasEntityId": {
+          "type": "boolean",
+          "description": "true の場合、spec 作成時に imLogicResolveEntitySchema の呼び出しが必要。ユーザ定義タスクでは常に false"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "keyType": { "const": "userDefinition" } },
+            "required": ["keyType"]
+          },
+          "then": {
+            "required": ["definitionType"]
+          }
+        }
+      ]
+    }
+  }
+}

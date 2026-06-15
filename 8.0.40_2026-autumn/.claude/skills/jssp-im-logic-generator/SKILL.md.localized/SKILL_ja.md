@@ -36,18 +36,23 @@ jssp-im-logic-generator/
 │   ├── im_immGetCompany.json / im_immGetProfile.json / ...   # 共通マスタ系
 │   ├── user_javascript.json / user_rest.json / user_sql.json  # ユーザ定義
 │   ├── user_db_fetch.json / user_db_fetch_end.json            # Database Fetch
-│   └── ...（全125タスク種別 + im_sequence + ユーザ定義5種）
+│   ├── user_csv_fetch.json / user_csv_fetch_end.json          # CSV Fetch
+│   ├── user_template.json / user_stored.json                  # テンプレート / ストアドプロシージャ
+│   ├── user_csv_output.json                                   # CSV 出力
+│   ├── user_excel_input.json / user_excel_output.json         # Excel 入力 / 出力
+│   ├── user_xml_parse.json / user_html_parse.json             # XML 解析 / HTML 解析
+│   └── ...（全125タスク種別 + im_sequence + ユーザ定義12種）
 ├── scripts/
 │   ├── build-flow.js         # spec.json → flow_definition.json 生成器
 │   └── validate-flow.js      # flow_definition.json のバリデータ
 ├── mcp-spec/                 # MCP エンドポイント仕様
 │   ├── endpoints.md          # エンドポイント仕様（5本: タスク/エンティティ/関数）
 │   └── schemas/              # レスポンス JSON Schema
-│       ├── listTaskTypes.response.json
-│       ├── getTaskTemplate.response.json
-│       ├── resolveEntitySchema.response.json
-│       ├── listMappingFunctions.response.json
-│       └── getMappingFunction.response.json
+│       ├── imLogicListTaskTypes.response.json
+│       ├── imLogicGetTaskTemplate.response.json
+│       ├── imLogicResolveEntitySchema.response.json
+│       ├── imLogicListMappingFunctions.response.json
+│       └── imLogicGetMappingFunction.response.json
 └── examples/
     └── article_count.spec.json  # 最小サンプル spec
 ```
@@ -287,7 +292,7 @@ node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 
 ```jsonc
 {
-  "type": "user_javascript",       // user_javascript | user_rest | user_sql | user_db_fetch
+  "type": "user_javascript",       // user_javascript | user_rest | user_sql | user_db_fetch | user_template | user_stored | user_csv_fetch | user_csv_output | user_excel_input | user_excel_output | user_xml_parse | user_html_parse
   "label": "メール送信処理",
   "userDefinition": {
     "definitionId": "mail_sender",  // → executeId および key.id になる
@@ -313,10 +318,19 @@ node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 | `user_sql` | `sql` | 任意の SQL 実行（2WaySQL） |
 | `user_db_fetch` | `db_fetch` | SELECT を 1 行ずつ繰り返し処理 |
 | `user_template` | `template` | FreeMarker テンプレートでテキスト生成 |
+| `user_stored` | `stored` | ストアドプロシージャ／ファンクション呼び出し（IN/OUT パラメータ） |
+| `user_csv_fetch` | `csv_fetch` | ストレージ上の CSV を 1 行ずつ繰り返し処理（開始/終了ペア） |
+| `user_csv_output` | `csv_output` | レコードのリストを CSV ファイルに出力（単体） |
+| `user_excel_input` | `excel_in` | Excel ファイルからセル値・表データを読み取り（単体） |
+| `user_excel_output` | `excel_out` | データを Excel ファイルのセル・表に書き込み（単体） |
+| `user_xml_parse` | `xmlparser` | XML データから XPath で値を取り出し（単体） |
+| `user_html_parse` | `htmlparser` | HTML データから CSS セレクタで値を取り出し（単体） |
 
-### Database Fetch の注意
+### Database Fetch / CSV フェッチの注意
 
-- **終了要素は自動生成される**。spec の `tasks` に `user_db_fetch_end` を書く必要はない
+ペア型ユーザ定義（`user_db_fetch` / `user_csv_fetch`）に共通する注意点。
+
+- **終了要素は自動生成される**。spec の `tasks` に `user_db_fetch_end` / `user_csv_fetch_end` を書く必要はない
 - edges では `$<definitionId>$` で終了要素を参照する
 - ループ内処理のタスクを開始と終了の間に挟む
 

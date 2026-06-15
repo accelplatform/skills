@@ -382,12 +382,12 @@ function transferErrorPage(code, message) {
         activeValidation = true;
       }
 
-      // Validation
-      function validateRequest(request) {
+      // Validation (logic consolidated here; called by both resetValidationError and validateCurrentStep)
+      function getValidationErrors() {
         const errors = [];
 
         // User code: required, max 100 characters
-        const userCode = request.userCode;
+        const userCode = document.getElementById(':userCode:').value;
         if (!userCode || userCode.length === 0) {
           errors.push({name: 'userCode', message: 'User code is required.'});
         } else if (userCode.length > 100) {
@@ -395,7 +395,7 @@ function transferErrorPage(code, message) {
         }
 
         // User name (last name): required, max 30 characters
-        const userLastName = request.userLastName;
+        const userLastName = document.getElementById(':userLastName:').value;
         if (!userLastName || userLastName.length === 0) {
           errors.push({name: 'userLastName', message: 'Last name is required.'});
         } else if (userLastName.length > 30) {
@@ -403,7 +403,7 @@ function transferErrorPage(code, message) {
         }
 
         // User name (first name): required, max 30 characters
-        const userFirstName = request.userFirstName;
+        const userFirstName = document.getElementById(':userFirstName:').value;
         if (!userFirstName || userFirstName.length === 0) {
           errors.push({name: 'userFirstName', message: 'First name is required.'});
         } else if (userFirstName.length > 30) {
@@ -423,11 +423,10 @@ function transferErrorPage(code, message) {
         };
       }
 
-      // Reset validation error
+      // Reset validation error (re-check on input change after an error has been shown, and update the display)
       function resetValidationError() {
-        const request = createRequest();
         clearValidationError();
-        const errors = validateRequest(request);
+        const errors = getValidationErrors();
         if (errors.length > 0) {
           showValidationError(errors);
           return false;
@@ -842,3 +841,81 @@ function processBusinessLogic(request) {
 ### Example Instructions for Generation
 
 When the user requests "create a form screen", use this asset's code as a reference and generate an appropriately customized version.
+
+---
+
+## Validation Pattern Reference
+
+Snippets for various checks used inside `getValidationErrors()`.
+Use a consistent pattern of reading values directly from the DOM.
+
+### String Length Check (Upper and Lower Bounds)
+
+```javascript
+const value = document.getElementById(':fieldName:').value;
+if (value.length > 200) {
+  errors.push({ name: 'fieldName', message: 'fieldName must be at most 200 characters.' });
+} else if (value.length < 8) {
+  errors.push({ name: 'fieldName', message: 'fieldName must be at least 8 characters.' });
+}
+```
+
+### Numeric Check (NaN and Range)
+
+```javascript
+const value = document.getElementById(':age:').value;
+if (value !== '') {
+  const num = Number(value);
+  if (isNaN(num)) {
+    errors.push({ name: 'age', message: 'Age must be a number.' });
+  } else if (num < 0 || num > 150) {
+    errors.push({ name: 'age', message: 'Age must be between 0 and 150.' });
+  }
+}
+```
+
+### Regular Expression Pattern Matching
+
+```javascript
+const value = document.getElementById(':code:').value;
+if (value && !/^[A-Za-z0-9_-]+$/.test(value)) {
+  errors.push({ name: 'code', message: 'Code may only contain alphanumeric characters, hyphens, and underscores.' });
+}
+```
+
+### Email Address Format
+
+```javascript
+const value = document.getElementById(':email:').value;
+if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+  errors.push({ name: 'email', message: 'The email address format is invalid.' });
+}
+```
+
+### Date Format (YYYY-MM-DD)
+
+```javascript
+const value = document.getElementById(':startDate:').value;
+if (value && !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+  errors.push({ name: 'startDate', message: 'Start date must be in YYYY-MM-DD format.' });
+}
+```
+
+### Optional Field (Check Only When a Value Is Present)
+
+```javascript
+const value = document.getElementById(':memo:').value;
+if (value && value.length > 500) {
+  errors.push({ name: 'memo', message: 'Memo must be at most 500 characters.' });
+}
+```
+
+### Date Order Check (Start Before End)
+
+```javascript
+const startDate = document.getElementById(':startDate:').value;
+const endDate = document.getElementById(':endDate:').value;
+if (startDate && endDate && startDate > endDate) {
+  errors.push({ name: 'endDate', message: 'End date must be on or after the start date.' });
+}
+```

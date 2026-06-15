@@ -4,7 +4,7 @@ IM-LogicDesigner 变量间映射中可使用的函数列表。
 使用 `mappingRules.source.type = "function"` 时，在 `source.name` 中指定函数名。
 
 以下是基本函数（共 52 个）。
-其他函数可通过 MCP `listMappingFunctions` / `getMappingFunction` 获取。
+其他函数可通过 MCP `imLogicListMappingFunctions` / `imLogicGetMappingFunction` 获取。
 
 ## 数组操作（9 个）
 

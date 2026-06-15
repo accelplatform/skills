@@ -54,9 +54,10 @@ paths:
         // TODO: Add validation error display processing here
       }
 
-      // Validate request parameters
-      function validateRequest(request) {
+      // Validate (consolidate logic here)
+      function getValidationErrors() {
         // TODO: Add validation execution processing here
+        return [];
       }
 
       // Create request parameters
@@ -70,9 +71,8 @@ paths:
 
       // Reset validation errors
       function resetValidationError() {
-        const request = createRequest();
         clearValidationError();
-        const errors = validateRequest(request);
+        const errors = getValidationErrors();
         if (errors.length > 0) {
           showValidationError(errors);
           return false;
@@ -322,80 +322,8 @@ The `JSSP-HTML-018` rule in `jssp-page-generator/scripts/validate-jssp-code.js` 
 
 ## Date Input (imuiCalendar)
 
-- Use `<imart type="imuiCalendar">` instead of `<input type="date">` for date input
-- **`floatable="true"` must always be specified.** Without it, the calendar displays inline (always embedded in the screen), and the standard UI of a text box with a calendar icon will not appear. Inline display should only be used for special purposes such as multiple date selection
-- For `altField`, specify the CSS selector of the display text box (`<input type="text">`). Do not specify a hidden input (because the display position of the calendar icon depends on altField)
-- The HTML writing order should be "display text box → `<imart type="imuiCalendar">`". Reversing the order causes the icon to appear on the left side of the text box
-
-```html
-<!-- Standard pattern -->
-<input type="text" id=":desiredDate:" class="imds-textbox" style="max-width: 10em;" />
-<imart type="imuiCalendar" floatable="true" altField="#\\:desiredDate\\:" format="yyyy/MM/dd" />
-```
-
-## Date and Time Input (imuiCalendar + input type="time")
-
-When allowing users to input a "date and time", do not have them type into a single text box; **separate the date and time into distinct text boxes**.
-
-| Element | Component Used | Notes |
-|------|-----------------|------|
-| Date part | `<imart type="imuiCalendar">` | Specify `format="yyyy-MM-dd"` (easier API integration) |
-| Time part | `<input type="time">` | Use `step="900"` to restrict to 15-minute intervals |
-
-### HTML Markup Example
-
-```html
-<!-- Start date and time -->
-<div class="imds-field-inline">
-  <input type="text" id=":startDate:" class="imds-textbox" style="max-width: 10em;" />
-  <imart type="imuiCalendar" floatable="true" altField="#\\:startDate\\:" format="yyyy-MM-dd" />
-  <input type="time" id=":startTime:" class="imds-textbox" step="900" style="max-width: 8em;" />
-</div>
-```
-
-### Reading Values (When Sending to API)
-
-Concatenate the date and time into `"YYYY-MM-DD HH:mm:ss"` format.
-
-```javascript
-let startDate = document.getElementById(':startDate:').value; // "2026-04-21"
-let startTime = document.getElementById(':startTime:').value; // "10:00"
-let startAt   = startDate + ' ' + startTime + ':00';          // "2026-04-21 10:00:00"
-```
-
-### Setting Initial Values (Setting Existing Data in Edit Screen)
-
-Split and set the value received from the API in `"YYYY-MM-DD HH:mm:ss"` format.
-The altField (`<input type="text">`) of `imuiCalendar` can be set directly via `.value`.
-
-```javascript
-// startAt = '2026-04-21 10:00:00'
-function setDateTimeFields(dateFieldId, timeFieldId, startAt) {
-  if (!startAt) return;
-  let parts = startAt.split(' ');
-  document.getElementById(dateFieldId).value = parts[0];           // "2026-04-21"
-  document.getElementById(timeFieldId).value = parts[1].substring(0, 5); // "10:00"
-}
-
-// Usage example
-setDateTimeFields(':startDate:', ':startTime:', result.startAt);
-```
-
-### Validation
-
-Verify input in both fields on the client side before submission.
-
-```javascript
-let startDate = document.getElementById(':startDate:').value;
-let startTime = document.getElementById(':startTime:').value;
-
-if (!startDate) {
-  errors.push({ name: 'startDate', message: 'Please enter the start date.' });
-}
-if (!startTime) {
-  errors.push({ name: 'startTime', message: 'Please enter the start time.' });
-}
-```
+For date input, use `<imart type="imuiCalendar">` instead of `<input type="date">`.
+For usage, attributes, notes, and the date-time input pattern (date + time combination), refer to `skills/jssp-imds-theme/reference/imui-html-calendar.md`.
 
 ## Controlling Input Field Width
 
@@ -437,73 +365,17 @@ Even if the same width value repeats in many places and DRY tempts you, write it
 
 This rule applies to **all dimension-related properties** (`max-width` / `min-width` / `width` / `height`, etc.) since they are likely to collide with imds defaults.
 
-## Implementation Pattern for clearValidationError
+## Implementation Pattern for the getValidationErrors Function
 
-### Basic Implementation
-
-```javascript
-/**
- * Clears the validation error display.
- */
-function clearValidationError() {
-  // Error display for input fields
-  document.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
-    element.classList.remove('imds-validation-error');
-  });
-
-  // Error messages
-  document.querySelectorAll('.imds-error-text').forEach((element) => {
-    element.style.display = 'none';
-  });
-}
-```
-
-## Implementation Pattern for showValidationError
+A client-side validation function. It reads values directly from the DOM and returns an array of errors.
+Because it is called from both `resetValidationError()` and `validateCurrentStep()`, consolidate the logic here.
 
 ### Basic Structure
 
 ```javascript
-/**
- * Displays validation error messages on the screen.
- *
- * @param {Object} errors - Return value of validateRequest
- */
-function showValidationError(errors) {
-  errors.forEach((error) => {
-    // Error display for input fields
-    const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
-    if (fieldElement) {
-      fieldElement.classList.add('imds-validation-error');
-    }
-
-    // Error messages
-    const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
-    if (errorElement) {
-      errorElement.textContent = error.message;
-      errorElement.style.display = '';
-    }
-  });
-}
-```
-
-## Implementation Pattern for the validateRequest Function
-
-This is the basic implementation pattern for a request parameter validation function in JavaScript.
-
-### Basic Structure
-
-```javascript
-/**
- * Validates request parameters.
- *
- * @param {Object} request - Request parameters
- */
-function validateRequest(request) {
+function getValidationErrors() {
   const errors = [];
-  // Execute validation for each parameter
-  errors.push(...validateParameter1(request));
-  errors.push(...validateParameter2(request));
-  // ... Add necessary validations
+  // Execute validation for each field
   return errors;
 }
 ```
@@ -513,105 +385,29 @@ function validateRequest(request) {
 #### Required Check
 
 ```javascript
-const value = request['parameterName'];
+const value = document.getElementById(':fieldName:').value;
 if (!value || value.length === 0) {
-  errors.push({ name: 'parameterName', message: 'parameterName is required.' });
+  errors.push({ name: 'fieldName', message: 'fieldName is required.' });
 }
 ```
 
-#### String Length Check
+#### Required + String Length Check (Compound)
 
 ```javascript
-const value = request['parameterName'];
-if (value.length > maxLength) {
-  errors.push({ name: 'parameterName', message: `parameterName must be at most ${maxLength} characters.` });
-} else if (value.length < minLength) {
-  errors.push({ name: 'parameterName', message: `parameterName must be at least ${minLength} characters.` });
-}
-```
-
-#### Numeric Check
-
-```javascript
-const value = request['parameterName'];
-if (isNaN(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName must be a number.' });
-} else if (value < min || value > max) {
-  errors.push({ name: 'parameterName', message: `parameterName must be between ${min} and ${max}.` });
-}
-```
-
-#### Regular Expression Pattern Matching
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^[a-zA-Z0-9_-]+$/;
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName may only contain alphanumeric characters, hyphens, and underscores.' });
-}
-```
-
-#### Email Address Format Check
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'The format of parameterName is invalid.' });
-}
-```
-
-#### Date Format Check
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^\d{4}-\d{2}-\d{2}$/;
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName must be specified in YYYY-MM-DD format.' });
-}
-```
-
-#### User Code Format Check
-
-```javascript
-const value = request['parameterName'];
-const pattern = /^[0-9A-Za-z_@\.\+\!\-]$/;  // Half-width alphanumerics and _-@.+!
-if (!pattern.test(value)) {
-  errors.push({ name: 'parameterName', message: 'parameterName must be specified in user code format.' });
-}
-```
-
-#### Compound Pattern Examples
-
-```javascript
-// 1. Required check + string length check
-const userCode = request['userCode'];
+const userCode = document.getElementById(':userCode:').value;
 if (!userCode || userCode.length === 0) {
   errors.push({ name: 'userCode', message: 'User code is required.' });
 } else if (userCode.length > 100) {
   errors.push({ name: 'userCode', message: 'User code must be at most 100 characters.' });
 }
-
-// 2. Optional field check (validate only if value exists)
-const age = request['age'];
-if (age !== undefined && age !== null && age !== '') {
-  if (isNaN(age)) {
-    errors.push({ name: 'age', message: 'Age must be entered as a number.' });
-  } else if (age < 0 || age > 150) {
-    errors.push({ name: 'age', message: 'age must be between 0 and 150.' });
-  }
-}
 ```
+
+For other patterns (numeric, regex, email, date format, optional fields, etc.), refer to the "Validation Pattern Catalogue" in `assets/simple-form.md`.
 
 ### Implementation Policy
 
-- When an error is found for a parameter, add the error details to the array and continue checking the next parameter
-- Clearly state which parameter has what kind of problem
-- Execute checks in the following basic order:
-  1. Required check
-  2. Length check
-  3. Format check
-  4. Cross-parameter correlation check
+- When an error is found, add it to the array and continue checking the next field (to display all errors at once)
+- Check order: required → length → format → cross-field correlation
 - Use strict equality operator (`===`)
 
 ## Validation Execution Timing
@@ -623,98 +419,37 @@ if (age !== undefined && age !== null && age !== '') {
 
 ### Implementation Policy
 
+Overview of the architecture (see `assets/simple-form.md` for the full implementation):
+
 ```javascript
-// Processing after page load
 document.addEventListener('DOMContentLoaded', () => {
-  // Flag to always execute validation checks
-  let activeValidation = false;
+  let activeValidation = false; // Do not show errors on initial display
 
-  // Clear validation errors
   function clearValidationError() {
-    document.querySelectorAll('.imds-error-text').forEach((el) => {
-      el.style.display = 'none';
-    });
-    document.querySelectorAll('.imds-validation-error').forEach((el) => {
-      el.classList.remove('imds-validation-error');
-    });
+    document.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => el.classList.remove('imds-validation-error'));
+    document.querySelectorAll('.imds-error-text').forEach((el) => { el.style.display = 'none'; });
   }
-
-  // Show validation errors
   function showValidationError(errors) {
     errors.forEach((error) => {
-      let errorEl = document.querySelector('.imds-error-text[for=":' + error.name + ':"');
-      if (errorEl) {
-        errorEl.textContent = error.message;
-        errorEl.style.display = '';
-        let field = errorEl.closest('.imds-field');
-        if (field) {
-          field.classList.add('imds-validation-error');
-        }
-      }
+      const field = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+      if (field) field.classList.add('imds-validation-error');
+      const msg = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+      if (msg) { msg.textContent = error.message; msg.style.display = ''; }
     });
-    // Always execute validation checks
-    activeValidation = true;
+    activeValidation = true; // Enable real-time re-validation from this point
   }
-
-  // Get validation errors (shared)
-  // Consolidate validation target fields and conditions in one place.
-  // Called from both validateCurrentStep() and resetValidationError().
-  function getValidationErrors() {
-    let errors = [];
-    if (!document.getElementById(':userName:').value.trim()) {
-      errors.push({ name: 'userName', message: 'User name is required.' });
-    }
-    // Add other fields similarly
-    return errors;
-  }
-
-  // Real-time re-validation
-  // After a validation error occurs, re-validate immediately when input values change.
-  function resetValidationError() {
-    clearValidationError();
-    let errors = getValidationErrors();
-    if (errors.length > 0) {
-      showValidationError(errors);
-    }
-  }
-
-  // Execute validation
+  function getValidationErrors() { /* Consolidate validation logic in one place */ return []; }
+  function resetValidationError() { clearValidationError(); showValidationError(getValidationErrors()); }
   function validateCurrentStep() {
     clearValidationError();
-    let errors = getValidationErrors();
-    if (errors.length > 0) {
-      showValidationError(errors);
-      return false;
-    }
+    const errors = getValidationErrors();
+    if (errors.length > 0) { showValidationError(errors); return false; }
     return true;
   }
 
-  // Event listeners for real-time re-validation
-  // Use the "input" event for text input fields (input, textarea).
-  // Use the "change" event for select boxes, date inputs, checkboxes, etc.
-  // Register listeners for all fields subject to validation.
-  [':userName:', ':email:'].forEach((id) => {
-    document.getElementById(id).addEventListener('input', () => {
-      if (activeValidation) {
-        resetValidationError();
-      }
-    });
-  });
-  [':department:', ':prefecture:'].forEach((id) => {
-    document.getElementById(id).addEventListener('change', () => {
-      if (activeValidation) {
-        resetValidationError();
-      }
-    });
-  });
-
-  // Entry point
-  clearValidationError();
-  if ($data.error.code) {
-    imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
-  } else {
-    initializeView($data.result);
-  }
+  // Text input: "input" / Select, date, checkbox: "change"
+  [':textField:'].forEach((id) => { document.getElementById(id).addEventListener('input', () => { if (activeValidation) resetValidationError(); }); });
+  [':selectField:'].forEach((id) => { document.getElementById(id).addEventListener('change', () => { if (activeValidation) resetValidationError(); }); });
 });
 ```
 
@@ -880,7 +615,7 @@ document.getElementById('register-button').addEventListener('click', () => {
   - Otherwise, retrieve using standard vanilla JavaScript DOM resolution methods
 - Perform validation checks on request parameters
   1. Clear validation errors on the screen using `clearValidationError()`
-  2. Execute validation checks on request parameters using `validateRequest()`
+  2. Execute validation checks using `getValidationErrors()`
   3. If there are errors in the validation check, display validation errors using `showValidationError()` and terminate
 - When displaying a confirmation message, use `imdsConfirm()`
 - Always specify a `mode` in the 5th argument `options` of `imdsConfirm()` according to the operation type
