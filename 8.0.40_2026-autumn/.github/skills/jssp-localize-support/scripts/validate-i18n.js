@@ -8,7 +8,7 @@
  *   1. 12ファイルが存在する（3カテゴリ × 4ロケール）
  *   2. デフォルトファイル（接尾辞なし）と _en ファイルが同一内容
  *   3. カテゴリ内でキーセットが全ロケール間で一致する
- *   4. キー命名規則（CAP.Z.IWP.* / MSG.[EWIC].IWP.* / [EWIC].IWP.*）
+ *   4. キー命名規則（CAP.Z.APP.* / MSG.[EWIC].APP.* / [EWIC].APP.*）
  *   5. 英語ファイル（default/_en）に非 ASCII 文字が含まれていない
  *   6. 日本語/中国語ファイルで非 ASCII 文字が \uXXXX 形式でエスケープされている
  *   7. ファイルの改行コードが LF である
@@ -205,17 +205,17 @@ var KEY_RULES = [
   {
     category: 'caption',
     pattern:  /^CAP\.[A-Z]\.[A-Z]+(\.[A-Z0-9]+)+$/,
-    hint:     'CAP.Z.IWP.<製品名>.<機能名>.<キャプション名>'
+    hint:     'CAP.Z.APP.<製品名>.<機能名>.<キャプション名>'
   },
   {
     category: 'message',
     pattern:  /^MSG\.[EWIC]\.[A-Z]+(\.[A-Z0-9]+)+$/,
-    hint:     'MSG.[E|W|I|C].IWP.<製品名>.<機能名>.<メッセージ名>'
+    hint:     'MSG.[E|W|I|C].APP.<製品名>.<機能名>.<メッセージ名>'
   },
   {
     category: 'log-message',
     pattern:  /^[EWIC]\.[A-Z]+(\.[A-Z0-9]+)+\.\d{5}$/,
-    hint:     '[E|W|I|C].IWP.<製品名>.<機能名>.<5桁連番>'
+    hint:     '[E|W|I|C].APP.<製品名>.<機能名>.<5桁連番>'
   }
 ];
 

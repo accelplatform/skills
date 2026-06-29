@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "oauth-client-details-config_ja.md",
+      "to": "oauth-client-details-config.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "oauth-client-details-config_en.md",
+      "to": "oauth-client-details-config.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "oauth-client-details-config_zh_CN.md",
+      "to": "oauth-client-details-config.md"
+    }
+  ]
+}

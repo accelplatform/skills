@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "api-database_ja.md",
+      "to": "api-database.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-database_en.md",
+      "to": "api-database.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-database_zh_CN.md",
+      "to": "api-database.md"
+    }
+  ]
+}

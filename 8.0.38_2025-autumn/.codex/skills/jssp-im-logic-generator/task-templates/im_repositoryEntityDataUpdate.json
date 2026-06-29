@@ -1,0 +1,370 @@
+{
+  "kind": "task",
+  "keyId": "im_repositoryEntityDataUpdate",
+  "flowElementSample": {
+    "executeId": "im_repositoryEntityDataUpdate1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_repositoryEntityDataUpdate",
+      "version": null
+    },
+    "label": "エンティティデータの更新",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "entityId": "imprtl_portlet_info_tables_imprtl_portlet_info_bookmarked"
+    },
+    "mappingDefinition": {
+      "mappingRules": [
+        {
+          "id": "f37fb367-8568-42f3-ae66-e36d371b3977",
+          "target": "im_repositoryEntityDataUpdate1/recordDate",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$session_properties/systemDate",
+            "arguments": null
+          }
+        },
+        {
+          "id": "a76b2919-2e90-48b1-a173-efa1fe53d551",
+          "target": "im_repositoryEntityDataUpdate1/userCd",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$account_context/userCd",
+            "arguments": null
+          }
+        },
+        {
+          "id": "1ed864ac-15e2-44d9-9497-d16ccb3598c0",
+          "target": "im_repositoryEntityDataUpdate1/portletId",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$input/input/portletId",
+            "arguments": null
+          }
+        },
+        {
+          "id": "f1de163b-de23-45f7-98dc-0fee182cd228",
+          "target": "im_repositoryEntityDataUpdate1/infoId",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$input/input/infoId",
+            "arguments": null
+          }
+        },
+        {
+          "id": "48188c70-e178-43d4-91aa-cdaa785eee70",
+          "target": "im_repositoryEntityDataUpdate1/bookmarkedFlg",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$input/input/bookmarkedFlg",
+            "arguments": null
+          }
+        }
+      ]
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 60,
+      "y": 700
+    },
+    "id": "4c059077-bfde-4887-9b5d-8cfaa2596eed",
+    "z": 93,
+    "attrs": {
+      "rect.body": {
+        "width": 240,
+        "fill": "#424242"
+      },
+      "rect.icon": {
+        "fill": "#424242"
+      },
+      "rect.title": {
+        "width": 190,
+        "fill": "#757575"
+      },
+      "rect.label": {
+        "width": 190,
+        "fill": "#9e9e9e"
+      },
+      "text.title": {
+        "text": "im_repositoryEntityDataUpdate1"
+      },
+      "text.label": {
+        "text": "エンティティデータの更新"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_repositoryEntityDataUpdate"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "entityId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "エンティティID",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "imrepo_entity_input_imprtl_portlet_info_tables_imprtl_portlet_info_bookmarked",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "imdatetime",
+          "properties": []
+        },
+        {
+          "id": "imrepo_entity_input_imprtl_portlet_info_tables_imprtl_portlet_info_bookmarked",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "portletId",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            },
+            {
+              "typeId": "string",
+              "name": "infoId",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            },
+            {
+              "typeId": "string",
+              "name": "userCd",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            },
+            {
+              "typeId": "string",
+              "name": "bookmarkedFlg",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            },
+            {
+              "typeId": "imdatetime",
+              "name": "recordDate",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            }
+          ]
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_repository_EntityDataUpdateTaskResult",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_repository_EntityDataUpdateTaskResult",
+          "properties": [
+            {
+              "typeId": "integer",
+              "name": "count",
+              "listingType": "none",
+              "basic": true,
+              "required": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "entityId": "imprtl_portlet_info_tables_imprtl_portlet_info_bookmarked"
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const",
+      "$session_properties",
+      "$account_context"
+    ],
+    "additionalKeys": [],
+    "json": {
+      "version": 1,
+      "attrs": {},
+      "connectors": [
+        {
+          "id": "f37fb367-8568-42f3-ae66-e36d371b3977",
+          "source": {
+            "id": "36387027-ce91-494e-ba4d-c5fd59fd5e5c",
+            "type": "$input",
+            "path": "$session_properties\tsystemDate",
+            "port": "out"
+          },
+          "target": {
+            "id": "398dfadf-2fc7-4bf5-a164-57a4d749b0b7",
+            "type": "$output",
+            "path": "im_repositoryEntityDataUpdate1\trecordDate",
+            "port": "in"
+          }
+        },
+        {
+          "id": "a76b2919-2e90-48b1-a173-efa1fe53d551",
+          "source": {
+            "id": "00e1d651-29f2-4ef4-a6b8-5ea9a9266b37",
+            "type": "$input",
+            "path": "$account_context\tuserCd",
+            "port": "out"
+          },
+          "target": {
+            "id": "e81eaac9-981b-48b8-a876-de191e7fb677",
+            "type": "$output",
+            "path": "im_repositoryEntityDataUpdate1\tuserCd",
+            "port": "in"
+          }
+        },
+        {
+          "id": "1ed864ac-15e2-44d9-9497-d16ccb3598c0",
+          "source": {
+            "id": "7150b42d-7adf-482b-9b6c-c1bc9b97d8c7",
+            "type": "$input",
+            "path": "$input\tinput\tportletId",
+            "port": "out"
+          },
+          "target": {
+            "id": "dbafbbc3-5c18-45c3-847b-ccb42353f70b",
+            "type": "$output",
+            "path": "im_repositoryEntityDataUpdate1\tportletId",
+            "port": "in"
+          }
+        },
+        {
+          "id": "f1de163b-de23-45f7-98dc-0fee182cd228",
+          "source": {
+            "id": "134de0ba-67de-45bb-a54e-5967064d1f43",
+            "type": "$input",
+            "path": "$input\tinput\tinfoId",
+            "port": "out"
+          },
+          "target": {
+            "id": "e527d626-5b17-4ae0-85d4-8a22813bbe37",
+            "type": "$output",
+            "path": "im_repositoryEntityDataUpdate1\tinfoId",
+            "port": "in"
+          }
+        },
+        {
+          "id": "48188c70-e178-43d4-91aa-cdaa785eee70",
+          "source": {
+            "id": "2d928469-a4db-4afa-b625-cf29295ae5a8",
+            "type": "$input",
+            "path": "$input\tinput\tbookmarkedFlg",
+            "port": "out"
+          },
+          "target": {
+            "id": "f1305172-d8a2-431a-bd43-a7a0bb43a247",
+            "type": "$output",
+            "path": "im_repositoryEntityDataUpdate1\tbookmarkedFlg",
+            "port": "in"
+          }
+        }
+      ],
+      "size": {
+        "width": 400,
+        "height": 760
+      }
+    }
+  },
+  "optionMap": {
+    "title": "im_repositoryEntityDataUpdate1",
+    "label": "エンティティデータの更新",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

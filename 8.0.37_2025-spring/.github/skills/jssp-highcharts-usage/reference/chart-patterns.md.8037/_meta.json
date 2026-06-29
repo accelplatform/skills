@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "chart-patterns_ja.md",
+      "to": "chart-patterns.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "chart-patterns_en.md",
+      "to": "chart-patterns.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "chart-patterns_zh_CN.md",
+      "to": "chart-patterns.md"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "dynamic-fields_ja.md",
+      "to": "dynamic-fields.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "dynamic-fields_en.md",
+      "to": "dynamic-fields.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "dynamic-fields_zh_CN.md",
+      "to": "dynamic-fields.md"
+    }
+  ]
+}

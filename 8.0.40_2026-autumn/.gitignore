@@ -267,6 +267,7 @@ typings/
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+!.vscode/mcp.json.*/
 !*.code-workspace
 
 # Built Visual Studio Code Extensions

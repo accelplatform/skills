@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": "8.0.40"
+      },
+      {
+        "agent": "codex"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "condition": {
+        "feature": "mcp"
+      },
+      "from": "config.toml.with.mcp",
+      "to": "config.toml"
+    },
+    {
+      "from": "config.toml.else",
+      "to": "config.toml"
+    }
+  ]
+}

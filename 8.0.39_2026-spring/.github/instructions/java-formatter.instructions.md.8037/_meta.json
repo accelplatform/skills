@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "java-formatter_ja.instructions.md",
+      "to": "java-formatter.instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "java-formatter_en.instructions.md",
+      "to": "java-formatter.instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "java-formatter_zh_CN.instructions.md",
+      "to": "java-formatter.instructions.md"
+    }
+  ]
+}

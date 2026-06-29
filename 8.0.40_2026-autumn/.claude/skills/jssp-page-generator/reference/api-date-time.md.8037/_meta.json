@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "api-date-time_ja.md",
+      "to": "api-date-time.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-date-time_en.md",
+      "to": "api-date-time.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-date-time_zh_CN.md",
+      "to": "api-date-time.md"
+    }
+  ]
+}

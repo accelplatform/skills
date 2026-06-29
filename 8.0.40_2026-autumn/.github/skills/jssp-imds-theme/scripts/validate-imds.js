@@ -429,6 +429,19 @@ const IMDS_RULES = [
   // imds-header が無いと、imds テーマのヘッダ CSS が当たらず画面が崩れる。
   // （リファレンス: imds-html-header.md「<header class="imds-header"> は
   //   <main> の外側、imds-container の直下に置く」）
+  //
+  // IMDS-CONTAINER-100: <main> は imds-container の子孫でなければならない。
+  // imds-* クラスが一切ない HTML でも、<main> の存在を手がかりにページ構造の
+  // 不備を検出できるようにするためのルール。
+  // imds-container を使わずに <main> を直書きするパターンは不準拠であるため
+  // エラーとする。フラグメント（<main> を含まない部分テンプレート）は対象外。
+  {
+    id: 'IMDS-CONTAINER-100', component: 'Container', type: 'parent',
+    triggerTag: 'main', triggerClass: null,
+    depth: 'ancestor', parentTag: null, parentClass: 'imds-container',
+    severity: 'error',
+    message: '<main> 要素は div.imds-container の子孫でなければなりません（正しい構造: div.imds-container > header.imds-header + main）'
+  },
   {
     id: 'IMDS-CONTAINER-200', component: 'Container', type: 'required-descendant',
     triggerClass: 'imds-container', triggerTag: 'div',

@@ -179,7 +179,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "description": "タスク種別ID（key.id）。task-templates に存在する、または MCP imLogicGetTaskTemplate で取得可能なもの",
+          "description": "タスク種別ID（key.id）。task-templates に存在する、または MCP get_task_template で取得可能なもの",
           "examples": [
             "im_start",
             "im_end",

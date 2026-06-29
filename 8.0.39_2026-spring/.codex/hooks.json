@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mvn -q -Dorg.slf4j.simpleLogger.logFile=System.err java-formatter:hook -Dagent=codex -Dsettings=.accel/settings.json",
+            "timeout": 30,
+            "statusMessage": "Running java formatter..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mvn -q xml-validator:hook -Dsettings=.accel/settings.json -Dagent=codex",
+            "timeout": 60,
+            "statusMessage": "Running XML validation..."
+          }
+        ]
+      }
+    ]
+  }
+}

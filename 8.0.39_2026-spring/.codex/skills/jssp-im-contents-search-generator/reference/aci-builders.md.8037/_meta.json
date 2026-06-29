@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "aci-builders_ja.md",
+      "to": "aci-builders.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "aci-builders_en.md",
+      "to": "aci-builders.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "aci-builders_zh_CN.md",
+      "to": "aci-builders.md"
+    }
+  ]
+}

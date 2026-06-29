@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "how-to-job-scheduler_ja.md",
+      "to": "how-to-job-scheduler.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "how-to-job-scheduler_en.md",
+      "to": "how-to-job-scheduler.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "how-to-job-scheduler_zh_CN.md",
+      "to": "how-to-job-scheduler.md"
+    }
+  ]
+}

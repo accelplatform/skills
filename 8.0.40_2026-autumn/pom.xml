@@ -14,7 +14,7 @@
     <parent>
         <groupId>jp.co.intra_mart</groupId>
         <artifactId>parent</artifactId>
-        <version>8.0.6-2026-spring</version>
+        <version>8.0.6-2026-autumn</version>
     </parent>
 
     <build>
@@ -28,6 +28,11 @@
                 <groupId>jp.co.intra_mart.harness</groupId>
                 <artifactId>java-formatter-maven-plugin</artifactId>
                 <version>{{JAVA-FORMATTER-MAVEN-PLUGIN-VERSION}}</version>
+            </plugin>
+            <plugin>
+                <groupId>jp.co.intra_mart</groupId>
+                <artifactId>js-jest</artifactId>
+                <version>{{JS-JEST-MAVEN-PLUGIN-VERSION}}</version>
             </plugin>
         </plugins>
     </build>

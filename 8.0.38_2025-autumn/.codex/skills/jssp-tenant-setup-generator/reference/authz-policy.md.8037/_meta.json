@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "authz-policy_ja.md",
+      "to": "authz-policy.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "authz-policy_en.md",
+      "to": "authz-policy.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "authz-policy_zh_CN.md",
+      "to": "authz-policy.md"
+    }
+  ]
+}

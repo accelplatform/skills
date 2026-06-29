@@ -148,6 +148,50 @@ function validate(xmlStr, r) {
   if (flowNodeTypes.includes('0')) r.warn('flow', 'フロー定義に Start ノード（nodeType=0）が含まれている');
   if (flowNodeTypes.includes('1')) r.warn('flow', 'フロー定義に End ノード（nodeType=1）が含まれている');
 
+  // [flow] 確認ノード（nodeType=6）のフロー定義は lumpProcessFlag=0 であること（flow 定義実測）
+  const flowNodeEntries = flowSection.split(/<value type="object">/);
+  for (const entry of flowNodeEntries) {
+    const ntMatch = entry.match(/<nodeType type="string">(\d+)<\/nodeType>/);
+    if (!ntMatch || ntMatch[1] !== '6') continue;
+    if (!/<lumpProcessFlag[^>]*>/.test(entry)) continue;  // フローノードブロックのみ対象
+    const lp = entry.match(/<lumpProcessFlag type="string">([^<]*)<\/lumpProcessFlag>/);
+    if (lp && lp[1] !== '0') {
+      const nid = (entry.match(/<nodeId type="string">([^<]+)<\/nodeId>/) || [])[1] || '(unknown)';
+      r.warn('flow', `確認ノード "${nid}" のフロー定義 lumpProcessFlag が ${lp[1]}（確認ノードは 0 が標準）`);
+    }
+  }
+
+  // [confirm] 確認ノード（route 定義 nodeTyp_Confirm）の整合チェック
+  //   ノード内に権限プラグイン（nodeType=6 を持つ入れ子 value object）があるため、
+  //   <value type="object"> 単純分割では nodeType が上書きされる。よって
+  //   nodeName → nodeType → traceId の構造で各ノード本体を直接抽出する。
+  //   - 終端枝であること（nextNodeIds が空）
+  //   - 接続元（previousNodeIds）が存在すること
+  //   - 拡張ポイントが確認用（...node.confirm）であること
+  const confirmRe = /<nodeId type="string">([^<]+)<\/nodeId>\s*<nodeName type="string">[^<]*<\/nodeName>\s*<nodeType type="string">nodeTyp_Confirm<\/nodeType>([\s\S]*?)<traceId/g;
+  const seenConfirm = new Set();
+  let cmf;
+  while ((cmf = confirmRe.exec(xmlStr)) !== null) {
+    const nid = cmf[1];
+    if (seenConfirm.has(nid)) continue;  // ロケール重複は 1 回に集約
+    seenConfirm.add(nid);
+    const body = cmf[2];
+    const nextBlock = body.match(/<nextNodeIds[^>]*?(?:\/>|>[\s\S]*?<\/nextNodeIds>)/);
+    const nexts = nextBlock ? [...nextBlock[0].matchAll(/<value type="string">([^<]+)<\/value>/g)].map(x => x[1]) : [];
+    if (nexts.length > 0) {
+      r.error('confirm', `確認ノード "${nid}" は終端枝であるべきだが nextNodeIds が空でない（${nexts.join(', ')}）`);
+    }
+    const prevBlock = body.match(/<previousNodeIds[^>]*?(?:\/>|>[\s\S]*?<\/previousNodeIds>)/);
+    const prevs = prevBlock ? [...prevBlock[0].matchAll(/<value type="string">([^<]+)<\/value>/g)].map(x => x[1]) : [];
+    if (prevs.length === 0) {
+      r.error('confirm', `確認ノード "${nid}" に接続元（previousNodeIds）がない。承認ノード等から紐付ける必要がある`);
+    }
+    const epm = body.match(/<extensionPointId type="string">([^<]+)<\/extensionPointId>/);
+    if (epm && !epm[1].includes('.node.confirm')) {
+      r.error('confirm', `確認ノード "${nid}" の拡張ポイントが確認用（...node.confirm）でない: "${epm[1]}"`);
+    }
+  }
+
   // [id] ID 相互参照
   const contentsIdMatch = xmlStr.match(/<contentsId type="string">([^<]+)<\/contentsId>/);
   const routeIdMatch = xmlStr.match(/<routeId type="string">([^<]+)<\/routeId>/);
@@ -259,7 +303,7 @@ function validate(xmlStr, r) {
       const nodeTypeMap = {};
       // nodeId → [nextNodeId] のマップ
       const nextNodeMap = {};
-      // nodeId → extensionPointId のマップ
+      // nodeId → extensionPointId のマップ（approve 系のみ）
       const nodeExtPointMap = {};
 
       // 各ノードブロックを <value type="object"> で分割

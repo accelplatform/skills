@@ -7,8 +7,8 @@
 
       <repositories>
         <repository>
-          <id>pre-maven</id>
-          <url>https://pre-maven.intra-mart.jp/</url>
+          <id>intra-mart-maven</id>
+          <url>https://maven.intra-mart.jp/</url>
         </repository>
 
         <repository>
@@ -19,8 +19,8 @@
 
       <pluginRepositories>
         <pluginRepository>
-          <id>pre-maven</id>
-          <url>https://pre-maven.intra-mart.jp/</url>
+          <id>intra-mart-maven</id>
+          <url>https://maven.intra-mart.jp/</url>
         </pluginRepository>
         <pluginRepository>
           <id>central</id>

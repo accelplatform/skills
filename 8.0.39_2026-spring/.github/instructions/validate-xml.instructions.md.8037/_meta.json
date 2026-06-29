@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "validate-xml_ja.instructions.md",
+      "to": "validate-xml.instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "validate-xml_en.instructions.md",
+      "to": "validate-xml.instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "validate-xml_zh_CN.instructions.md",
+      "to": "validate-xml.instructions.md"
+    }
+  ]
+}

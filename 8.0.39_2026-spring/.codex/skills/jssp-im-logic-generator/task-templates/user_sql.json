@@ -1,0 +1,438 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-sql",
+  "definitionType": "sql",
+  "flowElementSample": {
+    "executeId": "sample-sql",
+    "alias": "sample_sql",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-sql",
+      "version": null
+    },
+    "label": "サンプル SQL 定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-sql",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "sql",
+        "definitionName": "Sample SQL Definition",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_queryExecutor",
+          "iconId": null,
+          "elementProperties": {
+            "query": "SELECT\n  *\nFROM\n  your_table\nWHERE\n  id = /*param1*/'dummyId'\nORDER BY id ASC\n",
+            "queryType": "SELECT",
+            "databaseType": "TENANT",
+            "connectId": "default",
+            "limitation": false
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "param1",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "param2",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "im_logic_object_1",
+                    "name": "records",
+                    "description": null,
+                    "listingType": "list",
+                    "required": false,
+                    "basic": false
+                  },
+                  {
+                    "typeId": "integer",
+                    "name": "count",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "query",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "im_logic_object_1",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "column1",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "bigdecimal",
+                    "name": "column2",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              },
+              {
+                "id": "integer",
+                "properties": []
+              },
+              {
+                "id": "bigdecimal",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプル SQL 定義",
+          "en": "Sample SQL Definition",
+          "zh_CN": "示例 SQL 定义"
+        }
+      },
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 90,
+      "y": 470
+    },
+    "id": "71eb4282-6560-4f23-97f4-58deaf771668",
+    "z": 11,
+    "attrs": {
+      "text.title": {
+        "text": "sample_sql"
+      },
+      "text.label": {
+        "text": "サンプル SQL 定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-sql"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "param1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "param2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "im_logic_object_1",
+              "name": "records",
+              "listingType": "list",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "integer",
+              "name": "count",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "query",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "im_logic_object_1",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "column1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "bigdecimal",
+              "name": "column2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "bigdecimal",
+          "properties": []
+        }
+      ]
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-sql",
+      "version": 1,
+      "definitionType": "sql",
+      "definitionName": "Sample SQL Definition",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_queryExecutor",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "param1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "param2",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "records",
+                  "typeId": "im_logic_object_1",
+                  "listingType": "list",
+                  "basic": false
+                },
+                {
+                  "name": "count",
+                  "typeId": "integer",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "query",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "im_logic_object_1",
+              "properties": [
+                {
+                  "name": "column1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "column2",
+                  "typeId": "bigdecimal",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            },
+            {
+              "id": "integer",
+              "properties": []
+            },
+            {
+              "id": "bigdecimal",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "query": "SELECT\n  *\nFROM\n  your_table\nWHERE\n  id = /*param1*/'dummyId'\nORDER BY id ASC\n",
+          "queryType": "SELECT",
+          "databaseType": "TENANT",
+          "connectId": "default",
+          "limitation": false
+        }
+      },
+      "localize": {
+        "ja": "サンプル SQL 定義",
+        "en": "Sample SQL Definition",
+        "zh_CN": "示例 SQL 定义"
+      }
+    },
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_sql",
+    "label": "サンプル SQL 定義",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

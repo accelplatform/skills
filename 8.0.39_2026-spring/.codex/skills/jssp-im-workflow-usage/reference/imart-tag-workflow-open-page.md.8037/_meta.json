@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "imart-tag-workflow-open-page_ja.md",
+      "to": "imart-tag-workflow-open-page.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "imart-tag-workflow-open-page_en.md",
+      "to": "imart-tag-workflow-open-page.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imart-tag-workflow-open-page_zh_CN.md",
+      "to": "imart-tag-workflow-open-page.md"
+    }
+  ]
+}

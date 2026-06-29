@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "simple-confirm-screen_ja.md",
+      "to": "simple-confirm-screen.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "simple-confirm-screen_en.md",
+      "to": "simple-confirm-screen.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-confirm-screen_zh_CN.md",
+      "to": "simple-confirm-screen.md"
+    }
+  ]
+}

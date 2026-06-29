@@ -1,0 +1,152 @@
+{
+  "kind": "task",
+  "keyId": "im_endUserSwitcher",
+  "flowElementSample": {
+    "executeId": "im_endUserSwitcher1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_endUserSwitcher",
+      "version": null
+    },
+    "label": "ユーザ切り替え終了",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 1560
+    },
+    "id": "19eb8bc0-4be0-479a-ae33-6ccedebf9fd9",
+    "z": 41,
+    "attrs": {
+      "text.title": {
+        "text": "im_endUserSwitcher1"
+      },
+      "text.label": {
+        "text": "ユーザ切り替え終了"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_endUserSwitcher"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_endUserSwitcher1",
+    "label": "ユーザ切り替え終了",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

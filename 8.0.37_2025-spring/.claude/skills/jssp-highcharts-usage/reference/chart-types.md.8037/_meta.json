@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "chart-types_ja.md",
+      "to": "chart-types.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "chart-types_en.md",
+      "to": "chart-types.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "chart-types_zh_CN.md",
+      "to": "chart-types.md"
+    }
+  ]
+}

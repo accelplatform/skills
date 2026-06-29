@@ -54,7 +54,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "mvn -q -s settings.xml xml-validator:hook -Dsettings=.accel/settings.json -Dagent=claude-code",
+            "if": "Write(src/**/*.xml)",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && mvn -q xml-validator:hook -Dsettings=.accel/settings.json -Dagent=claude-code",
+            "timeout": 30,
+            "statusMessage": "Running XML validation..."
+          },
+          {
+            "type": "command",
+            "if": "Edit(src/**/*.xml)",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && mvn -q xml-validator:hook -Dsettings=.accel/settings.json -Dagent=claude-code",
             "timeout": 30,
             "statusMessage": "Running XML validation..."
           }
@@ -66,7 +74,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "mvn -q -s settings.xml -Dorg.slf4j.simpleLogger.logFile=System.err java-formatter:hook -Dsettings=.accel/settings.json",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && mvn -q -Dorg.slf4j.simpleLogger.logFile=System.err java-formatter:hook -Dsettings=.accel/settings.json -Dagent=claude-code",
             "timeout": 60,
             "statusMessage": "Running Java formatter..."
           }

@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "api-role-info-manager_ja.md",
+      "to": "api-role-info-manager.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-role-info-manager_en.md",
+      "to": "api-role-info-manager.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-role-info-manager_zh_CN.md",
+      "to": "api-role-info-manager.md"
+    }
+  ]
+}

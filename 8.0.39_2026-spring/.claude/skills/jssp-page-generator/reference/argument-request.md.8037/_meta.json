@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "argument-request_ja.md",
+      "to": "argument-request.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "argument-request_en.md",
+      "to": "argument-request.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "argument-request_zh_CN.md",
+      "to": "argument-request.md"
+    }
+  ]
+}

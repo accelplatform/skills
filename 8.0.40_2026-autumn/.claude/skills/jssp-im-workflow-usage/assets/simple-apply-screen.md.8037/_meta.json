@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "simple-apply-screen_ja.md",
+      "to": "simple-apply-screen.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "simple-apply-screen_en.md",
+      "to": "simple-apply-screen.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-apply-screen_zh_CN.md",
+      "to": "simple-apply-screen.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{AGENT_RULES}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": "rules"
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": "instructions"
+        },
+        {
+          "condition": {
+            "agent": "codex"
+          },
+          "value": "requirements"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "target": "{{AGENT_RULE_FILE}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": ""
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": ""
+        },
+        {
+          "condition": {
+            "agent": "codex"
+          },
+          "value": "/AGENTS"
+        }
+      ]
+    }
+  ]
+}

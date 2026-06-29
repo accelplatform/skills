@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "imds-html-icon-font_ja.md",
+      "to": "imds-html-icon-font.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "imds-html-icon-font_en.md",
+      "to": "imds-html-icon-font.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imds-html-icon-font_zh_CN.md",
+      "to": "imds-html-icon-font.md"
+    }
+  ]
+}

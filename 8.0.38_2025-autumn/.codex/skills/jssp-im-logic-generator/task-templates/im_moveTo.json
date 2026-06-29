@@ -1,0 +1,204 @@
+{
+  "kind": "task",
+  "keyId": "im_moveTo",
+  "flowElementSample": {
+    "executeId": "im_moveTo1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_moveTo",
+      "version": null
+    },
+    "label": "ファイルおよびディレクトリの移動",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "overwrite": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 320,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 780,
+      "y": 140
+    },
+    "id": "3b3ddc7f-9640-4495-bab2-44d9c15fa543",
+    "z": 133,
+    "attrs": {
+      "rect.body": {
+        "width": 320,
+        "fill": "#0096a6"
+      },
+      "rect.icon": {
+        "fill": "#0096a6"
+      },
+      "rect.title": {
+        "width": 270,
+        "fill": "#00bbd3"
+      },
+      "rect.label": {
+        "width": 270,
+        "fill": "#25c5d9"
+      },
+      "text.title": {
+        "text": "im_moveTo1"
+      },
+      "text.label": {
+        "text": "ファイルおよびディレクトリの移動"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_moveTo"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "overwrite",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "上書きする",
+        "text": "上書きする",
+        "options": [
+          {
+            "name": "overwrite",
+            "label": "overwrite",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_storage_MoveToStorageInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_storage_MoveToStorageInfo",
+          "properties": [
+            {
+              "typeId": "storage",
+              "name": "from",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "storage",
+              "name": "to",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "storage",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "overwrite": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_moveTo1",
+    "label": "ファイルおよびディレクトリの移動",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

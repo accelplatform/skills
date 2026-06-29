@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "file-upload-download-api_ja.md",
+      "to": "file-upload-download-api.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "file-upload-download-api_en.md",
+      "to": "file-upload-download-api.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "file-upload-download-api_zh_CN.md",
+      "to": "file-upload-download-api.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{AGENT_RULES}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": "rules"
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": "instructions"
+        },
+        {
+          "condition": {
+            "agent": "codex"
+          },
+          "value": "requirements"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "target": "{{AGENT_RULE_FILE}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": ""
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": ""
+        },
+        {
+          "condition": {
+            "agent": "codex"
+          },
+          "value": "/AGENTS"
+        }
+      ]
+    }
+  ]
+}

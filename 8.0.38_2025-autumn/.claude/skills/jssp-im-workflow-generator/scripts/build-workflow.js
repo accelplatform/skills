@@ -56,29 +56,35 @@ const PAGE_NAMES = {
 // ノードタイプマッピング
 const NODE_TYPE_STR = {
   start: 'nodeTyp_Start', end: 'nodeTyp_End', apply: 'nodeTyp_Apply', approve: 'nodeTyp_Approve',
+  confirm: 'nodeTyp_Confirm',
   branch_start: 'nodeTyp_Branch_Start', branch_end: 'nodeTyp_Branch_End',
   sync_start: 'nodeTyp_Sync_Start', sync_end: 'nodeTyp_Sync_End',
   horizontal: 'nodeTyp_Horizontal', vertical: 'nodeTyp_Vertical',
 };
 const NODE_TYPE_NUM = {
   start: '0', end: '1', apply: '2', approve: '3',
+  confirm: '6',
   branch_start: '9', branch_end: '10',
   sync_start: '7', sync_end: '8',
   horizontal: '11', vertical: '12',
 };
 const NODE_VARIETY = {
   start: 'system', end: 'system', apply: 'human', approve: 'human',
+  confirm: 'human',
   branch_start: 'system', branch_end: 'system',
   sync_start: 'system', sync_end: 'system',
   horizontal: 'human', vertical: 'human',
 };
 
 // extensionPointId の判定
-const HUMAN_TYPES = new Set(['apply', 'approve', 'horizontal', 'vertical']);
+// confirm は human ノードだが、確認（閲覧のみ・承認権限なし）の特殊ノード。
+// next を持たない終端枝として承認ノード等にぶら下げる（route 定義参照）。
+const HUMAN_TYPES = new Set(['apply', 'approve', 'confirm', 'horizontal', 'vertical']);
 function isHumanNode(type) { return HUMAN_TYPES.has(type); }
 
 function getExtensionPointId(node, prevNode) {
   if (node.type === 'apply') return 'jp.co.intra_mart.workflow.plugin.authority.node.apply';
+  if (node.type === 'confirm') return 'jp.co.intra_mart.workflow.plugin.authority.node.confirm';
   // approve 系: 直前ノードが human なら approve、system なら approve.static
   if (prevNode && isHumanNode(prevNode.type)) {
     return 'jp.co.intra_mart.workflow.plugin.authority.node.approve';
@@ -213,7 +219,7 @@ function resolveNodes(spec) {
 }
 
 function defaultNodeName(type) {
-  const m = { start: 'Start', end: 'End', apply: 'Apply', branch_start: 'Start branch', branch_end: 'End branch', sync_start: 'Sync start', sync_end: 'Sync end' };
+  const m = { start: 'Start', end: 'End', apply: 'Apply', approve: 'Approve', confirm: 'Confirm', branch_start: 'Start branch', branch_end: 'End branch', sync_start: 'Sync start', sync_end: 'Sync end' };
   return m[type] || '';
 }
 
@@ -386,11 +392,13 @@ function calculateCoordinates(nodes, pattern) {
     }
 
     // 通常ノード: 次のノードへ（branch_end/sync_end は親が管理するのでスキップ）
+    // confirm は終端枝のため本線レイアウトでは辿らず、後段で親の真下に配置する
     let nextX = x + stepXForNode(n);
     for (const nid of n.next) {
       if (placed.has(nid)) continue;
       const nn = byFullId[nid];
       if (nn && (nn.type === 'branch_end' || nn.type === 'sync_end')) continue;
+      if (nn && nn.type === 'confirm') continue;
       nextX = layoutNode(nid, nextX, y, depth);
     }
     return nextX;
@@ -436,6 +444,18 @@ function calculateCoordinates(nodes, pattern) {
     layoutNode(startNode.fullId, 50, 50, 0);
   }
 
+  // confirm ノードは親（previousNodeId = 接続元ノード）の真下に配置（route 定義実測: y = 親 + 140）
+  const CONFIRM_Y_OFFSET = 140;
+  for (const n of nodes) {
+    if (n.type !== 'confirm' || placed.has(n.fullId)) continue;
+    const parent = nodes.find(p => p.next.includes(n.fullId));
+    if (parent) {
+      n.x = parent.x;
+      n.y = parent.y + CONFIRM_Y_OFFSET;
+      placed.add(n.fullId);
+    }
+  }
+
   // 未配置ノードがあれば末尾に配置
   let fallbackX = 50;
   for (const n of nodes) {
@@ -453,6 +473,7 @@ function calculateTraceIds(nodes, spec) {
   for (const n of nodes) {
     if (n.type === 'start') { n.traceId = '0.0'; }
     else if (n.type === 'end') { n.traceId = '0.0'; }
+    else if (n.type === 'confirm') { n.traceId = ''; }  // 確認ノードは traceId 空（route 定義実測）
     else { n.traceId = `0.${idx}`; }
     idx++;
   }
@@ -488,7 +509,11 @@ function resolvePlugins(nodes, spec) {
     const isDynamic = suffix.startsWith('apply_user_') || suffix.startsWith('before_user_');
     let parameter = n.plugin.parameter || '';
     let targetType = n.plugin.targetType || inferTargetType(suffix);
-    let targetCode = n.plugin.targetCode || '';
+    // logic_flow_user: targetCode をオブジェクトで渡された場合は JSON 文字列に変換する
+    let rawTargetCode = n.plugin.targetCode || '';
+    let targetCode = (suffix === 'logic_flow_user' && typeof rawTargetCode === 'object' && rawTargetCode !== null)
+      ? JSON.stringify(rawTargetCode)
+      : rawTargetCode;
 
     // 動的プラグイン: parameter は "|company^orgSet^code" 形式
     if (isDynamic && n.plugin.targetCode && !parameter) {
@@ -595,6 +620,7 @@ function inferTargetType(suffix) {
     role: 'role', user: 'user', post: 'post', department: 'department',
     department_and_post: 'departmentAndPost', department_and_role: 'departmentAndRole',
     public_group_and_role: 'publicGroupAndRole',
+    logic_flow_user: 'logic_flow_user',
   };
   // dynamic types have empty targetType
   if (suffix.startsWith('apply_user_') || suffix.startsWith('before_user_')) return '';
@@ -672,7 +698,9 @@ function buildContents(xml, ctx) {
     //                        ・上記以外 → basePath + suffix
     const defaultPageMap = [
       { key: 'apply',         suffix: 'apply/index',          type: '0' },
-      { key: 'tempSave',      suffix: 'tempsave/index',       type: '1' },
+      // 一時保存(1)は既定で申請画面を共用する（申請画面が showTemporarySave で一時保存も兼ねる設計が前提）。
+      // 専用の一時保存画面が必要な場合のみ spec.json の screens.tempSave にパスを明示する。
+      { key: 'tempSave',      suffix: 'tempsave/index',       type: '1', sharedWith: 'apply' },
       { key: 'applyTask',     suffix: 'apply_task/index',     type: '2', defaultOmit: true },
       { key: 'reapply',       suffix: 'apply/index',          type: '3', sharedWith: 'apply' },
       { key: 'process',       suffix: 'approve/index',        type: '4' },
@@ -1031,8 +1059,10 @@ function buildFlow(xml, ctx) {
       xml.tagStr('nodeType', n.nodeTypeNum);
       const isSystem = !isHumanNode(n.type);
       const isHuman = isHumanNode(n.type);
-      xml.tagStr('lumpProcessFlag', isHuman ? '1' : null);
-      xml.tagStr('attachFileFlag', isHuman ? (n.type === 'apply' ? '2' : '1') : null);
+      // 確認ノードは human だが lumpProcessFlag=0 / attachFileFlag=0（flow 定義実測）
+      const isConfirm = n.type === 'confirm';
+      xml.tagStr('lumpProcessFlag', isConfirm ? '0' : (isHuman ? '1' : null));
+      xml.tagStr('attachFileFlag', isConfirm ? '0' : (isHuman ? (n.type === 'apply' ? '2' : '1') : null));
       xml.tagStr('autoProcessFlag', isSystem ? null : '0');
       xml.tagNull('autoProcessLimitDay');
       xml.tagStr('autoProcessLimitType', isSystem ? null : '0');

@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "java-api-classes_ja.md",
+      "to": "java-api-classes.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "java-api-classes_en.md",
+      "to": "java-api-classes.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "java-api-classes_zh_CN.md",
+      "to": "java-api-classes.md"
+    }
+  ]
+}

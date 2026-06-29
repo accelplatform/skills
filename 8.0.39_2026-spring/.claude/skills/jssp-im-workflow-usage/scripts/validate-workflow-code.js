@@ -303,6 +303,43 @@ const WF_FUNCTION_RULES = {
         }
         return findings;
       }
+    },
+    {
+      id: 'WF-HTML-005',
+      description: "一時保存（workflowOpenPage('1')）を使うが、対応する .js で userDataId を採番していない",
+      message: "一時保存（workflowOpenPage('1')）を使う場合、対応する .js の init で userDataId をアプリ側で採番してください（例: $imwUserDataId = request['imwUserDataId'] || Identifier.get();）。" +
+        "ユーザデータID は一時保存情報のキーであり、採番が無いと新規一時保存時にキーが空になり、申請画面で再表示しても入力内容が復元されません。" +
+        "処理モーダル方式（showTemporarySave）は内部で自動採番されるため対象外です。",
+      severity: 'warning',
+      check: function (content, lines, filePath) {
+        let findings = [];
+        // 一時保存ボタン（workflowOpenPage('1')）を使っているか
+        let tempSaveLine = -1;
+        for (let i = 0; i < lines.length; i++) {
+          if (/workflowOpenPage\(\s*['"]1['"]\s*[,)]/.test(lines[i])) {
+            tempSaveLine = i;
+            break;
+          }
+        }
+        if (tempSaveLine === -1) return findings;
+
+        // 対応する index.js（同ディレクトリ・同名）を読み、userDataId 採番（Identifier.get）があるか確認
+        let jsPath = (filePath || '').replace(/\.html$/, '.js');
+        let jsContent = '';
+        try {
+          if (jsPath && fs.existsSync(jsPath)) {
+            jsContent = fs.readFileSync(jsPath, 'utf8');
+          }
+        } catch (e) {
+          return findings;  // 読めない場合はスキップ（誤検知を避ける）
+        }
+        // Identifier.get() による採番があれば OK
+        if (/Identifier\s*\.\s*get\s*\(/.test(jsContent)) return findings;
+
+        // 採番が見つからない → 警告（一時保存ボタンの行を報告）
+        findings.push({ line: tempSaveLine });
+        return findings;
+      }
     }
   ]
 };

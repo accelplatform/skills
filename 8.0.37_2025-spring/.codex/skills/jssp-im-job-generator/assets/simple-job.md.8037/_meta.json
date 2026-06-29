@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "simple-job_ja.md",
+      "to": "simple-job.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "simple-job_en.md",
+      "to": "simple-job.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-job_zh_CN.md",
+      "to": "simple-job.md"
+    }
+  ]
+}

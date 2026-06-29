@@ -120,12 +120,8 @@
     }
   ],
 
+  "_comment_authzPolicies": "tenant_manager は全 service リソース・全メニューグループに自動付与されるため記述不要。それ以外の対象ロール／ユーザのみ記述する。",
   "authzPolicies": [
-    { "resource": "any-app-content-maintenance",  "type": "service", "action": "execute", "subject": "S(b_m_role:tenant_manager)", "effect": "PERMIT" },
-    { "resource": "any-app-route-maintenance",    "type": "service", "action": "execute", "subject": "S(b_m_role:tenant_manager)", "effect": "PERMIT" },
-    { "resource": "any-app-import-maintenance",   "type": "service", "action": "execute", "subject": "S(b_m_role:tenant_manager)", "effect": "PERMIT" },
-    { "resource": "any-app-export-maintenance",   "type": "service", "action": "execute", "subject": "S(b_m_role:tenant_manager)", "effect": "PERMIT" },
-
     { "resource": "any-app-content-maintenance",  "type": "service", "action": "execute", "subject": "S(b_m_role:app_manager)",    "effect": "PERMIT" },
     { "resource": "any-app-route-maintenance",    "type": "service", "action": "execute", "subject": "S(b_m_role:app_manager)",    "effect": "PERMIT" },
     { "resource": "any-app-import-maintenance",   "type": "service", "action": "execute", "subject": "S(b_m_role:app_manager)",    "effect": "PERMIT" },
@@ -134,7 +130,6 @@
     { "resource": "any-app-search-master", "type": "service", "action": "execute", "subject": "S(im_authz_meta_subject:authenticated)", "effect": "PERMIT" },
     { "resource": "any-app-item_select",   "type": "service", "action": "execute", "subject": "S(im_authz_meta_subject:authenticated)", "effect": "PERMIT" },
 
-    { "resource": "REPLACE_WITH_MENU_GROUP_HASH", "type": "im-menu-group", "action": "read", "subject": "S(b_m_role:tenant_manager)", "effect": "PERMIT" },
     { "resource": "REPLACE_WITH_MENU_GROUP_HASH", "type": "im-menu-group", "action": "read", "subject": "S(b_m_role:app_manager)",    "effect": "PERMIT" }
   ],
 

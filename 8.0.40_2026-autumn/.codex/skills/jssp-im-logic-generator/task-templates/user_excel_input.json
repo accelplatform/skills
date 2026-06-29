@@ -1,0 +1,500 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-excel-input",
+  "definitionType": "excel_in",
+  "flowElementSample": {
+    "executeId": "sample-excel-input",
+    "alias": "sample_excel_input",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-excel-input",
+      "version": null
+    },
+    "label": "サンプル Excel 入力定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-excel-input",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "excel_in",
+        "definitionName": "Sample Excel Input",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_excelInput",
+          "iconId": null,
+          "elementProperties": {
+            "selectSheetType": "NAME",
+            "cells": [
+              {
+                "sheet": "Sheet1",
+                "address": "A1",
+                "paramName": "param1",
+                "dataType": "NUMERIC"
+              }
+            ],
+            "tables": [
+              {
+                "sheet": "Sheet1",
+                "arrParamName": "records1",
+                "startCol": "A",
+                "endCol": "B",
+                "cols": [
+                  {
+                    "name": "A",
+                    "paramName": "columnA",
+                    "dataType": "NUMERIC",
+                    "disuse": false
+                  },
+                  {
+                    "name": "B",
+                    "paramName": "columnB",
+                    "dataType": "NUMERIC",
+                    "disuse": false
+                  }
+                ],
+                "startRow": "1",
+                "inputEndCondition": "ALL_EMPTY",
+                "notReadLastRow": false,
+                "useBeforeValue": false
+              }
+            ],
+            "dataTypeLenient": true
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "storage",
+                    "name": "file",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "timezone",
+                    "name": "targetTimezone",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "password",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              },
+              {
+                "id": "timezone",
+                "properties": []
+              },
+              {
+                "id": "storage",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "double",
+                    "name": "param1",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "im_logic_object_1",
+                    "name": "records1",
+                    "description": null,
+                    "listingType": "list",
+                    "basic": false,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "im_logic_object_1",
+                "properties": [
+                  {
+                    "typeId": "double",
+                    "name": "columnA",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "double",
+                    "name": "columnB",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "double",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプル Excel 入力定義",
+          "en": "Sample Excel Input",
+          "zh_CN": "示例 Excel 输入定义"
+        }
+      },
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 90,
+      "y": 470
+    },
+    "id": "f8c3b440-4d5e-4f6a-8b7c-9d0e1f2a3b34",
+    "z": 11,
+    "attrs": {
+      "text.title": {
+        "text": "sample_excel_input"
+      },
+      "text.label": {
+        "text": "サンプル Excel 入力定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-excel-input"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "storage",
+              "name": "file",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "timezone",
+              "name": "targetTimezone",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "password",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "timezone",
+          "properties": []
+        },
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "double",
+              "name": "param1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "im_logic_object_1",
+              "name": "records1",
+              "listingType": "list",
+              "required": false,
+              "basic": false
+            }
+          ]
+        },
+        {
+          "id": "im_logic_object_1",
+          "properties": [
+            {
+              "typeId": "double",
+              "name": "columnA",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "double",
+              "name": "columnB",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "double",
+          "properties": []
+        }
+      ]
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-excel-input",
+      "version": 1,
+      "definitionType": "excel_in",
+      "definitionName": "Sample Excel Input",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_excelInput",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "file",
+                  "typeId": "storage",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "targetTimezone",
+                  "typeId": "timezone",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "password",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            },
+            {
+              "id": "timezone",
+              "properties": []
+            },
+            {
+              "id": "storage",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "param1",
+                  "typeId": "double",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "records1",
+                  "typeId": "im_logic_object_1",
+                  "listingType": "list",
+                  "basic": false
+                }
+              ]
+            },
+            {
+              "id": "im_logic_object_1",
+              "properties": [
+                {
+                  "name": "columnA",
+                  "typeId": "double",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "columnB",
+                  "typeId": "double",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "double",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "selectSheetType": "NAME",
+          "cells": [
+            {
+              "sheet": "Sheet1",
+              "address": "A1",
+              "paramName": "param1",
+              "dataType": "NUMERIC"
+            }
+          ],
+          "tables": [
+            {
+              "sheet": "Sheet1",
+              "arrParamName": "records1",
+              "startCol": "A",
+              "endCol": "B",
+              "cols": [
+                {
+                  "name": "A",
+                  "paramName": "columnA",
+                  "dataType": "NUMERIC",
+                  "disuse": false
+                },
+                {
+                  "name": "B",
+                  "paramName": "columnB",
+                  "dataType": "NUMERIC",
+                  "disuse": false
+                }
+              ],
+              "startRow": "1",
+              "inputEndCondition": "ALL_EMPTY",
+              "notReadLastRow": false,
+              "useBeforeValue": false
+            }
+          ],
+          "dataTypeLenient": true
+        }
+      },
+      "localize": {
+        "ja": "サンプル Excel 入力定義",
+        "en": "Sample Excel Input",
+        "zh_CN": "示例 Excel 输入定义"
+      }
+    },
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_excel_input",
+    "label": "サンプル Excel 入力定義",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

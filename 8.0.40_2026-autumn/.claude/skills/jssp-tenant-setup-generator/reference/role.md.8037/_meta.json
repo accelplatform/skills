@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "role_ja.md",
+      "to": "role.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "role_en.md",
+      "to": "role.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "role_zh_CN.md",
+      "to": "role.md"
+    }
+  ]
+}

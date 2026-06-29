@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "api-debug_ja.md",
+      "to": "api-debug.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-debug_en.md",
+      "to": "api-debug.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-debug_zh_CN.md",
+      "to": "api-debug.md"
+    }
+  ]
+}

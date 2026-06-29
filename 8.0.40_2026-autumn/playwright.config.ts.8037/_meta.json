@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "feature": "e2e"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "from": "playwright.config.ts.std",
+      "to": "playwright.config.ts"
+    }
+  ]
+}

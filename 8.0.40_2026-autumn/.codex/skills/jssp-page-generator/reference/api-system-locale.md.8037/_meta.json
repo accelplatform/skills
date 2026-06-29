@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "api-system-locale_ja.md",
+      "to": "api-system-locale.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-system-locale_en.md",
+      "to": "api-system-locale.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-system-locale_zh_CN.md",
+      "to": "api-system-locale.md"
+    }
+  ]
+}

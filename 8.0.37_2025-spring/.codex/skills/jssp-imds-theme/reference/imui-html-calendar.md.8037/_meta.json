@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "imui-html-calendar_ja.md",
+      "to": "imui-html-calendar.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "imui-html-calendar_en.md",
+      "to": "imui-html-calendar.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imui-html-calendar_zh_CN.md",
+      "to": "imui-html-calendar.md"
+    }
+  ]
+}

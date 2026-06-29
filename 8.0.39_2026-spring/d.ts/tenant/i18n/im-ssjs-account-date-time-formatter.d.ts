@@ -27,7 +27,7 @@ declare class AccountDateTimeFormatter {
    * @param formatId フォーマットID
    * @return 整形された日付/時刻文字列
    */
-  static format(date: Date, formatId?: string): string;
+  static format(date: Date, ...formatId: string[]): string;
 
   /**
    * DateTime を日付/時刻文字列に整形します。
@@ -36,7 +36,7 @@ declare class AccountDateTimeFormatter {
    * @param formatId フォーマットID
    * @return 整形された日付/時刻文字列
    */
-  static format(dateTime: DateTime, formatId?: string): string;
+  static format(dateTime: DateTime, ...formatId: string[]): string;
 
   /**
    * ログインユーザのフォーマットパターンを取得します。
@@ -44,7 +44,7 @@ declare class AccountDateTimeFormatter {
    * @param formatId フォーマットID
    * @return フォーマットパターン文字列
    */
-  static getPattern(formatId?: string): string;
+  static getPattern(...formatId: string[]): string;
 
   /**
    * 文字列を解析して Date を生成します。
@@ -53,7 +53,7 @@ declare class AccountDateTimeFormatter {
    * @param formatId フォーマットID
    * @return 解析された Date
    */
-  static parseToDate(text: string, formatId?: string): Date;
+  static parseToDate(text: string, ...formatId: string[]): Date;
 
   /**
    * 文字列を解析して DateTime を生成します。
@@ -62,7 +62,7 @@ declare class AccountDateTimeFormatter {
    * @param formatId フォーマットID
    * @return 解析された DateTime
    */
-  static parseToDateTime(text: string, formatId?: string): DateTime;
+  static parseToDateTime(text: string, ...formatId: string[]): DateTime;
 
   /**
    * 2 時点間の期間を日数に変換します。

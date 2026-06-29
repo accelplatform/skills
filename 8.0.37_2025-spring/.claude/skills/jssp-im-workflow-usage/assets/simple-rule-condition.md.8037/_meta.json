@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "simple-rule-condition_ja.md",
+      "to": "simple-rule-condition.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "simple-rule-condition_en.md",
+      "to": "simple-rule-condition.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-rule-condition_zh_CN.md",
+      "to": "simple-rule-condition.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{AGENT_RULES}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": "rules"
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": "instructions"
+        },
+        {
+          "condition": {
+            "agent": "codex"
+          },
+          "value": "requirements"
+        }
+      ]
+    }
+  ]
+}

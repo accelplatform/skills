@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "api-im-workflow-modal_ja.md",
+      "to": "api-im-workflow-modal.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-im-workflow-modal_en.md",
+      "to": "api-im-workflow-modal.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-im-workflow-modal_zh_CN.md",
+      "to": "api-im-workflow-modal.md"
+    }
+  ]
+}

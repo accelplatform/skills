@@ -379,11 +379,20 @@ function resolveMenuGroupHashResource(resource, type, spec) {
   return resource;
 }
 
+// テナント管理者は暗黙のデフォルトとして全 service リソースに許可する（プロジェクト規約）。
+// 他のロール／ユーザは spec.authzPolicies に明示された場合のみ付与される。
+const DEFAULT_TENANT_MANAGER_SUBJECT = 'S(b_m_role:tenant_manager)';
+
 function buildAuthzPolicy(spec) {
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<root xmlns="http://www.intra-mart.jp/authz/imex/policy">',
   ];
+  // (resource, type, subject) で重複を検出するためのキー集合
+  const emitted = new Set();
+  const keyOf = function (resource, type, subject) {
+    return type + ' ' + resource + ' ' + subject;
+  };
   for (const p of spec.authzPolicies || []) {
     const effect = p.effect || 'PERMIT';
     const resource = resolveMenuGroupHashResource(p.resource, p.type, spec);
@@ -395,6 +404,47 @@ function buildAuthzPolicy(spec) {
         + escapeXml(effect)
         + '</authz-policy>'
     );
+    emitted.add(keyOf(resource, p.type, p.subject));
+  }
+  // 既定ポリシー: テナント管理者を全 service リソース（authzResources）に PERMIT で自動付与。
+  // 既に同一 (resource, service, tenant_manager) のポリシーが明示されている場合は二重出力しない。
+  const defaultResources = [];
+  for (const r of spec.authzResources || []) {
+    if (!r || !r.id) continue;
+    if (emitted.has(keyOf(r.id, 'service', DEFAULT_TENANT_MANAGER_SUBJECT))) continue;
+    defaultResources.push(r.id);
+    emitted.add(keyOf(r.id, 'service', DEFAULT_TENANT_MANAGER_SUBJECT));
+  }
+  if (defaultResources.length > 0) {
+    lines.push('  <!-- 既定ポリシー: テナント管理者は全 service リソースに許可（自動付与） -->');
+    for (const id of defaultResources) {
+      lines.push(
+        '  <authz-policy resource="' + escapeXml(id) + '"'
+          + ' type="service" action="execute"'
+          + ' subject="' + DEFAULT_TENANT_MANAGER_SUBJECT + '">PERMIT</authz-policy>'
+      );
+    }
+  }
+  // 既定ポリシー: テナント管理者を全メニューグループ（menuGroups）に PERMIT で自動付与。
+  // resource はメニューグループ ID のハッシュ値、type は im-menu-group、action は read。
+  // 既に同一 (hash, im-menu-group, tenant_manager) のポリシーが明示されている場合は二重出力しない。
+  const defaultMenuHashes = [];
+  for (const mg of spec.menuGroups || []) {
+    if (!mg || !mg.id) continue;
+    const hash = computeMenuGroupHash(mg.id);
+    if (emitted.has(keyOf(hash, 'im-menu-group', DEFAULT_TENANT_MANAGER_SUBJECT))) continue;
+    defaultMenuHashes.push(hash);
+    emitted.add(keyOf(hash, 'im-menu-group', DEFAULT_TENANT_MANAGER_SUBJECT));
+  }
+  if (defaultMenuHashes.length > 0) {
+    lines.push('  <!-- 既定ポリシー: テナント管理者は全メニューグループに許可（自動付与） -->');
+    for (const hash of defaultMenuHashes) {
+      lines.push(
+        '  <authz-policy resource="' + escapeXml(hash) + '"'
+          + ' type="im-menu-group" action="read"'
+          + ' subject="' + DEFAULT_TENANT_MANAGER_SUBJECT + '">PERMIT</authz-policy>'
+      );
+    }
   }
   lines.push('</root>', '');
   return lines.join('\n');
@@ -1240,7 +1290,11 @@ function main() {
   }
 
   // -- authz-policy (no locale variants) --
-  if ((spec.authzPolicies || []).length > 0) {
+  // authzPolicies が空でも、authzResources / menuGroups があれば tenant_manager の
+  // 既定ポリシーが自動付与されるため、その場合もファイルを書き出す。
+  if ((spec.authzPolicies || []).length > 0
+      || (spec.authzResources || []).length > 0
+      || (spec.menuGroups || []).length > 0) {
     const fname = key + '-authz-policy' + fnameSuffix + '.xml';
     writeFileSafe(args.dryRun, path.join(baseAbs, fname), buildAuthzPolicy(spec));
     files.authzPolicy = baseRel + fname;

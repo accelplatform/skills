@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "AGENTS_ja.md",
+      "to": "AGENTS.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "AGENTS_en.md",
+      "to": "AGENTS.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "AGENTS_zh_CN.md",
+      "to": "AGENTS.md"
+    }
+  ]
+}

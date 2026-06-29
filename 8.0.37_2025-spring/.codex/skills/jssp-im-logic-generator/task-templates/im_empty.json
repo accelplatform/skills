@@ -1,0 +1,152 @@
+{
+  "kind": "task",
+  "keyId": "im_empty",
+  "flowElementSample": {
+    "executeId": "im_empty1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_empty",
+      "version": null
+    },
+    "label": "空処理",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.EmptyModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 770
+    },
+    "id": "974b5035-e1a8-4b6c-a69a-97c4244aec69",
+    "z": 17,
+    "attrs": {
+      "text.title": {
+        "text": "im_empty1"
+      },
+      "text.label": {
+        "text": "空処理"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_empty"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_empty1",
+    "label": "空処理",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

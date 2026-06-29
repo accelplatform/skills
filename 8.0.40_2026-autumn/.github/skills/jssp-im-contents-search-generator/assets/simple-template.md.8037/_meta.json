@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "simple-template_ja.md",
+      "to": "simple-template.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "simple-template_en.md",
+      "to": "simple-template.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-template_zh_CN.md",
+      "to": "simple-template.md"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "api-user-actv-matter-property-value_ja.md",
+      "to": "api-user-actv-matter-property-value.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-user-actv-matter-property-value_en.md",
+      "to": "api-user-actv-matter-property-value.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-user-actv-matter-property-value_zh_CN.md",
+      "to": "api-user-actv-matter-property-value.md"
+    }
+  ]
+}

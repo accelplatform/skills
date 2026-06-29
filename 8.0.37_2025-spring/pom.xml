@@ -29,6 +29,11 @@
                 <artifactId>java-formatter-maven-plugin</artifactId>
                 <version>{{JAVA-FORMATTER-MAVEN-PLUGIN-VERSION}}</version>
             </plugin>
+            <plugin>
+                <groupId>jp.co.intra_mart</groupId>
+                <artifactId>js-jest</artifactId>
+                <version>{{JS-JEST-MAVEN-PLUGIN-VERSION}}</version>
+            </plugin>
         </plugins>
     </build>
 

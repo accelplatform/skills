@@ -1,0 +1,394 @@
+{
+  "kind": "task",
+  "keyId": "im_getAccountInfo",
+  "flowElementSample": {
+    "executeId": "im_getAccountInfo1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_getAccountInfo",
+      "version": null
+    },
+    "label": "アカウント情報の取得",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 820,
+      "y": 2350
+    },
+    "id": "040b68cf-f25f-4c54-9291-977fe36f00fb",
+    "z": 184,
+    "attrs": {
+      "rect.body": {
+        "width": 240,
+        "fill": "#303f9f"
+      },
+      "rect.icon": {
+        "fill": "#303f9f"
+      },
+      "rect.title": {
+        "width": 190,
+        "fill": "#3e50b4"
+      },
+      "rect.label": {
+        "width": 190,
+        "fill": "#5b6abf"
+      },
+      "text.title": {
+        "text": "im_getAccountInfo1"
+      },
+      "text.label": {
+        "text": "アカウント情報の取得"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_getAccountInfo"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "userCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskResultObject",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskResultObjectTimeFormats",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "input",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "standard",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "timestamp",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskResultObjectDateTimeFormat",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskResultObjectDateFormats",
+              "name": "dateFormats",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "formatSetId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "formatSetLocale",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskResultObjectTimeFormats",
+              "name": "timeFormats",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskResultObjectDateFormats",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "input",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "simple",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "standard",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskResultObject",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "calendarId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_account_GetAccountInfoTaskResultObjectDateTimeFormat",
+              "name": "dateTimeFormat",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "encoding",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "firstDayOfWeek",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "locale",
+              "name": "locale",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "lockDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "loginFailureCount",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "notes",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "password",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "themeIdForPC",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "map",
+              "name": "themeIds",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "timeZoneId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "userCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "validEndDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "validStartDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "locale",
+          "properties": []
+        },
+        {
+          "id": "map",
+          "properties": []
+        },
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_getAccountInfo1",
+    "label": "アカウント情報の取得",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

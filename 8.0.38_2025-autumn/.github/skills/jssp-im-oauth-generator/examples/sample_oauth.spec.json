@@ -29,7 +29,7 @@
       "path": "/oauth/sample_oauth/get_user",
       "type": "jssp",
       "file": "get_user",
-      "authz": "welcome-all",
+      "authz": { "uri": "service://sample_oauth/get_user", "action": "execute" },
       "scopes": ["sample_oauth_user_read"],
       "api": {
         "title": "ユーザ情報取得 REST-API（OAuth 公開版）",

@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": "8.0.39"
+      },
+      {
+        "agent": "github-copilot"
+      },
+      {
+        "feature": "mcp"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "from": "mcp.json.all",
+      "to": "mcp.json"
+    }
+  ]
+}

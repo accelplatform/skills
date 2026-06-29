@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "type": "directory",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "module": "im_job_scheduler"
+      },
+      {
+        "feature": "jssp"
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "simple-actv-matter-delete-listener_ja.md",
+      "to": "simple-actv-matter-delete-listener.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "simple-actv-matter-delete-listener_en.md",
+      "to": "simple-actv-matter-delete-listener.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-actv-matter-delete-listener_zh_CN.md",
+      "to": "simple-actv-matter-delete-listener.md"
+    }
+  ]
+}

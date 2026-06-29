@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "jssp-logging_ja.md",
+      "to": "jssp-logging.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "jssp-logging_en.md",
+      "to": "jssp-logging.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "jssp-logging_zh_CN.md",
+      "to": "jssp-logging.md"
+    }
+  ]
+}

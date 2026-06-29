@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "logic-flow-authority-plugin_ja.md",
+      "to": "logic-flow-authority-plugin.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "logic-flow-authority-plugin_en.md",
+      "to": "logic-flow-authority-plugin.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "logic-flow-authority-plugin_zh_CN.md",
+      "to": "logic-flow-authority-plugin.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{AGENT_ROOT}}",
+      "values": [
+        {
+          "condition": {
+            "agent": "claude-code"
+          },
+          "value": ".claude"
+        },
+        {
+          "condition": {
+            "agent": "github-copilot"
+          },
+          "value": ".github"
+        },
+        {
+          "condition": {
+            "agent": "codex"
+          },
+          "value": ".codex"
+        }
+      ]
+    }
+  ]
+}

@@ -307,9 +307,6 @@ function buildResourcesXml(spec) {
   lines.push('    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"');
   lines.push('    xsi:schemaLocation="http://intra-mart.co.jp/system/oauth/provider/client/resource/config/oauth-client-resources-config oauth-client-resources-config.xsd">');
   lines.push('');
-  lines.push('  <!-- 認可設定のデフォルト値 -->');
-  lines.push('  <authz-default mapper="welcome-all" />');
-  lines.push('');
   lines.push('  <client-resources>');
   for (let i = 0; i < spec.resources.length; i++) {
     const resource = spec.resources[i];
@@ -320,11 +317,8 @@ function buildResourcesXml(spec) {
     lines.push(`        type="${escXml(resource.type)}"`);
     lines.push(`        target="${escXml(resourceTarget(spec, resource))}">`);
     lines.push('');
-    // <authz-default mapper="welcome-all"> と同じになるケースは <authz> を省略する
-    const authzLine = renderAuthz(resource.authz);
-    if (authzLine !== null) {
-      lines.push('      ' + authzLine);
-    }
+    // welcome-all（認可スキップ）は原則禁止。各リソースに <authz> を明示する。
+    lines.push('      ' + renderAuthz(resource.authz, resource.id));
     for (const scopeId of resource.scopes) {
       lines.push(`      <scope id="${escXml(scopeId)}" />`);
     }
@@ -337,26 +331,31 @@ function buildResourcesXml(spec) {
   return lines.join('\n');
 }
 
-// <authz-default mapper="welcome-all"> がトップに常時出力されるため、
-// 同じ内容の <authz> は省略する。省略する場合は null を返す。
-function renderAuthz(authz) {
+// authz-default は出力しないため、各リソースに <authz> を必ず明示する。
+// welcome-all（認可スキップ）は原則禁止。uri/action を指定すること。
+function renderAuthz(authz, resourceId) {
+  const ref = resourceId ? ` (resource "${resourceId}")` : '';
   // 文字列指定 → mapper として扱う
   if (typeof authz === 'string') {
-    if (authz === 'welcome-all') return null;
+    if (authz === 'welcome-all') {
+      throw new Error(`authz "welcome-all" は原則使用できません。uri/action を指定してください${ref}。`);
+    }
     return `<authz mapper="${escXml(authz)}" />`;
   }
   // オブジェクト指定: { uri, action } または { mapper }
   if (authz && typeof authz === 'object') {
-    if (authz.mapper) {
-      if (authz.mapper === 'welcome-all') return null;
-      return `<authz mapper="${escXml(authz.mapper)}" />`;
-    }
     if (authz.uri && authz.action) {
       return `<authz uri="${escXml(authz.uri)}" action="${escXml(authz.action)}" />`;
     }
+    if (authz.mapper) {
+      if (authz.mapper === 'welcome-all') {
+        throw new Error(`authz "welcome-all" は原則使用できません。uri/action を指定してください${ref}。`);
+      }
+      return `<authz mapper="${escXml(authz.mapper)}" />`;
+    }
   }
-  // 未指定はデフォルト welcome-all 扱い → authz-default に委ねるため省略
-  return null;
+  // 未指定 → 認可必須
+  throw new Error(`authz が未指定です。uri/action を指定してください${ref}。`);
 }
 
 // ============================================================

@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "im_logic": {
+      "type": "http",
+      "url": "http://localhost/imart/copilot/mcp/development/im_logic",
+      "headers": {
+        "Authorization": "Bearer <API-KEY>"
+      }
+    },
+    "im_workflow": {
+      "type": "http",
+      "url": "http://localhost/imart/copilot/mcp/development/im_workflow",
+      "headers": {
+        "Authorization": "Bearer <API-KEY>"
+      }
+    },
+    "staged-logs": {
+      "type": "http",
+      "url": "http://localhost/imart/copilot/mcp/development/staging/logs",
+      "headers": {
+        "Authorization": "Bearer <API-KEY>"
+      }
+    },
+    "frontend-fix": {
+      "type": "http",
+      "url": "http://localhost/imart/copilot/mcp/development/staging/frontend-fix",
+      "headers": {
+        "Authorization": "Bearer <API-KEY>"
+      }
+    }
+  }
+}

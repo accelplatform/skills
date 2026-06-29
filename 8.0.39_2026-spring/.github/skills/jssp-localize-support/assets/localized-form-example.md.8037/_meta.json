@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "localized-form-example_ja.md",
+      "to": "localized-form-example.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "localized-form-example_en.md",
+      "to": "localized-form-example.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "localized-form-example_zh_CN.md",
+      "to": "localized-form-example.md"
+    }
+  ]
+}

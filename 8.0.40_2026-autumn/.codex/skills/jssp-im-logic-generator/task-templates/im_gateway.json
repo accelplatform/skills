@@ -1,0 +1,143 @@
+{
+  "kind": "task",
+  "keyId": "im_gateway",
+  "flowElementSample": {
+    "executeId": "im_gateway1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_gateway",
+      "version": null
+    },
+    "label": "分岐",
+    "comment": "",
+    "properties": {
+      "defaultRoot": "im_gateway1_im_errorEnd1"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.GatewayModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "then",
+      "else"
+    ],
+    "position": {
+      "x": 2510,
+      "y": 120
+    },
+    "id": "3e8ae86b-38f1-4585-b453-755ed299bd17",
+    "z": 404,
+    "attrs": {
+      "rect.title": {
+        "width": 150
+      },
+      "text.title": {
+        "text": "im_gateway1"
+      },
+      "text.label": {
+        "text": "分岐"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "then"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "then",
+          "type": "out"
+        }
+      },
+      ".outPorts>.port1>.port-label": {
+        "text": "else"
+      },
+      ".outPorts>.port1>.port-body": {
+        "port": {
+          "id": "else",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_gateway"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "defaultRoot",
+        "enable": false,
+        "required": true,
+        "array": false,
+        "label": "defaultRoot",
+        "options": []
+      },
+      {
+        "propertyName": "condition",
+        "enable": false,
+        "required": false,
+        "array": false,
+        "label": "条件式（EL式）",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": null,
+    "outputDataDefinition": null
+  },
+  "dataMapTypical": {
+    "@then": "${$account_context.userCd=='tenant'}"
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_gateway1",
+    "label": "分岐",
+    "inNum": 1,
+    "outNum": 2,
+    "outPorts": [
+      "then",
+      "else"
+    ]
+  }
+}

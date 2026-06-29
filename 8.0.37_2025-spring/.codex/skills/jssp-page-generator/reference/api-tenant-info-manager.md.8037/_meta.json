@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "api-tenant-info-manager_ja.md",
+      "to": "api-tenant-info-manager.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "api-tenant-info-manager_en.md",
+      "to": "api-tenant-info-manager.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-tenant-info-manager_zh_CN.md",
+      "to": "api-tenant-info-manager.md"
+    }
+  ]
+}

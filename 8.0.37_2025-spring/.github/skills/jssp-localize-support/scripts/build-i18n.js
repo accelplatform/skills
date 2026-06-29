@@ -13,15 +13,15 @@
  * {
  *   "outputDir": "src/main/conf/message/sample/expense_report",
  *   "captions": [
- *     { "key": "CAP.Z.IWP.SAMPLE.EXPENSE.REPORT.APPLY.TITLE",
+ *     { "key": "CAP.Z.APP.SAMPLE.EXPENSE.REPORT.APPLY.TITLE",
  *       "en": "Expense Report", "ja": "経費精算申請", "zh_CN": "费用报销申请" }
  *   ],
  *   "messages": [
- *     { "key": "MSG.E.IWP.SAMPLE.EXPENSE.REPORT.REQUIRED.PURPOSE",
+ *     { "key": "MSG.E.APP.SAMPLE.EXPENSE.REPORT.REQUIRED.PURPOSE",
  *       "en": "Purpose is required.", "ja": "使用目的は必須です。", "zh_CN": "使用目的为必填项。" }
  *   ],
  *   "logMessages": [
- *     { "key": "E.IWP.SAMPLE.EXPENSE.REPORT.00001",
+ *     { "key": "E.APP.SAMPLE.EXPENSE.REPORT.00001",
  *       "en": "An error occurred.", "ja": "エラーが発生しました。", "zh_CN": "发生错误。" }
  *   ]
  * }

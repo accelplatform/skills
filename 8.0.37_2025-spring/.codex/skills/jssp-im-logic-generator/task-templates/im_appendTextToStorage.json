@@ -1,0 +1,199 @@
+{
+  "kind": "task",
+  "keyId": "im_appendTextToStorage",
+  "flowElementSample": {
+    "executeId": "im_appendTextToStorage1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_appendTextToStorage",
+      "version": null
+    },
+    "label": "ストレージ追記（文字列）",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 390,
+      "y": 1650
+    },
+    "id": "f28ba8aa-eed0-4de5-8760-3c44844d1814",
+    "z": 106,
+    "attrs": {
+      "rect.body": {
+        "width": 240,
+        "fill": "#0096a6"
+      },
+      "rect.icon": {
+        "fill": "#0096a6"
+      },
+      "rect.title": {
+        "width": 190,
+        "fill": "#00bbd3"
+      },
+      "rect.label": {
+        "width": 190,
+        "fill": "#25c5d9"
+      },
+      "text.title": {
+        "text": "im_appendTextToStorage1"
+      },
+      "text.label": {
+        "text": "ストレージ追記（文字列）"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_appendTextToStorage"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "charset",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "文字コード",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_storage_WriteTextInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_storage_WriteTextInfo",
+          "properties": [
+            {
+              "typeId": "storage",
+              "name": "storage",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "text",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "storage",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "charset": null,
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_appendTextToStorage1",
+    "label": "ストレージ追記（文字列）",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

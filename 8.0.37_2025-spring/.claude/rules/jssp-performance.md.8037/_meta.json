@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "jssp-performance_ja.md",
+      "to": "jssp-performance.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "jssp-performance_en.md",
+      "to": "jssp-performance.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "jssp-performance_zh_CN.md",
+      "to": "jssp-performance.md"
+    }
+  ]
+}

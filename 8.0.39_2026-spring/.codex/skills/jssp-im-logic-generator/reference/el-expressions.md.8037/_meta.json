@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "el-expressions_ja.md",
+      "to": "el-expressions.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "el-expressions_en.md",
+      "to": "el-expressions.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "el-expressions_zh_CN.md",
+      "to": "el-expressions.md"
+    }
+  ]
+}

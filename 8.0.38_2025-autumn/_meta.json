@@ -48,7 +48,7 @@
     {
       "type": "regex",
       "pattern": "\\{\\{XML-VALIDATOR-MAVEN-PLUGIN-VERSION\\}\\}",
-      "replacement": "1.0.0",
+      "replacement": "1.1.0",
       "condition": {
         "accelplatformVersion": "8.0.38"
       }
@@ -56,6 +56,14 @@
     {
       "type": "regex",
       "pattern": "\\{\\{JAVA-FORMATTER-MAVEN-PLUGIN-VERSION\\}\\}",
+      "replacement": "1.1.0",
+      "condition": {
+        "accelplatformVersion": "8.0.38"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{JS-JEST-MAVEN-PLUGIN-VERSION\\}\\}",
       "replacement": "1.0.0",
       "condition": {
         "accelplatformVersion": "8.0.38"

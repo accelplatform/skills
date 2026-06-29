@@ -1,0 +1,282 @@
+{
+  "kind": "task",
+  "keyId": "im_immRegisterPost",
+  "flowElementSample": {
+    "executeId": "im_immRegisterPost1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_immRegisterPost",
+      "version": null
+    },
+    "label": "役職情報の登録",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 2060,
+      "y": 560
+    },
+    "id": "c7aac2a9-05ca-41cd-bd31-529dc1fbd693",
+    "z": 336,
+    "attrs": {
+      "rect.body": {
+        "fill": "#5d4037"
+      },
+      "rect.icon": {
+        "fill": "#5d4037"
+      },
+      "rect.title": {
+        "fill": "#785447"
+      },
+      "rect.label": {
+        "fill": "#8c6d62"
+      },
+      "text.title": {
+        "text": "im_immRegisterPost1"
+      },
+      "text.label": {
+        "text": "役職情報の登録"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_immRegisterPost"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_post_RegisterCompanyPostTaskInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_post_LocalizedCompanyPostInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "notes",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "postName",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_post_RegisterCompanyPostTaskInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "companyCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "departmentSetCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "endDate",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_post_LocalizedCompanyPostInfo",
+              "name": "localize",
+              "listingType": "none",
+              "required": true,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "postCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "rank",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "sortKey",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "startDate",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "integer",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_ElementTermInfo",
+        "basic": false,
+        "required": false,
+        "listingType": "list"
+      },
+      "typeDefinitions": [
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_ElementTermInfo",
+          "properties": [
+            {
+              "typeId": "date",
+              "name": "endDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "startDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "termCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_immRegisterPost1",
+    "label": "役職情報の登録",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

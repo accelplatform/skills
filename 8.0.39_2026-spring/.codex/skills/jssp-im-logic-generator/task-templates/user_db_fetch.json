@@ -1,0 +1,387 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-db-fetch",
+  "definitionType": "db_fetch",
+  "pairEndTemplate": "user_db_fetch_end",
+  "flowElementSample": {
+    "executeId": "sample-db-fetch",
+    "alias": "sample_db_fetch",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-db-fetch",
+      "version": null
+    },
+    "label": "[開始]サンプルデータベースフェッチ定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-db-fetch",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "db_fetch",
+        "definitionName": "Sample Database Fetch Definition",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_startDbFetch",
+          "iconId": null,
+          "elementProperties": {
+            "query": "SELECT\n  *\nFROM\n  your_table\nWHERE\n  id = /*param1*/'dummyId'\nORDER BY id ASC\n",
+            "databaseType": "TENANT",
+            "connectId": "default",
+            "fetchSize": "10",
+            "limitation": false
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "param1",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "param2",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "column1",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "bigdecimal",
+                    "name": "column2",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              },
+              {
+                "id": "bigdecimal",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプルデータベースフェッチ定義",
+          "en": "Sample Database Fetch Definition",
+          "zh_CN": "示例数据库获取定义"
+        }
+      },
+      "endPoint": "$sample-db-fetch$"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 360,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 10,
+      "y": 610
+    },
+    "id": "45fc6d69-e476-498f-91d2-26d4c06801ae",
+    "z": 22,
+    "attrs": {
+      "rect.body": {
+        "width": 360
+      },
+      "rect.title": {
+        "width": 310
+      },
+      "rect.label": {
+        "width": 310
+      },
+      "text.title": {
+        "text": "sample_db_fetch"
+      },
+      "text.label": {
+        "text": "[開始]サンプルデータベースフェッチ定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-db-fetch"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "param1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "param2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "loopStatus",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "loopStatus",
+          "properties": [
+            {
+              "typeId": "root",
+              "name": "item",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "long",
+              "name": "index",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "column1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "bigdecimal",
+              "name": "column2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "bigdecimal",
+          "properties": []
+        },
+        {
+          "id": "long",
+          "properties": []
+        }
+      ]
+    },
+    "pairElementKey": {
+      "type": "localUserDefinition",
+      "id": "$sample-db-fetch$"
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-db-fetch",
+      "version": 1,
+      "definitionType": "db_fetch",
+      "definitionName": "Sample Database Fetch Definition",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_startDbFetch",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "param1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "param2",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "column1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "column2",
+                  "typeId": "bigdecimal",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            },
+            {
+              "id": "bigdecimal",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "query": "SELECT\n  *\nFROM\n  your_table\nWHERE\n  id = /*param1*/'dummyId'\nORDER BY id ASC\n",
+          "databaseType": "TENANT",
+          "connectId": "default",
+          "fetchSize": "10",
+          "limitation": false
+        }
+      },
+      "localize": {
+        "ja": "サンプルデータベースフェッチ定義",
+        "en": "Sample Database Fetch Definition",
+        "zh_CN": "示例数据库获取定义"
+      }
+    },
+    "clearVariables": null,
+    "condition": null
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_db_fetch",
+    "label": "[開始]サンプルデータベースフェッチ定義",
+    "inNum": 1,
+    "outNum": 1,
+    "pairElementId": "b459e384-a164-4308-ae1a-7f861d30f01b"
+  }
+}

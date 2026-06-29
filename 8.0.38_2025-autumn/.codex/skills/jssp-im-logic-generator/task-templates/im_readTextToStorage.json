@@ -1,0 +1,176 @@
+{
+  "kind": "task",
+  "keyId": "im_readTextToStorage",
+  "flowElementSample": {
+    "executeId": "im_readTextToStorage1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_readTextToStorage",
+      "version": null
+    },
+    "label": "ストレージファイル読み込み（文字列）",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 320,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 360,
+      "y": 1910
+    },
+    "id": "d14ffe5d-b6e6-4bdb-9bd1-18b71d747298",
+    "z": 112,
+    "attrs": {
+      "rect.body": {
+        "width": 320,
+        "fill": "#0096a6"
+      },
+      "rect.icon": {
+        "fill": "#0096a6"
+      },
+      "rect.title": {
+        "width": 270,
+        "fill": "#00bbd3"
+      },
+      "rect.label": {
+        "width": 270,
+        "fill": "#25c5d9"
+      },
+      "text.title": {
+        "text": "im_readTextToStorage1"
+      },
+      "text.label": {
+        "text": "ストレージファイル読み込み（文字列）"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_readTextToStorage"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "charset",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "文字コード",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "storage",
+        "basic": true,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "string",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "charset": null,
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_readTextToStorage1",
+    "label": "ストレージファイル読み込み（文字列）",
+    "inNum": 1,
+    "outNum": 1
+  }
+}
