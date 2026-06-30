@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "mvn -q -Dorg.slf4j.simpleLogger.logFile=System.err java-formatter:hook -Dagent=codex -Dsettings=.accel/settings.json",
+            "command": "mvn -q -s settings.xml -Dorg.slf4j.simpleLogger.logFile=System.err java-formatter:hook -Dagent=codex -Dsettings=.accel/settings.json",
             "timeout": 30,
             "statusMessage": "Running java formatter..."
           }
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "mvn -q xml-validator:hook -Dsettings=.accel/settings.json -Dagent=codex",
+            "command": "mvn -q -s settings.xml xml-validator:hook -Dsettings=.accel/settings.json -Dagent=codex",
             "timeout": 60,
             "statusMessage": "Running XML validation..."
           }
