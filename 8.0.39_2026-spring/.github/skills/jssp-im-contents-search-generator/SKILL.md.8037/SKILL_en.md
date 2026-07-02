@@ -28,12 +28,12 @@ Both Crawler-only and template-only generation are supported depending on the si
 
 | Convention | Handling |
 |------|---------|
-| `jssp-function-container.instructions.md` | 🟢 **Required** — `init()` structure of the template JS |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` | 🟢 Required |
-| `jssp-error-handling.instructions.md` / `jssp-logging.instructions.md` | 🟢 **Required** — Crawlers require detailed logging and error handling |
-| `jssp-2way-sql.instructions.md` | 🟡 **Reference only when using 2WaySQL** (e.g., when using 2WaySQL for Crawler source queries) |
-| `jssp-presentation-page.instructions.md` | 🟡 Basic structure of the template HTML (imcs-specific classes: refer to this skill's assets first) |
-| `jssp-security.instructions.md` | 🟡 Refer to the XSS countermeasure section when implementing template HTML. Since search result content (the `request` argument) comes from Apache Solr, the risk of stored XSS is not zero. Use `textContent` for DOM manipulation and restrict `innerHTML` to iAP-internally-generated HTML only |
+| `jssp-function-container.md` | 🟢 **Required** — `init()` structure of the template JS |
+| `jssp-naming.md` / `jssp-code-style.md` | 🟢 Required |
+| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **Required** — Crawlers require detailed logging and error handling |
+| `jssp-2way-sql.md` | 🟡 **Reference only when using 2WaySQL** (e.g., when using 2WaySQL for Crawler source queries) |
+| `jssp-presentation-page.md` | 🟡 Basic structure of the template HTML (imcs-specific classes: refer to this skill's assets first) |
+| `jssp-security.md` | 🟡 Refer to the XSS countermeasure section when implementing template HTML. Since search result content (the `request` argument) comes from Apache Solr, the risk of stored XSS is not zero. Use `textContent` for DOM manipulation and restrict `innerHTML` to iAP-internally-generated HTML only |
 
 ---
 

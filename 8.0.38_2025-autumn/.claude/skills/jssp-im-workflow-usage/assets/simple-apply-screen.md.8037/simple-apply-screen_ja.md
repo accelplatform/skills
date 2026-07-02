@@ -630,7 +630,7 @@ function transferErrorPage(code, message) {
 - **アイコン単品のボタン**（テキストなし、例: 削除ゴミ箱アイコン）は通常サイズを使用すること。`is-small` / `is-x-small` にするとアイコンが小さすぎて操作しにくい
 - 必須入力項目のラベルには必ず必須マークを付与すること（`imds-required-label-required` クラス + `data-required-label="必須"`）
 - 日付入力には `<input type="date">` ではなく `imuiCalendar`（`floatable="true"` を必ず指定）を使用すること。インライン表示（`floatable` 未指定）は使用しない
-- **バリデーションの実装は `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` の規約に従うこと**（以下は主要ルール）:
+- **バリデーションの実装は `.claude/rules/jssp-presentation-page.md` の規約に従うこと**（以下は主要ルール）:
   - `maxlength` 属性は使用しない。文字数制限はバリデーションエラーメッセージで通知する
   - バリデーション関連関数は `clearValidationError` → `showValidationError` → `createRequest` → `getValidationErrors` → `resetValidationError` → `validateCurrentStep` の順で定義する
   - `showValidationError` は `errorElement.closest('.imds-field')` で親を取得し、末尾で `activeValidation = true` を設定する

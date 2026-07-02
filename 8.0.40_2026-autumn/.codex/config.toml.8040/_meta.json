@@ -20,7 +20,7 @@
       "to": "config.toml"
     },
     {
-      "from": "config.toml.else",
+      "from": "config.toml",
       "to": "config.toml"
     }
   ]

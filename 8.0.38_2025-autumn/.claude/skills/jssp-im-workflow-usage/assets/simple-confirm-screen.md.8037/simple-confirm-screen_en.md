@@ -411,5 +411,5 @@ Keep the confirmation submission button (`confirm-button` / `workflowOpenPage('5
 
 ## Required Verification After Generation
 
-Following the "Required Verification After Generation" in `SKILL.md`, perform `validate-workflow-code.js` → manual checks → cross-checking against `jssp-imds-theme/reference`.
+Following the "Required Verification After Generation" in `SKILL.md`, perform `validate-workflow-code.js` → manual checks → cross-checking against `.claude/skills/jssp-imds-theme/reference/`.
 In particular, confirm that input fields under `<imart type="workflowOpenPage">` do not have a `name` attribute (only hidden fields have `name`).

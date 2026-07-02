@@ -157,7 +157,7 @@ let locale = accountContext.locale;        // ロケール
 // ... AccountContext のフィールドはほぼ通常画面と同等
 ```
 
-> 詳細は `skills/jssp-page-generator/reference/api-account-context.md` を参照すること。
+> 詳細は `.claude/skills/jssp-page-generator/reference/api-account-context.md` を参照すること。
 
 ## リクエストパラメータの取得
 
@@ -171,7 +171,7 @@ let locale = accountContext.locale;        // ロケール
 | `request.getContentType()` | Content-Type |
 | `request.getInputStream()` | リクエストボディ(バイナリ／JSON 等)。`application/json` を受け取る場合はストリームから読み出す |
 
-`application/json` ボディを受け取る場合の実装パターンは `skills/jssp-page-generator/assets/post-json-api.md` を参照すること(OAuth 版でもボディ取得手順は同じ)。
+`application/json` ボディを受け取る場合の実装パターンは `.claude/skills/jssp-page-generator/assets/post-json-api.md` を参照すること(OAuth 版でもボディ取得手順は同じ)。
 
 ## レスポンスとステータスコード
 
@@ -195,18 +195,18 @@ httpResponse.sendMessageBodyString(JSON.stringify(response));
 ## 機密情報の取り扱い
 
 - レスポンス JSON に **パスワード・認証トークン・個人情報(マスクなしの電話番号やメール等)を含めない**
-- ログ出力時も同様（`{{AGENT_RULES}}/jssp-logging{{AGENT_RULE_FILE}}.md` の `MaskUtil` を活用）
+- ログ出力時も同様（`.claude/rules/jssp-logging.md` の `MaskUtil` を活用）
 - レスポンスの `userCd`(ユーザコード)は通常の REST-API でも返す情報なので問題ないが、**パスワードハッシュ・セッション ID 等は厳禁**
 
 ## 関連リファレンス
 
 - `oauth-overview.md` - 全体像
 - `oauth-resources-config.md` - URL マッピングと scope の指定
-- `skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()` の詳細
-- `skills/jssp-page-generator/reference/api-account-context.md` - 認証ユーザコンテキスト
-- `skills/jssp-page-generator/reference/argument-request.md` - request 引数
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - エラーレスポンス形式・HTTP ステータス
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - SQL インジェクション・XSS 対策(OAuth API でも同様に適用)
+- `.claude/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()` の詳細
+- `.claude/skills/jssp-page-generator/reference/api-account-context.md` - 認証ユーザコンテキスト
+- `.claude/skills/jssp-page-generator/reference/argument-request.md` - request 引数
+- `.claude/rules/jssp-error-handling.md` - エラーレスポンス形式・HTTP ステータス
+- `.claude/rules/jssp-security.md` - SQL インジェクション・XSS 対策(OAuth API でも同様に適用)
 
 ## チェックリスト
 
@@ -215,5 +215,5 @@ httpResponse.sendMessageBodyString(JSON.stringify(response));
 - [ ] エラーコードが `E.{製品}.{機能}.{API名}.{連番}` 形式か(5xx に `ERROR_CODE_INTERNAL` を割り当てたか)
 - [ ] 4xx 系は `logger.warn`、5xx 系は `logger.error` でログ出力しているか
 - [ ] レスポンスに機密情報(パスワード・トークン・マスクなしの個人情報等)が含まれていないか
-- [ ] SQL アクセスがある場合は `DbParameter` でバインドしているか(文字列連結禁止、`{{AGENT_RULES}}/jssp-2way-sql{{AGENT_RULE_FILE}}.md` 参照)
+- [ ] SQL アクセスがある場合は `DbParameter` でバインドしているか(文字列連結禁止、`.claude/rules/jssp-2way-sql.md` 参照)
 - [ ] `Contexts.getAccountContext()` でユーザコンテキストを参照する場合、null チェックを入れているか

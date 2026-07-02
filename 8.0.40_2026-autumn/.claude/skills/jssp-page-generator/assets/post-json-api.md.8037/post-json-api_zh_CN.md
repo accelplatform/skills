@@ -69,7 +69,7 @@ src/main/conf/routing-jssp-config/
 
 - 成功时：`application/json` 返回 `{error:false, data:{...}}`
 - 失败时：`application/json` 返回 `{error:true, errorMessage:"[代码] 消息"}`，并附带 HTTP 4xx/5xx
-- 错误代码命名遵循 `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md`
+- 错误代码命名遵循 `.claude/rules/jssp-error-handling.md`
 
 ### `ApiError` 类型的处理
 
@@ -684,13 +684,13 @@ POST 视为更新操作，要求 `X-Intramart-Secure-Token`。
 
 ### 不使用 `ApiError` typedef（再次提示）
 
-按文件单位声明 `@typedef {Error & {code, httpStatus}} ApiError` 会引发 `tsc` 的 `TS2300 Duplicate identifier`。**用内联 `@type` 注解进行类型转换是本模板的标准形式**。详情参见 `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md`。
+按文件单位声明 `@typedef {Error & {code, httpStatus}} ApiError` 会引发 `tsc` 的 `TS2300 Duplicate identifier`。**用内联 `@type` 注解进行类型转换是本模板的标准形式**。详情参见 `.claude/rules/jssp-error-handling.md`。
 
 ## 相关
 
 - `reference/argument-request.md` - `request.getMessageBodyAsString()` 的规格
 - `reference/api-secure-token-manager.md` - CSRF 令牌的校验
 - `reference/secure-token-check.md` - 客户端与服务端的一连串校验模式
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - 错误代码命名规则与 API 错误响应格式
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - 输入验证的整体方针
+- `.claude/rules/jssp-error-handling.md` - 错误代码命名规则与 API 错误响应格式
+- `.claude/rules/jssp-security.md` - 输入验证的整体方针
 - `assets/file-upload-download-api.md` - multipart/form-data（文件）的场合

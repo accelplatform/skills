@@ -50,7 +50,7 @@ It is recommended to generate files in bulk from a spec JSON using **`build-i18n
 ### build-i18n.js — Bulk Property File Generation
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-localize-support/scripts/build-i18n.js <spec.json> [--out <outputDir>]
+node .github/skills/jssp-localize-support/scripts/build-i18n.js <spec.json> [--out <outputDir>]
 ```
 
 If `--out` is omitted, the `outputDir` field in spec.json is used.
@@ -83,7 +83,7 @@ Generated files (12 files):
 ### validate-i18n.js — Validation Script
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-localize-support/scripts/validate-i18n.js <messageDir> [--src <jssp_src_dir>]
+node .github/skills/jssp-localize-support/scripts/validate-i18n.js <messageDir> [--src <jssp_src_dir>]
 ```
 
 **Validation items:**

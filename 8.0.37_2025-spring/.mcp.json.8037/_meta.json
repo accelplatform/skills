@@ -16,7 +16,7 @@
   },
   "rename": [
     {
-      "from": "mcp.json.all",
+      "from": "mcp.json",
       "to": ".mcp.json"
     }
   ]

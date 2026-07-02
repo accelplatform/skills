@@ -96,14 +96,14 @@ jssp-im-oauth-generator/
 
 業務ロジックを実装する際は JSSP の標準的なコーディング規約・エラーハンドリング・セキュリティ規約が **すべて適用される**。必要に応じて以下を参照すること。
 
-- `{{AGENT_ROOT}}/rules/jssp-function-container.md` - 基本構造
-- `{{AGENT_ROOT}}/rules/jssp-error-handling.md` - エラーレスポンス・HTTP ステータス
-- `{{AGENT_ROOT}}/rules/jssp-logging.md` - ログ出力
-- `{{AGENT_ROOT}}/rules/jssp-security.md` - SQL インジェクション・機密情報の取扱い
-- `{{AGENT_ROOT}}/rules/jssp-2way-sql.md` - DB アクセスがある場合
-- `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()`
-- `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/api-account-context.md` - 認証ユーザ取得
-- `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/argument-request.md` - `request` 引数
+- `.claude/rules/jssp-function-container.md` - 基本構造
+- `.claude/rules/jssp-error-handling.md` - エラーレスポンス・HTTP ステータス
+- `.claude/rules/jssp-logging.md` - ログ出力
+- `.claude/rules/jssp-security.md` - SQL インジェクション・機密情報の取扱い
+- `.claude/rules/jssp-2way-sql.md` - DB アクセスがある場合
+- `.claude/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()`
+- `.claude/skills/jssp-page-generator/reference/api-account-context.md` - 認証ユーザ取得
+- `.claude/skills/jssp-page-generator/reference/argument-request.md` - `request` 引数
 
 ---
 
@@ -196,7 +196,7 @@ spec.json の構造はリファレンス XML と 1 対 1 対応しているの�
 ### ステップ 4: build-oauth.js を実行
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
+node .claude/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
      /tmp/{機能名}.spec.json
 ```
 
@@ -213,7 +213,7 @@ build-oauth.js が自動で行うこと:
 
 ```bash
 # spec 更新 → XML だけ再生成(JSSP の業務ロジックは保持)
-node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
+node .claude/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
      /tmp/{機能名}.spec.json --xml-only
 ```
 
@@ -233,7 +233,7 @@ build-oauth.js が生成する JSSP 骨格には:
 `processBusinessLogic` の中身を手動補完すること。`reference/oauth-resource-implementation.md` と `assets/sample-oauth-get-user.md` の実装例を参考にする。
 
 **補完時の規約:**
-- DB アクセスを伴う場合は `{{AGENT_ROOT}}/rules/jssp-2way-sql.md` に従い、`src/main/jssp/src/{機能名}/sql/` 配下に SQL ファイルを外部化し `executeByTemplate` を使う
+- DB アクセスを伴う場合は `.claude/rules/jssp-2way-sql.md` に従い、`src/main/jssp/src/{機能名}/sql/` 配下に SQL ファイルを外部化し `executeByTemplate` を使う
 - レスポンス JSON には **機密情報(パスワード・認証トークン・マスクなしの個人情報)を含めない**
 - ユーザ未存在等は `throwApiError(ERROR_CODE_*, 404, '...')` でスロー(spec の `extraErrorCodes` で定数化済み)
 

@@ -31,8 +31,8 @@
 [examples/sample_oauth.spec.json](../examples/sample_oauth.spec.json) を入力として `build-oauth.js` を実行すると、上記 4 ファイルが一括出力される。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
-     {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/examples/sample_oauth.spec.json
+node .claude/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
+     .claude/skills/jssp-im-oauth-generator/examples/sample_oauth.spec.json
 ```
 
 生成された実 XML の中身は以下を参照:

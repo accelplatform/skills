@@ -62,7 +62,7 @@
           {
             "type": "command",
             "if": "Edit(src/**/*.xml)",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && mvn -q  -s settings.xml xml-validator:hook -Dsettings=.accel/settings.json -Dagent=claude-code",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && mvn -q -s settings.xml xml-validator:hook -Dsettings=.accel/settings.json -Dagent=claude-code",
             "timeout": 30,
             "statusMessage": "Running XML validation..."
           }

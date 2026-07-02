@@ -17,8 +17,8 @@ user-invocable: true
 
 ## 步骤
 
-1. 读取 `{{AGENT_ROOT}}/skills/jssp-im-job-generator/SKILL.md`，确认生成步骤。
-2. 读取必要的规约文件（`{{AGENT_ROOT}}/instructions/` 目录下）。
+1. 读取 `.github/skills/jssp-im-job-generator/SKILL.md`，确认生成步骤。
+2. 读取必要的规约文件（`.github/instructions/` 目录下）。
 3. 按规格生成作业程序（.js）。
 4. 生成完成后，以子代理方式执行 `jssp-page-verifier` 技能。
 

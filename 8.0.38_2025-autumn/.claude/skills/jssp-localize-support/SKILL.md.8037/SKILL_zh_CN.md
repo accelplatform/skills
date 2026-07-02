@@ -50,7 +50,7 @@ allowed-tools: Bash, Read, Write, Glob
 ### build-i18n.js — 属性文件批量生成
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-localize-support/scripts/build-i18n.js <spec.json> [--out <outputDir>]
+node .claude/skills/jssp-localize-support/scripts/build-i18n.js <spec.json> [--out <outputDir>]
 ```
 
 省略 `--out` 时，使用 spec.json 的 `outputDir` 字段。
@@ -83,7 +83,7 @@ node {{AGENT_ROOT}}/skills/jssp-localize-support/scripts/build-i18n.js <spec.jso
 ### validate-i18n.js — 验证脚本
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-localize-support/scripts/validate-i18n.js <messageDir> [--src <jssp_src_dir>]
+node .claude/skills/jssp-localize-support/scripts/validate-i18n.js <messageDir> [--src <jssp_src_dir>]
 ```
 
 **验证项目：**

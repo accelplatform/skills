@@ -24,15 +24,15 @@ intra-mart Accel Platform の IM-共通マスタ検索（imACMSearch）を利用
 
 ## 参照すべき規約
 
-本スキルは画面に組み込む HTML スニペット（`imACMSearch` 呼び出し）を生成する。本スキル単独では `.js` を生成しないため、参照すべき規約は HTML 系に絞られる。全体像は `{{AGENT_RULES}}/README.md` 参照。
+本スキルは画面に組み込む HTML スニペット（`imACMSearch` 呼び出し）を生成する。本スキル単独では `.js` を生成しないため、参照すべき規約は HTML 系に絞られる。全体像は `.github/instructions/README.md` 参照。
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-presentation-page.instructions.md` | 🟢 **必読** — HTML 構造・id 命名 |
-| `jssp-naming.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 必読 |
+| `jssp-presentation-page.md` | 🟢 **必読** — HTML 構造・id 命名 |
+| `jssp-naming.md` / `jssp-file-structure.md` | 🟢 必読 |
 | `jssp-imds-theme` スキルの reference | 🟢 必読（HTML クラス名は記憶で書かない） |
-| `jssp-function-container.instructions.md` / `jssp-2way-sql.instructions.md` / `jssp-error-handling.instructions.md` 等 | 🔴 **本スキル単独では不要**（呼び出し元スキル側で適用） |
-| `jssp-accessibility.instructions.md` | 🟠 **業務要件次第** — マスタ検索ダイアログは imds 標準実装で基本的な ARIA を持つので、追加で厚塗りする必要は通常なし |
+| `jssp-function-container.md` / `jssp-2way-sql.md` / `jssp-error-handling.md` 等 | 🔴 **本スキル単独では不要**（呼び出し元スキル側で適用） |
+| `jssp-accessibility.md` | 🟠 **業務要件次第** — マスタ検索ダイアログは imds 標準実装で基本的な ARIA を持つので、追加で厚塗りする必要は通常なし |
 
 ## 完成品サンプル
 

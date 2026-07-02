@@ -160,7 +160,7 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 
 ### 表单实现模式（必须参考: `assets/simple-form.md`）
 
-实现输入表单时，必须遵循 `skills/jssp-page-generator/assets/simple-form.md` 的标准模式。
+实现输入表单时，必须遵循 `.claude/skills/jssp-page-generator/assets/simple-form.md` 的标准模式。
 单独并列裸 `imds-field` 是错误的。标准是嵌套结构：**`imds-field-container > imds-field-group > imds-field-group-label + imds-field-group-control > imds-field`**。
 
 ```html
@@ -278,7 +278,7 @@ padding 的调整：`imds-p-2`（窄） / `imds-p-4`（标准） / `imds-p-6`（
 生成或编辑 HTML 后，必须使用以下命令执行 imds 结构验证。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <目标文件或目录>
+node .claude/skills/jssp-imds-theme/scripts/validate-imds.js <目标文件或目录>
 ```
 
 ### 验证规则
@@ -307,7 +307,7 @@ node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <目标文�
 | Tag | `imds-tag` 仅限 `span` 元素 |
 | Textarea | `imds-textarea` 仅限 `textarea` 元素（不要与 textbox 混淆） |
 | 标签种类 | `imds-select`=`select`、`imds-textbox`=`input`、`imds-textarea`=`textarea`、`imds-checkbox`/`imds-radio`=`label` 等各组件基础类的标签种类 |
-| 未定义类检测 | 带 `imds-*` 前缀但在 `reference/`、`{{AGENT_ROOT}}/{{AGENT_RULES}}/` 中均未记载的类，将作为 `IMDS-U-001`（warning）报告。可发现拼写错误/虚构类（例如 `imds-page-header`） |
+| 未定义类检测 | 带 `imds-*` 前缀但在 `reference/`、`.claude/rules/` 中均未记载的类，将作为 `IMDS-U-001`（warning）报告。可发现拼写错误/虚构类（例如 `imds-page-header`） |
 
 ### 验证结果的处理
 
@@ -323,14 +323,14 @@ node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <目标文�
 2. 从 `textbox.md` 获取密码输入框的 HTML（改为 `type="password"`）
 3. 读取 `button.md`，获取登录按钮（`is-primary`）
 4. 使用 `imds-field` 为各元素添加适当标签并进行布局
-5. 执行 `node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <生成文件>`，确认 PASS
+5. 执行 `node .claude/skills/jssp-imds-theme/scripts/validate-imds.js <生成文件>`，确认 PASS
 
 ### 创建数据列表页面
 
 1. 读取 `table.md`，获取基本表格结构
 2. 读取 `button.md`，放置新建按钮（`is-primary`）和编辑按钮（`is-outlined`）
 3. 根据需要读取 `imds-html-dialog.md`，实现确认对话框（如果是包含输入表单的对话框，请使用 `imds-html-dialog-form.md`）
-4. 执行 `node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <生成文件>`，确认 PASS
+4. 执行 `node .claude/skills/jssp-imds-theme/scripts/validate-imds.js <生成文件>`，确认 PASS
 
 ## 故障排除
 

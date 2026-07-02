@@ -323,7 +323,7 @@ function toggleLocationDetailRequired() {
 ## 日期输入（imuiCalendar）
 
 日期输入使用 `<imart type="imuiCalendar">` 而非 `<input type="date">`。
-使用方法、属性、注意事项及日期时间输入（日期 + 时间的组合）模式，请参考 `skills/jssp-imds-theme/reference/imui-html-calendar.md`。
+使用方法、属性、注意事项及日期时间输入（日期 + 时间的组合）模式，请参考 `.claude/skills/jssp-imds-theme/reference/imui-html-calendar.md`。
 
 ## 输入字段的宽度控制
 
@@ -402,7 +402,7 @@ if (!userCode || userCode.length === 0) {
 }
 ```
 
-其他模式（数值、正则表达式、邮箱、日期格式、可选项等）请参考 `assets/simple-form.md` 中的「验证模式集」。
+其他模式（数值、正则表达式、邮箱、日期格式、可选项等）请参考 `.claude/skills/jssp-page-generator/assets/simple-form.md` 中的「验证模式集」。
 
 ### 实现方针
 
@@ -419,7 +419,7 @@ if (!userCode || userCode.length === 0) {
 
 ### 实现方针
 
-架构概要（完整实现请参考 `assets/simple-form.md`）：
+架构概要（完整实现请参考 `.claude/skills/jssp-page-generator/assets/simple-form.md`）：
 
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
@@ -512,14 +512,14 @@ function callbackXxxSearch(result) {
 ### 实现方针
 
 - 使用超链接或调用同一主机内的 REST API 时，以相对路径指定上下文路径下的路径
-  - 例：访问 `http://localhost/imart/foo/bar` 时，URL 指定为 `foo/bar`
+  - 例：访问 `http://127.0.0.1/imart/foo/bar` 时，URL 指定为 `foo/bar`
 - 该相对路径与路由配置文件中定义的 `file-mapping` 标签的 `path` 属性去除开头 `/` 后的内容一致
   - 例：路由配置文件为 `<file-mapping path="/sample/user/list" page="sample/user/user_list">` 时，打开展示页面 `sample/user/user_list` 的 URL 应指定为 `sample/user/list`
 
 ### 上下文路径
 
 - 上下文路径是由主机名、端口号、部署目标根目录名构成的 URL
-  - 例：`http://localhost/imart/`
+  - 例：`http://127.0.0.1/imart/`
 - 由于 `<imart type="head">` 标签将上下文路径指定在 `<base>` 标签中，推荐在指定 URL 时以相对路径指定上下文路径之后的路径
 
 ## API 的调用

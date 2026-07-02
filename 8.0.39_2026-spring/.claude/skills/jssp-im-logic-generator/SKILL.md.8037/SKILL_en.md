@@ -163,7 +163,7 @@ Specify the `executeId` field when you want to explicitly set it.
 ### 3. Write spec to a Temp File and Run build-flow.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/build-flow.js \
+node .claude/skills/jssp-im-logic-generator/scripts/build-flow.js \
      /tmp/<flowId>.spec.json \
      --zip
 ```
@@ -262,7 +262,7 @@ When generating routing, always refer to [routing-response.md](reference/routing
 Automatically validates the output of build-flow.js. **Always run after generation.**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
+node .claude/skills/jssp-im-logic-generator/scripts/validate-flow.js \
      <flow_definition.json or .zip>
 ```
 

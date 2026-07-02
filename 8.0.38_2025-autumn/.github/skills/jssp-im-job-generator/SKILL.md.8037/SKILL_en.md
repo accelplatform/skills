@@ -13,16 +13,16 @@ Explains the procedures for creating and structuring batch processing programs a
 
 ## Conventions to Reference
 
-This skill generates batch processing (`.js` only; no screen). See `{{AGENT_RULES}}/README.md` for the full picture.
+This skill generates batch processing (`.js` only; no screen). See `.github/instructions/README.md` for the full picture.
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-function-container.instructions.md` | 🟢 **Required** — structure of the `execute()` entry point |
-| `jssp-error-handling.instructions.md` / `jssp-logging.instructions.md` | 🟢 **Required** — batches typically need detailed logging and error handling |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 Required |
-| `jssp-2way-sql.instructions.md` | 🟡 **Only when the batch performs DB operations** (very common in batches) |
-| `jssp-security.instructions.md` | 🟡 Only when handling external input such as job parameters |
-| `jssp-presentation-page.instructions.md` / `jssp-accessibility.instructions.md` | 🔴 **Not needed; no screen is involved** |
+| `jssp-function-container.md` | 🟢 **Required** — structure of the `execute()` entry point |
+| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **Required** — batches typically need detailed logging and error handling |
+| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 Required |
+| `jssp-2way-sql.md` | 🟡 **Only when the batch performs DB operations** (very common in batches) |
+| `jssp-security.md` | 🟡 Only when handling external input such as job parameters |
+| `jssp-presentation-page.md` / `jssp-accessibility.md` | 🔴 **Not needed; no screen is involved** |
 
 ## Generation Targets
 
@@ -113,12 +113,12 @@ Perform this verification automatically without asking for user confirmation, an
 Run `validate-jssp-code.js` against the generated files. **Repeat fixes until the error count reaches 0.**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{feature-name}/
+node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{feature-name}/
 ```
 
 ### Step 2: Manual Check
 
-Execute steps 1–3 in `jssp-page-generator/reference/post-generation-verification.md` (step 4 screen verification is not needed for jobs).
+Execute steps 1–3 in `.github/skills/jssp-page-generator/reference/post-generation-verification.md` (step 4 screen verification is not needed for jobs).
 
 ### Step 3: Code Review and Security Check (Auto-Execute)
 

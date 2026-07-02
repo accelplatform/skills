@@ -13,7 +13,7 @@ description: "2WaySQL 規約（SQL外部化、構文、ホワイトリスト検�
 
 - **動的に WHERE 句や条件が変化する SELECT** は 2WaySQL を使用する
 - 単純な固定 SQL や 1 パラメータの単発実行は `select` / `execute` + `DbParameter` でも可
-- **文字列連結による SQL 構築は絶対禁止**（jssp-security.instructions.md 参照）
+- **文字列連結による SQL 構築は絶対禁止**（jssp-security.md 参照）
 
 ## SQL ファイルの配置
 
@@ -410,7 +410,7 @@ for (let i = 0; i < items.length; i++) {
 
 ## 関連
 
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - SQL インジェクション対策の全体方針
-- `skills/jssp-page-generator/reference/api-database.md` - Database API リファレンス
+- `.github/instructions/jssp-security.instructions.md` - SQL インジェクション対策の全体方針
+- `.github/skills/jssp-page-generator/reference/api-database.md` - Database API リファレンス
 - `d.ts/platform/database/im-ssjs-tenant-database.d.ts` - TenantDatabase の型定義
 - `d.ts/platform/database/im-ssjs-shared-database.d.ts` - SharedDatabase の型定義

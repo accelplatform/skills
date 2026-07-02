@@ -61,8 +61,8 @@ test('備品検索ボタンをクリックすると備品検索画面に遷移�
 
 **urlRegex の書き方の原則**：
 - baseURL の末尾要素（intra-mart の場合は `imart`）を含めること
-- 例: baseURL が `http://localhost/imart/` なら `/imart\/equip\/.../`
-- これにより、誤って `http://localhost/equip/...`（コンテキスト外）に遷移した場合のマッチを防げる
+- 例: baseURL が `http://127.0.0.1/imart/` なら `/imart\/equip\/.../`
+- これにより、誤って `http://127.0.0.1/equip/...`（コンテキスト外）に遷移した場合のマッチを防げる
 
 ## ダイアログ操作
 

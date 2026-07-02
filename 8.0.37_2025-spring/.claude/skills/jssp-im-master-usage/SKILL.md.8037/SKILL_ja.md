@@ -24,7 +24,7 @@ intra-mart Accel Platform の IM-共通マスタ検索（imACMSearch）を利用
 
 ## 参照すべき規約
 
-本スキルは画面に組み込む HTML スニペット（`imACMSearch` 呼び出し）を生成する。本スキル単独では `.js` を生成しないため、参照すべき規約は HTML 系に絞られる。全体像は `{{AGENT_RULES}}/README.md` 参照。
+本スキルは画面に組み込む HTML スニペット（`imACMSearch` 呼び出し）を生成する。本スキル単独では `.js` を生成しないため、参照すべき規約は HTML 系に絞られる。全体像は `.claude/rules/README.md` 参照。
 
 | 規約 | 取り扱い |
 |------|---------|

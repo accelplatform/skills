@@ -50,7 +50,7 @@ intra-mart Accel Platform の JSSP コードに含まれるハードコードさ
 ### build-i18n.js — プロパティファイル一括生成
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-localize-support/scripts/build-i18n.js <spec.json> [--out <outputDir>]
+node .github/skills/jssp-localize-support/scripts/build-i18n.js <spec.json> [--out <outputDir>]
 ```
 
 `--out` を省略した場合、spec.json の `outputDir` フィールドが使用される。
@@ -83,7 +83,7 @@ node {{AGENT_ROOT}}/skills/jssp-localize-support/scripts/build-i18n.js <spec.jso
 ### validate-i18n.js — 検証スクリプト
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-localize-support/scripts/validate-i18n.js <messageDir> [--src <jssp_src_dir>]
+node .github/skills/jssp-localize-support/scripts/validate-i18n.js <messageDir> [--src <jssp_src_dir>]
 ```
 
 **検証項目:**

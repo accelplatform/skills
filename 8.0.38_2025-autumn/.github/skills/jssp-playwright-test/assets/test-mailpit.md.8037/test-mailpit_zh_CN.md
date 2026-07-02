@@ -26,16 +26,16 @@ mailpit 默认在 `8025` 端口提供 HTTP UI / API。E2E 测试中只使用以�
 
 ## 从位于代理之下的 devcontainer 访问 mailpit
 
-在公司代理之下的 devcontainer 环境中，往往无法直接到达 mailpit（主机的 `localhost:8025`）。具有以下特征：
+在公司代理之下的 devcontainer 环境中，往往无法直接到达 mailpit（主机的 `127.0.0.1:8025`）。具有以下特征：
 
 - 如果为 intra-mart 设置了 `PW_PROXY_BYPASS=127.0.0.1,<-loopback>`，则从 Playwright `request` 夹具发出的 mailpit 请求也成为绕过对象，尝试直接连接而失败
-- 另一方面，通过公司代理（例如监听在 docker bridge 主机侧 IP 上的代理）通常可以到达 `localhost:8025`
+- 另一方面，通过公司代理（例如监听在 docker bridge 主机侧 IP 上的代理）通常可以到达 `127.0.0.1:8025`
 - 因此 **为 mailpit 创建独立的 APIRequestContext 并明确指定代理** 是可靠的做法
 
 ```typescript
 import { request as playwrightRequest, type APIRequestContext } from '@playwright/test';
 
-const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://localhost:8025';
+const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://127.0.0.1:8025';
 const PROXY_SERVER = process.env.HTTP_PROXY || process.env.http_proxy;
 
 async function newMailpitContext(): Promise<APIRequestContext> {
@@ -164,7 +164,7 @@ import {
   type APIRequestContext
 } from '@playwright/test';
 
-const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://localhost:8025';
+const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://127.0.0.1:8025';
 const PROXY_SERVER = process.env.HTTP_PROXY || process.env.http_proxy;
 const TOKEN_PAGE_PATH = process.env.IMART_TOKEN_PAGE || 'sample/csrf_check';
 
@@ -278,4 +278,4 @@ async function waitForMessage(
 
 - 生成 IM-LogicDesigner 邮件发送流程时，请参考 `jssp-im-logic-generator` 技能的 `im_sendTextMail` / `im_sendHtmlMail` 任务模板
 - 从作业发送邮件参考 `jssp-im-job-generator` 技能；从工作流发送通知邮件参考 `jssp-im-workflow-usage` 技能
-- 安全令牌相关的规约参考 `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md`
+- 安全令牌相关的规约参考 `.github/instructions/jssp-security.instructions.md`

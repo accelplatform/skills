@@ -630,7 +630,7 @@ function transferErrorPage(code, message) {
 - **仅图标的按钮**（无文字，如删除垃圾桶图标）使用普通大小。使用 `is-small` / `is-x-small` 会使图标过小而难以操作
 - 必填输入项目的标签必须附加必填标记（`imds-required-label-required` 类 + `data-required-label="必须"`）
 - 日期输入使用 `imuiCalendar`（必须指定 `floatable="true"`），而非 `<input type="date">`。不使用内联显示（未指定 `floatable`）
-- **验证的实现请遵守 `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` 的规范**（以下为主要规则）：
+- **验证的实现请遵守 `.claude/rules/jssp-presentation-page.md` 的规范**（以下为主要规则）：
   - 不使用 `maxlength` 属性。字符数限制通过验证错误消息通知
   - 验证相关函数按 `clearValidationError` → `showValidationError` → `createRequest` → `getValidationErrors` → `resetValidationError` → `validateCurrentStep` 的顺序定义
   - `showValidationError` 通过 `errorElement.closest('.imds-field')` 获取父元素，末尾设置 `activeValidation = true`

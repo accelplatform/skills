@@ -23,7 +23,7 @@ LE / BE どちらの UTF-16 でも IM-Workflow は読み込み可能だが、BOM
 検証・修復スクリプトはスキル内に同梱されている。XML 生成後、プロジェクトルートから以下を実行する。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-xml-encoding.js <xml-path>
+node .claude/skills/jssp-im-workflow-generator/scripts/validate-xml-encoding.js <xml-path>
 ```
 
 検出と修復の動作:

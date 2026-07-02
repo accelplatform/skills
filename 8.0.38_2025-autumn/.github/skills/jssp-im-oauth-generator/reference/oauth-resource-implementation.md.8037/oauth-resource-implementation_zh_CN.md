@@ -157,7 +157,7 @@ let locale = accountContext.locale;        // 语言区域
 // ... AccountContext 的字段几乎与常规画面相同
 ```
 
-> 详情请参考 `skills/jssp-page-generator/reference/api-account-context.md`。
+> 详情请参考 `.github/skills/jssp-page-generator/reference/api-account-context.md`。
 
 ## 获取请求参数
 
@@ -171,7 +171,7 @@ let locale = accountContext.locale;        // 语言区域
 | `request.getContentType()` | Content-Type |
 | `request.getInputStream()` | 请求正文（二进制／JSON 等）。接收 `application/json` 时从流中读取 |
 
-接收 `application/json` 正文的实现模式请参考 `skills/jssp-page-generator/assets/post-json-api.md`（OAuth 版的正文获取步骤也相同）。
+接收 `application/json` 正文的实现模式请参考 `.github/skills/jssp-page-generator/assets/post-json-api.md`（OAuth 版的正文获取步骤也相同）。
 
 ## 响应与状态码
 
@@ -195,18 +195,18 @@ httpResponse.sendMessageBodyString(JSON.stringify(response));
 ## 机密信息的处理
 
 - 响应 JSON 中 **不得包含密码・认证令牌・个人信息（未脱敏的电话号码或邮件等）**
-- 日志输出时同样（活用 `{{AGENT_RULES}}/jssp-logging{{AGENT_RULE_FILE}}.md` 的 `MaskUtil`）
+- 日志输出时同样（活用 `.github/instructions/jssp-logging.instructions.md` 的 `MaskUtil`）
 - 响应中的 `userCd`（用户代码）是常规 REST-API 也会返回的信息，无问题，但 **密码哈希・会话 ID 等严禁**
 
 ## 相关参考
 
 - `oauth-overview.md` - 全体概述
 - `oauth-resources-config.md` - URL 映射与 scope 的指定
-- `skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()` 的详情
-- `skills/jssp-page-generator/reference/api-account-context.md` - 认证用户上下文
-- `skills/jssp-page-generator/reference/argument-request.md` - request 参数
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - 错误响应格式・HTTP 状态
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - SQL 注入・XSS 对策（OAuth API 中同样适用）
+- `.github/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()` 的详情
+- `.github/skills/jssp-page-generator/reference/api-account-context.md` - 认证用户上下文
+- `.github/skills/jssp-page-generator/reference/argument-request.md` - request 参数
+- `.github/instructions/jssp-error-handling.instructions.md` - 错误响应格式・HTTP 状态
+- `.github/instructions/jssp-security.instructions.md` - SQL 注入・XSS 对策（OAuth API 中同样适用）
 
 ## 检查清单
 
@@ -215,5 +215,5 @@ httpResponse.sendMessageBodyString(JSON.stringify(response));
 - [ ] 错误代码是否为 `E.{产品}.{功能}.{API 名}.{编号}` 格式（5xx 是否分配了 `ERROR_CODE_INTERNAL`）？
 - [ ] 4xx 系是否用 `logger.warn`、5xx 系是否用 `logger.error` 输出日志？
 - [ ] 响应中是否未包含机密信息（密码・令牌・未脱敏的个人信息等）？
-- [ ] 涉及 SQL 访问时是否用 `DbParameter` 绑定（禁止字符串拼接，参考 `{{AGENT_RULES}}/jssp-2way-sql{{AGENT_RULE_FILE}}.md`）？
+- [ ] 涉及 SQL 访问时是否用 `DbParameter` 绑定（禁止字符串拼接，参考 `.github/instructions/jssp-2way-sql.instructions.md`）？
 - [ ] 用 `Contexts.getAccountContext()` 引用用户上下文时是否进行了 null 检查？

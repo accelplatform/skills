@@ -13,7 +13,7 @@ IM-Workflow のインポート用 XML 定義ファイルを、プロンプトの
 
 ## 参照すべき規約
 
-本スキルは **XML 定義ファイル**（`.xml`）のみを生成し、`.js` / `.html` の実装は行わない（実装は `jssp-im-workflow-usage` の責務）。そのため参照すべき規約は最小限。全体像は `{{AGENT_RULES}}/README.md` 参照。
+本スキルは **XML 定義ファイル**（`.xml`）のみを生成し、`.js` / `.html` の実装は行わない（実装は `jssp-im-workflow-usage` の責務）。そのため参照すべき規約は最小限。全体像は `.claude/rules/README.md` 参照。
 
 | 規約 | 取り扱い |
 |------|---------|
@@ -351,7 +351,7 @@ spec の `flowSettings` オブジェクトで IM-Workflow のフロー定義の�
 ### 3. build-workflow.js を実行
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
+node .claude/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
      /tmp/<workflowName>.spec.json
 ```
 
@@ -371,7 +371,7 @@ build-workflow.js が自動で行うこと:
 ### 4. validate-workflow.js で検証
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
+node .claude/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
      <出力された.xml>
 ```
 

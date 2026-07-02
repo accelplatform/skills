@@ -790,5 +790,5 @@ GET であってもファイル取得は機密データ操作とみなし、`X-I
 - `reference/api-storage.md` - PublicStorage の操作全般
 - `reference/api-secure-token-manager.md` - CSRF トークンの検証
 - `reference/argument-request.md` - Request / RequestParameter のメソッド一覧
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - エラーコード命名規則と API エラーレスポンス形式
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - 入力検証・パストラバーサル対策の全体方針
+- `.github/instructions/jssp-error-handling.instructions.md` - エラーコード命名規則と API エラーレスポンス形式
+- `.github/instructions/jssp-security.instructions.md` - 入力検証・パストラバーサル対策の全体方針

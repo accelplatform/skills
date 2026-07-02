@@ -72,7 +72,7 @@ Class mismatches that `validate-jssp-code.js` cannot detect (e.g., `result.data 
 npm run check:types:room
 
 # When targeting an arbitrary path
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{function-name}/
+bash .github/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{function-name}/
 ```
 
 **Fix until 0 issues.**
@@ -244,7 +244,7 @@ load('/room/common/datetime_util.js');
 load('/room/common/datetime_util');
 ```
 
-- The path passed to `executeByTemplate` / `fetchByTemplate` in 2WaySQL follows the same rule of not including `.sql` (see `jssp-2way-sql.instructions.md`). Remember that **not including extensions is the principle** for intra-mart external resource reference path specifications
+- The path passed to `executeByTemplate` / `fetchByTemplate` in 2WaySQL follows the same rule of not including `.sql` (see `jssp-2way-sql.md`). Remember that **not including extensions is the principle** for intra-mart external resource reference path specifications
 - Unify with absolute paths from the function folder root (with leading slash): `load('/room/common/xxx')`
 
 **Verification method:** `validate-jssp-code.js` `JSSP-JS-025` automatically detects the `load('...*.js')` pattern.
@@ -447,7 +447,7 @@ function getUserName(userId, localeId, tenantLocale) {
 - `IMMUserManager.getUsers()` is bulk retrieval, but depending on server environment and version, `data` may return an empty array or `error: true` (silent failure)
 - When user names must be reliably resolved (e.g., participant lists), **call `getUser()` (singular) in a loop**
 - Access with `result.data.locales[locale].userName` (the `displayName` property only exists on `UserListNodeInfo`, not on `UserInfo`. `JSSP-JS-019` automatically detects misuse)
-- Always include null check for `locales` itself and locale fallback (see `jssp-function-container.instructions.md`)
+- Always include null check for `locales` itself and locale fallback (see `jssp-function-container.md`)
 - On retrieval failure, use `userId` as fallback (output `warn` log without swallowing the exception)
 
 ### 4-2. Screen-side Initialization Code
@@ -573,4 +573,4 @@ location.href = url;
 If IM-Workflow screens were generated, execute the following in order.
 
 1. Run `validate-workflow-code.js` and confirm 0 errors
-2. Execute all items in `jssp-im-workflow-usage/reference/screen-generation-checklist.md`
+2. Execute all items in `.github/skills/jssp-im-workflow-usage/reference/screen-generation-checklist.md`

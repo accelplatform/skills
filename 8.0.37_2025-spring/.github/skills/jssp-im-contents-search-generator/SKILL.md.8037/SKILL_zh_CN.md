@@ -28,12 +28,12 @@ allowed-tools: Bash, Read, Write, Glob
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-function-container.instructions.md` | 🟢 **必读** — 模板 JS 的 `init()` 结构 |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` | 🟢 必读 |
-| `jssp-error-handling.instructions.md` / `jssp-logging.instructions.md` | 🟢 **必读** — Crawler 必须有详细日志和错误处理 |
-| `jssp-2way-sql.instructions.md` | 🟡 **仅在使用 2WaySQL 时参考**（例如，Crawler 的检索 SQL 使用 2WaySQL 时） |
-| `jssp-presentation-page.instructions.md` | 🟡 模板 HTML 的基本结构（imcs 专用类优先参考本 Skill 的 assets） |
-| `jssp-security.instructions.md` | 🟡 实现模板 HTML 时参考 XSS 对策章节。由于检索结果内容（`request` 参数）来自 Apache Solr，存储型 XSS 的风险不为零。DOM 操作使用 `textContent`，`innerHTML` 仅限用于 iAP 内部生成的 HTML |
+| `jssp-function-container.md` | 🟢 **必读** — 模板 JS 的 `init()` 结构 |
+| `jssp-naming.md` / `jssp-code-style.md` | 🟢 必读 |
+| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必读** — Crawler 必须有详细日志和错误处理 |
+| `jssp-2way-sql.md` | 🟡 **仅在使用 2WaySQL 时参考**（例如，Crawler 的检索 SQL 使用 2WaySQL 时） |
+| `jssp-presentation-page.md` | 🟡 模板 HTML 的基本结构（imcs 专用类优先参考本 Skill 的 assets） |
+| `jssp-security.md` | 🟡 实现模板 HTML 时参考 XSS 对策章节。由于检索结果内容（`request` 参数）来自 Apache Solr，存储型 XSS 的风险不为零。DOM 操作使用 `textContent`，`innerHTML` 仅限用于 iAP 内部生成的 HTML |
 
 ---
 

@@ -136,7 +136,7 @@
 ### 2. 生成流程定义 ZIP
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/build-flow.js <spec.json> --zip
+node .claude/skills/jssp-im-logic-generator/scripts/build-flow.js <spec.json> --zip
 ```
 
 输出路径：`src/main/storage/public/im_logic/im-logicdesigner-data-<featureName>.zip`
@@ -144,7 +144,7 @@ node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/build-flow.js <spec.j
 ### 3. 验证流程定义
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
+node .claude/skills/jssp-im-logic-generator/scripts/validate-flow.js \
   src/main/storage/public/im_logic/im-logicdesigner-data-<featureName>.zip
 ```
 
@@ -211,7 +211,7 @@ node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 | `<key>_import.js` | 手动创建（使用 `reference/imw-logic-plugin-import.md` 中的模板） | 通过 `WorkflowLogicFlowManager` 注册插件 |
 
 插件注册 JS 的模板与实现详情，请参见
-`jssp-tenant-setup-generator/reference/imw-logic-plugin-import.md`。
+`.claude/skills/jssp-tenant-setup-generator/reference/imw-logic-plugin-import.md`。
 
 ---
 

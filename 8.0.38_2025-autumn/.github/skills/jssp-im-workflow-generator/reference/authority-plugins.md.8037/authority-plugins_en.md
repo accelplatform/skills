@@ -433,7 +433,7 @@ Complex logic such as DB lookups or external API calls can be implemented inside
 ### Creating the Flow Definition
 
 The flow used as a processing target must satisfy the following input/output specification.
-For the creation procedure and spec.json template, refer to `jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md`.
+For the creation procedure and spec.json template, refer to `.github/skills/jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md`.
 
 **Input (all optional)**
 

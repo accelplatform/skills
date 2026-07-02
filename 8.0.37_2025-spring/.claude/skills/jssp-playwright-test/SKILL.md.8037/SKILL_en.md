@@ -22,7 +22,7 @@ When the user makes requests such as:
 
 1. Load the target presentation page (HTML)
 2. Identify testable elements from the HTML structure (tables, forms, dialogs, buttons, etc.)
-3. Design test cases based on the test perspectives in `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md`
+3. Design test cases based on the test perspectives in `.claude/rules/jssp-testing.md`
 4. **Before generating test code**, ask the user the following 2 questions (do not generate code first)
 
    **Question ①: Screenshots (layout inspection)**
@@ -46,7 +46,7 @@ When the user makes requests such as:
 | `assets/test-validation.md` | Test examples for validation (required, character type, length, range, duplicate, real-time resolution) |
 | `assets/test-button-style.md` | Test examples for button styles (is-primary / is-danger) and confirmation dialogs |
 | `assets/test-mailpit.md` | E2E testing of mail-sending features with mailpit (verifying mail via the HTTP API, reaching mailpit from behind a proxy, CSRF secure-token retrieval patterns) |
-| `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md` | Test perspectives and configuration conventions |
+| `.claude/rules/jssp-testing.md` | Test perspectives and configuration conventions |
 
 ## Test Design Principles
 
@@ -158,7 +158,7 @@ If the user did not answer, it is acceptable to ask Question ② again. Do not d
 
 ## Notes
 
-- Refer to `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md` for details on test perspectives
+- Refer to `.claude/rules/jssp-testing.md` for details on test perspectives
 - Since the `maxlength` attribute is not used in HTML per policy, always verify character length limits in validation tests
 - `toHaveText` may not match within `<span>` structures in cells, so `toContainText` is recommended
 - **Real-time validation (immediate error resolution) tests must generate all patterns in one go.** Include all 6 of the following perspectives defined in the "Real-time Validation" section of `assets/test-validation.md` without omission:

@@ -151,7 +151,7 @@ Uses 2way-sql.
 
 #### Notes on LIKE Search (LIKE Pattern Injection Countermeasure)
 
-When using the LIKE operator, the same countermeasures as the "LIKE Search Escaping" in `jssp-2way-sql.instructions.md` are required.
+When using the LIKE operator, the same countermeasures as the "LIKE Search Escaping" in `jssp-2way-sql.md` are required.
 
 1. **Always append an `ESCAPE '\'` clause to the SQL**
 2. **Escape LIKE special characters (`\`, `%`, `_`) and append wildcards on the server side** — Do not send `%keyword%` from the client

@@ -171,7 +171,7 @@ REST-API 返回的 JSON 响应采用以下两种格式之一。
 
 对于更新类 API（POST/PUT/DELETE），必须实施**安全令牌验证**作为 CSRF 对策。
 
-- 客户端在请求头 `X-Intramart-Secure-Token` 中附加令牌发送（参见 `jssp-presentation-page.instructions.md`）
+- 客户端在请求头 `X-Intramart-Secure-Token` 中附加令牌发送（参见 `jssp-presentation-page.md`）
 - 服务端使用 `SecureTokenManager.verify(token)` 进行验证，失败时以 **400** 返回 `{error: true, errorMessage}`
 - 令牌未附加、验证失败、有效期过期均按 400 处理
 - 参照类（GET）API 在返回机密数据时也应进行同样验证

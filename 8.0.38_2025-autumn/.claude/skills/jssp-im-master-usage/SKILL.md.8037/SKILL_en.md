@@ -24,7 +24,7 @@ When generating screens with `jssp-im-workflow-usage` or `jssp-page-generator` a
 
 ## Conventions to Reference
 
-This skill generates HTML snippets (with `imACMSearch` calls) that get embedded into screens. It does not generate `.js` on its own, so the relevant conventions are HTML-centric. See `{{AGENT_RULES}}/README.md` for the full picture.
+This skill generates HTML snippets (with `imACMSearch` calls) that get embedded into screens. It does not generate `.js` on its own, so the relevant conventions are HTML-centric. See `.claude/rules/README.md` for the full picture.
 
 | Convention | Handling |
 |------------|----------|

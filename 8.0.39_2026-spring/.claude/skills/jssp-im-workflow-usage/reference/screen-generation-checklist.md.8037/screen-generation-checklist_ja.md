@@ -23,7 +23,7 @@
 
 ### バリデーション構造
 
-- [ ] `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` 準拠のバリデーション関数群（`clearValidationError`, `showValidationError`, `createRequest`, `getValidationErrors`, `resetValidationError`, `validateCurrentStep`）がこの順序で定義されている
+- [ ] `.claude/rules/jssp-presentation-page.md` 準拠のバリデーション関数群（`clearValidationError`, `showValidationError`, `createRequest`, `getValidationErrors`, `resetValidationError`, `validateCurrentStep`）がこの順序で定義されている
 - [ ] `activeValidation` フラグによるリアルタイム再バリデーションが実装されている（テキスト入力は `input` イベント、セレクト・日付は `change` イベント）
 
 ### imuiCalendar を使用している場合
@@ -50,7 +50,7 @@
   - ラベルスパンに `id="fieldName-label"` を付与（**コロンなし**。クラスは付けない）
   - `toggleRequiredMark(id, condition)` 関数を定義し、表示制御と同じタイミングで呼び出す
   - 例: `toggleRequiredMark('period-end-label', periodType === 'temporary')`
-  - id 命名規約の詳細は `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md`「id 属性の命名規約」を参照
+  - id 命名規約の詳細は `.claude/rules/jssp-presentation-page.md`「id 属性の命名規約」を参照
 
 ### 入力フィールドの幅制御
 

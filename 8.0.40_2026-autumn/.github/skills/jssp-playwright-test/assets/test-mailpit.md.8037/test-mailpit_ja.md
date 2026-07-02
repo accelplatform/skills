@@ -26,16 +26,16 @@ mailpit はデフォルトで `8025` ポートで HTTP UI / API を提供する�
 
 ## proxy 配下の devcontainer から mailpit へ届かせるには
 
-corporate proxy 配下の devcontainer 環境では、mailpit (host の `localhost:8025`) に直接届かないことが多い。以下の特徴がある。
+corporate proxy 配下の devcontainer 環境では、mailpit (host の `127.0.0.1:8025`) に直接届かないことが多い。以下の特徴がある。
 
 - intra-mart 用に `PW_PROXY_BYPASS=127.0.0.1,<-loopback>` を設定していると、Playwright の `request` フィクスチャからの mailpit リクエストはバイパス対象になり直接接続を試みて失敗する
-- 一方、corporate proxy（例: docker bridge の host 側 IP に立つプロキシ）経由なら `localhost:8025` まで届くケースが多い
+- 一方、corporate proxy（例: docker bridge の host 側 IP に立つプロキシ）経由なら `127.0.0.1:8025` まで届くケースが多い
 - このため **mailpit 用には独立した APIRequestContext を作り、proxy を明示する** のが確実
 
 ```typescript
 import { request as playwrightRequest, type APIRequestContext } from '@playwright/test';
 
-const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://localhost:8025';
+const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://127.0.0.1:8025';
 const PROXY_SERVER = process.env.HTTP_PROXY || process.env.http_proxy;
 
 async function newMailpitContext(): Promise<APIRequestContext> {
@@ -164,7 +164,7 @@ import {
   type APIRequestContext
 } from '@playwright/test';
 
-const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://localhost:8025';
+const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://127.0.0.1:8025';
 const PROXY_SERVER = process.env.HTTP_PROXY || process.env.http_proxy;
 const TOKEN_PAGE_PATH = process.env.IMART_TOKEN_PAGE || 'sample/csrf_check';
 
@@ -278,4 +278,4 @@ async function waitForMessage(
 
 - IM-LogicDesigner のメール送信フローを生成する場合は `jssp-im-logic-generator` スキルの `im_sendTextMail` / `im_sendHtmlMail` タスクテンプレートを参照
 - ジョブからのメール送信は `jssp-im-job-generator` スキル、ワークフローからの通知メールは `jssp-im-workflow-usage` スキル参照
-- セキュアトークン関連の規約は `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` 参照
+- セキュアトークン関連の規約は `.github/instructions/jssp-security.instructions.md` 参照

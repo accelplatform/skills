@@ -433,7 +433,7 @@ IM-LogicDesigner のロジックフローを実行して処理対象者を動的
 ### フロー定義の作成
 
 処理対象者として使用するフローは、以下の入出力仕様を満たす必要がある。
-フロー定義の作成手順・spec.json テンプレートは `jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md` を参照。
+フロー定義の作成手順・spec.json テンプレートは `.github/skills/jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md` を参照。
 
 **入力（Input）— すべて任意**
 

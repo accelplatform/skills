@@ -15,7 +15,7 @@
 検証スクリプトはスキル内に同梱されている。プロジェクトルートから以下を実行する。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-xsd.js \
+node .github/skills/jssp-im-workflow-generator/scripts/validate-xsd.js \
      src/main/storage/public/im_workflow/im_workflow-{name}-import.xml
 ```
 

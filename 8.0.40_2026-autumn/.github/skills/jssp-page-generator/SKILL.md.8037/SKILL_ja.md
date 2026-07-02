@@ -22,17 +22,17 @@ intra-mart Accel Platform の JSSP コードを新規に生成するためのス
 
 ## 参照すべき規約
 
-本スキルは `.js`（ファンクションコンテナ）+ `.html`（プレゼンテーションページ）の両方を生成するため、関連規約が多い。全体像は `{{AGENT_RULES}}/README.md` の「規約ファイル一覧（一行要約 + 適用範囲タグ）」を参照。本スキル特有の重要度:
+本スキルは `.js`（ファンクションコンテナ）+ `.html`（プレゼンテーションページ）の両方を生成するため、関連規約が多い。全体像は `.github/instructions/README.md` の「規約ファイル一覧（一行要約 + 適用範囲タグ）」を参照。本スキル特有の重要度:
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-presentation-page.instructions.md` | 🟢 **必読** — `.html` の HTML 構造・バリデーション・id 命名 |
-| `jssp-function-container.instructions.md` | 🟢 **必読** — `init()` 構造・validateRequest |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 必読 |
-| `jssp-error-handling.instructions.md` / `jssp-security.instructions.md` | 🟢 必読 — フォーム入力 + API があるため両方関連 |
-| `jssp-2way-sql.instructions.md` | 🟡 **DB 操作を含む実装の場合のみ参照**。読み取り専用 UI 等 DB に触れない画面では不要 |
-| `jssp-logging.instructions.md` | 🟡 ログ実装時のみ |
-| `jssp-accessibility.instructions.md` | 🟠 **業務要件次第** — 仕様書で明示要求があった場合のみ厚く適用。指示がなければ最小限（`imdsConfirm`、`aria-label`、装飾アイコンの `aria-hidden` 等の基本）に留める |
+| `jssp-presentation-page.md` | 🟢 **必読** — `.html` の HTML 構造・バリデーション・id 命名 |
+| `jssp-function-container.md` | 🟢 **必読** — `init()` 構造・validateRequest |
+| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必読 |
+| `jssp-error-handling.md` / `jssp-security.md` | 🟢 必読 — フォーム入力 + API があるため両方関連 |
+| `jssp-2way-sql.md` | 🟡 **DB 操作を含む実装の場合のみ参照**。読み取り専用 UI 等 DB に触れない画面では不要 |
+| `jssp-logging.md` | 🟡 ログ実装時のみ |
+| `jssp-accessibility.md` | 🟠 **業務要件次第** — 仕様書で明示要求があった場合のみ厚く適用。指示がなければ最小限（`imdsConfirm`、`aria-label`、装飾アイコンの `aria-hidden` 等の基本）に留める |
 
 ## 使用タイミング
 
@@ -86,31 +86,31 @@ intra-mart Accel Platform の JSSP コードを新規に生成するためのス
 
 | コンポーネント | reference ファイル |
 |--------------|-------------------|
-| テキストボックス | `skills/jssp-imds-theme/reference/imds-html-textbox.md` |
-| テキストエリア | `skills/jssp-imds-theme/reference/imds-html-textarea.md` |
-| セレクト（選択肢） | `skills/jssp-imds-theme/reference/imds-html-select.md` |
-| チェックボックス | `skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
-| ラジオボタン | `skills/jssp-imds-theme/reference/imds-html-radio.md` |
-| ボタン | `skills/jssp-imds-theme/reference/imds-html-button.md` |
-| テーブル | `skills/jssp-imds-theme/reference/imds-html-table.md` |
-| ダイアログ | `skills/jssp-imds-theme/reference/imds-html-dialog.md` |
-| ダイアログ + フォーム（新規作成・編集等） | `skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
-| ページネーション | `skills/jssp-imds-theme/reference/imds-html-pagination.md` |
-| フィールド（ラベル付き） | `skills/jssp-imds-theme/reference/imds-html-field.md` |
-| フィールドグループ | `skills/jssp-imds-theme/reference/imds-html-field-group.md` |
-| タブ | `skills/jssp-imds-theme/reference/imds-html-tabs.md` |
-| アコーディオン | `skills/jssp-imds-theme/reference/imds-html-accordion.md` |
-| カレンダー入力 | `skills/jssp-imds-theme/reference/imui-html-calendar.md` |
-| バナーメッセージ | `skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
-| インラインメッセージ | `skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
+| テキストボックス | `.github/skills/jssp-imds-theme/reference/imds-html-textbox.md` |
+| テキストエリア | `.github/skills/jssp-imds-theme/reference/imds-html-textarea.md` |
+| セレクト（選択肢） | `.github/skills/jssp-imds-theme/reference/imds-html-select.md` |
+| チェックボックス | `.github/skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
+| ラジオボタン | `.github/skills/jssp-imds-theme/reference/imds-html-radio.md` |
+| ボタン | `.github/skills/jssp-imds-theme/reference/imds-html-button.md` |
+| テーブル | `.github/skills/jssp-imds-theme/reference/imds-html-table.md` |
+| ダイアログ | `.github/skills/jssp-imds-theme/reference/imds-html-dialog.md` |
+| ダイアログ + フォーム（新規作成・編集等） | `.github/skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
+| ページネーション | `.github/skills/jssp-imds-theme/reference/imds-html-pagination.md` |
+| フィールド（ラベル付き） | `.github/skills/jssp-imds-theme/reference/imds-html-field.md` |
+| フィールドグループ | `.github/skills/jssp-imds-theme/reference/imds-html-field-group.md` |
+| タブ | `.github/skills/jssp-imds-theme/reference/imds-html-tabs.md` |
+| アコーディオン | `.github/skills/jssp-imds-theme/reference/imds-html-accordion.md` |
+| カレンダー入力 | `.github/skills/jssp-imds-theme/reference/imui-html-calendar.md` |
+| バナーメッセージ | `.github/skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
+| インラインメッセージ | `.github/skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
 
-上記以外のコンポーネントは `skills/jssp-imds-theme/reference/` 配下に格納されている。
+上記以外のコンポーネントは `.github/skills/jssp-imds-theme/reference/` 配下に格納されている。
 
 ---
 
 ### ステップ 4: ファンクションコンテナ・ルーティングの生成
 
-`{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md` と `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` を参照してコードを生成する。
+`.github/instructions/jssp-function-container.instructions.md` と `.github/instructions/jssp-presentation-page.instructions.md` を参照してコードを生成する。
 
 - ファンクションコンテナ（.js）を `src/main/jssp/src/{機能名}/` に生成する
 - ルーティング設定（.xml）を必要に応じて生成する
@@ -131,7 +131,7 @@ intra-mart Accel Platform の JSSP コードを新規に生成するためのス
 - imds コンポーネントを使わず、独自の HTML/CSS 構造を定義すること
 - アセットの HTML 構造（フォームのトップレベル構造、`imds-field-container` / `imds-field-group` / `imds-field` のネスト、`is-horizontal` / `imds-w-15` 等のレイアウトクラス）を**独自判断で改変すること**。アセット側の構造はそのまま流用し、ラベル文言・`id`・入力種別・バリデーション内容だけを置き換えること
 - 「縦並びの方が見やすい」「項目が多いので簡略化したい」等の**独自のデザイン判断に基づくレイアウト変更**（例: `is-horizontal` → `is-vertical` への変更、`imds-field-container` / `imds-field-group` の省略）。アセットと異なる構造が必要な場合は、**生成前にユーザへ確認**すること
-- アセットに記述されている **JSDoc コメント（`/** ... */`）やセクション区切りコメント（`// ===...===`）を省略すること**。冗長に見えても、規約（`{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md`）でこれらは必須項目として扱う。残すことで関数の意図がコード内で明示され、後続のレビューや改修が容易になる。アセットに含まれるコメントは原則そのまま写経し、変更が必要な場合は内容を該当機能用にリライトするだけにとどめること（削除はしない）
+- アセットに記述されている **JSDoc コメント（`/** ... */`）やセクション区切りコメント（`// ===...===`）を省略すること**。冗長に見えても、規約（`.github/instructions/jssp-function-container.instructions.md`）でこれらは必須項目として扱う。残すことで関数の意図がコード内で明示され、後続のレビューや改修が容易になる。アセットに含まれるコメントは原則そのまま写経し、変更が必要な場合は内容を該当機能用にリライトするだけにとどめること（削除はしない）
 
 **必須ルール:**
 - ラベル付きフォーム要素は `imds-field` + `imds-field-label` + `imds-field-control` 構造を使うこと
@@ -176,7 +176,7 @@ DDL 生成時の詳細ルールは本ファイル末尾の「DDL 生成ルール
 生成したファイルに対して `validate-jssp-code.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
+node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
 ```
 
 検出される主なパターン:
@@ -200,7 +200,7 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src
 DDL ファイルを生成した場合、`validate-ddl.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{機能名}/{version}/
+node .github/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{機能名}/{version}/
 ```
 
 検出される主なパターン:
@@ -219,7 +219,7 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/
 生成したファイルに対して TypeScript コンパイラによる型検査を実行する。**0 issues になるまで修正を繰り返す。**
 
 ```bash
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{機能名}/
+bash .github/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{機能名}/
 ```
 
 検出される主なパターン:

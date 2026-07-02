@@ -13,14 +13,14 @@ IM-Workflow のインポート用 XML 定義ファイルを、プロンプトの
 
 ## 参照すべき規約
 
-本スキルは **XML 定義ファイル**（`.xml`）のみを生成し、`.js` / `.html` の実装は行わない（実装は `jssp-im-workflow-usage` の責務）。そのため参照すべき規約は最小限。全体像は `{{AGENT_RULES}}/README.md` 参照。
+本スキルは **XML 定義ファイル**（`.xml`）のみを生成し、`.js` / `.html` の実装は行わない（実装は `jssp-im-workflow-usage` の責務）。そのため参照すべき規約は最小限。全体像は `.github/instructions/README.md` 参照。
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-file-structure.instructions.md` | 🟢 必読 — XML の出力先（`src/main/storage/public/im_workflow/`） |
-| `jssp-naming.instructions.md` | 🟢 必読 — workflowName / shortName 等の命名 |
-| `jssp-function-container.instructions.md` / `jssp-presentation-page.instructions.md` / `jssp-code-style.instructions.md` 等 | 🔴 **本スキル単独では不要**（XML 生成のみ。`.js` / `.html` の実装は `jssp-im-workflow-usage` の責務） |
-| `jssp-2way-sql.instructions.md` / `jssp-accessibility.instructions.md` / `jssp-logging.instructions.md` 等 | 🔴 **本スキル単独では不要** |
+| `jssp-file-structure.md` | 🟢 必読 — XML の出力先（`src/main/storage/public/im_workflow/`） |
+| `jssp-naming.md` | 🟢 必読 — workflowName / shortName 等の命名 |
+| `jssp-function-container.md` / `jssp-presentation-page.md` / `jssp-code-style.md` 等 | 🔴 **本スキル単独では不要**（XML 生成のみ。`.js` / `.html` の実装は `jssp-im-workflow-usage` の責務） |
+| `jssp-2way-sql.md` / `jssp-accessibility.md` / `jssp-logging.md` 等 | 🔴 **本スキル単独では不要** |
 
 ## 生成対象
 
@@ -351,7 +351,7 @@ spec の `flowSettings` オブジェクトで IM-Workflow のフロー定義の�
 ### 3. build-workflow.js を実行
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
+node .github/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
      /tmp/<workflowName>.spec.json
 ```
 
@@ -371,7 +371,7 @@ build-workflow.js が自動で行うこと:
 ### 4. validate-workflow.js で検証
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
+node .github/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
      <出力された.xml>
 ```
 

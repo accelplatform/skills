@@ -72,7 +72,7 @@ WHERE
 npm run check:types:room
 
 # 针对任意路径时
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{功能名}/
+bash .claude/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{功能名}/
 ```
 
 **修改直到 0 issues。**
@@ -573,4 +573,4 @@ location.href = url;
 生成了 IM-Workflow 画面时，按以下顺序执行。
 
 1. 运行 `validate-workflow-code.js`，确认 0 error
-2. 执行 `jssp-im-workflow-usage/reference/screen-generation-checklist.md` 的所有项目
+2. 执行 `.claude/skills/jssp-im-workflow-usage/reference/screen-generation-checklist.md` 的所有项目

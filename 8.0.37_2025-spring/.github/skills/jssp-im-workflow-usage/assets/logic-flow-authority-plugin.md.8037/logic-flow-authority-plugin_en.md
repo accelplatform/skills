@@ -136,7 +136,7 @@ You may keep only the input definitions (imwMatterInfo / imwApplyAuthInfo / imwB
 ### 2. Generate the Flow Definition ZIP
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/build-flow.js <spec.json> --zip
+node .github/skills/jssp-im-logic-generator/scripts/build-flow.js <spec.json> --zip
 ```
 
 Output location: `src/main/storage/public/im_logic/im-logicdesigner-data-<featureName>.zip`
@@ -144,7 +144,7 @@ Output location: `src/main/storage/public/im_logic/im-logicdesigner-data-<featur
 ### 3. Validate the Flow Definition
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
+node .github/skills/jssp-im-logic-generator/scripts/validate-flow.js \
   src/main/storage/public/im_logic/im-logicdesigner-data-<featureName>.zip
 ```
 
@@ -211,7 +211,7 @@ In addition to importing the IM-LogicDesigner flow ZIP, you can also incorporate
 | `<key>_import.js` | Create manually (use the template in `reference/imw-logic-plugin-import.md`) | Registers the plugin via `WorkflowLogicFlowManager` |
 
 For the plugin registration JS template and implementation details, see
-`jssp-tenant-setup-generator/reference/imw-logic-plugin-import.md`.
+`.github/skills/jssp-tenant-setup-generator/reference/imw-logic-plugin-import.md`.
 
 ---
 

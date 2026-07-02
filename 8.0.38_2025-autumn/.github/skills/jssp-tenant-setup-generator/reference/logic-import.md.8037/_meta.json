@@ -26,55 +26,5 @@
       "from": "logic-import_zh_CN.md",
       "to": "logic-import.md"
     }
-  ],
-  "replacements": [
-    {
-      "type": "text",
-      "target": "{{AGENT_RULES}}",
-      "values": [
-        {
-          "condition": {
-            "agent": "claude-code"
-          },
-          "value": "rules"
-        },
-        {
-          "condition": {
-            "agent": "github-copilot"
-          },
-          "value": "instructions"
-        },
-        {
-          "condition": {
-            "agent": "codex"
-          },
-          "value": "requirements"
-        }
-      ]
-    },
-    {
-      "type": "text",
-      "target": "{{AGENT_RULE_FILE}}",
-      "values": [
-        {
-          "condition": {
-            "agent": "claude-code"
-          },
-          "value": ""
-        },
-        {
-          "condition": {
-            "agent": "github-copilot"
-          },
-          "value": ""
-        },
-        {
-          "condition": {
-            "agent": "codex"
-          },
-          "value": "/AGENTS"
-        }
-      ]
-    }
   ]
 }

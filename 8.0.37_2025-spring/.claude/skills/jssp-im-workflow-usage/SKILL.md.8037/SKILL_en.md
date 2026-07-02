@@ -13,7 +13,7 @@ Explains the procedure for creating and organizing various workflow processing p
 
 ## Conventions to Reference
 
-This skill generates application/approval screens (`.html` + `.js`) and action processing (`.js`). See the "Convention File List (One-Line Summary + Scope Tag)" in `{{AGENT_RULES}}/README.md` for the full picture. Convention-specific priorities for this skill:
+This skill generates application/approval screens (`.html` + `.js`) and action processing (`.js`). See the "Convention File List (One-Line Summary + Scope Tag)" in `.claude/rules/README.md` for the full picture. Convention-specific priorities for this skill:
 
 | Convention | Handling |
 |------------|----------|
@@ -67,7 +67,7 @@ This skill generates application/approval screens (`.html` + `.js`) and action p
 - `reference/api-im-workflow-modal-confirm.md` — Processing modal API (`imWorkflow.modal.showConfirm()`) reference
 - `reference/api-user-actv-matter-property-value.md` — Case property value API reference
 - `reference/screen-generation-checklist.md` — Self-check checklist for screen generation
-- `jssp-im-workflow-generator/reference/node-types.md` — Node types and authority plugin list (related skill)
+- `.claude/skills/jssp-im-workflow-generator/reference/node-types.md` — Node types and authority plugin list (related skill)
 
 ## Choosing the Application Screen Method
 
@@ -161,14 +161,14 @@ In `import-<key>-config-1.xml`, the `<create-file>` / `<insert-file>` references
 Split DML into `{feature}_sample-dml_postgre.sql` etc. only when dialect-specific syntax is required (e.g., PostgreSQL `ON CONFLICT`, Oracle `MERGE`).
 
 - Match table/column names with the SQL in action processing
-- **Follow the type mapping table in `jssp-page-generator/reference/ddl-type-mapping.md` for column types** (never write type names from memory or guesswork)
+- **Follow the type mapping table in `.claude/skills/jssp-page-generator/reference/ddl-type-mapping.md` for column types** (never write type names from memory or guesswork)
 - Separate DDL files by DB product (type names and default value syntax differ)
 - Write sample DML as standard SQL INSERT statements usable across all 3 products
 - Insert 3–5 sample records for master tables (supplier masters, etc.)
 
 ### File Path Construction Rules
 
-> **Note**: IM-Workflow screens are invoked directly by the workflow engine via the `scriptPath` in the XML, so they do not go through the routing table. This means they follow **a separate set of rules from `{{AGENT_RULES}}/jssp-file-structure{{AGENT_RULE_FILE}}.md`'s `view/{view}.js` (snake_case file name unique per screen) convention** — the difference comes from a different invocation source. Follow the rules of this section (the exception is also documented on the `{{AGENT_RULES}}/jssp-file-structure{{AGENT_RULE_FILE}}.md` side as "Exception Rules for Screens Not Called Through the Routing Table").
+> **Note**: IM-Workflow screens are invoked directly by the workflow engine via the `scriptPath` in the XML, so they do not go through the routing table. This means they follow **a separate set of rules from `.claude/rules/jssp-file-structure.md`'s `view/{view}.js` (snake_case file name unique per screen) convention** — the difference comes from a different invocation source. Follow the rules of this section (the exception is also documented on the `.claude/rules/jssp-file-structure.md` side as "Exception Rules for Screens Not Called Through the Routing Table").
 
 Always construct file placement paths according to the following rules:
 
@@ -210,7 +210,7 @@ The skill's default convention (`{feature}/workflow/{screen-type}/index`) is onl
 - Customize templates as needed
 - When `TODO` appears in a reference, implement according to its instructions
 - **Do not place a "Back" button on detail screens (confirmation, processing detail, reference detail)**. Detail screens are displayed within an IM-Workflow engine iframe, and the previous page path does not exist, causing navigation to an empty page. Omit all back button HTML, JS event listeners, and back forms (`imw-back-form`).
-- **Presentation pages (.html) must follow the coding conventions in `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md`**. Validation implementation compliance is especially mandatory. After generation, perform a self-check using `reference/screen-generation-checklist.md`.
+- **Presentation pages (.html) must follow the coding conventions in `.claude/rules/jssp-presentation-page.md`**. Validation implementation compliance is especially mandatory. After generation, perform a self-check using `reference/screen-generation-checklist.md`.
 - **When a screen needs to let the user input an IM common master value (user / department / company / group / role), do not build a custom UI; combine with the `jssp-im-master-usage` skill to embed a master search dialog** (e.g., "Applicant's Manager", "Target Department", "Handler" fields). Manual code entry is prohibited.
 
 ## Post-Generation Mandatory Verification (Auto-Execute)
@@ -223,7 +223,7 @@ Perform this verification automatically without asking the user, and fix any iss
 Run `validate-workflow-code.js` against the generated files. **Repeat corrections until there are 0 errors.**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-usage/scripts/validate-workflow-code.js src/main/jssp/src/{feature}/
+node .claude/skills/jssp-im-workflow-usage/scripts/validate-workflow-code.js src/main/jssp/src/{feature}/
 ```
 
 Common patterns detected:
@@ -240,12 +240,12 @@ Common patterns detected:
 If DDL files were generated, run `validate-ddl.js`. **Repeat corrections until there are 0 errors.**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{feature}/{version}/
+node .claude/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{feature}/{version}/
 ```
 
 ### Step 3: Manual Check (`post-generation-verification.md`)
 
-Execute all steps in `jssp-page-generator/reference/post-generation-verification.md`.
+Execute all steps in `.claude/skills/jssp-page-generator/reference/post-generation-verification.md`.
 Pay special attention to the following items where bugs have occurred in the past:
 1. Are SQL files using `/*$param*/` (direct embedding)? → Use `/*param*/` (bind) instead
 2. Are `executeByTemplate` parameters wrapped in `DbParameter.xxx()`?
@@ -255,12 +255,12 @@ Pay special attention to the following items where bugs have occurred in the pas
 
 ### Step 4: Re-Check Screen HTML for imds Compliance (Only When HTML Was Generated)
 
-**Always execute this step when `.html` files were generated** (apply / approve / detail / confirm screens, etc.). While `validate-workflow-code.js` detects known invalid class names like `imds-selectbox`, **it does not cover a complete cross-check against the reference**. Open `jssp-imds-theme/reference/` and visually re-verify.
+**Always execute this step when `.html` files were generated** (apply / approve / detail / confirm screens, etc.). While `validate-workflow-code.js` detects known invalid class names like `imds-selectbox`, **it does not cover a complete cross-check against the reference**. Open `.claude/skills/jssp-imds-theme/reference/` and visually re-verify.
 
 #### Procedure
 
 1. Scan each generated `.html` and enumerate the imds components in use (textbox, textarea, select, checkbox, radio, button, table, dialog, field, tab, calendar input, banner / inline message, etc.)
-2. For each component, **open `skills/jssp-imds-theme/reference/imds-html-{component}.md` with the Read tool** to re-verify (do not rely on memory)
+2. For each component, **open `.claude/skills/jssp-imds-theme/reference/imds-html-{component}.md` with the Read tool** to re-verify (do not rely on memory)
 3. Cross-check the reference's class names, tag structure, and attributes against the generated HTML
 
 #### Key Check Items

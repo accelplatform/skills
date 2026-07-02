@@ -157,7 +157,7 @@ let locale = accountContext.locale;        // locale
 // ... AccountContext fields are mostly equivalent to a regular screen
 ```
 
-> For details, see `skills/jssp-page-generator/reference/api-account-context.md`.
+> For details, see `.github/skills/jssp-page-generator/reference/api-account-context.md`.
 
 ## Retrieving Request Parameters
 
@@ -171,7 +171,7 @@ As with regular REST-API, you can retrieve via `request[key]` or `request.getPar
 | `request.getContentType()` | Content-Type |
 | `request.getInputStream()` | Request body (binary / JSON, etc.). When receiving `application/json`, read from the stream |
 
-For implementation patterns when receiving `application/json` body, see `skills/jssp-page-generator/assets/post-json-api.md` (the body retrieval procedure is the same in the OAuth version).
+For implementation patterns when receiving `application/json` body, see `.github/skills/jssp-page-generator/assets/post-json-api.md` (the body retrieval procedure is the same in the OAuth version).
 
 ## Response and Status Code
 
@@ -195,18 +195,18 @@ httpResponse.sendMessageBodyString(JSON.stringify(response));
 ## Handling Confidential Information
 
 - Do not include **passwords, authentication tokens, personal information (unmasked phone numbers and emails, etc.)** in the response JSON
-- Same when outputting logs (use `MaskUtil` in `{{AGENT_RULES}}/jssp-logging{{AGENT_RULE_FILE}}.md`)
+- Same when outputting logs (use `MaskUtil` in `.github/instructions/jssp-logging.instructions.md`)
 - The `userCd` (user code) in the response is information also returned in regular REST-API, so it is OK, but **password hashes, session IDs, etc. are strictly prohibited**
 
 ## Related References
 
 - `oauth-overview.md` - Overall picture
 - `oauth-resources-config.md` - URL mapping and scope specification
-- `skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()` details
-- `skills/jssp-page-generator/reference/api-account-context.md` - Authenticated user context
-- `skills/jssp-page-generator/reference/argument-request.md` - request argument
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - Error response format / HTTP status
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - SQL injection / XSS countermeasures (applied similarly in OAuth API)
+- `.github/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()` details
+- `.github/skills/jssp-page-generator/reference/api-account-context.md` - Authenticated user context
+- `.github/skills/jssp-page-generator/reference/argument-request.md` - request argument
+- `.github/instructions/jssp-error-handling.instructions.md` - Error response format / HTTP status
+- `.github/instructions/jssp-security.instructions.md` - SQL injection / XSS countermeasures (applied similarly in OAuth API)
 
 ## Checklist
 
@@ -215,5 +215,5 @@ httpResponse.sendMessageBodyString(JSON.stringify(response));
 - [ ] Are the error codes in `E.{product}.{feature}.{API name}.{sequence}` format (`ERROR_CODE_INTERNAL` assigned to 5xx)?
 - [ ] Are 4xx logged with `logger.warn` and 5xx with `logger.error`?
 - [ ] Is the response free from confidential information (passwords, tokens, unmasked personal information, etc.)?
-- [ ] When using SQL access, is `DbParameter` used for binding (string concatenation forbidden, see `{{AGENT_RULES}}/jssp-2way-sql{{AGENT_RULE_FILE}}.md`)?
+- [ ] When using SQL access, is `DbParameter` used for binding (string concatenation forbidden, see `.github/instructions/jssp-2way-sql.instructions.md`)?
 - [ ] When referencing the user context with `Contexts.getAccountContext()`, is a null check included?

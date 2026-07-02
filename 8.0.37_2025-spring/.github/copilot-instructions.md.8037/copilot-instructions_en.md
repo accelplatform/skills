@@ -70,11 +70,11 @@ For large-scale implementations involving multiple files, delegate work to sub-a
 
 ### Key Convention Files
 
-Coding conventions are placed under `{{AGENT_RULES}}/`. For the file list and contents, refer to `{{AGENT_RULES}}/README.md`.
+Coding conventions are placed under `.github/instructions/`. For the file list and contents, refer to `.github/instructions/README.md`.
 
 ### Key Skill Sets
 
-Various skill sets are placed under `skills/`. For the skill list and contents, refer to `skills/README.md`.
+Various skill sets are placed under `.github/skills/`. For the skill list and contents, refer to `.github/skills/README.md`.
 
 ### API Type Definitions (d.ts)
 

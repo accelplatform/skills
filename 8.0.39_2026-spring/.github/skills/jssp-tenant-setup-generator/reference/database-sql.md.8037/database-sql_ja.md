@@ -93,7 +93,7 @@ CREATE TABLE の本体（カラム定義・制約）はユーザが手作業で�
 -- );
 ```
 
-各 DB 方言に応じた型・構文を、対応するファイルにそれぞれ記述する。型マッピングは `skills/jssp-page-generator/reference/ddl-type-mapping.md` を参照。
+各 DB 方言に応じた型・構文を、対応するファイルにそれぞれ記述する。型マッピングは `.github/skills/jssp-page-generator/reference/ddl-type-mapping.md` を参照。
 
 ### `<key>_sample-dml.sql` のスケルトン例（一本化、推奨）
 

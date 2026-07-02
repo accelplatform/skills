@@ -13,16 +13,16 @@ allowed-tools: Bash, Read, Write, Glob
 
 ## 需参照的规约
 
-本技能生成批处理（仅 `.js`，无画面）。全局视图请参阅 `{{AGENT_RULES}}/README.md`。
+本技能生成批处理（仅 `.js`，无画面）。全局视图请参阅 `.github/instructions/README.md`。
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-function-container.instructions.md` | 🟢 **必读** — `execute()` 入口的结构 |
-| `jssp-error-handling.instructions.md` / `jssp-logging.instructions.md` | 🟢 **必读** — 批处理通常需要详细的日志与错误处理 |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 必读 |
-| `jssp-2way-sql.instructions.md` | 🟡 **仅当批处理包含 DB 操作时**（批处理中常见） |
-| `jssp-security.instructions.md` | 🟡 仅在处理外部输入（如作业参数）时 |
-| `jssp-presentation-page.instructions.md` / `jssp-accessibility.instructions.md` | 🔴 **不需要；无画面** |
+| `jssp-function-container.md` | 🟢 **必读** — `execute()` 入口的结构 |
+| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必读** — 批处理通常需要详细的日志与错误处理 |
+| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必读 |
+| `jssp-2way-sql.md` | 🟡 **仅当批处理包含 DB 操作时**（批处理中常见） |
+| `jssp-security.md` | 🟡 仅在处理外部输入（如作业参数）时 |
+| `jssp-presentation-page.md` / `jssp-accessibility.md` | 🔴 **不需要；无画面** |
 
 ## 生成对象
 
@@ -113,12 +113,12 @@ function execute() {
 对生成的文件执行 `validate-jssp-code.js`。**反复修正直到错误数为 0。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{功能名}/
+node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{功能名}/
 ```
 
 ### 步骤 2：手动检查
 
-执行 `jssp-page-generator/reference/post-generation-verification.md` 的步骤 1～3（步骤 4 的画面验证对作业不适用）。
+执行 `.github/skills/jssp-page-generator/reference/post-generation-verification.md` 的步骤 1～3（步骤 4 的画面验证对作业不适用）。
 
 ### 步骤 3：代码审查和安全检查（自动执行）
 

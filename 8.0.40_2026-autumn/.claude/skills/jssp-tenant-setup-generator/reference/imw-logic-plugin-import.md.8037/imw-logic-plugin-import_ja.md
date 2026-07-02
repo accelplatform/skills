@@ -9,7 +9,7 @@ IM-Workflow 管理画面での手動登録を自動化できる。
 ## 使用場面
 
 - IM-LogicDesigner で処理対象者プラグイン用フローを作成し、テナント環境セットアップで自動登録したい
-- `jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md` に従ってフロー定義を生成した後
+- `.claude/skills/jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md` に従ってフロー定義を生成した後
 
 ---
 

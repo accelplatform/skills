@@ -21,7 +21,7 @@
    - 仅描述追加·变更的要素（不包含既存角色或授权）
 2. **执行 build 脚本**
    ```bash
-   node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js equip-v110.spec.json
+   node .claude/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js equip-v110.spec.json
    ```
 3. **既存文件保护**：若输出位置存在既有文件则会 **报错停止**
    - 如有意覆盖，请附加 `--force` 标志（通常不使用）

@@ -72,7 +72,7 @@ Class mismatches that `validate-jssp-code.js` cannot detect (e.g., `result.data 
 npm run check:types:room
 
 # When targeting an arbitrary path
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{function-name}/
+bash .claude/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{function-name}/
 ```
 
 **Fix until 0 issues.**
@@ -573,4 +573,4 @@ location.href = url;
 If IM-Workflow screens were generated, execute the following in order.
 
 1. Run `validate-workflow-code.js` and confirm 0 errors
-2. Execute all items in `jssp-im-workflow-usage/reference/screen-generation-checklist.md`
+2. Execute all items in `.claude/skills/jssp-im-workflow-usage/reference/screen-generation-checklist.md`

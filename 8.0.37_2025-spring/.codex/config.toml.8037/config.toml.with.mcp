@@ -2,20 +2,20 @@
 hooks = true
 
 [mcp_servers.im_logic]
-url = "http://localhost/imart/copilot/mcp/development/im_logic"
+url = "http://127.0.0.1/imart/copilot/mcp/development/im_logic"
 http_headers = { Authorization = "Bearer <API-KEY>" }
 
 [mcp_servers.im_workflow]
-url = "http://localhost/imart/copilot/mcp/development/im_workflow"
+url = "http://127.0.0.1/imart/copilot/mcp/development/im_workflow"
+http_headers = { Authorization = "Bearer <API-KEY>" }
+
+[mcp_servers.staging_log]
+url = "http://127.0.0.1/imart/copilot/mcp/development/staging/logs"
+http_headers = { Authorization = "Bearer <API-KEY>" }
+
+[mcp_servers.frontend_fix]
+url = "http://127.0.0.1/imart/copilot/mcp/development/staging/frontend-fix"
 http_headers = { Authorization = "Bearer <API-KEY>" }
 
 [mcp_servers.dev-knowledge-8_0_37]
 url = "https://dev-knowledge.intra-mart.jp/8.0.37/mcp"
-
-[mcp_servers.staging_log]
-url = "http://localhost/imart/copilot/mcp/development/staging/logs"
-http_headers = { Authorization = "Bearer <API-KEY>" }
-
-[mcp_servers.frontend_fix]
-url = "http://localhost/imart/copilot/mcp/development/staging/frontend-fix"
-http_headers = { Authorization = "Bearer <API-KEY>" }

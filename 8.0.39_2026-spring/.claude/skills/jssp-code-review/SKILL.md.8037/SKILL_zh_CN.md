@@ -17,7 +17,7 @@ allowed-tools: Bash, Read, Glob
 执行以下命令，首先找出脚本可检测的问题。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <成果物输出路径>
+node .claude/skills/jssp-page-generator/scripts/validate-jssp-code.js <成果物输出路径>
 ```
 
 如果输出了错误或警告，原样记录，与步骤 2 的审查结果一并报告。

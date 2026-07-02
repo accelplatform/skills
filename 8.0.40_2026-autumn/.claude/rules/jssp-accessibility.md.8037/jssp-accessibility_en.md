@@ -382,7 +382,6 @@ When generating components, refer to the corresponding reference and ensure all 
 
 ### Page Structure
 
-- [ ] `<header>` / `<nav>` / `<footer>` have **not been added** to each screen (because the platform provides them)
 - [ ] The root has the structure `<div id="container"><div class="imds-container"><main>...</main></div></div>`
 - [ ] There is exactly one `<main>` per page and `role="main"` is not added alongside it
 - [ ] Headings follow the order `h1` → `h2` → `h3` without skipping levels
@@ -435,6 +434,6 @@ When generating components, refer to the corresponding reference and ensure all 
 
 ## Related
 
-- `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` - Basic structure of presentation pages
-- `skills/jssp-localize-support/` related - Multilingual support (spoken language)
-- `skills/jssp-imds-theme/reference/` - Accessibility support per imds component
+- `.claude/rules/jssp-presentation-page.md` - Basic structure of presentation pages
+- `.claude/skills/jssp-localize-support/` related - Multilingual support (spoken language)
+- `.claude/skills/jssp-imds-theme/reference/` - Accessibility support per imds component

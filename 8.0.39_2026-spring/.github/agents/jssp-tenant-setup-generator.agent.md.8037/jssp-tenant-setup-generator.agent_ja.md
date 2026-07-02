@@ -18,9 +18,9 @@ spec.json から Importer 形式の設定ファイル一式（ロール・認可
 
 ## 手順
 
-1. `{{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/SKILL.md` を読み込み、生成手順を確認する。
+1. `.github/skills/jssp-tenant-setup-generator/SKILL.md` を読み込み、生成手順を確認する。
 2. `spec.json` を読み込む（存在しない場合はユーザ指示から内容を組み立てる）。
-3. `node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js` を実行して資材を一括生成する。
+3. `node .github/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js` を実行して資材を一括生成する。
 4. 生成されたファイルを確認し、内容に誤りがないかチェックする。
 
 ## 出力フォーマット

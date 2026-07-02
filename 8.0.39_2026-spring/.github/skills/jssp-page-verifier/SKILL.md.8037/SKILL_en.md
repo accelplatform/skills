@@ -14,7 +14,7 @@ Execute the following steps **in order from top to bottom**, repeating fixes unt
 ## Step 1: JSSP Code Validation
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{feature-name}/
+node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{feature-name}/
 ```
 
 **Repeat fixes until there are 0 errors.**
@@ -40,7 +40,7 @@ Common detected patterns:
 Execute only if a DDL path was specified in the prompt. Skip if not specified.
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{feature-name}/{version}/
+node .github/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{feature-name}/{version}/
 ```
 
 **Repeat fixes until there are 0 errors.**
@@ -58,7 +58,7 @@ Common detected patterns:
 ## Step 3: tsc Type Check
 
 ```bash
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{feature-name}/
+bash .github/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{feature-name}/
 ```
 
 **Repeat fixes until there are 0 issues.**
@@ -71,7 +71,7 @@ Common detected patterns:
 
 ## Step 4: Manual Check
 
-Open `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/post-generation-verification.md` with the Read tool and execute all steps.
+Open `.github/skills/jssp-page-generator/reference/post-generation-verification.md` with the Read tool and execute all steps.
 
 ---
 

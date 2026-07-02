@@ -61,8 +61,8 @@ test('点击备品检索按钮跳转到备品检索画面', async ({ page }) => 
 
 **urlRegex 书写原则**：
 - 必须包含 baseURL 的末尾段（intra-mart 为 `imart`）
-- 例：baseURL 为 `http://localhost/imart/` 时使用 `/imart\/equip\/.../`
-- 由此可防止误跳转至 `http://localhost/equip/...`（脱离上下文路径）时的误匹配
+- 例：baseURL 为 `http://127.0.0.1/imart/` 时使用 `/imart\/equip\/.../`
+- 由此可防止误跳转至 `http://127.0.0.1/equip/...`（脱离上下文路径）时的误匹配
 
 ## 对话框操作
 

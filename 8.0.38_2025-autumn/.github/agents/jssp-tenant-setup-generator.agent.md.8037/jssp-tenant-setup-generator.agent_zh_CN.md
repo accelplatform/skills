@@ -18,9 +18,9 @@ user-invocable: true
 
 ## 步骤
 
-1. 读取 `{{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/SKILL.md`，确认生成步骤。
+1. 读取 `.github/skills/jssp-tenant-setup-generator/SKILL.md`，确认生成步骤。
 2. 读取 `spec.json`（若不存在，则根据用户指示整理内容）。
-3. 执行 `node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js`，批量生成资材。
+3. 执行 `node .github/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js`，批量生成资材。
 4. 确认生成的文件，检查内容是否有误。
 
 ## 输出格式

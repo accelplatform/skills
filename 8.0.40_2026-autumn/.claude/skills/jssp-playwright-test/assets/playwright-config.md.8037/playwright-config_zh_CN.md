@@ -13,7 +13,7 @@ export default defineConfig({
   retries: 0,
   use: {
     channel: 'msedge',
-    baseURL: 'http://localhost/imart/',
+    baseURL: 'http://127.0.0.1/imart/',
     locale: 'ja-JP',
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
@@ -31,7 +31,7 @@ export default defineConfig({
 
 ### baseURL
 
-- **末尾必须加斜杠**（例: `http://localhost/imart/`）
+- **末尾必须加斜杠**（例: `http://127.0.0.1/imart/`）
 - 没有末尾斜杠时，测试中的相对路径无法正确解析
 - 只需修改 baseURL 即可适应各个环境
 
@@ -47,7 +47,7 @@ const URL = './module_name';
 const URL = '/module_name';
 
 // NG: 完整 URL（依赖于具体环境）
-const URL = 'http://localhost/imart/product_stock';
+const URL = 'http://127.0.0.1/imart/product_stock';
 ```
 
 ### 截图输出目录

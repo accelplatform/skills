@@ -75,7 +75,7 @@ let importer = Packages.jp.co.intra_mart.foundation.logic.LogicServiceProvider
 importer.importData(inputStream);
 ```
 
-This is an exception to the "no direct Java access" principle described in `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md`. **It is strictly forbidden in business SSJS** and is **only permitted in extended import JS for tenant environment setup**. Reasons:
+This is an exception to the "no direct Java access" principle described in `.claude/rules/jssp-security.md`. **It is strictly forbidden in business SSJS** and is **only permitted in extended import JS for tenant environment setup**. Reasons:
 
 - IM-LogicDesigner imports cannot be performed via SSJS API, so going through Java is the only option
 - Extended import JS is a special entry point for tenant administration and does not handle external input, so the attack surface is limited

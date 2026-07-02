@@ -13,7 +13,7 @@ export default defineConfig({
   retries: 0,
   use: {
     channel: 'msedge',
-    baseURL: 'http://localhost/imart/',
+    baseURL: 'http://127.0.0.1/imart/',
     locale: 'ja-JP',
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
@@ -31,7 +31,7 @@ export default defineConfig({
 
 ### baseURL
 
-- **末尾にスラッシュを付けること**（例: `http://localhost/imart/`）
+- **末尾にスラッシュを付けること**（例: `http://127.0.0.1/imart/`）
 - 末尾スラッシュがないと、テスト内の相対パスが正しく解決されない
 - 環境ごとに baseURL を変更するだけで対応可能
 
@@ -47,7 +47,7 @@ const URL = './module_name';
 const URL = '/module_name';
 
 // NG: フル URL（環境依存になる）
-const URL = 'http://localhost/imart/product_stock';
+const URL = 'http://127.0.0.1/imart/product_stock';
 ```
 
 ### スクリーンショットの出力先

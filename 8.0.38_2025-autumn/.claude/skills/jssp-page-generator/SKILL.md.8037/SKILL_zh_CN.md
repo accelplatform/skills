@@ -22,7 +22,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 ## 需参照的规约
 
-本技能同时生成 `.js`（函数容器）+ `.html`（展示页面），因此涉及的规约较多。全局视图请参阅 `{{AGENT_RULES}}/README.md` 中的「规约文件一览（一行摘要 + 适用范围标签）」。本技能特有的重要度：
+本技能同时生成 `.js`（函数容器）+ `.html`（展示页面），因此涉及的规约较多。全局视图请参阅 `.claude/rules/README.md` 中的「规约文件一览（一行摘要 + 适用范围标签）」。本技能特有的重要度：
 
 | 规约 | 处理方式 |
 |------|---------|
@@ -86,31 +86,31 @@ allowed-tools: Bash, Read, Write, Glob
 
 | 组件 | 参考文件 |
 |------|---------|
-| 文本框 | `skills/jssp-imds-theme/reference/imds-html-textbox.md` |
-| 文本域 | `skills/jssp-imds-theme/reference/imds-html-textarea.md` |
-| 下拉选择 | `skills/jssp-imds-theme/reference/imds-html-select.md` |
-| 复选框 | `skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
-| 单选按钮 | `skills/jssp-imds-theme/reference/imds-html-radio.md` |
-| 按钮 | `skills/jssp-imds-theme/reference/imds-html-button.md` |
-| 表格 | `skills/jssp-imds-theme/reference/imds-html-table.md` |
-| 对话框 | `skills/jssp-imds-theme/reference/imds-html-dialog.md` |
-| 对话框 + 表单（新建、编辑等） | `skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
-| 分页 | `skills/jssp-imds-theme/reference/imds-html-pagination.md` |
-| 字段（带标签） | `skills/jssp-imds-theme/reference/imds-html-field.md` |
-| 字段组 | `skills/jssp-imds-theme/reference/imds-html-field-group.md` |
-| 标签页 | `skills/jssp-imds-theme/reference/imds-html-tabs.md` |
-| 折叠面板 | `skills/jssp-imds-theme/reference/imds-html-accordion.md` |
-| 日历输入 | `skills/jssp-imds-theme/reference/imui-html-calendar.md` |
-| 横幅消息 | `skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
-| 内联消息 | `skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
+| 文本框 | `.claude/skills/jssp-imds-theme/reference/imds-html-textbox.md` |
+| 文本域 | `.claude/skills/jssp-imds-theme/reference/imds-html-textarea.md` |
+| 下拉选择 | `.claude/skills/jssp-imds-theme/reference/imds-html-select.md` |
+| 复选框 | `.claude/skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
+| 单选按钮 | `.claude/skills/jssp-imds-theme/reference/imds-html-radio.md` |
+| 按钮 | `.claude/skills/jssp-imds-theme/reference/imds-html-button.md` |
+| 表格 | `.claude/skills/jssp-imds-theme/reference/imds-html-table.md` |
+| 对话框 | `.claude/skills/jssp-imds-theme/reference/imds-html-dialog.md` |
+| 对话框 + 表单（新建、编辑等） | `.claude/skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
+| 分页 | `.claude/skills/jssp-imds-theme/reference/imds-html-pagination.md` |
+| 字段（带标签） | `.claude/skills/jssp-imds-theme/reference/imds-html-field.md` |
+| 字段组 | `.claude/skills/jssp-imds-theme/reference/imds-html-field-group.md` |
+| 标签页 | `.claude/skills/jssp-imds-theme/reference/imds-html-tabs.md` |
+| 折叠面板 | `.claude/skills/jssp-imds-theme/reference/imds-html-accordion.md` |
+| 日历输入 | `.claude/skills/jssp-imds-theme/reference/imui-html-calendar.md` |
+| 横幅消息 | `.claude/skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
+| 内联消息 | `.claude/skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
 
-其他组件存放于 `skills/jssp-imds-theme/reference/` 目录下。
+其他组件存放于 `.claude/skills/jssp-imds-theme/reference/` 目录下。
 
 ---
 
 ### 步骤 4：生成功能容器和路由
 
-参考 `{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md` 和 `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` 生成代码。
+参考 `.claude/rules/jssp-function-container.md` 和 `.claude/rules/jssp-presentation-page.md` 生成代码。
 
 - 在 `src/main/jssp/src/{功能名}/` 下生成功能容器（.js）
 - 根据需要生成路由配置（.xml）
@@ -131,7 +131,7 @@ allowed-tools: Bash, Read, Write, Glob
 - 不使用 imds 组件，自行定义 HTML/CSS 结构
 - **擅自修改资源的 HTML 结构**（表单顶层结构、`imds-field-container` / `imds-field-group` / `imds-field` 的嵌套、`is-horizontal` / `imds-w-15` 等布局类）。应原样沿用资源的结构，仅替换标签文本、`id`、输入类型和验证内容
 - **基于个人设计判断进行布局修改**（例如："纵向排列更清晰"、"项目多所以想简化"等，如将 `is-horizontal` 改为 `is-vertical`，或省略 `imds-field-container` / `imds-field-group`）。如需与资源不同的结构，**生成前须向用户确认**
-- **省略资源中包含的 JSDoc 注释（`/** ... */`）或分节注释（`// ===...===`）**。即使看似冗余，规约（`{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md`）也将其视为必须项。保留它们可以使各函数的意图在代码中得到明确表达，便于后续审查和修改。资源中的注释原则上应照抄；若需修改，仅可将内容改写为对应功能的描述，不得删除。
+- **省略资源中包含的 JSDoc 注释（`/** ... */`）或分节注释（`// ===...===`）**。即使看似冗余，规约（`.claude/rules/jssp-function-container.md`）也将其视为必须项。保留它们可以使各函数的意图在代码中得到明确表达，便于后续审查和修改。资源中的注释原则上应照抄；若需修改，仅可将内容改写为对应功能的描述，不得删除。
 
 **必须遵守的规则：**
 - 带标签的表单元素必须使用 `imds-field` + `imds-field-label` + `imds-field-control` 结构

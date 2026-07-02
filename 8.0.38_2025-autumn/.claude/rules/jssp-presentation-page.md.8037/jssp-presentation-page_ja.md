@@ -323,7 +323,7 @@ function toggleLocationDetailRequired() {
 ## 日付入力・日時入力（imuiCalendar）
 
 日付入力には `<input type="date">` ではなく `<imart type="imuiCalendar">` を使用する。
-使用方法・属性・注意事項・日時入力（日付 + 時刻の組み合わせ）パターンは `skills/jssp-imds-theme/reference/imui-html-calendar.md` を参照すること。
+使用方法・属性・注意事項・日時入力（日付 + 時刻の組み合わせ）パターンは `.claude/skills/jssp-imds-theme/reference/imui-html-calendar.md` を参照すること。
 
 ## 入力フィールドの幅制御
 
@@ -402,7 +402,7 @@ if (!userCode || userCode.length === 0) {
 }
 ```
 
-その他のパターン（数値・正規表現・メール・日付形式・任意項目等）は `assets/simple-form.md` の「バリデーションパターン集」を参照すること。
+その他のパターン（数値・正規表現・メール・日付形式・任意項目等）は `.claude/skills/jssp-page-generator/assets/simple-form.md` の「バリデーションパターン集」を参照すること。
 
 ### 実装方針
 
@@ -419,7 +419,7 @@ if (!userCode || userCode.length === 0) {
 
 ### 実装方針
 
-アーキテクチャの概要（完全実装は `assets/simple-form.md` を参照）:
+アーキテクチャの概要（完全実装は `.claude/skills/jssp-page-generator/assets/simple-form.md` を参照）:
 
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
@@ -512,14 +512,14 @@ function callbackXxxSearch(result) {
 ### 実装方針
 
 - ハイパーリンクや、同じホスト内の REST-API を呼び出す場合は、コンテキストパス配下を相対パスで指定する
-  - 例: `http://localhost/imart/foo/bar` にアクセスする場合、URL 指定は `foo/bar` とする
+  - 例: `http://127.0.0.1/imart/foo/bar` にアクセスする場合、URL 指定は `foo/bar` とする
 - この相対パスは、ルーティング設定ファイルに定義した `file-mapping` タグの `path` 属性で、先頭の `/` を除去したものと一致する
   - 例： ルーティング設定ファイルが `<file-mapping path="/sample/user/list" page="sample/user/user_list">` の場合、プレゼンテーションページ `sample/user/user_list` を開く URL は `sample/user/list` と指定すること
 
 ### コンテキストパス
 
 - コンテキストパスとは、ホスト名・ポート番号・デプロイ先のルートディレクトリ名で構成されている URL のこと
-  - 例: `http://localhost/imart/`
+  - 例: `http://127.0.0.1/imart/`
 - `<imart type="head">` タグによって、コンテキストパスが `<base>` タグに指定されているため、URL 指定時はコンテキストパス以降のパスを相対で指定することを推奨
 
 ## API の呼び出し

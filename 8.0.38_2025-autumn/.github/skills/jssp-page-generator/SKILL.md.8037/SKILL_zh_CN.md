@@ -22,17 +22,17 @@ allowed-tools: Bash, Read, Write, Glob
 
 ## 需参照的规约
 
-本技能同时生成 `.js`（函数容器）+ `.html`（展示页面），因此涉及的规约较多。全局视图请参阅 `{{AGENT_RULES}}/README.md` 中的「规约文件一览（一行摘要 + 适用范围标签）」。本技能特有的重要度：
+本技能同时生成 `.js`（函数容器）+ `.html`（展示页面），因此涉及的规约较多。全局视图请参阅 `.github/instructions/README.md` 中的「规约文件一览（一行摘要 + 适用范围标签）」。本技能特有的重要度：
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-presentation-page.instructions.md` | 🟢 **必读** — `.html` 的 HTML 结构、验证、id 命名 |
-| `jssp-function-container.instructions.md` | 🟢 **必读** — `init()` 结构、validateRequest |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 必读 |
-| `jssp-error-handling.instructions.md` / `jssp-security.instructions.md` | 🟢 必读 — 含表单输入 + API，二者均相关 |
-| `jssp-2way-sql.instructions.md` | 🟡 **仅在实现含 DB 操作时参照**。只读 UI 等无 DB 操作的画面无需阅读 |
-| `jssp-logging.instructions.md` | 🟡 仅在实现日志时 |
-| `jssp-accessibility.instructions.md` | 🟠 **业务需求依赖** — 仅在规格书明确要求时厚涂适用。无要求时保持最小（`imdsConfirm`、`aria-label`、装饰图标的 `aria-hidden` 等基础） |
+| `jssp-presentation-page.md` | 🟢 **必读** — `.html` 的 HTML 结构、验证、id 命名 |
+| `jssp-function-container.md` | 🟢 **必读** — `init()` 结构、validateRequest |
+| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必读 |
+| `jssp-error-handling.md` / `jssp-security.md` | 🟢 必读 — 含表单输入 + API，二者均相关 |
+| `jssp-2way-sql.md` | 🟡 **仅在实现含 DB 操作时参照**。只读 UI 等无 DB 操作的画面无需阅读 |
+| `jssp-logging.md` | 🟡 仅在实现日志时 |
+| `jssp-accessibility.md` | 🟠 **业务需求依赖** — 仅在规格书明确要求时厚涂适用。无要求时保持最小（`imdsConfirm`、`aria-label`、装饰图标的 `aria-hidden` 等基础） |
 
 ## 使用时机
 
@@ -86,31 +86,31 @@ allowed-tools: Bash, Read, Write, Glob
 
 | 组件 | 参考文件 |
 |------|---------|
-| 文本框 | `skills/jssp-imds-theme/reference/imds-html-textbox.md` |
-| 文本域 | `skills/jssp-imds-theme/reference/imds-html-textarea.md` |
-| 下拉选择 | `skills/jssp-imds-theme/reference/imds-html-select.md` |
-| 复选框 | `skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
-| 单选按钮 | `skills/jssp-imds-theme/reference/imds-html-radio.md` |
-| 按钮 | `skills/jssp-imds-theme/reference/imds-html-button.md` |
-| 表格 | `skills/jssp-imds-theme/reference/imds-html-table.md` |
-| 对话框 | `skills/jssp-imds-theme/reference/imds-html-dialog.md` |
-| 对话框 + 表单（新建、编辑等） | `skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
-| 分页 | `skills/jssp-imds-theme/reference/imds-html-pagination.md` |
-| 字段（带标签） | `skills/jssp-imds-theme/reference/imds-html-field.md` |
-| 字段组 | `skills/jssp-imds-theme/reference/imds-html-field-group.md` |
-| 标签页 | `skills/jssp-imds-theme/reference/imds-html-tabs.md` |
-| 折叠面板 | `skills/jssp-imds-theme/reference/imds-html-accordion.md` |
-| 日历输入 | `skills/jssp-imds-theme/reference/imui-html-calendar.md` |
-| 横幅消息 | `skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
-| 内联消息 | `skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
+| 文本框 | `.github/skills/jssp-imds-theme/reference/imds-html-textbox.md` |
+| 文本域 | `.github/skills/jssp-imds-theme/reference/imds-html-textarea.md` |
+| 下拉选择 | `.github/skills/jssp-imds-theme/reference/imds-html-select.md` |
+| 复选框 | `.github/skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
+| 单选按钮 | `.github/skills/jssp-imds-theme/reference/imds-html-radio.md` |
+| 按钮 | `.github/skills/jssp-imds-theme/reference/imds-html-button.md` |
+| 表格 | `.github/skills/jssp-imds-theme/reference/imds-html-table.md` |
+| 对话框 | `.github/skills/jssp-imds-theme/reference/imds-html-dialog.md` |
+| 对话框 + 表单（新建、编辑等） | `.github/skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
+| 分页 | `.github/skills/jssp-imds-theme/reference/imds-html-pagination.md` |
+| 字段（带标签） | `.github/skills/jssp-imds-theme/reference/imds-html-field.md` |
+| 字段组 | `.github/skills/jssp-imds-theme/reference/imds-html-field-group.md` |
+| 标签页 | `.github/skills/jssp-imds-theme/reference/imds-html-tabs.md` |
+| 折叠面板 | `.github/skills/jssp-imds-theme/reference/imds-html-accordion.md` |
+| 日历输入 | `.github/skills/jssp-imds-theme/reference/imui-html-calendar.md` |
+| 横幅消息 | `.github/skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
+| 内联消息 | `.github/skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
 
-其他组件存放于 `skills/jssp-imds-theme/reference/` 目录下。
+其他组件存放于 `.github/skills/jssp-imds-theme/reference/` 目录下。
 
 ---
 
 ### 步骤 4：生成功能容器和路由
 
-参考 `{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md` 和 `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` 生成代码。
+参考 `.github/instructions/jssp-function-container.instructions.md` 和 `.github/instructions/jssp-presentation-page.instructions.md` 生成代码。
 
 - 在 `src/main/jssp/src/{功能名}/` 下生成功能容器（.js）
 - 根据需要生成路由配置（.xml）
@@ -131,7 +131,7 @@ allowed-tools: Bash, Read, Write, Glob
 - 不使用 imds 组件，自行定义 HTML/CSS 结构
 - **擅自修改资源的 HTML 结构**（表单顶层结构、`imds-field-container` / `imds-field-group` / `imds-field` 的嵌套、`is-horizontal` / `imds-w-15` 等布局类）。应原样沿用资源的结构，仅替换标签文本、`id`、输入类型和验证内容
 - **基于个人设计判断进行布局修改**（例如："纵向排列更清晰"、"项目多所以想简化"等，如将 `is-horizontal` 改为 `is-vertical`，或省略 `imds-field-container` / `imds-field-group`）。如需与资源不同的结构，**生成前须向用户确认**
-- **省略资源中包含的 JSDoc 注释（`/** ... */`）或分节注释（`// ===...===`）**。即使看似冗余，规约（`{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md`）也将其视为必须项。保留它们可以使各函数的意图在代码中得到明确表达，便于后续审查和修改。资源中的注释原则上应照抄；若需修改，仅可将内容改写为对应功能的描述，不得删除。
+- **省略资源中包含的 JSDoc 注释（`/** ... */`）或分节注释（`// ===...===`）**。即使看似冗余，规约（`.github/instructions/jssp-function-container.instructions.md`）也将其视为必须项。保留它们可以使各函数的意图在代码中得到明确表达，便于后续审查和修改。资源中的注释原则上应照抄；若需修改，仅可将内容改写为对应功能的描述，不得删除。
 
 **必须遵守的规则：**
 - 带标签的表单元素必须使用 `imds-field` + `imds-field-label` + `imds-field-control` 结构

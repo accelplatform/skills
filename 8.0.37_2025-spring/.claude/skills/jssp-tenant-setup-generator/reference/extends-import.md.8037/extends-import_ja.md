@@ -123,7 +123,7 @@ function doImport(tenantId) {
 | 戻り値 `txResult.isSuccess()` をチェック | トランザクション成否の判定（必須） |
 | 業務例外を変数経由で外に運ぶ | コールバック内の `throw` は外側に伝搬しないため |
 
-詳細は `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` および `jssp-page-generator/reference/post-generation-verification.md`（ステップ 3-7: Transaction.begin の戻り値チェック）も参照。
+詳細は `.claude/rules/jssp-error-handling.md` および `jssp-page-generator/reference/post-generation-verification.md`（ステップ 3-7: Transaction.begin の戻り値チェック）も参照。
 
 ## spec.json での指定
 

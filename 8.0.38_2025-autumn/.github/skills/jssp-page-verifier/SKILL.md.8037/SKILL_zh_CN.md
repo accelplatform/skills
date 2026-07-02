@@ -14,7 +14,7 @@ allowed-tools: Bash, Read, Write, Edit, Glob
 ## 步骤 1：JSSP 代码验证
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{功能名}/
+node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{功能名}/
 ```
 
 **反复修正直到错误数为 0。**
@@ -40,7 +40,7 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src
 仅在提示词中指定了 DDL 路径时执行。未指定则跳过。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{功能名}/{version}/
+node .github/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{功能名}/{version}/
 ```
 
 **反复修正直到错误数为 0。**
@@ -58,7 +58,7 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/
 ## 步骤 3：tsc 类型检查
 
 ```bash
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{功能名}/
+bash .github/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{功能名}/
 ```
 
 **反复修正直到问题数为 0。**
@@ -71,7 +71,7 @@ bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/j
 
 ## 步骤 4：手动检查
 
-使用 Read 工具打开 `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/post-generation-verification.md`，执行所有步骤。
+使用 Read 工具打开 `.github/skills/jssp-page-generator/reference/post-generation-verification.md`，执行所有步骤。
 
 ---
 

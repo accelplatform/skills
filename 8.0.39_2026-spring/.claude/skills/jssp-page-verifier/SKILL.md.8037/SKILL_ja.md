@@ -14,7 +14,7 @@ jssp-page-generator で生成したコードの品質検証・修正を担当す
 ## ステップ 1: JSSP コード検証
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
+node .claude/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
 ```
 
 **エラーが 0 件になるまで修正を繰り返す。**
@@ -40,7 +40,7 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src
 プロンプトで DDL パスが指定された場合のみ実行する。指定がなければスキップする。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{機能名}/{version}/
+node .claude/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{機能名}/{version}/
 ```
 
 **エラーが 0 件になるまで修正を繰り返す。**
@@ -58,7 +58,7 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/
 ## ステップ 3: tsc 型チェック
 
 ```bash
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{機能名}/
+bash .claude/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{機能名}/
 ```
 
 **0 issues になるまで修正を繰り返す。**
@@ -71,7 +71,7 @@ bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/j
 
 ## ステップ 4: 手動チェック
 
-`{{AGENT_ROOT}}/skills/jssp-page-generator/reference/post-generation-verification.md` を Read ツールで開き、全ステップを実行する。
+`.claude/skills/jssp-page-generator/reference/post-generation-verification.md` を Read ツールで開き、全ステップを実行する。
 
 ---
 

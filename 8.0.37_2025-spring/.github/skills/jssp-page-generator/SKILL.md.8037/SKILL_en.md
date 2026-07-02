@@ -22,17 +22,17 @@ Describes the steps for creating and structuring new files according to template
 
 ## Conventions to Reference
 
-This skill generates both `.js` (function containers) and `.html` (presentation pages), so many conventions apply. See the "Convention File List (One-Line Summary + Scope Tag)" in `{{AGENT_RULES}}/README.md` for the full picture. Convention-specific priorities for this skill:
+This skill generates both `.js` (function containers) and `.html` (presentation pages), so many conventions apply. See the "Convention File List (One-Line Summary + Scope Tag)" in `.github/instructions/README.md` for the full picture. Convention-specific priorities for this skill:
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-presentation-page.instructions.md` | 🟢 **Required** — HTML structure, validation, id naming for `.html` |
-| `jssp-function-container.instructions.md` | 🟢 **Required** — `init()` structure, validateRequest |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 Required |
-| `jssp-error-handling.instructions.md` / `jssp-security.instructions.md` | 🟢 Required — both apply since forms + APIs are involved |
-| `jssp-2way-sql.instructions.md` | 🟡 **Only when the implementation includes DB operations**. Skip for read-only UIs etc. that do not touch the DB |
-| `jssp-logging.instructions.md` | 🟡 Only when implementing logging |
-| `jssp-accessibility.instructions.md` | 🟠 **Business-requirement-dependent** — apply thickly only when explicitly required by the spec; otherwise stay minimal (`imdsConfirm`, `aria-label`, `aria-hidden` on decorative icons, etc.) |
+| `jssp-presentation-page.md` | 🟢 **Required** — HTML structure, validation, id naming for `.html` |
+| `jssp-function-container.md` | 🟢 **Required** — `init()` structure, validateRequest |
+| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 Required |
+| `jssp-error-handling.md` / `jssp-security.md` | 🟢 Required — both apply since forms + APIs are involved |
+| `jssp-2way-sql.md` | 🟡 **Only when the implementation includes DB operations**. Skip for read-only UIs etc. that do not touch the DB |
+| `jssp-logging.md` | 🟡 Only when implementing logging |
+| `jssp-accessibility.md` | 🟠 **Business-requirement-dependent** — apply thickly only when explicitly required by the spec; otherwise stay minimal (`imdsConfirm`, `aria-label`, `aria-hidden` on decorative icons, etc.) |
 
 ## When to Use
 
@@ -86,31 +86,31 @@ Do not write imds class names or tag structures from memory or guesswork.
 
 | Component | Reference File |
 |-----------|----------------|
-| Textbox | `skills/jssp-imds-theme/reference/imds-html-textbox.md` |
-| Textarea | `skills/jssp-imds-theme/reference/imds-html-textarea.md` |
-| Select | `skills/jssp-imds-theme/reference/imds-html-select.md` |
-| Checkbox | `skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
-| Radio Button | `skills/jssp-imds-theme/reference/imds-html-radio.md` |
-| Button | `skills/jssp-imds-theme/reference/imds-html-button.md` |
-| Table | `skills/jssp-imds-theme/reference/imds-html-table.md` |
-| Dialog | `skills/jssp-imds-theme/reference/imds-html-dialog.md` |
-| Dialog + Form (new / edit, etc.) | `skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
-| Pagination | `skills/jssp-imds-theme/reference/imds-html-pagination.md` |
-| Field (with label) | `skills/jssp-imds-theme/reference/imds-html-field.md` |
-| Field Group | `skills/jssp-imds-theme/reference/imds-html-field-group.md` |
-| Tab | `skills/jssp-imds-theme/reference/imds-html-tabs.md` |
-| Accordion | `skills/jssp-imds-theme/reference/imds-html-accordion.md` |
-| Calendar Input | `skills/jssp-imds-theme/reference/imui-html-calendar.md` |
-| Banner Message | `skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
-| Inline Message | `skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
+| Textbox | `.github/skills/jssp-imds-theme/reference/imds-html-textbox.md` |
+| Textarea | `.github/skills/jssp-imds-theme/reference/imds-html-textarea.md` |
+| Select | `.github/skills/jssp-imds-theme/reference/imds-html-select.md` |
+| Checkbox | `.github/skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
+| Radio Button | `.github/skills/jssp-imds-theme/reference/imds-html-radio.md` |
+| Button | `.github/skills/jssp-imds-theme/reference/imds-html-button.md` |
+| Table | `.github/skills/jssp-imds-theme/reference/imds-html-table.md` |
+| Dialog | `.github/skills/jssp-imds-theme/reference/imds-html-dialog.md` |
+| Dialog + Form (new / edit, etc.) | `.github/skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
+| Pagination | `.github/skills/jssp-imds-theme/reference/imds-html-pagination.md` |
+| Field (with label) | `.github/skills/jssp-imds-theme/reference/imds-html-field.md` |
+| Field Group | `.github/skills/jssp-imds-theme/reference/imds-html-field-group.md` |
+| Tab | `.github/skills/jssp-imds-theme/reference/imds-html-tabs.md` |
+| Accordion | `.github/skills/jssp-imds-theme/reference/imds-html-accordion.md` |
+| Calendar Input | `.github/skills/jssp-imds-theme/reference/imui-html-calendar.md` |
+| Banner Message | `.github/skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
+| Inline Message | `.github/skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
 
-Other components are stored under `skills/jssp-imds-theme/reference/`.
+Other components are stored under `.github/skills/jssp-imds-theme/reference/`.
 
 ---
 
 ### Step 4: Generate Function Container and Routing
 
-Refer to `{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md` and `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` to generate code.
+Refer to `.github/instructions/jssp-function-container.instructions.md` and `.github/instructions/jssp-presentation-page.instructions.md` to generate code.
 
 - Generate the function container (.js) under `src/main/jssp/src/{feature-name}/`
 - Generate routing configuration (.xml) as needed
@@ -131,7 +131,7 @@ Generate `.html` based on the assets and reference HTML snippets loaded in Steps
 - Defining custom HTML/CSS structures instead of using imds components
 - **Arbitrarily modifying the HTML structure of assets** (top-level form structure, nesting of `imds-field-container` / `imds-field-group` / `imds-field`, layout classes like `is-horizontal` / `imds-w-15`). Reuse the asset structure as-is; only replace label text, `id`, input type, and validation content
 - **Layout changes based on personal design judgments** such as "vertical layout looks better" or "I want to simplify because there are many items" (e.g., changing `is-horizontal` to `is-vertical`, omitting `imds-field-container` / `imds-field-group`). If a structure different from the asset is required, **confirm with the user before generating**
-- **Omitting JSDoc comments (`/** ... */`) or section delimiter comments (`// ===...===`) included in the asset.** Even if they appear verbose, the convention (`{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md`) treats them as required. Keeping them clarifies the intent of each function inline, which makes subsequent reviews and modifications easier. Comments in assets must be copied as-is in principle. If changes are needed, only rewrite the content for the relevant feature; do not delete them.
+- **Omitting JSDoc comments (`/** ... */`) or section delimiter comments (`// ===...===`) included in the asset.** Even if they appear verbose, the convention (`.github/instructions/jssp-function-container.instructions.md`) treats them as required. Keeping them clarifies the intent of each function inline, which makes subsequent reviews and modifications easier. Comments in assets must be copied as-is in principle. If changes are needed, only rewrite the content for the relevant feature; do not delete them.
 
 **Required Rules:**
 - Form elements with labels must use the `imds-field` + `imds-field-label` + `imds-field-control` structure

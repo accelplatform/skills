@@ -106,7 +106,7 @@ src/main/storage/system/products/import/basic/<key>/<version>/
 ### 范围外：从函数容器运行时调用的 SQL
 
 从函数容器通过 `db.executeByTemplate` / `db.execute` **在运行时调用的业务 SQL**（SELECT / INSERT / UPDATE / DELETE 等 2WaySQL 模板）不在本章节范围内。
-这些文件放置于 `src/main/jssp/src/{功能名}/sql/`（详见 `{{AGENT_RULES}}/jssp-2way-sql{{AGENT_RULE_FILE}}.md`）。
+这些文件放置于 `src/main/jssp/src/{功能名}/sql/`（详见 `.claude/rules/jssp-2way-sql.md`）。
 
 ### `storage/system` 与 `storage/public` 的使用区分
 
@@ -327,7 +327,7 @@ spec.json 中的 `workflowImport` / `logicImport` 部分，**仅在用户在 pro
 ### 3. 执行 build-setup-import.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
+node .claude/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
      <spec.json 的路径>
 ```
 

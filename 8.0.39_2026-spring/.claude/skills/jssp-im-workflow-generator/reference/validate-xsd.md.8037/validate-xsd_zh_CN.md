@@ -15,7 +15,7 @@
 验证脚本已随技能集一同提供。从项目根目录执行：
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-xsd.js \
+node .claude/skills/jssp-im-workflow-generator/scripts/validate-xsd.js \
      src/main/storage/public/im_workflow/im_workflow-{name}-import.xml
 ```
 

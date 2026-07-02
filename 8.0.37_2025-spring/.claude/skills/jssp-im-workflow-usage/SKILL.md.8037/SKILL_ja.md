@@ -13,7 +13,7 @@ intra-mart Accel Platform の IM-Workflow 連携プログラムを新規に生�
 
 ## 参照すべき規約
 
-本スキルは申請画面・承認画面（`.html` + `.js`）およびアクション処理（`.js`）を生成する。全体像は `{{AGENT_RULES}}/README.md` の「規約ファイル一覧（一行要約 + 適用範囲タグ）」を参照。本スキル特有の重要度:
+本スキルは申請画面・承認画面（`.html` + `.js`）およびアクション処理（`.js`）を生成する。全体像は `.claude/rules/README.md` の「規約ファイル一覧（一行要約 + 適用範囲タグ）」を参照。本スキル特有の重要度:
 
 | 規約 | 取り扱い |
 |------|---------|
@@ -67,7 +67,7 @@ intra-mart Accel Platform の IM-Workflow 連携プログラムを新規に生�
 - `reference/api-im-workflow-modal-confirm.md` - 処理モーダル API（`imWorkflow.modal.showConfirm()`）リファレンス
 - `reference/api-user-actv-matter-property-value.md` - 案件プロパティ値 API リファレンス
 - `reference/screen-generation-checklist.md` - 画面生成時のセルフチェックリスト
-- `jssp-im-workflow-generator/reference/node-types.md` - ノード種別・権限プラグイン一覧（関連スキル）
+- `.claude/skills/jssp-im-workflow-generator/reference/node-types.md` - ノード種別・権限プラグイン一覧（関連スキル）
 
 ## 申請画面の方式選択
 
@@ -161,14 +161,14 @@ intra-mart Accel Platform の IM-Workflow 連携プログラムを新規に生�
 DML で方言依存構文（PostgreSQL の `ON CONFLICT`、Oracle の `MERGE` 等）を使う場合のみ、`{機能名}_sample-dml_postgre.sql` 等の 3 方言別ファイルにする。
 
 - テーブル名・カラム名はアクション処理の SQL と一致させること
-- **カラムの型は `jssp-page-generator/reference/ddl-type-mapping.md` の型マッピング表に従うこと**（記憶や推測で型名を書かない）
+- **カラムの型は `.claude/skills/jssp-page-generator/reference/ddl-type-mapping.md` の型マッピング表に従うこと**（記憶や推測で型名を書かない）
 - DDL は DB 製品ごとにファイルを分けること（型名・デフォルト値の構文が異なるため）
 - サンプル DML は標準 SQL の INSERT 文で記述し、3製品共通で使用できるようにすること
 - マスタテーブル（取引先マスタ等）にはサンプルレコードを 3〜5 件程度 INSERT すること
 
 ### ファイル配置先のパス構築ルール
 
-> **注記**: IM-Workflow の画面はワークフローエンジンが XML の `scriptPath` から直接呼び出すため、ルーティングテーブルを介さない。よって `{{AGENT_RULES}}/jssp-file-structure{{AGENT_RULE_FILE}}.md` の `view/{view}.js`（snake_case の画面ごとの固有名）規約とは **呼び出し元が異なる別系統の規約** が適用される。本セクションの規約に従うこと（`{{AGENT_RULES}}/jssp-file-structure{{AGENT_RULE_FILE}}.md` 側にも「ルーティングテーブル経由で呼ばれない画面の例外規約」として明記済み）。
+> **注記**: IM-Workflow の画面はワークフローエンジンが XML の `scriptPath` から直接呼び出すため、ルーティングテーブルを介さない。よって `.claude/rules/jssp-file-structure.md` の `view/{view}.js`（snake_case の画面ごとの固有名）規約とは **呼び出し元が異なる別系統の規約** が適用される。本セクションの規約に従うこと（`.claude/rules/jssp-file-structure.md` 側にも「ルーティングテーブル経由で呼ばれない画面の例外規約」として明記済み）。
 
 ファイル配置先は必ず以下のルールで構築すること:
 
@@ -210,7 +210,7 @@ leave/workflow/apply/apply.js      + apply.html
 - テンプレートは必要に応じてカスタマイズ
 - 参照先で `TODO` が書かれている場合は、その指示どおりに実装する
 - **詳細画面（確認画面・処理詳細・参照詳細）には「戻る」ボタンを配置しないこと**。詳細画面はワークフローエンジンの iframe 内で表示されるため、戻り先のページパスが存在せず空ページに遷移してしまう。戻るボタンの HTML・JS イベントリスナー・戻り用フォーム（`imw-back-form`）をすべて省略する
-- **プレゼンテーションページ（.html）は `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` のコーディング規約に従うこと**。特にバリデーション実装は規約準拠が必須。生成完了後、`reference/screen-generation-checklist.md` でセルフチェックを行うこと
+- **プレゼンテーションページ（.html）は `.claude/rules/jssp-presentation-page.md` のコーディング規約に従うこと**。特にバリデーション実装は規約準拠が必須。生成完了後、`reference/screen-generation-checklist.md` でセルフチェックを行うこと
 - **画面内で IM-共通マスタの値（ユーザ・組織・会社・グループ・ロール）を入力させる必要がある場合は、自前 UI を作らず `jssp-im-master-usage` スキルを併用してマスタ検索ダイアログを組み込むこと**（例: 「申請者の上長」「対象部署」「処理者」フィールド）。コードの手打ち入力は禁止
 
 ## 生成後の必須検証（自動実行）
@@ -223,7 +223,7 @@ leave/workflow/apply/apply.js      + apply.html
 生成したファイルに対して `validate-workflow-code.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-usage/scripts/validate-workflow-code.js src/main/jssp/src/{機能名}/
+node .claude/skills/jssp-im-workflow-usage/scripts/validate-workflow-code.js src/main/jssp/src/{機能名}/
 ```
 
 検出される主なパターン:
@@ -240,12 +240,12 @@ node {{AGENT_ROOT}}/skills/jssp-im-workflow-usage/scripts/validate-workflow-code
 DDL ファイルを生成した場合、`validate-ddl.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{機能名}/{version}/
+node .claude/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{機能名}/{version}/
 ```
 
 ### ステップ 3: 手動チェック（`post-generation-verification.md`）
 
-`jssp-page-generator/reference/post-generation-verification.md` の全ステップを実行する。
+`.claude/skills/jssp-page-generator/reference/post-generation-verification.md` の全ステップを実行する。
 特に以下は過去に不具合が発生した重点項目:
 1. SQL ファイルで `/*$param*/`（直接埋め込み）を使っていないか → `/*param*/`（バインド）を使う
 2. `executeByTemplate` のパラメータが `DbParameter.xxx()` でラップされているか
@@ -255,12 +255,12 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/
 
 ### ステップ 4: 画面 HTML の imds 準拠 再チェック（HTML 生成時のみ）
 
-申請画面・承認画面・詳細画面・確認画面など **`.html` を生成した場合は必ず実行する**。`validate-workflow-code.js` は `imds-selectbox` のような既知の誤クラス名は検出するが、**reference 全体との完全な突き合わせはカバーしない**ため、`jssp-imds-theme/reference/` を引いて目視で再確認する。
+申請画面・承認画面・詳細画面・確認画面など **`.html` を生成した場合は必ず実行する**。`validate-workflow-code.js` は `imds-selectbox` のような既知の誤クラス名は検出するが、**reference 全体との完全な突き合わせはカバーしない**ため、`.claude/skills/jssp-imds-theme/reference/` を引いて目視で再確認する。
 
 #### 実施手順
 
 1. 生成した各 `.html` をスキャンし、使用している imds コンポーネントを洗い出す（テキストボックス・テキストエリア・セレクト・チェックボックス・ラジオ・ボタン・テーブル・ダイアログ・フィールド・タブ・カレンダー入力・バナー/インラインメッセージ等）
-2. コンポーネントごとに `skills/jssp-imds-theme/reference/imds-html-{component}.md` を **Read ツールで開いて再確認する**（記憶に頼らない）
+2. コンポーネントごとに `.claude/skills/jssp-imds-theme/reference/imds-html-{component}.md` を **Read ツールで開いて再確認する**（記憶に頼らない）
 3. reference のクラス名・タグ構造・属性と、生成 HTML を突き合わせる
 
 #### 重点チェック項目

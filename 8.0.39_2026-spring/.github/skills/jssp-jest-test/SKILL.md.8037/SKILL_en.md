@@ -23,7 +23,7 @@ When the user makes requests such as:
 
 1. Load the target function container (js)
 2. Identify the functions and logic to test
-3. Design test cases based on the test perspectives in `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md`
+3. Design test cases based on the test perspectives in `.github/instructions/jssp-testing.instructions.md`
 4. Generate test code following the templates and mock patterns in this skill
 5. Run the tests as described in "Running Tests" and fix until all pass
 

@@ -28,12 +28,12 @@ SSJS 向け API は公式には提供されていないため、Rhino の `Packa
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-function-container.instructions.md` | 🟢 **必読** — テンプレート JS の `init()` 構造 |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` | 🟢 必読 |
-| `jssp-error-handling.instructions.md` / `jssp-logging.instructions.md` | 🟢 **必読** — クローラは詳細ログとエラー処理が必須 |
-| `jssp-2way-sql.instructions.md` | 🟡 **2WaySQL を使用する場合のみ参照**（クローラ対象の検索に 2WaySQL を使用する場合など） |
-| `jssp-presentation-page.instructions.md` | 🟡 テンプレート HTML の基本構造（imcs 専用クラスは本スキルの assets を優先） |
-| `jssp-security.instructions.md` | 🟡 テンプレート HTML 実装時は XSS 対策セクションを参照。検索結果コンテンツ（`request` 引数）のデータは Apache Solr 由来のデータのため、格納型 XSS の可能性はゼロではない。DOM 操作では `textContent` を使用し `innerHTML` は iAP 内部生成 HTML のみに限定すること |
+| `jssp-function-container.md` | 🟢 **必読** — テンプレート JS の `init()` 構造 |
+| `jssp-naming.md` / `jssp-code-style.md` | 🟢 必読 |
+| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必読** — クローラは詳細ログとエラー処理が必須 |
+| `jssp-2way-sql.md` | 🟡 **2WaySQL を使用する場合のみ参照**（クローラ対象の検索に 2WaySQL を使用する場合など） |
+| `jssp-presentation-page.md` | 🟡 テンプレート HTML の基本構造（imcs 専用クラスは本スキルの assets を優先） |
+| `jssp-security.md` | 🟡 テンプレート HTML 実装時は XSS 対策セクションを参照。検索結果コンテンツ（`request` 引数）のデータは Apache Solr 由来のデータのため、格納型 XSS の可能性はゼロではない。DOM 操作では `textContent` を使用し `innerHTML` は iAP 内部生成 HTML のみに限定すること |
 
 ---
 

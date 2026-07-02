@@ -69,7 +69,7 @@ This mitigates the risk of an attacker pressuring memory by sending a huge JSON.
 
 - Success: `application/json` with `{error:false, data:{...}}`
 - Failure: `application/json` with `{error:true, errorMessage:"[code] message"}` together with HTTP 4xx/5xx
-- Follow `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` for error code naming.
+- Follow `.claude/rules/jssp-error-handling.md` for error code naming.
 
 ### Handling of the `ApiError` Type
 
@@ -683,13 +683,13 @@ Clients obtain it from `<meta name="im_secure_token">` and attach it to the `fet
 
 ### Do Not Use the `ApiError` typedef (Reminder)
 
-Declaring `@typedef {Error & {code, httpStatus}} ApiError` per file triggers `tsc` `TS2300 Duplicate identifier`. **Casting with an inline `@type` annotation is the canonical form of this template.** See `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` for details.
+Declaring `@typedef {Error & {code, httpStatus}} ApiError` per file triggers `tsc` `TS2300 Duplicate identifier`. **Casting with an inline `@type` annotation is the canonical form of this template.** See `.claude/rules/jssp-error-handling.md` for details.
 
 ## Related
 
 - `reference/argument-request.md` - Specification of `request.getMessageBodyAsString()`
 - `reference/api-secure-token-manager.md` - CSRF token verification
 - `reference/secure-token-check.md` - End-to-end client + server verification pattern
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - Error code naming and API error response format
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - Overall input validation policy
+- `.claude/rules/jssp-error-handling.md` - Error code naming and API error response format
+- `.claude/rules/jssp-security.md` - Overall input validation policy
 - `assets/file-upload-download-api.md` - For multipart/form-data (file) uploads

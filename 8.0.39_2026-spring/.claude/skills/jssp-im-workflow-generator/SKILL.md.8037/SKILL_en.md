@@ -13,7 +13,7 @@ The generated XML can be imported via the IM-Workflow administration screen's im
 
 ## Conventions to Reference
 
-This skill generates **only XML definition files** (`.xml`); it does not implement `.js` / `.html` (that is the responsibility of `jssp-im-workflow-usage`). Therefore the set of conventions to reference is minimal. See `{{AGENT_RULES}}/README.md` for the full picture.
+This skill generates **only XML definition files** (`.xml`); it does not implement `.js` / `.html` (that is the responsibility of `jssp-im-workflow-usage`). Therefore the set of conventions to reference is minimal. See `.claude/rules/README.md` for the full picture.
 
 | Convention | Handling |
 |------------|----------|
@@ -343,7 +343,7 @@ Default values apply when omitted.
 ### 3. Run build-workflow.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
+node .claude/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
      /tmp/<workflowName>.spec.json
 ```
 
@@ -363,7 +363,7 @@ What build-workflow.js does automatically:
 ### 4. Validate with validate-workflow.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
+node .claude/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
      <output .xml>
 ```
 

@@ -13,7 +13,7 @@ Explains the procedures for creating and structuring batch processing programs a
 
 ## Conventions to Reference
 
-This skill generates batch processing (`.js` only; no screen). See `{{AGENT_RULES}}/README.md` for the full picture.
+This skill generates batch processing (`.js` only; no screen). See `.claude/rules/README.md` for the full picture.
 
 | Convention | Handling |
 |------------|----------|
@@ -113,12 +113,12 @@ Perform this verification automatically without asking for user confirmation, an
 Run `validate-jssp-code.js` against the generated files. **Repeat fixes until the error count reaches 0.**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{feature-name}/
+node .claude/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{feature-name}/
 ```
 
 ### Step 2: Manual Check
 
-Execute steps 1–3 in `jssp-page-generator/reference/post-generation-verification.md` (step 4 screen verification is not needed for jobs).
+Execute steps 1–3 in `.claude/skills/jssp-page-generator/reference/post-generation-verification.md` (step 4 screen verification is not needed for jobs).
 
 ### Step 3: Code Review and Security Check (Auto-Execute)
 

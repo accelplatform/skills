@@ -25,7 +25,7 @@ The target is WCAG 2.1 Level AA compliance.
 The global header, global menu, and footer of intra-mart Accel Platform are **output by the platform (theme)**.
 Therefore, **do not add** `<header>` / `<nav>` / `<footer>` to individual presentation pages (they would duplicate the platform-provided landmarks).
 
-The root structure of each screen follows the conventions in `jssp-presentation-page.instructions.md` and places only `<main>`.
+The root structure of each screen follows the conventions in `jssp-presentation-page.md` and places only `<main>`.
 
 ```html
 <div id="container">
@@ -87,7 +87,7 @@ As a JSSP convention, the `id` of an input element is enclosed in colons, like `
 
 ### Error Display
 
-Follow the standard pattern from `jssp-presentation-page.instructions.md` (`.imds-field` + `.imds-validation-error` class, showing/hiding `.imds-error-text` with `style.display`), and add ARIA attributes.
+Follow the standard pattern from `jssp-presentation-page.md` (`.imds-field` + `.imds-validation-error` class, showing/hiding `.imds-error-text` with `style.display`), and add ARIA attributes.
 
 ```html
 <div class="imds-field" for=":age:">
@@ -264,7 +264,7 @@ Give the `<table>` an accessible name using one of the following methods.
 
 ## Dialogs and Modals
 
-Use **`imdsConfirm()` as the first choice** for confirmation dialogs (see `jssp-presentation-page.instructions.md`).
+Use **`imdsConfirm()` as the first choice** for confirmation dialogs (see `jssp-presentation-page.md`).
 The standard dialogs provided by imds support ARIA attributes, focus control, and keyboard operation.
 
 ```javascript
@@ -309,7 +309,7 @@ Only when creating a complex input dialog that cannot be achieved with `imdsConf
 
 ### First Choice: Standard imui Message Functions
 
-Following the conventions in `jssp-presentation-page.instructions.md`, use the following functions.
+Following the conventions in `jssp-presentation-page.md`, use the following functions.
 These cause the intra-mart theme to internally perform processing equivalent to live regions.
 
 | Purpose | Function |
@@ -382,7 +382,6 @@ When generating components, refer to the corresponding reference and ensure all 
 
 ### Page Structure
 
-- [ ] `<header>` / `<nav>` / `<footer>` have **not been added** to each screen (because the platform provides them)
 - [ ] The root has the structure `<div id="container"><div class="imds-container"><main>...</main></div></div>`
 - [ ] There is exactly one `<main>` per page and `role="main"` is not added alongside it
 - [ ] Headings follow the order `h1` → `h2` → `h3` without skipping levels
@@ -435,6 +434,6 @@ When generating components, refer to the corresponding reference and ensure all 
 
 ## Related
 
-- `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` - Basic structure of presentation pages
-- `skills/jssp-localize-support/` related - Multilingual support (spoken language)
-- `skills/jssp-imds-theme/reference/` - Accessibility support per imds component
+- `.github/instructions/jssp-presentation-page.instructions.md` - Basic structure of presentation pages
+- `.github/skills/jssp-localize-support/` related - Multilingual support (spoken language)
+- `.github/skills/jssp-imds-theme/reference/` - Accessibility support per imds component

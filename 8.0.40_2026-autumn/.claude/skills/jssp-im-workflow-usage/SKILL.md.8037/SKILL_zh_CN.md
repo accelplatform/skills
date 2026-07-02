@@ -13,7 +13,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 ## 需参照的规约
 
-本技能生成申请画面・审批画面（`.html` + `.js`）以及动作处理（`.js`）。全局视图请参阅 `{{AGENT_RULES}}/README.md` 中的「规约文件一览（一行摘要 + 适用范围标签）」。本技能特有的重要度：
+本技能生成申请画面・审批画面（`.html` + `.js`）以及动作处理（`.js`）。全局视图请参阅 `.claude/rules/README.md` 中的「规约文件一览（一行摘要 + 适用范围标签）」。本技能特有的重要度：
 
 | 规约 | 处理方式 |
 |------|---------|
@@ -67,7 +67,7 @@ allowed-tools: Bash, Read, Write, Glob
 - `reference/api-im-workflow-modal-confirm.md` — 处理模态框 API（`imWorkflow.modal.showConfirm()`）参考
 - `reference/api-user-actv-matter-property-value.md` — 案件属性值 API 参考
 - `reference/screen-generation-checklist.md` — 画面生成时的自检清单
-- `jssp-im-workflow-generator/reference/node-types.md` — 节点类型·权限插件一览（相关技能）
+- `.claude/skills/jssp-im-workflow-generator/reference/node-types.md` — 节点类型·权限插件一览（相关技能）
 
 ## 申请画面的方式选择
 
@@ -161,14 +161,14 @@ allowed-tools: Bash, Read, Write, Glob
 仅当 DML 中需要方言特定语法（如 PostgreSQL 的 `ON CONFLICT`、Oracle 的 `MERGE` 等）时，才拆分为 `{功能名}_sample-dml_postgre.sql` 等 3 个文件。
 
 - 表名·列名须与动作处理的 SQL 一致
-- **列的类型须遵循 `jssp-page-generator/reference/ddl-type-mapping.md` 的类型映射表**（不得凭记忆或推测书写类型名）
+- **列的类型须遵循 `.claude/skills/jssp-page-generator/reference/ddl-type-mapping.md` 的类型映射表**（不得凭记忆或推测书写类型名）
 - DDL 须按 DB 产品分别建立文件（类型名和默认值语法不同）
 - 示例 DML 使用标准 SQL 的 INSERT 语句，确保三种产品均可使用
 - 主数据表（取引先主数据等）插入 3～5 条示例记录
 
 ### 文件存放路径构建规则
 
-> **注记**：IM-Workflow 画面由工作流引擎通过 XML 的 `scriptPath` 直接调用，不经过路由表。因此适用于 **与 `{{AGENT_RULES}}/jssp-file-structure{{AGENT_RULE_FILE}}.md` 的 `view/{view}.js`（每个画面的 snake_case 唯一名）规约不同的另一套规约**——这源于调用方不同。请按本章节的规约处理（`{{AGENT_RULES}}/jssp-file-structure{{AGENT_RULE_FILE}}.md` 中也以「不经过路由表调用的画面的例外规约」明确记载）。
+> **注记**：IM-Workflow 画面由工作流引擎通过 XML 的 `scriptPath` 直接调用，不经过路由表。因此适用于 **与 `.claude/rules/jssp-file-structure.md` 的 `view/{view}.js`（每个画面的 snake_case 唯一名）规约不同的另一套规约**——这源于调用方不同。请按本章节的规约处理（`.claude/rules/jssp-file-structure.md` 中也以「不经过路由表调用的画面的例外规约」明确记载）。
 
 文件存放路径必须按以下规则构建：
 
@@ -210,7 +210,7 @@ leave/workflow/apply/apply.js      + apply.html
 - 根据需要自定义模板
 - 参考文件中出现 `TODO` 时，按其指示实现
 - **详情画面（确认画面·处理详情·参照详情）不得放置"返回"按钮**。详情画面在工作流引擎的 iframe 内显示，前一页面路径不存在，会导致跳转至空页面。省略所有返回按钮的 HTML、JS 事件监听器和返回表单（`imw-back-form`）。
-- **展示页面（.html）须遵守 `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` 的编码规范**。尤其是验证实现的规范遵守是必须的。生成完成后，使用 `reference/screen-generation-checklist.md` 进行自检。
+- **展示页面（.html）须遵守 `.claude/rules/jssp-presentation-page.md` 的编码规范**。尤其是验证实现的规范遵守是必须的。生成完成后，使用 `reference/screen-generation-checklist.md` 进行自检。
 - **画面中需要输入 IM 通用主数据值（用户・组织・公司・组・角色）时，请不要自行制作 UI，而是配合 `jssp-im-master-usage` 技能嵌入主数据检索对话框**（例如："申请人的上级"、"目标部门"、"处理人" 等字段）。禁止手动输入代码。
 
 ## 生成后必须验证（自动执行）
@@ -223,7 +223,7 @@ leave/workflow/apply/apply.js      + apply.html
 对生成的文件执行 `validate-workflow-code.js`。**反复修正直到错误数为 0。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-usage/scripts/validate-workflow-code.js src/main/jssp/src/{功能名}/
+node .claude/skills/jssp-im-workflow-usage/scripts/validate-workflow-code.js src/main/jssp/src/{功能名}/
 ```
 
 主要检测模式：
@@ -240,12 +240,12 @@ node {{AGENT_ROOT}}/skills/jssp-im-workflow-usage/scripts/validate-workflow-code
 生成了 DDL 文件时，执行 `validate-ddl.js`。**反复修正直到错误数为 0。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{功能名}/{version}/
+node .claude/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{功能名}/{version}/
 ```
 
 ### 步骤 3：手动检查（`post-generation-verification.md`）
 
-执行 `jssp-page-generator/reference/post-generation-verification.md` 的所有步骤。
+执行 `.claude/skills/jssp-page-generator/reference/post-generation-verification.md` 的所有步骤。
 以下是过去曾发生问题的重点项目：
 1. SQL 文件中是否使用了 `/*$param*/`（直接嵌入）？→ 使用 `/*param*/`（绑定）
 2. `executeByTemplate` 的参数是否用 `DbParameter.xxx()` 包装？
@@ -255,12 +255,12 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/
 
 ### 步骤 4：画面 HTML 的 imds 合规性再检查（仅在生成 HTML 时）
 
-申请画面·审批画面·详情画面·确认画面等 **生成了 `.html` 时必须执行**。虽然 `validate-workflow-code.js` 能检测出诸如 `imds-selectbox` 之类的已知错误类名，但 **它无法覆盖与 reference 的完整对照**，因此须打开 `jssp-imds-theme/reference/` 进行目视再确认。
+申请画面·审批画面·详情画面·确认画面等 **生成了 `.html` 时必须执行**。虽然 `validate-workflow-code.js` 能检测出诸如 `imds-selectbox` 之类的已知错误类名，但 **它无法覆盖与 reference 的完整对照**，因此须打开 `.claude/skills/jssp-imds-theme/reference/` 进行目视再确认。
 
 #### 实施步骤
 
 1. 扫描已生成的各 `.html`，列出使用的 imds 组件（文本框、文本区域、下拉框、复选框、单选框、按钮、表格、对话框、字段、标签页、日历输入、横幅/行内消息等）
-2. 针对每个组件，**使用 Read 工具打开 `skills/jssp-imds-theme/reference/imds-html-{component}.md` 进行再确认**（不依赖记忆）
+2. 针对每个组件，**使用 Read 工具打开 `.claude/skills/jssp-imds-theme/reference/imds-html-{component}.md` 进行再确认**（不依赖记忆）
 3. 将 reference 的类名、标签结构、属性与生成的 HTML 进行对照
 
 #### 重点检查项

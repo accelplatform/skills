@@ -791,5 +791,5 @@ and download via `URL.createObjectURL`.
 - `reference/api-storage.md` - General PublicStorage operations
 - `reference/api-secure-token-manager.md` - CSRF token verification
 - `reference/argument-request.md` - Request / RequestParameter method list
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - Error code naming and API error response format
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - Input validation and path traversal prevention policy
+- `.claude/rules/jssp-error-handling.md` - Error code naming and API error response format
+- `.claude/rules/jssp-security.md` - Input validation and path traversal prevention policy

@@ -106,7 +106,7 @@ src/main/storage/system/products/import/basic/<key>/<version>/
 ### Out of Scope: Runtime SQL Called from Function Containers
 
 Business SQL **executed at runtime** from function containers via `db.executeByTemplate` / `db.execute` (2WaySQL templates for SELECT / INSERT / UPDATE / DELETE, etc.) is out of scope of this section.
-Those go under `src/main/jssp/src/{feature}/sql/` (see `{{AGENT_RULES}}/jssp-2way-sql{{AGENT_RULE_FILE}}.md`).
+Those go under `src/main/jssp/src/{feature}/sql/` (see `.github/instructions/jssp-2way-sql.instructions.md`).
 
 ### `storage/system` vs `storage/public`
 
@@ -327,7 +327,7 @@ See the files under `reference/` for details on each section.
 ### 3. Run build-setup-import.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
+node .github/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
      <path to spec.json>
 ```
 

@@ -17,7 +17,7 @@ intra-mart Accel Platform のスクリプト開発モデル（JSSP）で書か�
 以下のコマンドを実行し、スクリプトで検出可能な問題をまず洗い出す。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <成果物の出力先パス>
+node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js <成果物の出力先パス>
 ```
 
 エラー・警告が出力された場合はそのまま記録し、Step 2 のレビュー結果と合わせて報告する。

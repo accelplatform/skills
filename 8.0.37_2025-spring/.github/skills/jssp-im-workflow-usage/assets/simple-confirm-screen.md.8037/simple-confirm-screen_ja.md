@@ -411,5 +411,5 @@ function transferErrorPage(code, message) {
 
 ## 生成後の必須検証
 
-`SKILL.md` の「生成後の必須検証」に従い、`validate-workflow-code.js` → 手動チェック → `jssp-imds-theme/reference` 照合を実施すること。
+`SKILL.md` の「生成後の必須検証」に従い、`validate-workflow-code.js` → 手動チェック → `.github/skills/jssp-imds-theme/reference/` 照合を実施すること。
 特に `<imart type="workflowOpenPage">` 配下の入力フィールドに `name` 属性を付けない（hidden フィールドのみ `name` を持つ）点を確認する。

@@ -13,7 +13,7 @@ description: "2WaySQL 規約（SQL外部化、構文、ホワイトリスト検�
 
 - **WHERE 子句或条件动态变化的 SELECT** 使用 2WaySQL
 - 简单的固定 SQL 或单参数单次执行，也可使用 `select` / `execute` + `DbParameter`
-- **绝对禁止通过字符串拼接构建 SQL**（参见 jssp-security.instructions.md）
+- **绝对禁止通过字符串拼接构建 SQL**（参见 jssp-security.md）
 
 ## SQL 文件的存放位置
 
@@ -410,7 +410,7 @@ for (let i = 0; i < items.length; i++) {
 
 ## 相关文件
 
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - SQL 注入防护的整体方针
-- `skills/jssp-page-generator/reference/api-database.md` - Database API 参考
+- `.github/instructions/jssp-security.instructions.md` - SQL 注入防护的整体方针
+- `.github/skills/jssp-page-generator/reference/api-database.md` - Database API 参考
 - `d.ts/platform/database/im-ssjs-tenant-database.d.ts` - TenantDatabase 类型定义
 - `d.ts/platform/database/im-ssjs-shared-database.d.ts` - SharedDatabase 类型定义

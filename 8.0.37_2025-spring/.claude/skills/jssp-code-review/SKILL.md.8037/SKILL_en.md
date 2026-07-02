@@ -17,7 +17,7 @@ Reviews code written in the intra-mart Accel Platform script development model (
 Run the following command to first identify problems that can be detected by the script.
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <output path>
+node .claude/skills/jssp-page-generator/scripts/validate-jssp-code.js <output path>
 ```
 
 If errors or warnings are output, record them as-is and report along with the Step 2 review results.

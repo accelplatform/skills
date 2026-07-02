@@ -61,8 +61,8 @@ test('Clicking the equipment search button navigates to the equipment search scr
 
 **Principles for writing urlRegex**:
 - Include the last segment of baseURL (`imart` for intra-mart)
-- Example: For baseURL `http://localhost/imart/`, use `/imart\/equip\/.../`
-- This prevents matches when the page accidentally navigates to `http://localhost/equip/...` (outside the context path)
+- Example: For baseURL `http://127.0.0.1/imart/`, use `/imart\/equip\/.../`
+- This prevents matches when the page accidentally navigates to `http://127.0.0.1/equip/...` (outside the context path)
 
 ## Dialog Operations
 

@@ -18,9 +18,9 @@ Your role is to bulk-generate a complete set of Importer-format configuration fi
 
 ## Steps
 
-1. Read `{{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/SKILL.md` and confirm the generation procedure.
+1. Read `.github/skills/jssp-tenant-setup-generator/SKILL.md` and confirm the generation procedure.
 2. Read `spec.json` (if it does not exist, assemble the content from user instructions).
-3. Run `node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js` to bulk-generate materials.
+3. Run `node .github/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js` to bulk-generate materials.
 4. Review the generated files and check that the content contains no errors.
 
 ## Output Format

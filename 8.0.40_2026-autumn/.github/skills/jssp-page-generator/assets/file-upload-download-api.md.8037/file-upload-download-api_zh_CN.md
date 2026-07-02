@@ -790,5 +790,5 @@ function init(request) {
 - `reference/api-storage.md` - PublicStorage 的总体操作
 - `reference/api-secure-token-manager.md` - CSRF 令牌的校验
 - `reference/argument-request.md` - Request / RequestParameter 的方法一览
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - 错误代码命名规则与 API 错误响应格式
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - 输入校验与路径穿越防护的整体方针
+- `.github/instructions/jssp-error-handling.instructions.md` - 错误代码命名规则与 API 错误响应格式
+- `.github/instructions/jssp-security.instructions.md` - 输入校验与路径穿越防护的整体方针

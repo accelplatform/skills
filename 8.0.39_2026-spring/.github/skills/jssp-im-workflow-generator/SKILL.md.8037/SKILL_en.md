@@ -13,14 +13,14 @@ The generated XML can be imported via the IM-Workflow administration screen's im
 
 ## Conventions to Reference
 
-This skill generates **only XML definition files** (`.xml`); it does not implement `.js` / `.html` (that is the responsibility of `jssp-im-workflow-usage`). Therefore the set of conventions to reference is minimal. See `{{AGENT_RULES}}/README.md` for the full picture.
+This skill generates **only XML definition files** (`.xml`); it does not implement `.js` / `.html` (that is the responsibility of `jssp-im-workflow-usage`). Therefore the set of conventions to reference is minimal. See `.github/instructions/README.md` for the full picture.
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-file-structure.instructions.md` | 🟢 Required — the XML output directory (`src/main/storage/public/im_workflow/`) |
-| `jssp-naming.instructions.md` | 🟢 Required — naming such as workflowName / shortName |
-| `jssp-function-container.instructions.md` / `jssp-presentation-page.instructions.md` / `jssp-code-style.instructions.md`, etc. | 🔴 **Not needed for this skill alone** (XML generation only; `.js` / `.html` implementation is the responsibility of `jssp-im-workflow-usage`) |
-| `jssp-2way-sql.instructions.md` / `jssp-accessibility.instructions.md` / `jssp-logging.instructions.md`, etc. | 🔴 **Not needed for this skill alone** |
+| `jssp-file-structure.md` | 🟢 Required — the XML output directory (`src/main/storage/public/im_workflow/`) |
+| `jssp-naming.md` | 🟢 Required — naming such as workflowName / shortName |
+| `jssp-function-container.md` / `jssp-presentation-page.md` / `jssp-code-style.md`, etc. | 🔴 **Not needed for this skill alone** (XML generation only; `.js` / `.html` implementation is the responsibility of `jssp-im-workflow-usage`) |
+| `jssp-2way-sql.md` / `jssp-accessibility.md` / `jssp-logging.md`, etc. | 🔴 **Not needed for this skill alone** |
 
 ## Generation Targets
 
@@ -343,7 +343,7 @@ Default values apply when omitted.
 ### 3. Run build-workflow.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
+node .github/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
      /tmp/<workflowName>.spec.json
 ```
 
@@ -363,7 +363,7 @@ What build-workflow.js does automatically:
 ### 4. Validate with validate-workflow.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
+node .github/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
      <output .xml>
 ```
 

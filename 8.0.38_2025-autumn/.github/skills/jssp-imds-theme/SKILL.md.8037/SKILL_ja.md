@@ -103,7 +103,7 @@ HTML コンポーネントを生成する前に、必ず対応するリファレ
 </div>
 ```
 
-なお、`jssp-accessibility.instructions.md` で「プレゼンテーションページに `<header>` を追加してはならない」と書かれているのは **プラットフォームのグローバル `<header>` と重複させない** という意図であり、imds の `<header class="imds-header">`（ページ内ヘッダ）はこの規則の対象外。
+なお、`jssp-accessibility.md` で「プレゼンテーションページに `<header>` を追加してはならない」と書かれているのは **プラットフォームのグローバル `<header>` と重複させない** という意図であり、imds の `<header class="imds-header">`（ページ内ヘッダ）はこの規則の対象外。
 
 ### `imds-header-actions` に業務データの操作ボタンを置かない
 
@@ -160,7 +160,7 @@ HTML コンポーネントを生成する前に、必ず対応するリファレ
 
 ### フォーム実装パターン（必須参照: `assets/simple-form.md`）
 
-入力フォームを実装する際は、必ず `skills/jssp-page-generator/assets/simple-form.md` の正規パターンに従う。
+入力フォームを実装する際は、必ず `.github/skills/jssp-page-generator/assets/simple-form.md` の正規パターンに従う。
 個別の `imds-field` を裸で並べるのは誤り。標準は **`imds-field-container > imds-field-group > imds-field-group-label + imds-field-group-control > imds-field`** の入れ子構造。
 
 ```html
@@ -280,7 +280,7 @@ CSS での独自定義は最終手段とすること。
 HTML を生成・編集したら、必ず以下のコマンドで imds 構造検証を実行すること。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <対象ファイルまたはディレクトリ>
+node .github/skills/jssp-imds-theme/scripts/validate-imds.js <対象ファイルまたはディレクトリ>
 ```
 
 ### 検証対象のルール
@@ -309,7 +309,7 @@ node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <対象フ�
 | Tag | `imds-tag` は `span` 要素限定 |
 | Textarea | `imds-textarea` は `textarea` 要素限定（textbox と混同しないこと） |
 | タグ種別 | `imds-select`=`select`、`imds-textbox`=`input`、`imds-textarea`=`textarea`、`imds-checkbox`/`imds-radio`=`label` ほか各コンポーネントの基本クラスのタグ種別 |
-| 未定義クラス検出 | `imds-*` プレフィックスを持つが `reference/` ・`{{AGENT_ROOT}}/{{AGENT_RULES}}/` いずれにも記載が無いクラスを `IMDS-U-001`（warning）として通知。typo / 架空クラス（例: `imds-page-header`）を発見できる |
+| 未定義クラス検出 | `imds-*` プレフィックスを持つが `reference/` ・`.github/instructions/` いずれにも記載が無いクラスを `IMDS-U-001`（warning）として通知。typo / 架空クラス（例: `imds-page-header`）を発見できる |
 
 ### 検証結果の対応
 
@@ -325,14 +325,14 @@ node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <対象フ�
 2. `textbox.md` から、パスワード入力欄の HTML を取得（`type="password"` に変更）
 3. `button.md` を読み込んで、ログインボタン（`is-primary`）を取得
 4. 各要素を `imds-field` で適切にラベル付けして配置
-5. `node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <生成ファイル>` を実行し PASS を確認
+5. `node .github/skills/jssp-imds-theme/scripts/validate-imds.js <生成ファイル>` を実行し PASS を確認
 
 ### データ一覧画面を作成する場合
 
 1. `table.md` を読み込んで、基本テーブル構造を取得
 2. `button.md` を読み込んで、新規登録ボタン（`is-primary`）、編集ボタン（`is-outlined`）を配置
 3. 必要に応じて `imds-html-dialog.md` を読み込んで、確認ダイアログを実装（入力フォーム付きダイアログの場合は `imds-html-dialog-form.md`、読み取り専用の詳細表示ダイアログの場合は `imds-html-dialog-detail.md`、一覧からデータを選択させるダイアログの場合は `imds-html-dialog-select.md`）
-4. `node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <生成ファイル>` を実行し PASS を確認
+4. `node .github/skills/jssp-imds-theme/scripts/validate-imds.js <生成ファイル>` を実行し PASS を確認
 
 ## トラブルシューティング
 

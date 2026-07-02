@@ -323,7 +323,7 @@ The `JSSP-HTML-018` rule in `jssp-page-generator/scripts/validate-jssp-code.js` 
 ## Date Input (imuiCalendar)
 
 For date input, use `<imart type="imuiCalendar">` instead of `<input type="date">`.
-For usage, attributes, notes, and the date-time input pattern (date + time combination), refer to `skills/jssp-imds-theme/reference/imui-html-calendar.md`.
+For usage, attributes, notes, and the date-time input pattern (date + time combination), refer to `.claude/skills/jssp-imds-theme/reference/imui-html-calendar.md`.
 
 ## Controlling Input Field Width
 
@@ -402,7 +402,7 @@ if (!userCode || userCode.length === 0) {
 }
 ```
 
-For other patterns (numeric, regex, email, date format, optional fields, etc.), refer to the "Validation Pattern Catalogue" in `assets/simple-form.md`.
+For other patterns (numeric, regex, email, date format, optional fields, etc.), refer to the "Validation Pattern Catalogue" in `.claude/skills/jssp-page-generator/assets/simple-form.md`.
 
 ### Implementation Policy
 
@@ -419,7 +419,7 @@ For other patterns (numeric, regex, email, date format, optional fields, etc.), 
 
 ### Implementation Policy
 
-Overview of the architecture (see `assets/simple-form.md` for the full implementation):
+Overview of the architecture (see `.claude/skills/jssp-page-generator/assets/simple-form.md` for the full implementation):
 
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
@@ -512,14 +512,14 @@ function callbackXxxSearch(result) {
 ### Implementation Policy
 
 - When using hyperlinks or calling REST APIs within the same host, specify the path under the context path as a relative path
-  - Example: To access `http://localhost/imart/foo/bar`, specify the URL as `foo/bar`
+  - Example: To access `http://127.0.0.1/imart/foo/bar`, specify the URL as `foo/bar`
 - This relative path matches the `path` attribute of the `file-mapping` tag defined in the routing configuration file, with the leading `/` removed
   - Example: If the routing configuration file has `<file-mapping path="/sample/user/list" page="sample/user/user_list">`, specify the URL to open the presentation page `sample/user/user_list` as `sample/user/list`
 
 ### Context Path
 
 - The context path is the URL composed of the host name, port number, and root directory name of the deployment destination
-  - Example: `http://localhost/imart/`
+  - Example: `http://127.0.0.1/imart/`
 - Since the context path is specified in the `<base>` tag by the `<imart type="head">` tag, it is recommended to specify the path after the context path as a relative path when specifying URLs
 
 ## Calling APIs

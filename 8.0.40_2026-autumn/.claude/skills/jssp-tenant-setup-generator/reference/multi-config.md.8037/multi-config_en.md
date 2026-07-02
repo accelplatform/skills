@@ -21,7 +21,7 @@ There are two major patterns where you want to split `import-<artifactId>-config
    - Describe only the elements to add or change (do not include existing roles or authz)
 2. **Run the build script**
    ```bash
-   node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js equip-v110.spec.json
+   node .claude/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js equip-v110.spec.json
    ```
 3. **Existing file protection**: If a file already exists at the output destination, the build **stops with an error**
    - Pass the `--force` flag to overwrite intentionally (normally not used)

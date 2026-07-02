@@ -13,7 +13,7 @@ export default defineConfig({
   retries: 0,
   use: {
     channel: 'msedge',
-    baseURL: 'http://localhost/imart/',
+    baseURL: 'http://127.0.0.1/imart/',
     locale: 'ja-JP',
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
@@ -31,7 +31,7 @@ export default defineConfig({
 
 ### baseURL
 
-- **Always include a trailing slash** (e.g., `http://localhost/imart/`)
+- **Always include a trailing slash** (e.g., `http://127.0.0.1/imart/`)
 - Without a trailing slash, relative paths in tests will not resolve correctly
 - Can be adapted per environment by only changing the baseURL
 
@@ -47,7 +47,7 @@ const URL = './module_name';
 const URL = '/module_name';
 
 // NG: Full URL (becomes environment-dependent)
-const URL = 'http://localhost/imart/product_stock';
+const URL = 'http://127.0.0.1/imart/product_stock';
 ```
 
 ### Screenshot Output Directory

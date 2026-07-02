@@ -185,12 +185,12 @@ let client = new HttpClient();
 client.cookieStore = [{
   name: 'JSESSIONID',
   value: 'abcdefghijklmnopqrstu',
-  domain: 'localhost',
+  domain: '127.0.0.1',
   path: '/',
   version: 0
 }];
 
-let response = client.get('http://localhost/app');
+let response = client.get('http://127.0.0.1/app');
 // 可以在 client.cookieStore 中参照更新后的Cookie
 ```
 

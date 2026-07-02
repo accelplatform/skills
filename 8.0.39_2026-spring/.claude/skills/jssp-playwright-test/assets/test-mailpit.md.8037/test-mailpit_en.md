@@ -26,16 +26,16 @@ mailpit provides a HTTP UI / API on port `8025` by default. E2E tests only use t
 
 ## Reaching mailpit from a devcontainer behind a proxy
 
-In a devcontainer environment behind a corporate proxy, you often cannot reach mailpit (host's `localhost:8025`) directly. The characteristics are:
+In a devcontainer environment behind a corporate proxy, you often cannot reach mailpit (host's `127.0.0.1:8025`) directly. The characteristics are:
 
 - If `PW_PROXY_BYPASS=127.0.0.1,<-loopback>` is set for intra-mart access, mailpit requests from the Playwright `request` fixture are also subject to bypass and fail trying to connect directly
-- On the other hand, going through the corporate proxy (e.g., a proxy listening on the docker bridge host IP) often reaches `localhost:8025`
+- On the other hand, going through the corporate proxy (e.g., a proxy listening on the docker bridge host IP) often reaches `127.0.0.1:8025`
 - For this reason, **the reliable approach is to create an independent APIRequestContext for mailpit and explicitly specify the proxy**
 
 ```typescript
 import { request as playwrightRequest, type APIRequestContext } from '@playwright/test';
 
-const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://localhost:8025';
+const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://127.0.0.1:8025';
 const PROXY_SERVER = process.env.HTTP_PROXY || process.env.http_proxy;
 
 async function newMailpitContext(): Promise<APIRequestContext> {
@@ -164,7 +164,7 @@ import {
   type APIRequestContext
 } from '@playwright/test';
 
-const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://localhost:8025';
+const MAILPIT_BASE_URL = process.env.MAILPIT_BASE_URL || 'http://127.0.0.1:8025';
 const PROXY_SERVER = process.env.HTTP_PROXY || process.env.http_proxy;
 const TOKEN_PAGE_PATH = process.env.IMART_TOKEN_PAGE || 'sample/csrf_check';
 
@@ -278,4 +278,4 @@ async function waitForMessage(
 
 - For generating mail-sending flows in IM-LogicDesigner, see the `im_sendTextMail` / `im_sendHtmlMail` task templates in the `jssp-im-logic-generator` skill
 - For mail sending from jobs, see the `jssp-im-job-generator` skill; for notification mail from workflows, see the `jssp-im-workflow-usage` skill
-- For secure token-related conventions, see `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md`
+- For secure token-related conventions, see `.claude/rules/jssp-security.md`

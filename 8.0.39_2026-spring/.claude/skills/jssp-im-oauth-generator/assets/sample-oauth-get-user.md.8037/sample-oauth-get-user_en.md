@@ -31,8 +31,8 @@ This is a rewrite of `src/main/jssp/src/sample_api/api/get_user.js` (CSRF secure
 Running `build-oauth.js` with [examples/sample_oauth.spec.json](../examples/sample_oauth.spec.json) as input outputs the above 4 files in batch.
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
-     {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/examples/sample_oauth.spec.json
+node .claude/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
+     .claude/skills/jssp-im-oauth-generator/examples/sample_oauth.spec.json
 ```
 
 The actual contents of the generated XMLs can be referred to here:

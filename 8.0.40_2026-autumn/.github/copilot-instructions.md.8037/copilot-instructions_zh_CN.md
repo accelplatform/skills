@@ -70,11 +70,11 @@
 
 ### 主要规范文件
 
-编码规范放置于 `{{AGENT_RULES}}/` 目录下。文件一览及内容请参考 `{{AGENT_RULES}}/README.md`。
+编码规范放置于 `.github/instructions/` 目录下。文件一览及内容请参考 `.github/instructions/README.md`。
 
 ### 主要技能集
 
-各类技能集放置于 `skills/` 目录下。技能一览及内容请参考 `skills/README.md`。
+各类技能集放置于 `.github/skills/` 目录下。技能一览及内容请参考 `.github/skills/README.md`。
 
 ### API 类型定义（d.ts）
 

@@ -23,7 +23,7 @@
 
 ### 验证结构
 
-- [ ] 符合 `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` 规范的验证函数组（`clearValidationError`、`showValidationError`、`createRequest`、`getValidationErrors`、`resetValidationError`、`validateCurrentStep`）按此顺序定义
+- [ ] 符合 `.claude/rules/jssp-presentation-page.md` 规范的验证函数组（`clearValidationError`、`showValidationError`、`createRequest`、`getValidationErrors`、`resetValidationError`、`validateCurrentStep`）按此顺序定义
 - [ ] 通过 `activeValidation` 标志实现实时再验证（文本输入使用 `input` 事件，选择框/日期使用 `change` 事件）
 
 ### 使用 imuiCalendar 时
@@ -50,7 +50,7 @@
   - 在标签 span 上附加 `id="fieldName-label"`（**不含冒号**；不附加类名）
   - 定义 `toggleRequiredMark(id, condition)` 函数，并在与显示控制相同的时机调用
   - 示例：`toggleRequiredMark('period-end-label', periodType === 'temporary')`
-  - id 命名规约的详情请参阅 `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md`「id 属性的命名规约」
+  - id 命名规约的详情请参阅 `.claude/rules/jssp-presentation-page.md`「id 属性的命名规约」
 
 ### 输入字段的宽度控制
 

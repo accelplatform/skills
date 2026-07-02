@@ -93,7 +93,7 @@ The body of CREATE TABLE (column definitions and constraints) must be added manu
 -- );
 ```
 
-Write the types and syntax appropriate for each DB dialect in the corresponding file. For type mapping, see `skills/jssp-page-generator/reference/ddl-type-mapping.md`.
+Write the types and syntax appropriate for each DB dialect in the corresponding file. For type mapping, see `.github/skills/jssp-page-generator/reference/ddl-type-mapping.md`.
 
 ### Skeleton Example for `<key>_sample-dml.sql` (consolidated, recommended)
 

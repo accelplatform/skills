@@ -17,7 +17,7 @@ Your role is to combine automated validation scripts with LLM review to comprehe
 
 ## Steps
 
-1. Run `node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <target path>` to surface issues detectable by the script.
+1. Run `node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js <target path>` to surface issues detectable by the script.
 2. Read the target files and use LLM review to check items the script cannot detect (naming rules, bind variables, error handling, structure, etc.).
 3. Compile and report all issues found.
 

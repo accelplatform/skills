@@ -24,7 +24,7 @@ description: 生成调用 intra-mart IM 通用主数据检索（imACMSearch）�
 
 ## 需参照的规约
 
-本技能生成嵌入画面的 HTML 片段（`imACMSearch` 调用）。本技能单独不生成 `.js`，因此应参照的规约集中于 HTML 系。全局视图请参阅 `{{AGENT_RULES}}/README.md`。
+本技能生成嵌入画面的 HTML 片段（`imACMSearch` 调用）。本技能单独不生成 `.js`，因此应参照的规约集中于 HTML 系。全局视图请参阅 `.claude/rules/README.md`。
 
 | 规约 | 处理方式 |
 |------|---------|
