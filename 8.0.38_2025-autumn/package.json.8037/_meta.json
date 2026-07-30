@@ -42,5 +42,46 @@
         "accelplatformVersion": "8.0.38"
       }
     }
+  ],
+  "messages": [
+    {
+      "condition": {
+        "and": [
+          {
+            "module": "im_activiti"
+          }, {
+            "locale": "ja" 
+          }
+        ]
+      },
+      "level": "warn",
+      "text": "IM-BPMを活用したスキルは開発中のものであり、近い将来内容が変更される可能性があります。"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "module": "im_activiti"
+          }, {
+            "locale": "en" 
+          }
+        ]
+      },
+      "level": "warn",
+      "text": "Skills leveraging IM-BPM are under development and may change in the near future."
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "module": "im_activiti"
+          }, {
+            "locale": "zh_CN" 
+          }
+        ]
+      },
+      "level": "warn",
+      "text": "利用IM-BPM的技能正在开发中，可能会在不久的将来发生变化。"
+    }
   ]
 }
