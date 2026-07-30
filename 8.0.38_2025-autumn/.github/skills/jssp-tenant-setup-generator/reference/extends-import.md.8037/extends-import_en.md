@@ -123,7 +123,7 @@ function doImport(tenantId) {
 | Check the return value `txResult.isSuccess()` | Determine transaction success/failure (required) |
 | Carry business exceptions out via a variable | Because `throw` inside the callback does not propagate outward |
 
-For details, also see `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` and `jssp-page-generator/reference/post-generation-verification.md` (step 3-7: checking the return value of Transaction.begin).
+For details, also see `.github/instructions/jssp-error-handling.instructions.md` and `jssp-page-generator/reference/post-generation-verification.md` (step 3-7: checking the return value of Transaction.begin).
 
 ## Specification in spec.json
 

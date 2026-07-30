@@ -14,7 +14,7 @@ description: "テスト規約（単体テストの実装方針）"
 - Use Jest on Rhino to perform unit tests on function containers (js) created with the script development model
 - Write using Jest-compatible APIs (`describe`, `it`, `expect`, `jest.fn()`, `jest.mock()`, etc.)
 - Since Rhino 1.7R4 (ES5 equivalent) is used, arrow functions, let/const, template literals, etc. cannot be used
-- Refer to `skills/jssp-jest-test/SKILL.md` for details
+- Refer to `.github/skills/jssp-jest-test/SKILL.md` for details
 
 ### Test File Placement
 
@@ -95,7 +95,7 @@ project-root/
 - However, if a browser is specified, follow that specification
 
 **baseURL**:
-- Must include a trailing slash (e.g., `http://localhost/imart/`)
+- Must include a trailing slash (e.g., `http://127.0.0.1/imart/`)
 
 **URLs in tests**:
 - Specify as relative paths from `baseURL` (e.g., `"product_stock"`)
@@ -165,7 +165,7 @@ Tests that involve navigation must **also verify the following**:
 | Page identifier element | Confirm that a screen-specific element such as `h1#page-title` is visible in the DOM |
 
 ```typescript
-// NG: Partial match only — passes even on http://localhost/equip/... (404)
+// NG: Partial match only — passes even on http://127.0.0.1/equip/... (404)
 await expect(page).toHaveURL(/equip\/equipment\/search/);
 
 // OK: URL with context path + title + page heading
@@ -174,7 +174,7 @@ await expect(page).toHaveTitle(/Equipment Search/);
 await expect(page.locator('h1#page-title')).toBeVisible();
 ```
 
-For Playwright tests, prefer the `expectNavigated()` helper defined in `skills/jssp-playwright-test/assets/test-helpers.md`.
+For Playwright tests, prefer the `expectNavigated()` helper defined in `.github/skills/jssp-playwright-test/assets/test-helpers.md`.
 
 ### Troubleshooting
 
@@ -194,7 +194,7 @@ When the behavior differs between layers, the root cause is at that boundary.
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| `page.goto: net::ERR_ABORTED` aborting the main page itself | intra-mart embeds `<base href='http://localhost/imart/'>`, so sub-resource URLs hard-code `localhost`. Chromium **implicitly bypasses the proxy for localhost/127.0.0.1**, so the container fails to reach the resources and the page aborts | Set `use.proxy.bypass` to `127.0.0.1,<-loopback>` in Playwright to disable the implicit bypass, and point `use.proxy.server` at the corporate proxy |
+| `page.goto: net::ERR_ABORTED` aborting the main page itself | intra-mart embeds `<base href='http://127.0.0.1/imart/'>`, so sub-resource URLs hard-code `127.0.0.1`. Chromium **implicitly bypasses the proxy for localhost/127.0.0.1**, so the container fails to reach the resources and the page aborts | Set `use.proxy.bypass` to `127.0.0.1,<-loopback>` in Playwright to disable the implicit bypass, and point `use.proxy.server` at the corporate proxy |
 | Direct TCP to host port 80 fails (`Connection refused` / timeout) | Firewall blocks direct access from the Docker subnet to the host's listening ports | Check via curl whether a path is reachable through the corporate proxy. If so, configure `proxy.server` to read from `HTTP_PROXY` |
 | `Executable doesn't exist at .../chrome-headless-shell` | Browser binary missing — first container start or after rebuild | Run `npx playwright install chromium`. For persistence, bake it into the Dockerfile (after `COPY package*.json`, `RUN npx playwright install --with-deps chromium`) |
 | `error while loading shared libraries: libglib-2.0.so.0` | Chromium runtime native deps not installed | Add `libnss3 libnspr4 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libxkbcommon0 libpango-1.0-0 libcairo2 libasound2 libglib2.0-0` to the Dockerfile. Cannot use `sudo apt` if the container runs with `no-new-privileges`, so the Dockerfile path is required |
@@ -210,7 +210,7 @@ const proxyBypass = process.env.PW_PROXY_BYPASS || "127.0.0.1";
 
 export default defineConfig({
   use: {
-    baseURL: "http://localhost/imart/",
+    baseURL: "http://127.0.0.1/imart/",
     ...(proxyServer ? { proxy: { server: proxyServer, bypass: proxyBypass } } : {}),
   },
 });

@@ -17,7 +17,7 @@ paths:
 - 使用 Jest on Rhino，对使用脚本开发模型创建的函数容器（js）进行单元测试
 - 使用与 Jest 兼容的 API（`describe`、`it`、`expect`、`jest.fn()`、`jest.mock()` 等）编写
 - 由于在 Rhino 1.7R4（相当于 ES5）上运行，不能使用箭头函数、let/const、模板字面量等
-- 详细内容请参考 `skills/jssp-jest-test/SKILL.md`
+- 详细内容请参考 `.claude/skills/jssp-jest-test/SKILL.md`
 
 ### 测试文件的放置
 
@@ -98,7 +98,7 @@ project-root/
 - 但若指定了浏览器，则以指定为准
 
 **baseURL**：
-- 必须在末尾加斜杠（例如：`http://localhost/imart/`）
+- 必须在末尾加斜杠（例如：`http://127.0.0.1/imart/`）
 
 **测试中的 URL**：
 - 以 `baseURL` 的相对路径指定（例如：`"product_stock"`）
@@ -168,7 +168,7 @@ project-root/
 | 页面识别元素 | 确认该画面特有的元素（如 `h1#page-title`）在 DOM 中显示 |
 
 ```typescript
-// NG：仅部分匹配 —— http://localhost/equip/... (404) 也会匹配
+// NG：仅部分匹配 —— http://127.0.0.1/equip/... (404) 也会匹配
 await expect(page).toHaveURL(/equip\/equipment\/search/);
 
 // OK：含上下文路径的 URL + 标题 + 页面标题
@@ -177,7 +177,7 @@ await expect(page).toHaveTitle(/备品检索/);
 await expect(page.locator('h1#page-title')).toBeVisible();
 ```
 
-在 Playwright 测试中推荐使用 `skills/jssp-playwright-test/assets/test-helpers.md` 中的 `expectNavigated()` 辅助函数。
+在 Playwright 测试中推荐使用 `.claude/skills/jssp-playwright-test/assets/test-helpers.md` 中的 `expectNavigated()` 辅助函数。
 
 ### 故障排查
 
@@ -197,7 +197,7 @@ await expect(page.locator('h1#page-title')).toBeVisible();
 
 | 症状 | 原因 | 对策 |
 |------|------|------|
-| `page.goto: net::ERR_ABORTED` 导致主页面本身中断 | intra-mart 嵌入 `<base href='http://localhost/imart/'>`，使子资源 URL 全部固定为 `localhost`。Chromium **隐式地为 localhost/127.0.0.1 绕过代理**，因此容器内无法到达资源并连锁失败 | 在 Playwright 的 `use.proxy.bypass` 中指定 `127.0.0.1,<-loopback>` 以解除隐式绕过，并将 `use.proxy.server` 指向企业代理 |
+| `page.goto: net::ERR_ABORTED` 导致主页面本身中断 | intra-mart 嵌入 `<base href='http://127.0.0.1/imart/'>`，使子资源 URL 全部固定为 `127.0.0.1`。Chromium **隐式地为 localhost/127.0.0.1 绕过代理**，因此容器内无法到达资源并连锁失败 | 在 Playwright 的 `use.proxy.bypass` 中指定 `127.0.0.1,<-loopback>` 以解除隐式绕过，并将 `use.proxy.server` 指向企业代理 |
 | 直接 TCP 无法到达主机 80 端口（`Connection refused` / timeout） | 容器所在 Docker 子网到主机监听端口的直接访问被 Firewall 阻挡 | 用 curl 确认是否存在经企业代理可达的路径。若有，将 `proxy.server` 配置为从 `HTTP_PROXY` 自动获取 |
 | `Executable doesn't exist at .../chrome-headless-shell` | 容器初次启动或 rebuild 后浏览器二进制未取得 | 执行 `npx playwright install chromium`。如需持久化，写入 Dockerfile（`COPY package*.json` 后 `RUN npx playwright install --with-deps chromium`） |
 | `error while loading shared libraries: libglib-2.0.so.0` | Chromium 运行时缺少 native deps | 在 Dockerfile 中 apt-get install `libnss3 libnspr4 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libxkbcommon0 libpango-1.0-0 libcairo2 libasound2 libglib2.0-0`。若容器使用 `no-new-privileges` 则 `sudo apt` 不可用，必须由 Dockerfile 处理 |
@@ -213,7 +213,7 @@ const proxyBypass = process.env.PW_PROXY_BYPASS || "127.0.0.1";
 
 export default defineConfig({
   use: {
-    baseURL: "http://localhost/imart/",
+    baseURL: "http://127.0.0.1/imart/",
     ...(proxyServer ? { proxy: { server: proxyServer, bypass: proxyBypass } } : {}),
   },
 });

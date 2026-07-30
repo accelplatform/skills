@@ -26,31 +26,5 @@
       "from": "validate-xsd_zh_CN.md",
       "to": "validate-xsd.md"
     }
-  ],
-  "replacements": [
-    {
-      "type": "text",
-      "target": "{{AGENT_ROOT}}",
-      "values": [
-        {
-          "condition": {
-            "agent": "claude-code"
-          },
-          "value": ".claude"
-        },
-        {
-          "condition": {
-            "agent": "github-copilot"
-          },
-          "value": ".github"
-        },
-        {
-          "condition": {
-            "agent": "codex"
-          },
-          "value": ".codex"
-        }
-      ]
-    }
   ]
 }

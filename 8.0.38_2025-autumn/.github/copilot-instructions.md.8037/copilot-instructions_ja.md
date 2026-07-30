@@ -70,11 +70,11 @@ JSSP ファイル（`.js` / `.html`）を**新規生成・編集した場合**�
 
 ### 主要な規約ファイル
 
-コーディングに関する規約は `{{AGENT_RULES}}/` 配下に配置している。ファイル一覧と内容は `{{AGENT_RULES}}/README.md` を参照すること。
+コーディングに関する規約は `.github/instructions/` 配下に配置している。ファイル一覧と内容は `.github/instructions/README.md` を参照すること。
 
 ### 主要なスキルセット
 
-各種スキルセットは `skills/` 配下に配置している。スキル一覧と内容は `skills/README.md` を参照すること。
+各種スキルセットは `.github/skills/` 配下に配置している。スキル一覧と内容は `.github/skills/README.md` を参照すること。
 
 ### API 型定義（d.ts）
 

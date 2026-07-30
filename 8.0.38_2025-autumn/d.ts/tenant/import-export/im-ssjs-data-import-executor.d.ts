@@ -35,5 +35,5 @@ declare class DataImportExecutor {
    * @param option インポートオプション
    * @return data にインポート結果を格納した ResultObject
    */
-  importData(importerId: string, stream: ByteReader, option: { [key: string]: string }): ResultObject<DataImportResult>;
+  importData(importerId: string, stream: ByteReader, option: { [key: string]: string | number | boolean | Date }): ResultObject<DataImportResult>;
 }

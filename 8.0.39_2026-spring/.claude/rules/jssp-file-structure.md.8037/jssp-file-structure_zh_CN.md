@@ -76,8 +76,10 @@ src/
 | 调用途径 | 放置・命名规约 | 负责技能 |
 |---------|--------------|---------|
 | IM-Workflow 引擎（XML 的 `scriptPath`） | `{功能名}/workflow/{画面种类}/index.js`（以目录区分画面种类，文件名统一为 `index`） | `jssp-im-workflow-usage` |
+| 门户功能（`b_m_portlet_info.path`） | `{功能名}/view/index.js`（按本页 `view/{view}.js` 模式放置，但不创建路由配置・路由授权） | `jssp-page-generator`（`assets/simple-portlet.md`） |
+| IM-ContentsSearch（`<template-path>`） | `im_contents_search/template/{功能名}.js` / `.html`（只要符合脚本开发模型的结构即可，无文件命名规约；不创建路由配置・路由授权） | `jssp-im-contents-search-generator` |
 
-这些例外画面由内容定义 XML 或平台功能直接调用，因此无需 URL 路由，一个功能内可以存在多个画面（apply / approve / detail 等）。
+这些例外画面由内容定义 XML 或平台功能直接调用，因此无需 URL 路由（IM-Workflow 情形下一个功能内还可以存在多个画面，如 apply / approve / detail 等）。
 新规生成时请参阅各负责技能的 SKILL.md。
 
 ### .html 文件的必要性

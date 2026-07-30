@@ -76,8 +76,10 @@ src/
 | 呼び出し経路 | 配置・命名規約 | 担当スキル |
 |------------|--------------|-----------|
 | IM-Workflow エンジン経由（XML の `scriptPath`） | `{機能名}/workflow/{画面種別}/index.js`（ディレクトリで画面種別を区別、ファイル名は `index` に統一） | `jssp-im-workflow-usage` |
+| ポータル機能経由（`b_m_portlet_info.path`） | `{機能名}/view/index.js`（本ページの `view/{view}.js` パターンで配置するが、ルーティング設定・ルーティング認可は作成しない） | `jssp-page-generator`（`assets/simple-portlet.md`） |
+| IM-ContentsSearch 経由（`<template-path>`） | `im_contents_search/template/{機能名}.js` / `.html`（スクリプト開発モデルの構成に準ずればファイル名規約なし。ルーティング設定・ルーティング認可は作成しない） | `jssp-im-contents-search-generator` |
 
-これらの例外画面は、呼び出し元がコンテンツ定義 XML やプラットフォーム機能経由のため、URL ルーティング不要・1 機能内に複数画面（apply / approve / detail 等）を持つ構造になる。
+これらの例外画面は、呼び出し元がコンテンツ定義 XML やプラットフォーム機能経由のため URL ルーティングが不要になる（IM-Workflow の場合はさらに 1 機能内に複数画面（apply / approve / detail 等）を持つ構造になる）。
 新規生成時は各担当スキルの SKILL.md を参照すること。
 
 ### .html ファイルの必須化

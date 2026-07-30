@@ -382,7 +382,6 @@ document.getElementById('search-result-count').textContent =
 
 ### 页面结构
 
-- [ ] 各页面**未添加** `<header>` / `<nav>` / `<footer>`（由平台提供）
 - [ ] 根结构是否为 `<div id="container"><div class="imds-container"><main>...</main></div></div>`
 - [ ] 页面中只有一个 `<main>`，且未同时添加 `role="main"`
 - [ ] 标题是否按 `h1` → `h2` → `h3` 的顺序不跳级
@@ -435,6 +434,6 @@ document.getElementById('search-result-count').textContent =
 
 ## 相关
 
-- `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` - 展示页面的基本结构
-- `skills/jssp-localize-support/` 相关 - 多语言化（朗读语言）
-- `skills/jssp-imds-theme/reference/` - imds 各组件的无障碍支持
+- `.claude/rules/jssp-presentation-page.md` - 展示页面的基本结构
+- `.claude/skills/jssp-localize-support/` 相关 - 多语言化（朗读语言）
+- `.claude/skills/jssp-imds-theme/reference/` - imds 各组件的无障碍支持

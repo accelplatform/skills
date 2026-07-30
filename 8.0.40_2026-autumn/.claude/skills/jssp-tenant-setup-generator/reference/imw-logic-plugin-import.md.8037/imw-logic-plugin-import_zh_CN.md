@@ -7,7 +7,7 @@
 ## 使用场景
 
 - 已在 IM-LogicDesigner 中创建用于处理对象插件的流程，希望在租户环境安装时自动注册
-- 按照 `jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md` 生成流程定义之后
+- 按照 `.claude/skills/jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md` 生成流程定义之后
 
 ---
 

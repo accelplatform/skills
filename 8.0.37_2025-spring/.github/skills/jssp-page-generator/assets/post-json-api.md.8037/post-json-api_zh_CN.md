@@ -69,7 +69,7 @@ src/main/conf/routing-jssp-config/
 
 - 成功时：`application/json` 返回 `{error:false, data:{...}}`
 - 失败时：`application/json` 返回 `{error:true, errorMessage:"[代码] 消息"}`，并附带 HTTP 4xx/5xx
-- 错误代码命名遵循 `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md`
+- 错误代码命名遵循 `.github/instructions/jssp-error-handling.instructions.md`
 
 ### `ApiError` 类型的处理
 
@@ -433,9 +433,9 @@ function init(request) {
       font-size: 0.875em;
     }
   </style>
+  <!-- 将 $data 通过 IIFE 作用域化，而不放入全局作用域 -->
   <script>
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
       const POST_JSON_API_PATH = 'sample_api/api/post_json';
       const SAMPLE_REQUEST = {
@@ -546,6 +546,7 @@ function init(request) {
         imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -684,13 +685,13 @@ POST 视为更新操作，要求 `X-Intramart-Secure-Token`。
 
 ### 不使用 `ApiError` typedef（再次提示）
 
-按文件单位声明 `@typedef {Error & {code, httpStatus}} ApiError` 会引发 `tsc` 的 `TS2300 Duplicate identifier`。**用内联 `@type` 注解进行类型转换是本模板的标准形式**。详情参见 `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md`。
+按文件单位声明 `@typedef {Error & {code, httpStatus}} ApiError` 会引发 `tsc` 的 `TS2300 Duplicate identifier`。**用内联 `@type` 注解进行类型转换是本模板的标准形式**。详情参见 `.github/instructions/jssp-error-handling.instructions.md`。
 
 ## 相关
 
 - `reference/argument-request.md` - `request.getMessageBodyAsString()` 的规格
 - `reference/api-secure-token-manager.md` - CSRF 令牌的校验
 - `reference/secure-token-check.md` - 客户端与服务端的一连串校验模式
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - 错误代码命名规则与 API 错误响应格式
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - 输入验证的整体方针
+- `.github/instructions/jssp-error-handling.instructions.md` - 错误代码命名规则与 API 错误响应格式
+- `.github/instructions/jssp-security.instructions.md` - 输入验证的整体方针
 - `assets/file-upload-download-api.md` - multipart/form-data（文件）的场合

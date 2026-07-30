@@ -107,11 +107,7 @@ function init(request) {
 </title>
 
 <script>
-  // For bound variables only, do not write value="$data" but write value=$data without quotes
-  // For non-bound variables, do not write type='string' but always use double quotes: type="string"
-  // This is due to the unique specification of the imart tag
-  const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+(function($data) {
   document.addEventListener('DOMContentLoaded', () => {
     // Define functions inside DOMContentLoaded to prevent direct external execution
 
@@ -126,6 +122,10 @@ function init(request) {
       initializeView($data.result);
     }
   });
+// For bound variables only, do not write value="$data" but write value=$data without quotes
+// For non-bound variables, do not write type='string' but always use double quotes: type="string"
+// This is due to the unique specification of the imart tag
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 </script>
 ```
 

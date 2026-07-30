@@ -173,11 +173,9 @@ function transferErrorPage(code, message) {
       gap: 3em;
     }
   </style>
-  <!-- Presentation page scripts -->
+  <!-- Presentation page scripts (scope $data via an IIFE instead of leaving it in the global scope) -->
   <script>
-    // Bind variable for presentation page integration
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
       // Flag to always run validation check
       let activeValidation = false;
@@ -508,6 +506,7 @@ function transferErrorPage(code, message) {
         initializeView($data.result);
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

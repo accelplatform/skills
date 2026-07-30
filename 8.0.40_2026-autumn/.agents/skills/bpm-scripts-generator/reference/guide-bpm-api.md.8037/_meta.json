@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "module": "im_activiti"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "guide-bpm-api_ja.md",
+      "to": "guide-bpm-api.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "guide-bpm-api_en.md",
+      "to": "guide-bpm-api.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "guide-bpm-api_zh_CN.md",
+      "to": "guide-bpm-api.md"
+    }
+  ]  
+}

@@ -203,10 +203,10 @@ Add `has-content-only` to `th` / `td` to remove cell padding.
 ### isDetailsButton (details button column)
 
 Add a details button column.
-Add `has-content-only` to `th` / `td`.
+The `th` contains only header text, so add `has-text-centered` to center it. The `td` contains only a button, so add `has-content-only`.
 
 ```html
-<th class="has-content-only"><span>Details</span></th>
+<th class="has-text-centered"><span>Details</span></th>
 <!-- Each row in tbody -->
 <td class="has-content-only">
   <button type="button" class="imds-button is-ghost is-small">
@@ -276,9 +276,10 @@ Add a color class to `tr` or `td`. Can be combined with `is-active`.
 - Labels should basically be left-aligned
 - However, the following cases use center alignment
 
-  **Center align**: Specify `has-text-right` class on `th`
+  **Center align**: Specify `has-text-centered` class on `th`
   - When displaying action buttons for the table
   - When displaying status icons
+  - When displaying header text only, such as "Edit" or "Details" (do not use `has-content-only` here; `has-content-only` is only for a `th` that has no header text and contains only a component such as a checkbox)
 
 ### tbody
 
@@ -304,4 +305,5 @@ Add a color class to `tr` or `td`. Can be combined with `is-active`.
 - Apply a background color class (such as `is-cyan`) to fixed column `td` elements to prevent the background from becoming transparent on scroll
 - Implement sorting with JavaScript (icon switching and data reordering)
 - Use `has-content-only` when cell padding is not needed for buttons, checkboxes, etc.
+- Do not add `has-content-only` to a `th` that has header text (e.g. `<span>Edit</span>`). Use `has-text-centered` if center alignment is desired. `has-content-only` is only for a `th` that itself contains just a component such as a checkbox, with no header text
 - Multiple variations can be combined (e.g. `is-sticky is-hoverable is-stripe`)

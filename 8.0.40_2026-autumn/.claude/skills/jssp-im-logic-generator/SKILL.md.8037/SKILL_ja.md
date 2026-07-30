@@ -163,7 +163,7 @@ jssp-im-logic-generator/
 ### 3. spec を一時ファイルに書き出して build-flow.js を実行
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/build-flow.js \
+node .claude/skills/jssp-im-logic-generator/scripts/build-flow.js \
      /tmp/<flowId>.spec.json \
      --zip
 ```
@@ -262,7 +262,7 @@ fetch('logic/api/sample/ajax/execute', {
 build-flow.js の出力を自動検証する。**生成後は必ず実行すること。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
+node .claude/skills/jssp-im-logic-generator/scripts/validate-flow.js \
      <flow_definition.json または .zip>
 ```
 

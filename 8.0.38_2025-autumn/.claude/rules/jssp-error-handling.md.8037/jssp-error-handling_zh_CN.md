@@ -180,8 +180,7 @@ REST-API 返回的 JSON 响应采用以下两种格式之一。
 
 ```html
 <script>
-  const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+(function($data) {
   document.addEventListener('DOMContentLoaded', function() {
     if ($data.error.code) {
       imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
@@ -193,6 +192,7 @@ REST-API 返回的 JSON 响应采用以下两种格式之一。
   function renderPage(result) {
     // 画面渲染处理
   }
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 </script>
 ```
 

@@ -382,7 +382,6 @@ document.getElementById('search-result-count').textContent =
 
 ### ページ構造
 
-- [ ] 各画面に `<header>` / `<nav>` / `<footer>` を **追加していない**（プラットフォームが提供するため）
 - [ ] ルートが `<div id="container"><div class="imds-container"><main>...</main></div></div>` の構造になっているか
 - [ ] `<main>` がページに 1 つだけ、かつ `role="main"` を併記していないか
 - [ ] 見出しが `h1` → `h2` → `h3` の順で階層を飛ばしていないか
@@ -435,6 +434,6 @@ document.getElementById('search-result-count').textContent =
 
 ## 関連
 
-- `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` - プレゼンテーションページの基本構造
-- `skills/jssp-localize-support/` 関連 - 多言語化（読み上げ言語）
-- `skills/jssp-imds-theme/reference/` - imds コンポーネント別のアクセシビリティ対応
+- `.claude/rules/jssp-presentation-page.md` - プレゼンテーションページの基本構造
+- `.claude/skills/jssp-localize-support/` 関連 - 多言語化（読み上げ言語）
+- `.claude/skills/jssp-imds-theme/reference/` - imds コンポーネント別のアクセシビリティ対応

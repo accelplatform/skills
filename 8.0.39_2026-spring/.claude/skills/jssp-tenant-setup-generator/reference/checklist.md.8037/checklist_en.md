@@ -63,7 +63,7 @@ After running build-setup-import.js, verify the following items.
 ## IM-Workflow Import (when `workflowImport` is specified)
 
 - [ ] The original WF XML is encoded in **UTF-16** (`<?xml version="1.0" encoding="UTF-16"?>`)
-- [ ] The sections directly under `<data>` in the WF XML (`<contents>` / `<route>` / `<flow>` / `<matter_property>` / `<rule>`) are written with **2-space indentation** (a prerequisite of `extractTopLevelSection`)
+- [ ] The sections directly under `<data>` in the WF XML (`<contents>` / `<route>` / `<flow>` / `<matter_property>` / `<rule>`) are written with **2-space indentation** (a prerequisite of `extractTopLevelSections`). Even when a tag such as `<rule>` repeats multiple times, `extractTopLevelSections` returns every block as an array, so no special handling is needed
 - [ ] `import-<artifactId>-config-<N>.xml` includes an `<extends-import-class>` line pointing to `<key>_workflow_import.js` inside `<extends-import>` (two parallel lines when combined with `extendsImport`)
 - [ ] The target environment is **8.0.37 (2025 Spring) or later** (a requirement of `DataImportExecutor` / `SystemStorage` / `TenantInfoManager`)
 - [ ] After running tenant environment setup, the `<key>.workflow_import` logger outputs "workflow import completed."

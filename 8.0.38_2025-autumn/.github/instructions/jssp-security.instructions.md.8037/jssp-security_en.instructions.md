@@ -92,8 +92,10 @@ let result = db.select(sql, [status, departmentCd]);
 
 ```html
 <script type="text/javascript">
-// JSON embed: set both escapeXml/escapeJs to false
-const $userData = <imart type="string" value=$userData escapeXml="false" escapeJs="false" />;
+// JSON embed: set both escapeXml/escapeJs to false. Scope $userData as an IIFE argument instead of a global variable
+(function($userData) {
+  // ...
+})(<imart type="string" value=$userData escapeXml="false" escapeJs="false" />);
 
 // String literal: escapeXml=false, escapeJs=true
 let value = '<imart type="string" value=$myValue escapeXml="false" escapeJs="true"></imart>';
@@ -104,7 +106,7 @@ let value = '<imart type="string" value=$myValue escapeXml="false" escapeJs="tru
 
 | Usage | `escapeXml` | `escapeJs` | Reason |
 |-------|:-----------:|:----------:|--------|
-| JSON embed (`const $data = ...`) | `false` | `false` | The entire JSON is output as-is, so neither is needed |
+| JSON embed (passed as an IIFE argument) | `false` | `false` | The entire JSON is output as-is, so neither is needed |
 | JS string literal (`let x = '...'`) | `false` | **`true`** | Escaping of JS special characters such as quotes is required |
 
 **Note**: When specifying `escapeXml="false"` or `escapeJs="false"`, always verify that the data comes from a trusted source.

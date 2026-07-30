@@ -379,8 +379,6 @@ function transferErrorPage(code, message) {
 <imart type="head">
   <!-- 标题 -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
-  <!-- 用于展示页面联动的绑定变量 -->
-  <script>const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;</script>
   <!-- 样式 -->
   <style>
     /* ===== 日历导航 ===== */
@@ -514,8 +512,9 @@ function transferErrorPage(code, message) {
       flex-shrink: 0;
     }
   </style>
-  <!-- 客户端脚本 -->
+  <!-- 客户端脚本（将 $data 通过 IIFE 作用域化，而不放入全局作用域） -->
   <script>
+  (function($data) {
   document.addEventListener('DOMContentLoaded', () => {
 
     if ($data.error && $data.error.code) {
@@ -707,6 +706,7 @@ function transferErrorPage(code, message) {
     renderLegend(orderedWeekDays);
     setupNavigation(data);
   });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

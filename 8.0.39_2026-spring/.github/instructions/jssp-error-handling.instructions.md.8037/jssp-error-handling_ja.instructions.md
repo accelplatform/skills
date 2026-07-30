@@ -171,7 +171,7 @@ JSON を返す REST-API では、エラー内容に応じて以下のステー�
 
 更新系の API（POST/PUT/DELETE）では、CSRF 対策として **セキュアトークンの検証** を必ず実施する。
 
-- クライアントはリクエストヘッダ `X-Intramart-Secure-Token` にトークンを付与して送信する（→ `jssp-presentation-page.instructions.md`）
+- クライアントはリクエストヘッダ `X-Intramart-Secure-Token` にトークンを付与して送信する（→ `jssp-presentation-page.md`）
 - サーバ側は `SecureTokenManager.verify(token)` で検証し、失敗時は **400** で `{error: true, errorMessage}` を返却する
 - トークン未付与・検証失敗・有効期限切れはすべて 400 として扱う
 - 参照系（GET）でも、機密データを返す場合は同様に検証する
@@ -180,8 +180,7 @@ JSON を返す REST-API では、エラー内容に応じて以下のステー�
 
 ```html
 <script>
-  const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+(function($data) {
   document.addEventListener('DOMContentLoaded', function() {
     if ($data.error.code) {
       imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
@@ -193,6 +192,7 @@ JSON を返す REST-API では、エラー内容に応じて以下のステー�
   function renderPage(result) {
     // 画面の描画処理
   }
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 </script>
 ```
 

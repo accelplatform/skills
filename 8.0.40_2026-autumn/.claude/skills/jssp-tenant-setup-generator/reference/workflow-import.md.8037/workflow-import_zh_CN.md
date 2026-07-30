@@ -48,10 +48,12 @@ doImport(tenantId)
         ├ 通过 SystemStorage 以 UTF-16 读取 XML
         └ for each dataType ('matter_property' → 'rule' → 'contents' → 'route' → 'flow'):
             importSingleSection()
-              ├ 通过 extractTopLevelSection() 切出相应区块
-              ├ 以 UTF-16 写出为临时 XML
-              ├ 通过 executeImport() 调用 DataImportExecutor.importData()
-              └ 删除临时文件（finally）
+              ├ 通过 extractTopLevelSections() 将该标签的所有区块切出为数组
+              └ for each block:
+                  importSectionBody()
+                    ├ 以 UTF-16 写出为临时 XML
+                    ├ 通过 executeImport() 调用 DataImportExecutor.importData()
+                    └ 删除临时文件（finally）
 ```
 
 ### dataType 的取值
@@ -70,13 +72,15 @@ doImport(tenantId)
 
 ### XML 的拆分
 
-`WorkflowXmlImporter` 要求**每次 `importData` 调用所传入的 XML 必须以与 `dataType` 对应的单一区块为根元素**。由于原导入 XML 在 `<data>` 直下汇总存放了多个区块，需要使用 `extractTopLevelSection` 切出相应区块，并在前面附加 `<?xml version="1.0" encoding="UTF-16"?>`，重组为临时 XML 后再传入。
+`WorkflowXmlImporter` 要求**每次 `importData` 调用所传入的 XML 必须以与 `dataType` 对应的单一区块为根元素**。由于原导入 XML 在 `<data>` 直下汇总存放了多个区块，需要使用 `extractTopLevelSections` 切出相应区块，并在前面附加 `<?xml version="1.0" encoding="UTF-16"?>`，重组为临时 XML 后再传入。
 
-`extractTopLevelSection` 仅以**行首 2 空格缩进**的标签作为顶层来拾取，因此不会误匹配嵌套的同名标签（例如 `<contents>` 内部的 `<contents>`）。当原 XML 的缩进不为 2 空格时需要调整。
+`<contents>` / `<route>` / `<flow>` / `<matter_property>` 通常只有 1 个区块，但 `<rule>`（分支规则）为了对应多种申请模式，经常在 `<data>` 直下连续排列多个同名标签。`extractTopLevelSections` 会扫描该标签的所有出现位置，**以数组形式返回全部区块**（每找到一个就推进搜索位置继续循环，而非单次 `indexOf` 查找）。`importSingleSection` 接收该数组后，通过 `importSectionBody` 对每个区块分别生成临时 XML 并调用一次 `importData`，因此无论同名标签并列多少个都不会遗漏。
+
+`extractTopLevelSections` 仅以**行首 2 空格缩进**的标签作为顶层来拾取，因此不会误匹配嵌套的同名标签（例如 `<contents>` 内部的 `<contents>`）。当原 XML 的缩进不为 2 空格时需要调整。
 
 ### 临时文件
 
-临时 XML 在 **PublicStorage** 下以 `tmp/<key>_<tenantId>_<dataType>.xml` 路径创建，并在 `finally` 中务必删除。通过在路径中包含租户 ID、dataType 和 key，可避免并行执行或多租户加载时的冲突。
+临时 XML 在 **PublicStorage** 下以 `tmp/<key>_<tenantId>_<dataType>_<index>.xml` 路径创建，并在 `finally` 中务必删除。除租户 ID、dataType 和 key 外，还包含用于应对同名标签并列情况的连号 `index`（即区块在 `extractTopLevelSections` 返回数组中的位置），可避免并行执行或多租户加载时的冲突。
 
 写入前会调用 `ensureTemporaryDirectory()`，当 PublicStorage 的 `tmp/` 目录不存在时通过 `makeDirectories()` 进行创建。由于 SystemStorage 在未创建的目录上写入会失败，因此采用 PublicStorage，并额外保证 `tmp/` 的预先创建。
 

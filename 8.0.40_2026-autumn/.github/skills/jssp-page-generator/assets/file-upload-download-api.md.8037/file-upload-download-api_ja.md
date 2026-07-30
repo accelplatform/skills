@@ -506,9 +506,9 @@ function init(request) {
       margin-top: 0.5em;
     }
   </style>
+  <!-- $data をグローバル領域に置かず IIFE でスコープ化する -->
   <script>
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
       const UPLOAD_API_PATH = 'sample_api/api/upload_file';
       const DOWNLOAD_API_PATH = 'sample_api/api/download_file';
@@ -645,6 +645,7 @@ function init(request) {
         imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -790,5 +791,5 @@ GET であってもファイル取得は機密データ操作とみなし、`X-I
 - `reference/api-storage.md` - PublicStorage の操作全般
 - `reference/api-secure-token-manager.md` - CSRF トークンの検証
 - `reference/argument-request.md` - Request / RequestParameter のメソッド一覧
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - エラーコード命名規則と API エラーレスポンス形式
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - 入力検証・パストラバーサル対策の全体方針
+- `.github/instructions/jssp-error-handling.instructions.md` - エラーコード命名規則と API エラーレスポンス形式
+- `.github/instructions/jssp-security.instructions.md` - 入力検証・パストラバーサル対策の全体方針

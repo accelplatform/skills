@@ -17,7 +17,7 @@ paths:
 - Jest on Rhino を使用し、スクリプト開発モデルで作成したファンクションコンテナ（js）の単体テストを実施する
 - Jest 互換の API（`describe`, `it`, `expect`, `jest.fn()`, `jest.mock()` 等）で記述する
 - Rhino 1.7R4（ES5 相当）で動作するため、arrow function, let/const, テンプレートリテラル等は使用不可
-- 詳細は `skills/jssp-jest-test/SKILL.md` を参照すること
+- 詳細は `.claude/skills/jssp-jest-test/SKILL.md` を参照すること
 
 ### テストファイルの配置
 
@@ -98,7 +98,7 @@ project-root/
 - ただし、ブラウザが指定されている場合はそれに従う
 
 **baseURL**:
-- 末尾にスラッシュを付けること（例: `http://localhost/imart/`）
+- 末尾にスラッシュを付けること（例: `http://127.0.0.1/imart/`）
 
 **テスト内のURL**:
 - `baseURL` からの相対パスで指定する（例: `"product_stock"`）
@@ -168,7 +168,7 @@ project-root/
 | ページ識別要素 | `h1#page-title` 等、その画面固有の要素が DOM 上に表示されることを確認する |
 
 ```typescript
-// NG: 部分一致だけ — http://localhost/equip/... (404) でもマッチしてしまう
+// NG: 部分一致だけ — http://127.0.0.1/equip/... (404) でもマッチしてしまう
 await expect(page).toHaveURL(/equip\/equipment\/search/);
 
 // OK: コンテキストパス込み + タイトル + ページ見出し
@@ -177,7 +177,7 @@ await expect(page).toHaveTitle(/備品検索/);
 await expect(page.locator('h1#page-title')).toBeVisible();
 ```
 
-Playwright テストでは `skills/jssp-playwright-test/assets/test-helpers.md` の `expectNavigated()` ヘルパー使用を推奨する。
+Playwright テストでは `.claude/skills/jssp-playwright-test/assets/test-helpers.md` の `expectNavigated()` ヘルパー使用を推奨する。
 
 ### トラブルシューティング
 
@@ -197,7 +197,7 @@ intra-mart サーバへの E2E テストが疎通レベルで失敗する場合�
 
 | 症状 | 原因 | 対処 |
 |------|------|------|
-| `page.goto: net::ERR_ABORTED` でメインページ自体が中断 | intra-mart が `<base href='http://localhost/imart/'>` を埋め込み、サブリソースの URL が `localhost` 固定になる。Chromium は **localhost/127.0.0.1 を暗黙でプロキシバイパスする**ため、コンテナの localhost に届かず連鎖失敗 | Playwright の `use.proxy.bypass` に `127.0.0.1,<-loopback>` を指定して暗黙バイパスを解除し、`use.proxy.server` をコーポレートプロキシに向ける |
+| `page.goto: net::ERR_ABORTED` でメインページ自体が中断 | intra-mart が `<base href='http://127.0.0.1/imart/'>` を埋め込み、サブリソースの URL が `127.0.0.1` 固定になる。Chromium は **localhost/127.0.0.1 を暗黙でプロキシバイパスする**ため、コンテナの 127.0.0.1 に届かず連鎖失敗 | Playwright の `use.proxy.bypass` に `127.0.0.1,<-loopback>` を指定して暗黙バイパスを解除し、`use.proxy.server` をコーポレートプロキシに向ける |
 | ホストの 80 番に直接 TCP が届かない（`Connection refused` / timeout） | コンテナの Docker サブネットからホストの listen ポートへの直接アクセスが Firewall でブロックされている | コーポレートプロキシ経由で到達できる経路があるか curl で確認する。ある場合は `proxy.server` を `HTTP_PROXY` から自動取得する設定にする |
 | `Executable doesn't exist at .../chrome-headless-shell` | コンテナ初回起動や rebuild 後でブラウザバイナリ未取得 | `npx playwright install chromium` を実行。永続化するなら Dockerfile に組み込む（`COPY package*.json` 後 `RUN npx playwright install --with-deps chromium`） |
 | `error while loading shared libraries: libglib-2.0.so.0` | Chromium 実行時の native deps 不足 | Dockerfile に `libnss3 libnspr4 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libxkbcommon0 libpango-1.0-0 libcairo2 libasound2 libglib2.0-0` を apt-get install する。`no-new-privileges` でコンテナを動かしている場合 `sudo apt` は使えないので Dockerfile で対応 |
@@ -213,7 +213,7 @@ const proxyBypass = process.env.PW_PROXY_BYPASS || "127.0.0.1";
 
 export default defineConfig({
   use: {
-    baseURL: "http://localhost/imart/",
+    baseURL: "http://127.0.0.1/imart/",
     ...(proxyServer ? { proxy: { server: proxyServer, bypass: proxyBypass } } : {}),
   },
 });

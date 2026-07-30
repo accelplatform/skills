@@ -155,8 +155,6 @@ function transferErrorPage(code, message) {
 <imart type="head">
   <!-- 标题 -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
-  <!-- 用于呈现页面联动的绑定变量 -->
-  <script>const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;</script>
   <!-- 呈现页面自定义样式 -->
   <style>
     /* 表格上方区域使用flex布局 */
@@ -183,8 +181,9 @@ function transferErrorPage(code, message) {
       width: 4em;
     }
   </style>
-  <!-- 呈现页面脚本 -->
+  <!-- 呈现页面脚本（将 $data 通过 IIFE 作用域化，而不放入全局作用域） -->
   <script>
+  (function($data) {
   document.addEventListener('DOMContentLoaded', () => {
     // 常量
     const STORAGE_KEY = 'product_stock_data';
@@ -384,6 +383,7 @@ function transferErrorPage(code, message) {
       renderTable();
     }
   });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -421,7 +421,7 @@ function transferErrorPage(code, message) {
               <table>
                 <thead>
                   <tr>
-                    <th class="col-edit has-content-only"><span>编辑</span></th>
+                    <th class="col-edit has-text-centered"><span>编辑</span></th>
                     <th><span>商品代码</span></th>
                     <th><span>商品名称</span></th>
                     <th><span>单价</span></th>

@@ -143,8 +143,6 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
 <imart type="head">
   <!-- Title -->
   <title><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.TITLE" escapeXml="true" escapeJs="false" /> - <imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.SUBTITLE" escapeXml="true" escapeJs="false" /></title>
-  <!-- Bind variable for presentation page integration -->
-  <script>const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;</script>
   <!-- Custom styles for presentation page -->
   <style>
   .button-spacing {
@@ -152,8 +150,9 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
     gap: 3em;
   }
   </style>
-  <!-- Scripts for presentation page -->
+  <!-- Scripts for presentation page (scope $data via IIFE instead of a global variable) -->
   <script>
+  (function($data) {
   document.addEventListener('DOMContentLoaded', () => {
     // Initialize screen display
     function initializeView(result) {
@@ -280,6 +279,7 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
       initializeView($data.result);
     }
   });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

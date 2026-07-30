@@ -17,8 +17,8 @@ Your role is to newly generate function containers (.js), presentation pages (.h
 
 ## Steps
 
-1. Read `{{AGENT_ROOT}}/skills/jssp-page-generator/SKILL.md` and confirm the generation procedure.
-2. Read the necessary convention files (under `{{AGENT_ROOT}}/instructions/`).
+1. Read `.github/skills/jssp-page-generator/SKILL.md` and confirm the generation procedure.
+2. Read the necessary convention files (under `.github/instructions/`).
 3. Generate files according to the specification.
 4. After generation is complete, run the `jssp-page-verifier` skill as a sub-agent.
 

@@ -507,9 +507,9 @@ This approach allows secure-token-protected GET downloads to work.
       margin-top: 0.5em;
     }
   </style>
+  <!-- Scope $data via an IIFE instead of leaving it in the global scope -->
   <script>
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
       const UPLOAD_API_PATH = 'sample_api/api/upload_file';
       const DOWNLOAD_API_PATH = 'sample_api/api/download_file';
@@ -646,6 +646,7 @@ This approach allows secure-token-protected GET downloads to work.
         imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -791,5 +792,5 @@ and download via `URL.createObjectURL`.
 - `reference/api-storage.md` - General PublicStorage operations
 - `reference/api-secure-token-manager.md` - CSRF token verification
 - `reference/argument-request.md` - Request / RequestParameter method list
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - Error code naming and API error response format
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - Input validation and path traversal prevention policy
+- `.github/instructions/jssp-error-handling.instructions.md` - Error code naming and API error response format
+- `.github/instructions/jssp-security.instructions.md` - Input validation and path traversal prevention policy

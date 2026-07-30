@@ -173,11 +173,9 @@ function transferErrorPage(code, message) {
       gap: 3em;
     }
   </style>
-  <!-- プレゼンテーションページのスクリプト -->
+  <!-- プレゼンテーションページのスクリプト（$data をグローバル領域に置かず IIFE でスコープ化する） -->
   <script>
-    // プレゼンテーションページ連携用のバインド変数
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
       // バリデーションチェック常時実行フラグ
       let activeValidation = false;
@@ -508,6 +506,7 @@ function transferErrorPage(code, message) {
         initializeView($data.result);
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

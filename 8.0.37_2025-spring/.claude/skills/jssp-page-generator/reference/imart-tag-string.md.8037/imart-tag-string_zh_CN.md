@@ -61,7 +61,9 @@ paths:
 
 ```html
 <script>
-  const data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+(function($data) {
+  console.log($data);
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 </script>
 ```
 

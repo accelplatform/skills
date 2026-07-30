@@ -20,7 +20,7 @@ declare class DataExportExecutor {
    * @param option エクスポートオプション
    * @return data にエクスポート結果を格納した ResultObject
    */
-  exportData(exporterId: string, stream: ByteWriter, option: { [key: string]: string }): ResultObject<DataExportResult>;
+  exportData(exporterId: string, stream: ByteWriter, option: { [key: string]: string | number | boolean | Date }): ResultObject<DataExportResult>;
 
   /**
    * 指定されたエクスポーターID のエクスポーター設定情報を取得します。

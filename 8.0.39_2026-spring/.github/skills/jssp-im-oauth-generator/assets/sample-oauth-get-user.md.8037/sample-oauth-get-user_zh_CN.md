@@ -31,8 +31,8 @@
 以 [examples/sample_oauth.spec.json](../examples/sample_oauth.spec.json) 为输入运行 `build-oauth.js`，会一次性输出上述 4 个文件。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
-     {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/examples/sample_oauth.spec.json
+node .github/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
+     .github/skills/jssp-im-oauth-generator/examples/sample_oauth.spec.json
 ```
 
 生成的实际 XML 内容请参考以下:

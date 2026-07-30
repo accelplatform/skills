@@ -23,7 +23,7 @@ The following corruption patterns may occur during generation, so always verify 
 The verification / repair script is bundled inside the skill. After generating XML, run from the project root:
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-xml-encoding.js <xml-path>
+node .github/skills/jssp-im-workflow-generator/scripts/validate-xml-encoding.js <xml-path>
 ```
 
 Detection and repair behavior:

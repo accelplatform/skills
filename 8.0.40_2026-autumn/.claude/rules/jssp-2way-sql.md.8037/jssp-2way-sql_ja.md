@@ -410,7 +410,7 @@ for (let i = 0; i < items.length; i++) {
 
 ## 関連
 
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - SQL インジェクション対策の全体方針
-- `skills/jssp-page-generator/reference/api-database.md` - Database API リファレンス
+- `.claude/rules/jssp-security.md` - SQL インジェクション対策の全体方針
+- `.claude/skills/jssp-page-generator/reference/api-database.md` - Database API リファレンス
 - `d.ts/platform/database/im-ssjs-tenant-database.d.ts` - TenantDatabase の型定義
 - `d.ts/platform/database/im-ssjs-shared-database.d.ts` - SharedDatabase の型定義

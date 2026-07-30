@@ -21,7 +21,7 @@
    - 追加・変更する要素のみ記述（既存ロールや認可は含めない）
 2. **build スクリプト実行**
    ```bash
-   node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js equip-v110.spec.json
+   node .claude/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js equip-v110.spec.json
    ```
 3. **既存ファイル保護**: 出力先に既存ファイルがあると **エラーで停止** する
    - 意図的に上書きする場合は `--force` フラグを付ける（通常は使わない）

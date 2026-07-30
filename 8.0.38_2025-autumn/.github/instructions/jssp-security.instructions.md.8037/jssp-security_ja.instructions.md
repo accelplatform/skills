@@ -92,8 +92,10 @@ let result = db.select(sql, [status, departmentCd]);
 
 ```html
 <script type="text/javascript">
-// JSON 埋め込み: escapeXml/escapeJs 両方を false に
-const $userData = <imart type="string" value=$userData escapeXml="false" escapeJs="false" />;
+// JSON 埋め込み: escapeXml/escapeJs 両方を false に。$userData はグローバル変数にせず IIFE の引数としてスコープ化する
+(function($userData) {
+  // ...
+})(<imart type="string" value=$userData escapeXml="false" escapeJs="false" />);
 
 // 文字列リテラル: escapeXml=false, escapeJs=true
 let value = '<imart type="string" value=$myValue escapeXml="false" escapeJs="true"></imart>';
@@ -104,7 +106,7 @@ let value = '<imart type="string" value=$myValue escapeXml="false" escapeJs="tru
 
 | 用途 | `escapeXml` | `escapeJs` | 理由 |
 |------|:-----------:|:----------:|------|
-| JSON 埋め込み（`const $data = ...`） | `false` | `false` | JSON 全体がそのまま出力されるため両方不要 |
+| JSON 埋め込み（IIFE の引数として渡す） | `false` | `false` | JSON 全体がそのまま出力されるため両方不要 |
 | JS 文字列リテラル（`let x = '...'`） | `false` | **`true`** | クォート等の JS 特殊文字のエスケープが必要 |
 
 **注意**: `escapeXml="false"` や `escapeJs="false"` を指定する場合は、データが信頼できるソースから来ていることを必ず確認すること。

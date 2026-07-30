@@ -173,11 +173,9 @@ function transferErrorPage(code, message) {
       gap: 3em;
     }
   </style>
-  <!-- 呈现页面脚本 -->
+  <!-- 呈现页面脚本（将 $data 通过 IIFE 作用域化，而不放入全局作用域） -->
   <script>
-    // 用于呈现页面联动的绑定变量
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
       // 始终执行验证检查的标志
       let activeValidation = false;
@@ -508,6 +506,7 @@ function transferErrorPage(code, message) {
         initializeView($data.result);
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

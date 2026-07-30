@@ -107,11 +107,7 @@ function init(request) {
 </title>
 
 <script>
-  // 仅对绑定变量，不能写 value="$data"，必须不加引号写成 value=$data
-  // 对非绑定变量，不能写 type='string'，必须用双引号写成 type="string"
-  // 这是 imart 标签的特有规范
-  const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+(function($data) {
   document.addEventListener('DOMContentLoaded', () => {
     // 各函数定义在 DOMContentLoaded 事件内，以防止从外部直接执行
 
@@ -126,6 +122,10 @@ function init(request) {
       initializeView($data.result);
     }
   });
+// 仅对绑定变量，不能写 value="$data"，必须不加引号写成 value=$data
+// 对非绑定变量，不能写 type='string'，必须用双引号写成 type="string"
+// 这是 imart 标签的特有规范
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 </script>
 ```
 

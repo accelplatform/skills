@@ -15,7 +15,7 @@ This schema is not the official IM-Workflow normative schema; it expresses, in X
 The validation script is bundled inside the skill. Run from the project root:
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-xsd.js \
+node .github/skills/jssp-im-workflow-generator/scripts/validate-xsd.js \
      src/main/storage/public/im_workflow/im_workflow-{name}-import.xml
 ```
 

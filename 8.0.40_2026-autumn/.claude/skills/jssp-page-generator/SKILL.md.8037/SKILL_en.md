@@ -22,7 +22,7 @@ Describes the steps for creating and structuring new files according to template
 
 ## Conventions to Reference
 
-This skill generates both `.js` (function containers) and `.html` (presentation pages), so many conventions apply. See the "Convention File List (One-Line Summary + Scope Tag)" in `{{AGENT_RULES}}/README.md` for the full picture. Convention-specific priorities for this skill:
+This skill generates both `.js` (function containers) and `.html` (presentation pages), so many conventions apply. See the "Convention File List (One-Line Summary + Scope Tag)" in `.claude/rules/README.md` for the full picture. Convention-specific priorities for this skill:
 
 | Convention | Handling |
 |------------|----------|
@@ -60,6 +60,7 @@ Confirm the following from the user:
 - Placement path (where under `src/main/jssp/src/`)
 - Whether a new table is needed
 - **Whether the screen includes any field that asks the user to select an IM common master value (user / department / company / group / role)** → if so, combine with the `jssp-im-master-usage` skill to implement it as a master search dialog (manual code entry via a plain `<input>` is prohibited)
+- **Whether the screen may be placed multiple times on the same portal page as a portlet (widget)** → if so, use `assets/simple-portlet.md` (it follows a different implementation policy than a normal screen: no header/footer, `$data` scoped with an IIFE, etc.)
 
 ---
 
@@ -74,6 +75,7 @@ This step must not be skipped. Assets contain usage examples of imds-compliant s
 | List Screen | `assets/simple-list.md` |
 | Wizard      | `assets/simple-wizard.md` |
 | Calendar Screen | `assets/sample-calendar.md` |
+| Portlet screen (portal component, may be placed multiple times) | `assets/simple-portlet.md` |
 | File Upload/Download REST-API | `assets/file-upload-download-api.md` (Also load `reference/api-binary-stream.md` for binary transfer details) |
 | Raw JSON receiver REST-API (POST `application/json`) | `assets/post-json-api.md` |
 
@@ -86,34 +88,35 @@ Do not write imds class names or tag structures from memory or guesswork.
 
 | Component | Reference File |
 |-----------|----------------|
-| Textbox | `skills/jssp-imds-theme/reference/imds-html-textbox.md` |
-| Textarea | `skills/jssp-imds-theme/reference/imds-html-textarea.md` |
-| Select | `skills/jssp-imds-theme/reference/imds-html-select.md` |
-| Checkbox | `skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
-| Radio Button | `skills/jssp-imds-theme/reference/imds-html-radio.md` |
-| Button | `skills/jssp-imds-theme/reference/imds-html-button.md` |
-| Table | `skills/jssp-imds-theme/reference/imds-html-table.md` |
-| Dialog | `skills/jssp-imds-theme/reference/imds-html-dialog.md` |
-| Dialog + Form (new / edit, etc.) | `skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
-| Pagination | `skills/jssp-imds-theme/reference/imds-html-pagination.md` |
-| Field (with label) | `skills/jssp-imds-theme/reference/imds-html-field.md` |
-| Field Group | `skills/jssp-imds-theme/reference/imds-html-field-group.md` |
-| Tab | `skills/jssp-imds-theme/reference/imds-html-tabs.md` |
-| Accordion | `skills/jssp-imds-theme/reference/imds-html-accordion.md` |
-| Calendar Input | `skills/jssp-imds-theme/reference/imui-html-calendar.md` |
-| Banner Message | `skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
-| Inline Message | `skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
+| Textbox | `.claude/skills/jssp-imds-theme/reference/imds-html-textbox.md` |
+| Textarea | `.claude/skills/jssp-imds-theme/reference/imds-html-textarea.md` |
+| Select | `.claude/skills/jssp-imds-theme/reference/imds-html-select.md` |
+| Checkbox | `.claude/skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
+| Radio Button | `.claude/skills/jssp-imds-theme/reference/imds-html-radio.md` |
+| Button | `.claude/skills/jssp-imds-theme/reference/imds-html-button.md` |
+| Table | `.claude/skills/jssp-imds-theme/reference/imds-html-table.md` |
+| Dialog | `.claude/skills/jssp-imds-theme/reference/imds-html-dialog.md` |
+| Dialog + Form (new / edit, etc.) | `.claude/skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
+| Pagination | `.claude/skills/jssp-imds-theme/reference/imds-html-pagination.md` |
+| Field (with label) | `.claude/skills/jssp-imds-theme/reference/imds-html-field.md` |
+| Field Group | `.claude/skills/jssp-imds-theme/reference/imds-html-field-group.md` |
+| Tab | `.claude/skills/jssp-imds-theme/reference/imds-html-tabs.md` |
+| Accordion | `.claude/skills/jssp-imds-theme/reference/imds-html-accordion.md` |
+| Calendar Input | `.claude/skills/jssp-imds-theme/reference/imui-html-calendar.md` |
+| Banner Message | `.claude/skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
+| Inline Message | `.claude/skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
 
-Other components are stored under `skills/jssp-imds-theme/reference/`.
+Other components are stored under `.claude/skills/jssp-imds-theme/reference/`.
 
 ---
 
 ### Step 4: Generate Function Container and Routing
 
-Refer to `{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md` and `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` to generate code.
+Refer to `.claude/rules/jssp-function-container.md` and `.claude/rules/jssp-presentation-page.md` to generate code.
 
 - Generate the function container (.js) under `src/main/jssp/src/{feature-name}/`
-- Generate routing configuration (.xml) as needed
+- **For a portlet screen (`assets/simple-portlet.md`), do not generate routing configuration.** A portlet is invoked directly by the portal feature (`b_m_portlet_info.path`) and does not go through the routing table (see the "Exception Rules for Screens Not Called Through the Routing Table" section in `.claude/rules/jssp-file-structure.md` for details)
+- For any other screen, generate routing configuration (.xml) as needed
   - Each `file-mapping` **must explicitly specify** `<authz uri="service://{feature-name}/{action}" action="execute" />`. Skipping authorization via `welcome-all` / `<authz-default>` is **prohibited in principle**
   - The authorization resource (`service://...`) referenced here **must be defined with `jssp-tenant-setup-generator`** (policy / resource / resource-group / subject-group). If deployed without it, access to the target URL is always rejected with **403**
 - Use secure tokens (refer to `reference/secure_token_check.md`)
@@ -131,7 +134,7 @@ Generate `.html` based on the assets and reference HTML snippets loaded in Steps
 - Defining custom HTML/CSS structures instead of using imds components
 - **Arbitrarily modifying the HTML structure of assets** (top-level form structure, nesting of `imds-field-container` / `imds-field-group` / `imds-field`, layout classes like `is-horizontal` / `imds-w-15`). Reuse the asset structure as-is; only replace label text, `id`, input type, and validation content
 - **Layout changes based on personal design judgments** such as "vertical layout looks better" or "I want to simplify because there are many items" (e.g., changing `is-horizontal` to `is-vertical`, omitting `imds-field-container` / `imds-field-group`). If a structure different from the asset is required, **confirm with the user before generating**
-- **Omitting JSDoc comments (`/** ... */`) or section delimiter comments (`// ===...===`) included in the asset.** Even if they appear verbose, the convention (`{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md`) treats them as required. Keeping them clarifies the intent of each function inline, which makes subsequent reviews and modifications easier. Comments in assets must be copied as-is in principle. If changes are needed, only rewrite the content for the relevant feature; do not delete them.
+- **Omitting JSDoc comments (`/** ... */`) or section delimiter comments (`// ===...===`) included in the asset.** Even if they appear verbose, the convention (`.claude/rules/jssp-function-container.md`) treats them as required. Keeping them clarifies the intent of each function inline, which makes subsequent reviews and modifications easier. Comments in assets must be copied as-is in principle. If changes are needed, only rewrite the content for the relevant feature; do not delete them.
 
 **Required Rules:**
 - Form elements with labels must use the `imds-field` + `imds-field-label` + `imds-field-control` structure

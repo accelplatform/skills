@@ -180,8 +180,7 @@ JSON を返す REST-API では、エラー内容に応じて以下のステー�
 
 ```html
 <script>
-  const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+(function($data) {
   document.addEventListener('DOMContentLoaded', function() {
     if ($data.error.code) {
       imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
@@ -193,6 +192,7 @@ JSON を返す REST-API では、エラー内容に応じて以下のステー�
   function renderPage(result) {
     // 画面の描画処理
   }
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 </script>
 ```
 

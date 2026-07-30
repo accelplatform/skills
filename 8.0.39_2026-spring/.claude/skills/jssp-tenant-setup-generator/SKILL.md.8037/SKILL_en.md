@@ -1,6 +1,6 @@
 ---
 name: jssp-tenant-setup-generator
-description: Generates a full set of materials for intra-mart Accel Platform Tenant Setup (Importer). Generates Importer-format config XML, roles, authz (policies / resources / resource groups / subject groups), menu groups, Job Scheduler, extends import JS, DDL/DML SQL skeletons, IM-Workflow import integration (copies WF definition XML from storage/public to storage/system and generates an extends import JS that loads it via DataImportExecutor), and IM-LogicDesigner import integration (copies logic flow ZIPs from storage/public to storage/system and generates an extends import JS that loads them via LogicFlowImporter), expanded to multiple locales (ja/en/zh_CN) in one shot from spec.json. Use when mentioning "create tenant initial setup materials", "create Importer import materials", "create XML for initial data import", "create setup XML", "I want to load IM-Workflow via tenant setup", "integrate workflow definition import into setup", or "I want to load IM-LogicDesigner logic flows via tenant setup".
+description: Generates a full set of materials for intra-mart Accel Platform Tenant Setup (Importer). Generates Importer-format config XML, roles, authz (policies / resources / resource groups / subject groups), menu groups, Job Scheduler, extends import JS, DDL/DML SQL skeletons, portlet registration DML (generates DML against the b_m_portlet_* tables to register a JSSP presentation page as a portal portlet), IM-Workflow import integration (copies WF definition XML from storage/public to storage/system and generates an extends import JS that loads it via DataImportExecutor), and IM-LogicDesigner import integration (copies logic flow ZIPs from storage/public to storage/system and generates an extends import JS that loads them via LogicFlowImporter), expanded to multiple locales (ja/en/zh_CN) in one shot from spec.json. Use when mentioning "create tenant initial setup materials", "create Importer import materials", "create XML for initial data import", "create setup XML", "generate DML to register a portlet", "include a portal portlet in tenant setup", "I want to load IM-Workflow via tenant setup", "integrate workflow definition import into setup", or "I want to load IM-LogicDesigner logic flows via tenant setup".
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -17,6 +17,7 @@ The generated materials can be loaded from Tenant Environment Management (Tenant
 |---------|-------------|--------------|
 | Import config | `import-<artifactId>-config-1.xml` | - |
 | Database | `<key>-ddl.sql` / `<key>-dml.sql` | - |
+| Portlet registration | `<key>_sample-dml.sql` (real INSERTs into `b_m_portlet_info` / `b_m_portlet_mode` / `b_m_portlet_title_info`) | - |
 | Role | `<key>-role.xml` | ja / en / zh_CN |
 | Authz resource group | `<key>-authz-resource-group.xml` | ja / en / zh_CN |
 | Authz resource | `<key>-authz-resource.xml` | ja / en / zh_CN |
@@ -29,6 +30,7 @@ The generated materials can be loaded from Tenant Environment Management (Tenant
 | IM-Workflow import XML | Copied under `storage/system` | - |
 | IM-LogicDesigner import JS | `<key>/initialize/<key>_logic_import.js` | - |
 | IM-LogicDesigner import ZIP | Copied under `storage/system` | - |
+| IMW Logic Flow Plugin registration JS | `<key>/initialize/<key>_import.js` (uses `WorkflowLogicFlowManager` inside `doImport`) | - |
 
 ## File Layout
 
@@ -48,6 +50,7 @@ jssp-tenant-setup-generator/
 │   ├── extends-import.md          # Extends import class (doImport) spec
 │   ├── workflow-import.md         # IM-Workflow import (workflowImport) spec
 │   ├── logic-import.md            # IM-LogicDesigner import (logicImport) spec
+│   ├── imw-logic-plugin-import.md # IMW Logic Flow Plugin registration (doImport + WorkflowLogicFlowManager) spec
 │   ├── multi-config.md            # Multiple config operations (version upgrade / same-version config addition)
 │   ├── database-sql.md            # DDL/DML skeleton spec
 │   └── checklist.md               # Post-generation self-check list
@@ -106,7 +109,7 @@ src/main/storage/system/products/import/basic/<key>/<version>/
 ### Out of Scope: Runtime SQL Called from Function Containers
 
 Business SQL **executed at runtime** from function containers via `db.executeByTemplate` / `db.execute` (2WaySQL templates for SELECT / INSERT / UPDATE / DELETE, etc.) is out of scope of this section.
-Those go under `src/main/jssp/src/{feature}/sql/` (see `{{AGENT_RULES}}/jssp-2way-sql{{AGENT_RULE_FILE}}.md`).
+Those go under `src/main/jssp/src/{feature}/sql/` (see `.claude/rules/jssp-2way-sql.md`).
 
 ### `storage/system` vs `storage/public`
 
@@ -134,8 +137,11 @@ When the user makes requests such as:
 - "Generate a full set of Importer import XMLs"
 - "Create authz resource / role definitions for tenant setup"
 - "Generate skeleton for initial data import"
+- "I want to register a JSSP screen as a portlet in tenant setup" (when including `portletImport`)
 - "I want to load IM-Workflow via tenant setup" (when WF definition XML exists under `storage/public/im_workflow/`) ★ only when explicitly requested
 - "I want to load IM-LogicDesigner via tenant setup" (when logic flow ZIPs exist under `storage/public/im_logic/`) ★ only when explicitly requested
+- "I want to register an IM-LogicDesigner flow as an IM-Workflow processing-target plugin" ★ only when explicitly requested
+- "I want the LD flow auto-registered as a WF plugin" ★ only when explicitly requested
 
 ## Generation Procedure
 
@@ -157,6 +163,7 @@ Confirm the following information from the user.
 | Job Scheduler (optional) | NO | If there are periodic batches |
 | Menu group (optional) | NO | If there is menu registration |
 | DDL/DML tables (optional) | NO | If there are proprietary tables |
+| Portlet definition (optional) | NO | When registering a JSSP screen as a portal portlet (`portlet_cd`, the page path to display, titles in 3 locales) |
 | Extends import processing (optional) | NO | If there is initialization processing in doImport(tenantId) |
 
 > **About asking for configNumber**
@@ -288,6 +295,25 @@ Sample: [examples/any_app.spec.json](examples/any_app.spec.json)
   // 9. Extends import (optional) — when true, generates a doImport(tenantId) skeleton JS
   "extendsImport": true,
 
+  // 9.5. Portlet registration (optional) — registers a JSSP screen as a portal portlet by
+  //      generating real INSERT statements into b_m_portlet_info / b_m_portlet_mode /
+  //      b_m_portlet_title_info, output to <key>_sample-dml.sql (this alone produces a DML
+  //      file even without "database"). See reference/portlet-import.md for details
+  "portletImport": {
+    "portlets": [
+      {
+        "portletCd": "any_app_summary",
+        "path": "any_app/portlet/summary_view/index",
+        "editable": false,
+        "titles": {
+          "name": { "ja": "Any App サマリ", "en": "Any App Summary", "zh_CN": "Any App 摘要" },
+          "application": { "ja": "Any App", "en": "Any App", "zh_CN": "Any App" },
+          "description": { "ja": "Any App の概要を表示します。", "en": "Displays an overview of Any App.", "zh_CN": "显示 Any App 的概览。" }
+        }
+      }
+    ]
+  },
+
   // 10. IM-Workflow import (optional) — copies the XMLs listed in files from storage/public/im_workflow/
   //     to storage/system, and generates <key>_workflow_import.js for loading them
   "workflowImport": {
@@ -318,6 +344,7 @@ See the files under `reference/` for details on each section.
 | [reference/menu-group.md](reference/menu-group.md) | Minimal structure of menu group XML |
 | [reference/job-scheduler.md](reference/job-scheduler.md) | Job / jobnet definition XML |
 | [reference/extends-import.md](reference/extends-import.md) | Implementation conventions for `doImport(tenantId)` |
+| [reference/portlet-import.md](reference/portlet-import.md) | Portlet registration (`portletImport.portlets`, DML generation into `b_m_portlet_*`, out-of-scope items) |
 | [reference/workflow-import.md](reference/workflow-import.md) | IM-Workflow import mechanism (`workflowImport.files`, structure of the generated JS, dependency order) |
 | [reference/logic-import.md](reference/logic-import.md) | IM-LogicDesigner import mechanism (`logicImport.files`, direct Java access to `LogicFlowImporter`) |
 | [reference/multi-config.md](reference/multi-config.md) | Multiple config operations (version upgrade / same-version config addition) — steps and samples |
@@ -327,7 +354,7 @@ See the files under `reference/` for details on each section.
 ### 3. Run build-setup-import.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
+node .claude/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
      <path to spec.json>
 ```
 
@@ -339,6 +366,7 @@ What build-setup-import.js does automatically:
 - Automatic insertion of namespaces (`xmlns`)
 - Reference integrity checks for role IDs / authz resource IDs (warns about IDs not referenced inside the spec)
 - Generation of DDL/DML SQL skeletons (table names with comments only)
+- Generation of real INSERT statements into `b_m_portlet_info` / `b_m_portlet_mode` / `b_m_portlet_title_info` from `portletImport.portlets` (not a comment-only skeleton — DML ready to load into tenant setup as-is)
 - Generation of an extends import JS skeleton (outputs `doImport(tenantId)` as an empty function)
 - Copying IM-Workflow import XMLs (`storage/public/im_workflow/` -> `storage/system/products/import/basic/<key>/<version>/`) and generating a dedicated JS (`<key>_workflow_import.js`)
 - Copying IM-LogicDesigner import ZIPs (`storage/public/im_logic/` -> `storage/system/products/import/basic/<key>/<version>/`) and generating a dedicated JS (`<key>_logic_import.js`) (via `Packages.jp.co.intra_mart.foundation.logic.LogicServiceProvider`)

@@ -13,7 +13,7 @@
   },
   "rename": [
     {
-      "from": "playwright.config.ts.std",
+      "from": "playwright.config.ts",
       "to": "playwright.config.ts"
     }
   ]

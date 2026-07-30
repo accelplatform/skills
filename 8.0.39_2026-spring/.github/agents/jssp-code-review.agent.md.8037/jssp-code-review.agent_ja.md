@@ -17,7 +17,7 @@ user-invocable: true
 
 ## 手順
 
-1. `node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <対象パス>` を実行し、スクリプト検出可能な問題を洗い出す。
+1. `node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js <対象パス>` を実行し、スクリプト検出可能な問題を洗い出す。
 2. 対象ファイルを読み込み、スクリプトで検出できない項目（命名規則・バインド変数・エラーハンドリング・構造等）を LLM でレビューする。
 3. 問題をまとめて報告する。
 

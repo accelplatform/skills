@@ -69,7 +69,7 @@ This mitigates the risk of an attacker pressuring memory by sending a huge JSON.
 
 - Success: `application/json` with `{error:false, data:{...}}`
 - Failure: `application/json` with `{error:true, errorMessage:"[code] message"}` together with HTTP 4xx/5xx
-- Follow `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` for error code naming.
+- Follow `.github/instructions/jssp-error-handling.instructions.md` for error code naming.
 
 ### Handling of the `ApiError` Type
 
@@ -432,9 +432,9 @@ A verification screen with a textarea for the request body and a textarea for di
       font-size: 0.875em;
     }
   </style>
+  <!-- Scope $data via an IIFE instead of leaving it in the global scope -->
   <script>
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
       const POST_JSON_API_PATH = 'sample_api/api/post_json';
       const SAMPLE_REQUEST = {
@@ -545,6 +545,7 @@ A verification screen with a textarea for the request body and a textarea for di
         imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -683,13 +684,13 @@ Clients obtain it from `<meta name="im_secure_token">` and attach it to the `fet
 
 ### Do Not Use the `ApiError` typedef (Reminder)
 
-Declaring `@typedef {Error & {code, httpStatus}} ApiError` per file triggers `tsc` `TS2300 Duplicate identifier`. **Casting with an inline `@type` annotation is the canonical form of this template.** See `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` for details.
+Declaring `@typedef {Error & {code, httpStatus}} ApiError` per file triggers `tsc` `TS2300 Duplicate identifier`. **Casting with an inline `@type` annotation is the canonical form of this template.** See `.github/instructions/jssp-error-handling.instructions.md` for details.
 
 ## Related
 
 - `reference/argument-request.md` - Specification of `request.getMessageBodyAsString()`
 - `reference/api-secure-token-manager.md` - CSRF token verification
 - `reference/secure-token-check.md` - End-to-end client + server verification pattern
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - Error code naming and API error response format
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - Overall input validation policy
+- `.github/instructions/jssp-error-handling.instructions.md` - Error code naming and API error response format
+- `.github/instructions/jssp-security.instructions.md` - Overall input validation policy
 - `assets/file-upload-download-api.md` - For multipart/form-data (file) uploads

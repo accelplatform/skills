@@ -17,8 +17,8 @@ user-invocable: true
 
 ## 手順
 
-1. `{{AGENT_ROOT}}/skills/jssp-im-workflow-usage/SKILL.md` を読み込み、生成手順を確認する。
-2. 必要な規約ファイル（`{{AGENT_ROOT}}/instructions/` 配下）を読み込む。
+1. `.github/skills/jssp-im-workflow-usage/SKILL.md` を読み込み、生成手順を確認する。
+2. 必要な規約ファイル（`.github/instructions/` 配下）を読み込む。
 3. 仕様に従って画面・アクション処理を生成する。
 4. 生成完了後、`jssp-page-verifier` スキルをサブエージェントで実行する。
 

@@ -212,8 +212,7 @@ function transferErrorPage(code, message) {
   </style>
   <!-- プレゼンテーションページのスクリプト -->
   <script>
-    // プレゼンテーションページ連携用のバインド変数
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+    (function($data) {
 
     document.addEventListener('DOMContentLoaded', () => {
       // バリデーションチェック常時実行フラグ
@@ -417,6 +416,7 @@ function transferErrorPage(code, message) {
         initializeView($data.result);
       }
     });
+    })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

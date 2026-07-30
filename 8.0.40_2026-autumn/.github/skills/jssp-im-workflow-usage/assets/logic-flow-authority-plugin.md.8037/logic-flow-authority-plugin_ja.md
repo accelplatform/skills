@@ -136,7 +136,7 @@ SSJS プラグイン（`authority_exec_event_listener.js`）の代替として�
 ### 2. フロー定義 ZIP の生成
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/build-flow.js <spec.json> --zip
+node .github/skills/jssp-im-logic-generator/scripts/build-flow.js <spec.json> --zip
 ```
 
 生成先: `src/main/storage/public/im_logic/im-logicdesigner-data-<featureName>.zip`
@@ -144,7 +144,7 @@ node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/build-flow.js <spec.j
 ### 3. フロー定義のバリデーション
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
+node .github/skills/jssp-im-logic-generator/scripts/validate-flow.js \
   src/main/storage/public/im_logic/im-logicdesigner-data-<featureName>.zip
 ```
 
@@ -213,7 +213,7 @@ IM-LogicDesigner フローの ZIP インポートだけでなく、IM-Workflow �
 | `<key>_import.js` | 手動作成（`reference/imw-logic-plugin-import.md` のテンプレートを使用） | `WorkflowLogicFlowManager` でプラグイン登録 |
 
 プラグイン登録 JS のテンプレートと実装詳細は
-`jssp-tenant-setup-generator/reference/imw-logic-plugin-import.md` を参照。
+`.github/skills/jssp-tenant-setup-generator/reference/imw-logic-plugin-import.md` を参照。
 
 ---
 

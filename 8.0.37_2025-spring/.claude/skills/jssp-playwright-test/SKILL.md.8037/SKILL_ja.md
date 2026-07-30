@@ -22,7 +22,7 @@ intra-mart Accel Platform のプレゼンテーションページ（HTML）に�
 
 1. 対象のプレゼンテーションページ（HTML）を読み込む
 2. HTML 構造からテスト可能な要素を特定する（テーブル、フォーム、ダイアログ、ボタン等）
-3. `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md` のテスト観点に基づいてテストケースを設計する
+3. `.claude/rules/jssp-testing.md` のテスト観点に基づいてテストケースを設計する
 4. **テストコードを生成する前に**、以下の 2 点をユーザに確認する（コード生成を先行させてはならない）
 
    **確認 ①: スクリーンショット（レイアウト視認用）**
@@ -45,7 +45,7 @@ intra-mart Accel Platform のプレゼンテーションページ（HTML）に�
 | `assets/test-crud-dialog.md` | CRUD ダイアログ（新規作成・編集・削除）のテスト実例 |
 | `assets/test-validation.md` | バリデーション（必須・文字種・文字数・範囲・重複・リアルタイム解消）のテスト実例 |
 | `assets/test-button-style.md` | ボタンスタイル（is-primary / is-danger）と確認ダイアログのテスト実例 |
-| `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md` | テスト観点・設定規約 |
+| `.claude/rules/jssp-testing.md` | テスト観点・設定規約 |
 
 ## テスト設計の原則
 
@@ -157,7 +157,7 @@ await expect(page.locator('h1#page-title')).toBeVisible();        // ③ ペー�
 
 ## 注意事項
 
-- テスト観点の詳細は `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md` を参照すること
+- テスト観点の詳細は `.claude/rules/jssp-testing.md` を参照すること
 - HTML の `maxlength` 属性は使用しない方針のため、文字数超過は必ずバリデーションテストで検証する
 - `toHaveText` はセル内の `<span>` 構造でマッチしない場合があるため `toContainText` を推奨する
 - **リアルタイムバリデーション（即時エラー解消）のテストは必ず全パターンを1回で生成すること。** `assets/test-validation.md` の「リアルタイムバリデーション」セクションに定義された以下6つの観点を漏れなく含めること。

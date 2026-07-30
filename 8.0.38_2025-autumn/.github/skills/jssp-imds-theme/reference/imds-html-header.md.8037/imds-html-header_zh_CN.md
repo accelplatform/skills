@@ -203,7 +203,7 @@ Header 是用于显示页面上部区域的部件。
     </div>
   </div>
   ```
-  ※ `jssp-accessibility.instructions.md` 中「不得在展示页面添加 `<header>`」的含义是避免与平台的全局 header 重复，imds 的 `<header class="imds-header">`（页内 header）不在此规则范围内。
+  ※ `jssp-accessibility.md` 中「不得在展示页面添加 `<header>`」的含义是避免与平台的全局 header 重复，imds 的 `<header class="imds-header">`（页内 header）不在此规则范围内。
 - 不得使用 `imds-page-header` / `imds-page-header-title` / `imds-page-header-actions` 等类名来表示「页面 header」（这些是参考文件中不存在的虚构类。CSS 不会生效，会破坏布局）。正确的类名是 `imds-header` / `imds-header-title` / `imds-header-actions`。
 - header 内的放置顺序：`imds-header-back-button` / `imds-header-icon` / `imds-header-nav` → `imds-header-title` → `imds-header-additional` → `imds-header-reload-button` → `imds-header-actions`
 - `imds-header-icon`、`imds-header-back-button`、`imds-header-nav` 互斥使用（不可同时放置）

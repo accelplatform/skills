@@ -13,16 +13,16 @@ intra-mart Accel Platform のジョブスケジューラで実行されるジョ
 
 ## 参照すべき規約
 
-本スキルはバッチ処理（`.js` のみ、画面なし）を生成する。全体像は `{{AGENT_RULES}}/README.md` 参照。
+本スキルはバッチ処理（`.js` のみ、画面なし）を生成する。全体像は `.github/instructions/README.md` 参照。
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-function-container.instructions.md` | 🟢 **必読** — `execute()` エントリーポイントの構造 |
-| `jssp-error-handling.instructions.md` / `jssp-logging.instructions.md` | 🟢 **必読** — バッチは多くの場合詳細ログとエラー処理が必須 |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 必読 |
-| `jssp-2way-sql.instructions.md` | 🟡 **DB 操作を含むバッチの場合のみ参照**（多くのバッチは DB を扱うので頻出） |
-| `jssp-security.instructions.md` | 🟡 外部入力（ジョブパラメータ等）を扱う場合のみ |
-| `jssp-presentation-page.instructions.md` / `jssp-accessibility.instructions.md` | 🔴 **画面なしのため不要** |
+| `jssp-function-container.md` | 🟢 **必読** — `execute()` エントリーポイントの構造 |
+| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必読** — バッチは多くの場合詳細ログとエラー処理が必須 |
+| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必読 |
+| `jssp-2way-sql.md` | 🟡 **DB 操作を含むバッチの場合のみ参照**（多くのバッチは DB を扱うので頻出） |
+| `jssp-security.md` | 🟡 外部入力（ジョブパラメータ等）を扱う場合のみ |
+| `jssp-presentation-page.md` / `jssp-accessibility.md` | 🔴 **画面なしのため不要** |
 
 ## 生成対象
 
@@ -113,12 +113,12 @@ function execute() {
 生成したファイルに対して `validate-jssp-code.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
+node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
 ```
 
 ### ステップ 2: 手動チェック
 
-`jssp-page-generator/reference/post-generation-verification.md` のステップ 1〜3 を実行する（ステップ 4 の画面検証はジョブには不要）。
+`.github/skills/jssp-page-generator/reference/post-generation-verification.md` のステップ 1〜3 を実行する（ステップ 4 の画面検証はジョブには不要）。
 
 ### ステップ 3: コードレビュー・セキュリティチェック（自動実行）
 

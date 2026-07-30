@@ -23,7 +23,7 @@ IM-Workflow 可读取 UTF-16 LE 或 BE 两种字节序，但缺失 BOM 或仍为
 验证·修复脚本已随技能集一同提供。XML 生成后，从项目根目录执行：
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-xml-encoding.js <xml-path>
+node .github/skills/jssp-im-workflow-generator/scripts/validate-xml-encoding.js <xml-path>
 ```
 
 检测与修复行为：

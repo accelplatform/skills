@@ -17,7 +17,7 @@ intra-mart Accel Platform のスクリプト開発モデル（JSSP）で書か�
 以下のコマンドを実行し、スクリプトで検出可能な問題をまず洗い出す。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <成果物の出力先パス>
+node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js <成果物の出力先パス>
 ```
 
 エラー・警告が出力された場合はそのまま記録し、Step 2 のレビュー結果と合わせて報告する。
@@ -40,7 +40,7 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <�
 
 - [ ] バインド変数が `JSON.stringify()` で文字列化されているか
 - [ ] `JSON.stringify()` 後に `.replace(/\//g, '\\/')`  でエスケープされているか
-- [ ] プレゼンテーションページで `const $data = <imart ...>` 形式で受け取っているか
+- [ ] プレゼンテーションページで `(function($data) { ... })(<imart ...>);` の IIFE 形式で受け取り、`$data` をグローバル変数にしていないか
 
 #### 2-3. エラーハンドリング
 

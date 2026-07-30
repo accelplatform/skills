@@ -22,17 +22,17 @@ intra-mart Accel Platform の JSSP コードを新規に生成するためのス
 
 ## 参照すべき規約
 
-本スキルは `.js`（ファンクションコンテナ）+ `.html`（プレゼンテーションページ）の両方を生成するため、関連規約が多い。全体像は `{{AGENT_RULES}}/README.md` の「規約ファイル一覧（一行要約 + 適用範囲タグ）」を参照。本スキル特有の重要度:
+本スキルは `.js`（ファンクションコンテナ）+ `.html`（プレゼンテーションページ）の両方を生成するため、関連規約が多い。全体像は `.github/instructions/README.md` の「規約ファイル一覧（一行要約 + 適用範囲タグ）」を参照。本スキル特有の重要度:
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-presentation-page.instructions.md` | 🟢 **必読** — `.html` の HTML 構造・バリデーション・id 命名 |
-| `jssp-function-container.instructions.md` | 🟢 **必読** — `init()` 構造・validateRequest |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 必読 |
-| `jssp-error-handling.instructions.md` / `jssp-security.instructions.md` | 🟢 必読 — フォーム入力 + API があるため両方関連 |
-| `jssp-2way-sql.instructions.md` | 🟡 **DB 操作を含む実装の場合のみ参照**。読み取り専用 UI 等 DB に触れない画面では不要 |
-| `jssp-logging.instructions.md` | 🟡 ログ実装時のみ |
-| `jssp-accessibility.instructions.md` | 🟠 **業務要件次第** — 仕様書で明示要求があった場合のみ厚く適用。指示がなければ最小限（`imdsConfirm`、`aria-label`、装飾アイコンの `aria-hidden` 等の基本）に留める |
+| `.github/instructions/jssp-presentation-page.instructions.md` | 🟢 **必読** — `.html` の HTML 構造・バリデーション・id 命名 |
+| `.github/instructions/jssp-function-container.instructions.md` | 🟢 **必読** — `init()` 構造・validateRequest |
+| `.github/instructions/jssp-naming.instructions.md` / `.github/instructions/jssp-code-style.instructions.md` / `.github/instructions/jssp-file-structure.instructions.md` | 🟢 必読 |
+| `.github/instructions/jssp-error-handling.instructions.md` / `.github/instructions/jssp-security.instructions.md` | 🟢 必読 — フォーム入力 + API があるため両方関連 |
+| `.github/instructions/jssp-2way-sql.instructions.md` | 🟡 **DB 操作を含む実装の場合のみ参照**。読み取り専用 UI 等 DB に触れない画面では不要 |
+| `.github/instructions/jssp-logging.instructions.md` | 🟡 ログ実装時のみ |
+| `.github/instructions/jssp-accessibility.instructions.md` | 🟠 **業務要件次第** — 仕様書で明示要求があった場合のみ厚く適用。指示がなければ最小限（`imdsConfirm`、`aria-label`、装飾アイコンの `aria-hidden` 等の基本）に留める |
 
 ## 使用タイミング
 
@@ -60,6 +60,7 @@ intra-mart Accel Platform の JSSP コードを新規に生成するためのス
 - 配置パス（`src/main/jssp/src/` 配下のどこに置くか）
 - 新規テーブルが必要かどうか
 - **画面が IM-共通マスタの値（ユーザ・組織・会社・グループ・ロール）を入力させるフィールドを含むかどうか** → 含む場合は `jssp-im-master-usage` スキルを併用してマスタ検索ダイアログとして実装する（自前 `<input>` でのコード手打ち入力は禁止）
+- **ポータル画面のポートレット（部品）として、同一画面に複数配置されうるかどうか** → 該当する場合は `assets/simple-portlet.md` を使用する（ヘッダ・フッタを含めない、`$data` を IIFE でスコープ化する等、通常画面と異なる実装方針になるため）
 
 ---
 
@@ -74,6 +75,7 @@ intra-mart Accel Platform の JSSP コードを新規に生成するためのス
 | 一覧画面 | `assets/simple-list.md` |
 | ウィザード | `assets/simple-wizard.md` |
 | カレンダー画面 | `assets/sample-calendar.md` |
+| ポートレット画面（ポータル部品、複数配置されうる） | `assets/simple-portlet.md` |
 | ファイルアップロード/ダウンロード REST-API | `assets/file-upload-download-api.md`（バイナリ転送は `reference/api-binary-stream.md` も合わせて読み込むこと） |
 | 生 JSON 受信 REST-API（POST `application/json`） | `assets/post-json-api.md` |
 
@@ -86,37 +88,38 @@ intra-mart Accel Platform の JSSP コードを新規に生成するためのス
 
 | コンポーネント | reference ファイル |
 |--------------|-------------------|
-| テキストボックス | `skills/jssp-imds-theme/reference/imds-html-textbox.md` |
-| テキストエリア | `skills/jssp-imds-theme/reference/imds-html-textarea.md` |
-| セレクト（選択肢） | `skills/jssp-imds-theme/reference/imds-html-select.md` |
-| チェックボックス | `skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
-| ラジオボタン | `skills/jssp-imds-theme/reference/imds-html-radio.md` |
-| ボタン | `skills/jssp-imds-theme/reference/imds-html-button.md` |
-| テーブル | `skills/jssp-imds-theme/reference/imds-html-table.md` |
-| ダイアログ | `skills/jssp-imds-theme/reference/imds-html-dialog.md` |
-| ダイアログ + フォーム（新規作成・編集等） | `skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
-| ページネーション | `skills/jssp-imds-theme/reference/imds-html-pagination.md` |
-| フィールド（ラベル付き） | `skills/jssp-imds-theme/reference/imds-html-field.md` |
-| フィールドグループ | `skills/jssp-imds-theme/reference/imds-html-field-group.md` |
-| タブ | `skills/jssp-imds-theme/reference/imds-html-tabs.md` |
-| アコーディオン | `skills/jssp-imds-theme/reference/imds-html-accordion.md` |
-| カレンダー入力 | `skills/jssp-imds-theme/reference/imui-html-calendar.md` |
-| バナーメッセージ | `skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
-| インラインメッセージ | `skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
+| テキストボックス | `.github/skills/jssp-imds-theme/reference/imds-html-textbox.md` |
+| テキストエリア | `.github/skills/jssp-imds-theme/reference/imds-html-textarea.md` |
+| セレクト（選択肢） | `.github/skills/jssp-imds-theme/reference/imds-html-select.md` |
+| チェックボックス | `.github/skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
+| ラジオボタン | `.github/skills/jssp-imds-theme/reference/imds-html-radio.md` |
+| ボタン | `.github/skills/jssp-imds-theme/reference/imds-html-button.md` |
+| テーブル | `.github/skills/jssp-imds-theme/reference/imds-html-table.md` |
+| ダイアログ | `.github/skills/jssp-imds-theme/reference/imds-html-dialog.md` |
+| ダイアログ + フォーム（新規作成・編集等） | `.github/skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
+| ページネーション | `.github/skills/jssp-imds-theme/reference/imds-html-pagination.md` |
+| フィールド（ラベル付き） | `.github/skills/jssp-imds-theme/reference/imds-html-field.md` |
+| フィールドグループ | `.github/skills/jssp-imds-theme/reference/imds-html-field-group.md` |
+| タブ | `.github/skills/jssp-imds-theme/reference/imds-html-tabs.md` |
+| アコーディオン | `.github/skills/jssp-imds-theme/reference/imds-html-accordion.md` |
+| カレンダー入力 | `.github/skills/jssp-imds-theme/reference/imui-html-calendar.md` |
+| バナーメッセージ | `.github/skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
+| インラインメッセージ | `.github/skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
 
-上記以外のコンポーネントは `skills/jssp-imds-theme/reference/` 配下に格納されている。
+上記以外のコンポーネントは `.github/skills/jssp-imds-theme/reference/` 配下に格納されている。
 
 ---
 
 ### ステップ 4: ファンクションコンテナ・ルーティングの生成
 
-`{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md` と `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` を参照してコードを生成する。
+`.github/instructions/jssp-function-container.instructions.md` と `.github/instructions/jssp-presentation-page.instructions.md` を参照してコードを生成する。
 
 - ファンクションコンテナ（.js）を `src/main/jssp/src/{機能名}/` に生成する
-- ルーティング設定（.xml）を必要に応じて生成する
+- **ポートレット画面（`assets/simple-portlet.md`）の場合はルーティング設定を生成しない**。ポートレットはポータル機能（`b_m_portlet_info.path`）から直接呼び出され、ルーティングテーブルを経由しないため（詳細は `.github/instructions/jssp-file-structure.instructions.md` の「ルーティングテーブル経由で呼ばれない画面の例外規約」参照）
+- 上記以外の画面では、ルーティング設定（.xml）を必要に応じて生成する
   - 各 `file-mapping` には `<authz uri="service://{機能名}/{処理}" action="execute" />` を**必ず明示**する。`welcome-all` / `<authz-default>` による認可スキップは**原則禁止**
   - ここで参照した認可リソース（`service://...`）は **`jssp-tenant-setup-generator` で必ず定義**する（policy / resource / resource-group / subject-group）。未定義のままデプロイすると対象 URL へのアクセスが常に **403** で拒否される
-- セキュアトークンを使用すること（`reference/secure_token_check.md` を参照）
+- セキュアトークンを使用すること（`reference/secure-token-check.md` を参照）
 - 参照先で `TODO` が書かれている場合は、その指示どおりに実装する
 
 ---
@@ -131,7 +134,7 @@ intra-mart Accel Platform の JSSP コードを新規に生成するためのス
 - imds コンポーネントを使わず、独自の HTML/CSS 構造を定義すること
 - アセットの HTML 構造（フォームのトップレベル構造、`imds-field-container` / `imds-field-group` / `imds-field` のネスト、`is-horizontal` / `imds-w-15` 等のレイアウトクラス）を**独自判断で改変すること**。アセット側の構造はそのまま流用し、ラベル文言・`id`・入力種別・バリデーション内容だけを置き換えること
 - 「縦並びの方が見やすい」「項目が多いので簡略化したい」等の**独自のデザイン判断に基づくレイアウト変更**（例: `is-horizontal` → `is-vertical` への変更、`imds-field-container` / `imds-field-group` の省略）。アセットと異なる構造が必要な場合は、**生成前にユーザへ確認**すること
-- アセットに記述されている **JSDoc コメント（`/** ... */`）やセクション区切りコメント（`// ===...===`）を省略すること**。冗長に見えても、規約（`{{AGENT_RULES}}/jssp-function-container{{AGENT_RULE_FILE}}.md`）でこれらは必須項目として扱う。残すことで関数の意図がコード内で明示され、後続のレビューや改修が容易になる。アセットに含まれるコメントは原則そのまま写経し、変更が必要な場合は内容を該当機能用にリライトするだけにとどめること（削除はしない）
+- アセットに記述されている **JSDoc コメント（`/** ... */`）やセクション区切りコメント（`// ===...===`）を省略すること**。冗長に見えても、規約（`.github/instructions/jssp-function-container.instructions.md`）でこれらは必須項目として扱う。残すことで関数の意図がコード内で明示され、後続のレビューや改修が容易になる。アセットに含まれるコメントは原則そのまま写経し、変更が必要な場合は内容を該当機能用にリライトするだけにとどめること（削除はしない）
 
 **必須ルール:**
 - ラベル付きフォーム要素は `imds-field` + `imds-field-label` + `imds-field-control` 構造を使うこと
@@ -171,66 +174,19 @@ DDL 生成時の詳細ルールは本ファイル末尾の「DDL 生成ルール
 
 ---
 
-### ステップ 7: 自動検証スクリプト（JSSP コード）
+### ステップ 7〜10: 生成後検証（サブエージェントに委譲）
 
-生成したファイルに対して `validate-jssp-code.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
+**Agent ツール**を使ってサブエージェントを起動し、検証・修正をすべて委譲する。
+メイン会話のコンテキストを保護するため、検証作業はサブエージェントに完結させること。
 
-```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
-```
+サブエージェントへのプロンプトに含める内容:
+- `jssp-page-verifier` スキルを実行すること
+- 対象パス: `src/main/jssp/src/{機能名}/`
+- DDL を生成した場合のみ DDL パス: `src/main/storage/system/products/import/basic/{機能名}/{version}/`
+- エラーが 0 件になるまで修正を繰り返すこと
+- 完了後に各ステップの結果サマリーを返すこと
 
-検出される主なパターン:
-- `db.select()` / `db.execute()` のパラメータが `DbParameter` でラップされていない
-- `DbParameter.number()` に文字列が渡される（`Number()` 変換漏れ）
-- `var` の使用（`let` を使うこと）
-- `imds-selectbox`（存在しないクラス名。正しくは `imds-select`）
-- `imuiCalendar` の altField が hidden input を参照
-- imart タグの value 属性がクォートで囲まれている
-- `include('**/common/**')` による共通モジュールの読み込み（正しくは `load()`）
-- `load('**/*.js')` のように `.js` 拡張子を付けた呼び出し（拡張子は自動付与されるため `.js.js` になり FileNotFoundException）
-- `Transaction.begin(...)` の戻り値を受け取っていない（`DatabaseResult` を無視すると失敗が検知できず「HTTP 200 成功だが DB に入っていない」状態になる）
-- TIMESTAMP/DATE カラムのバインドに `DbParameter.string(startAt|endAt|rangeFrom|rangeTo|...)` のような日時系変数名が使われている（PostgreSQL で型キャストエラー）
-
-> **JSSP-JS-022 警告が出た場合:** 必ず対応する SQL ファイルを開き、該当パラメータが `/*IF param != null*/.../*END*/` で囲まれているかを確認する。囲まれている → 誤検知（レビュー報告に「SQL 側の /*IF*/ ガード確認済み」と明記）。囲まれていない → `DbParameter.string(x || '')` 等の空文字フォールバックに修正する。
-
----
-
-### ステップ 8: DDL 型検証（ステップ 6 で DDL を生成した場合のみ）
-
-DDL ファイルを生成した場合、`validate-ddl.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
-
-```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage/system/products/import/basic/{機能名}/{version}/
-```
-
-検出される主なパターン:
-- PostgreSQL の DDL に `NVARCHAR` / `VARCHAR2` / `NUMBER` / `DATETIME2` / `CLOB` が使われている
-- Oracle の DDL に `VARCHAR(` / `NVARCHAR2` / `DECIMAL` / `DATETIME2` / `TEXT` / `BOOLEAN` が使われている
-- SQLServer の DDL に `VARCHAR(` / `VARCHAR2` / `NUMBER` / `TIMESTAMP` / `CLOB` / `TEXT` / `BOOLEAN` が使われている
-- `CREATE FUNCTION` / `CREATE TRIGGER` / `CREATE PROCEDURE` / `CREATE VIEW` が DDL に含まれている（インポート失敗の原因）
-- `CHECK` / `FOREIGN KEY` / `EXCLUDE` 制約が CREATE TABLE 内または ALTER TABLE で定義されている
-- DDL はテーブル・PK・UNIQUE キー・CREATE INDEX のみを許可する方針
-- 共通 DML ファイル（`*-dml.sql`）に ODBC エスケープ `{d '...'}` / `{t '...'}` / `{ts '...'}` / `{fn ...}` / `{oj ...}` / `{call ...}` が使われている（PostgreSQL で構文エラー）
-
----
-
-### ステップ 9: tsc 型チェック
-
-生成したファイルに対して TypeScript コンパイラによる型検査を実行する。**0 issues になるまで修正を繰り返す。**
-
-```bash
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{機能名}/
-```
-
-検出される主なパターン:
-- `result.data === 0` のような型の不一致（更新件数は `result.countRow`）
-- d.ts に存在しないメソッド・プロパティへのアクセス
-
----
-
-### ステップ 10: 手動チェック
-
-`reference/post-generation-verification.md` の全ステップを実行する。
+サブエージェントが完了したら結果サマリーを確認し、問題がなければステップ 11 へ進む。
 
 ---
 

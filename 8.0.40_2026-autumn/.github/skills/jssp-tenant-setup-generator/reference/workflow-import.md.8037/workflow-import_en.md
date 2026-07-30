@@ -48,10 +48,12 @@ doImport(tenantId)
         ├ Read the XML from SystemStorage in UTF-16
         └ for each dataType ('matter_property' → 'rule' → 'contents' → 'route' → 'flow'):
             importSingleSection()
-              ├ Slice out the relevant block with extractTopLevelSection()
-              ├ Write it out as a temporary XML in UTF-16
-              ├ Call DataImportExecutor.importData() via executeImport()
-              └ Delete the temporary file (finally)
+              ├ Slice out every occurrence of the tag as an array with extractTopLevelSections()
+              └ for each block:
+                  importSectionBody()
+                    ├ Write it out as a temporary XML in UTF-16
+                    ├ Call DataImportExecutor.importData() via executeImport()
+                    └ Delete the temporary file (finally)
 ```
 
 ### dataType Values
@@ -70,13 +72,15 @@ When the relevant section does not exist in the original XML, an info log is out
 
 ### XML Splitting
 
-`WorkflowXmlImporter` requires that **a single section corresponding to `dataType` is the root element of the XML for each `importData` invocation**. Because the original import XML stores multiple sections together directly under `<data>`, the relevant section is sliced out with `extractTopLevelSection`, reconstructed as a temporary XML prepended with `<?xml version="1.0" encoding="UTF-16"?>`, and then passed in.
+`WorkflowXmlImporter` requires that **a single section corresponding to `dataType` is the root element of the XML for each `importData` invocation**. Because the original import XML stores multiple sections together directly under `<data>`, the relevant section is sliced out with `extractTopLevelSections`, reconstructed as a temporary XML prepended with `<?xml version="1.0" encoding="UTF-16"?>`, and then passed in.
 
-`extractTopLevelSection` picks up only tags whose **line begins with 2 spaces of indentation** as the top level, so it does not mis-match nested same-named tags (e.g. `<contents>` inside `<contents>`). If the original XML uses indentation other than 2 spaces, adjustment is necessary.
+`<contents>` / `<route>` / `<flow>` / `<matter_property>` normally appear only once, but `<rule>` (branch rules) is often repeated multiple times directly under `<data>` to cover multiple approval patterns. `extractTopLevelSections` scans every occurrence of the tag and **returns all blocks as an array** (looping and advancing the search position each time a match is found, rather than a single `indexOf` lookup). `importSingleSection` receives this array and calls `importSectionBody` once per block to turn each into its own temporary XML and `importData` call, so no occurrence is dropped no matter how many same-named tags are present.
+
+`extractTopLevelSections` picks up only tags whose **line begins with 2 spaces of indentation** as the top level, so it does not mis-match nested same-named tags (e.g. `<contents>` inside `<contents>`). If the original XML uses indentation other than 2 spaces, adjustment is necessary.
 
 ### Temporary Files
 
-The temporary XML is created under **PublicStorage** at the path `tmp/<key>_<tenantId>_<dataType>.xml`, and is always deleted in `finally`. Including the tenant ID, dataType, and key avoids collisions during parallel execution or loading for multiple tenants.
+The temporary XML is created under **PublicStorage** at the path `tmp/<key>_<tenantId>_<dataType>_<index>.xml`, and is always deleted in `finally`. Besides the tenant ID, dataType, and key, it also includes a sequential `index` (the block's position in the array returned by `extractTopLevelSections`) to cover the case of multiple same-named tags, avoiding collisions during parallel execution or loading for multiple tenants.
 
 Before writing, `ensureTemporaryDirectory()` is called, and if the `tmp/` directory does not exist in PublicStorage it is created with `makeDirectories()`. Because SystemStorage fails when writing to an uncreated directory, PublicStorage is adopted, and on top of that the pre-creation of `tmp/` is guaranteed.
 

@@ -88,13 +88,17 @@ ID・URI・親グループを定義する。
 
 ## URI スキーム
 
-本プロジェクトでは `service://` のみ使用する。
+`spec.authzResources`（本セクションで説明している、ユーザが手で書く認可リソース）では `service://` のみ使用する。
 
 | スキーム | 用途 |
 |----------|------|
 | `service://<key>/<path>` | HTTP / 内部サービス（画面・API・ジョブから呼び出される処理を含むすべての認可対象） |
 
 intra-mart の認可リソース URI スキームは他にも存在する可能性があるが、本スキルセットでは `service://` のみを対象とし、画面・ルーティングを含むすべての処理を `service://` で表現する。
+
+### 例外: `portletImport` が自動生成する認可リソース
+
+`spec.portletImport.portlets` を指定した場合、`im-portal-portlet://<portletCd>` / `im-portal-portlet-editmode://<portletCd>` スキームの認可リソースが `<key>-authz-resource.xml` に自動生成される（`spec.authzResources` への手書きは不要）。これは `spec.authzResources` の `service://` 限定ルールの対象外の特例であり、`authz-policy` 側がハッシュ値を `resource` に直書きする方式（`id` を介さない）を管理画面上で可視化するための仕組み。詳細は [portlet-import.md](portlet-import.md#認可リソースkey-authz-resourcexmlの自動生成) を参照。
 
 ## spec.json での記述
 

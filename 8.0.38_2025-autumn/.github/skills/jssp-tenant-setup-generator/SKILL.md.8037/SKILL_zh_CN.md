@@ -1,6 +1,6 @@
 ---
 name: jssp-tenant-setup-generator
-description: 新建 intra-mart Accel Platform 租户环境设置（Importer）所需的全套资料。从 spec.json 一次性以多语言（ja/en/zh_CN）展开生成 Importer 格式的 config XML、角色、授权（策略 / 资源 / 资源组 / 主体组）、菜单组、任务调度器、扩展导入 JS、DDL/DML SQL 骨架、IM-Workflow 导入联动（将 storage/public 下的 WF 定义 XML 复制到 storage/system 并生成通过 DataImportExecutor 加载的扩展导入 JS）、IM-LogicDesigner 导入联动（将 storage/public 下的逻辑流 ZIP 复制到 storage/system 并生成通过 LogicFlowImporter 加载的扩展导入 JS）。当用户提及"创建租户初始设置资料"、"创建 Importer 导入资料"、"创建初始数据导入用 XML"、"创建设置 XML"、"希望通过租户环境设置加载 IM-Workflow"、"将工作流定义的导入纳入设置"、"希望通过租户环境设置加载 IM-LogicDesigner 的逻辑流"时使用。
+description: 新建 intra-mart Accel Platform 租户环境设置（Importer）所需的全套资料。从 spec.json 一次性以多语言（ja/en/zh_CN）展开生成 Importer 格式的 config XML、角色、授权（策略 / 资源 / 资源组 / 主体组）、菜单组、任务调度器、扩展导入 JS、DDL/DML SQL 骨架、Portlet 注册 DML（生成向 b_m_portlet_* 表的 DML，将 JSSP 展示页面注册为门户页面的 Portlet）、IM-Workflow 导入联动（将 storage/public 下的 WF 定义 XML 复制到 storage/system 并生成通过 DataImportExecutor 加载的扩展导入 JS）、IM-LogicDesigner 导入联动（将 storage/public 下的逻辑流 ZIP 复制到 storage/system 并生成通过 LogicFlowImporter 加载的扩展导入 JS）。当用户提及"创建租户初始设置资料"、"创建 Importer 导入资料"、"创建初始数据导入用 XML"、"创建设置 XML"、"生成注册 Portlet 的 DML"、"希望在租户环境设置中包含门户 Portlet"、"希望通过租户环境设置加载 IM-Workflow"、"将工作流定义的导入纳入设置"、"希望通过租户环境设置加载 IM-LogicDesigner 的逻辑流"时使用。
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -17,6 +17,7 @@ allowed-tools: Bash, Read, Write, Glob
 |------|---------|--------|
 | 导入设置 | `import-<artifactId>-config-1.xml` | - |
 | 数据库 | `<key>-ddl.sql` / `<key>-dml.sql` | - |
+| Portlet 注册 | `<key>_sample-dml.sql`（对 `b_m_portlet_info` / `b_m_portlet_mode` / `b_m_portlet_title_info` 的实际 INSERT） | - |
 | 角色 | `<key>-role.xml` | ja / en / zh_CN |
 | 授权资源组 | `<key>-authz-resource-group.xml` | ja / en / zh_CN |
 | 授权资源 | `<key>-authz-resource.xml` | ja / en / zh_CN |
@@ -29,6 +30,7 @@ allowed-tools: Bash, Read, Write, Glob
 | IM-Workflow 导入 XML | 复制到 `storage/system` 之下 | - |
 | IM-LogicDesigner 导入 JS | `<key>/initialize/<key>_logic_import.js` | - |
 | IM-LogicDesigner 导入 ZIP | 复制到 `storage/system` 之下 | - |
+| IMW 逻辑流插件注册 JS | `<key>/initialize/<key>_import.js`（在 `doImport` 中使用 `WorkflowLogicFlowManager`） | - |
 
 ## 文件结构
 
@@ -48,6 +50,7 @@ jssp-tenant-setup-generator/
 │   ├── extends-import.md          # 扩展导入类（doImport）规范
 │   ├── workflow-import.md         # IM-Workflow 导入（workflowImport）规范
 │   ├── logic-import.md            # IM-LogicDesigner 导入（logicImport）规范
+│   ├── imw-logic-plugin-import.md # IMW 逻辑流插件注册（doImport + WorkflowLogicFlowManager）规范
 │   ├── multi-config.md            # 多个 config 运维（版本升级 / 同一版本内追加 config）
 │   ├── database-sql.md            # DDL/DML 骨架规范
 │   └── checklist.md               # 生成后的自检清单
@@ -106,7 +109,7 @@ src/main/storage/system/products/import/basic/<key>/<version>/
 ### 范围外：从函数容器运行时调用的 SQL
 
 从函数容器通过 `db.executeByTemplate` / `db.execute` **在运行时调用的业务 SQL**（SELECT / INSERT / UPDATE / DELETE 等 2WaySQL 模板）不在本章节范围内。
-这些文件放置于 `src/main/jssp/src/{功能名}/sql/`（详见 `{{AGENT_RULES}}/jssp-2way-sql{{AGENT_RULE_FILE}}.md`）。
+这些文件放置于 `src/main/jssp/src/{功能名}/sql/`（详见 `.github/instructions/jssp-2way-sql.instructions.md`）。
 
 ### `storage/system` 与 `storage/public` 的使用区分
 
@@ -134,8 +137,11 @@ spec.json 中的 `workflowImport` / `logicImport` 部分，**仅在用户在 pro
 - "一次性生成 Importer 的导入 XML 全套"
 - "创建租户环境设置用的授权资源·角色定义"
 - "生成初始数据导入的骨架"
+- "希望将 JSSP 画面作为 Portlet 注册到租户环境设置中"（包含 `portletImport` 时）
 - "希望通过租户环境设置加载 IM-Workflow"（当 `storage/public/im_workflow/` 下存在 WF 定义 XML 时）★ 仅在明确指定时
 - "希望通过租户环境设置加载 IM-LogicDesigner"（当 `storage/public/im_logic/` 下存在逻辑流 ZIP 时）★ 仅在明确指定时
+- "希望将 IM-LogicDesigner 的流程注册为 IM-Workflow 的处理对象插件" ★ 仅在明确指定时
+- "希望将 LD 流程自动注册为 WF 插件" ★ 仅在明确指定时
 
 ## 生成步骤
 
@@ -157,6 +163,7 @@ spec.json 中的 `workflowImport` / `logicImport` 部分，**仅在用户在 pro
 | 任务调度器（可选） | NO | 如有定期批处理 |
 | 菜单组（可选） | NO | 如需菜单注册 |
 | DDL/DML 表（可选） | NO | 如有专有表 |
+| Portlet 定义（可选） | NO | 希望将 JSSP 画面注册为门户 Portlet 时（`portlet_cd`、要显示的页面路径、3 种语言的标题） |
 | 扩展导入处理（可选） | NO | 如在 doImport(tenantId) 中有初始化处理 |
 
 > **关于 configNumber 的需求确认**
@@ -288,6 +295,25 @@ spec.json 中的 `workflowImport` / `logicImport` 部分，**仅在用户在 pro
   // 9. 扩展导入（可选） — 为 true 时生成 doImport(tenantId) 的骨架 JS
   "extendsImport": true,
 
+  // 9.5. Portlet 注册（可选） — 将 JSSP 画面注册为门户 Portlet，向
+  //      b_m_portlet_info / b_m_portlet_mode / b_m_portlet_title_info 生成实际的
+  //      INSERT 语句，输出到 <key>_sample-dml.sql（即使没有 "database" 也会仅凭此生成 DML 文件）
+  //      详情请参阅 reference/portlet-import.md
+  "portletImport": {
+    "portlets": [
+      {
+        "portletCd": "any_app_summary",
+        "path": "any_app/portlet/summary_view/index",
+        "editable": false,
+        "titles": {
+          "name": { "ja": "Any App サマリ", "en": "Any App Summary", "zh_CN": "Any App 摘要" },
+          "application": { "ja": "Any App", "en": "Any App", "zh_CN": "Any App" },
+          "description": { "ja": "Any App の概要を表示します。", "en": "Displays an overview of Any App.", "zh_CN": "显示 Any App 的概览。" }
+        }
+      }
+    ]
+  },
+
   // 10. IM-Workflow 导入（可选） — 将 files 中列出的 XML 从 storage/public/im_workflow/
   //     复制到 storage/system 之下，并生成加载用 <key>_workflow_import.js
   "workflowImport": {
@@ -318,6 +344,7 @@ spec.json 中的 `workflowImport` / `logicImport` 部分，**仅在用户在 pro
 | [reference/menu-group.md](reference/menu-group.md) | 菜单组 XML 的最小结构 |
 | [reference/job-scheduler.md](reference/job-scheduler.md) | 作业·作业网定义 XML |
 | [reference/extends-import.md](reference/extends-import.md) | `doImport(tenantId)` 的实现规范 |
+| [reference/portlet-import.md](reference/portlet-import.md) | Portlet 注册（`portletImport.portlets`、向 `b_m_portlet_*` 生成 DML、不涉及的项目） |
 | [reference/workflow-import.md](reference/workflow-import.md) | IM-Workflow 导入机制（`workflowImport.files`、生成 JS 的结构、依赖顺序） |
 | [reference/logic-import.md](reference/logic-import.md) | IM-LogicDesigner 导入机制（`logicImport.files`、`LogicFlowImporter` 的 Java 直接访问） |
 | [reference/multi-config.md](reference/multi-config.md) | 多个 config 运维（版本升级 / 同一版本内追加 config）的手顺与示例 |
@@ -327,7 +354,7 @@ spec.json 中的 `workflowImport` / `logicImport` 部分，**仅在用户在 pro
 ### 3. 执行 build-setup-import.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
+node .github/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
      <spec.json 的路径>
 ```
 
@@ -339,6 +366,7 @@ build-setup-import.js 自动完成的事项：
 - 命名空间（`xmlns`）的自动附加
 - 角色 ID / 授权资源 ID 等的引用完整性检查（对 spec 内部未引用的 ID 给出警告）
 - DDL/DML 骨架 SQL 的生成（仅在表名上添加注释）
+- 根据 `portletImport.portlets` 生成向 `b_m_portlet_info` / `b_m_portlet_mode` / `b_m_portlet_title_info` 的实际 INSERT 语句（并非仅有注释的骨架，而是可直接用于租户环境设置导入的 DML）
 - 扩展导入 JS 骨架的生成（以空函数输出 `doImport(tenantId)`）
 - IM-Workflow 导入 XML 的复制（`storage/public/im_workflow/` -> `storage/system/products/import/basic/<key>/<version>/`）以及专用 JS（`<key>_workflow_import.js`）的生成
 - IM-LogicDesigner 导入 ZIP 的复制（`storage/public/im_logic/` -> `storage/system/products/import/basic/<key>/<version>/`）以及专用 JS（`<key>_logic_import.js`）的生成（经由 `Packages.jp.co.intra_mart.foundation.logic.LogicServiceProvider`）

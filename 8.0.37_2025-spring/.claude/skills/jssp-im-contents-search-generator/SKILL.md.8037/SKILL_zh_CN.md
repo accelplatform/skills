@@ -130,7 +130,7 @@ allowed-tools: Bash, Read, Write, Glob
 **演示页的必要实现：**
 - 根元素使用 `<div>`，先编写包含 CSS 类（`imcs-content-detail-title` / `imcs-content-detail-subtitle` / `imcs-content-detail-option` / `imcs-content-detail-snippets`）的 HTML 骨架
 - 在 `<div>` 末尾放置 IIFE 形式的 `<script>` 块
-- 通过 `const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;` 展开 JSON
+- 在 `<script>` 标签之后放置 `(function($data) {`，将通过 `<imart type="string" value=$data escapeXml="false" escapeJs="false" />` 展开的 JSON 作为 IIFE 参数接收（不将 `$data` 设为全局变量）
 - 若 `$data.error.code` 已设置，则隐藏容器并中断处理
 - 通过 `document.currentScript.parentElement` 获取容器，使用 `querySelector` 引用各元素，用 `textContent` / `innerHTML` 设置值
 
@@ -153,6 +153,8 @@ allowed-tools: Bash, Read, Write, Glob
 - 子 TYPE 的 `type` 属性只指定子 TYPE（不使用 `"<父 TYPE>$<子 TYPE>"`），通过 `<parent-type>` 明确声明父级
 - 在 `<require-dynamic-fields>` 中，仅声明**模板 HTML 中实际显示的动态字段**
 - `<template-path>` 使用 `.jssp` 扩展名（指向 `.js` / `.html` 的文件对）
+
+**搜索结果模板不需要 `routing-jssp-config/` 下的路由配置。** 模板由 IM-ContentsSearch 通过 `<template-path>` 直接调用，因此不像普通画面那样经过 URL 路由（详见 `.claude/rules/jssp-file-structure.md` 中的"不经过路由表调用的画面的例外规约"章节）。
 
 ---
 

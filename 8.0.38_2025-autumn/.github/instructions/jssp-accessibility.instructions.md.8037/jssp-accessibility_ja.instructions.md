@@ -25,7 +25,7 @@ WCAG 2.1 レベル AA 相当を目標とする。
 intra-mart Accel Platform のグローバルヘッダ・グローバルメニュー・フッタは **プラットフォーム（テーマ）が出力する**。
 そのため、各プレゼンテーションページで `<header>` / `<nav>` / `<footer>` を **追加してはならない**（プラットフォーム提供のランドマークと二重になる）。
 
-画面のルート構造は `jssp-presentation-page.instructions.md` の規約に従い、`<main>` のみを配置する。
+画面のルート構造は `jssp-presentation-page.md` の規約に従い、`<main>` のみを配置する。
 
 ```html
 <div id="container">
@@ -87,7 +87,7 @@ JSSP の慣習として、入力要素の `id` は `:userName:` のようにコ�
 
 ### エラー表示
 
-`jssp-presentation-page.instructions.md` の標準パターン（`.imds-field` + `.imds-validation-error` クラス、`.imds-error-text` を `style.display` で出し入れ）を踏襲した上で、ARIA 属性を追加する。
+`jssp-presentation-page.md` の標準パターン（`.imds-field` + `.imds-validation-error` クラス、`.imds-error-text` を `style.display` で出し入れ）を踏襲した上で、ARIA 属性を追加する。
 
 ```html
 <div class="imds-field" for=":age:">
@@ -264,7 +264,7 @@ function clearValidationError() {
 
 ## ダイアログ・モーダル
 
-確認ダイアログは **`imdsConfirm()` を第一選択** とする（`jssp-presentation-page.instructions.md` 参照）。
+確認ダイアログは **`imdsConfirm()` を第一選択** とする（`jssp-presentation-page.md` 参照）。
 imds が提供する標準ダイアログは ARIA 属性・フォーカス制御・キーボード操作に対応している。
 
 ```javascript
@@ -309,7 +309,7 @@ imdsConfirm(
 
 ### 第一選択: imui の標準メッセージ関数
 
-`jssp-presentation-page.instructions.md` の規約に従い、以下の関数を使用する。
+`jssp-presentation-page.md` の規約に従い、以下の関数を使用する。
 これらは intra-mart のテーマが内部でライブリージョン相当の処理を行う。
 
 | 用途 | 関数 |
@@ -382,7 +382,6 @@ document.getElementById('search-result-count').textContent =
 
 ### ページ構造
 
-- [ ] 各画面に `<header>` / `<nav>` / `<footer>` を **追加していない**（プラットフォームが提供するため）
 - [ ] ルートが `<div id="container"><div class="imds-container"><main>...</main></div></div>` の構造になっているか
 - [ ] `<main>` がページに 1 つだけ、かつ `role="main"` を併記していないか
 - [ ] 見出しが `h1` → `h2` → `h3` の順で階層を飛ばしていないか
@@ -435,6 +434,6 @@ document.getElementById('search-result-count').textContent =
 
 ## 関連
 
-- `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` - プレゼンテーションページの基本構造
-- `skills/jssp-localize-support/` 関連 - 多言語化（読み上げ言語）
-- `skills/jssp-imds-theme/reference/` - imds コンポーネント別のアクセシビリティ対応
+- `.github/instructions/jssp-presentation-page.instructions.md` - プレゼンテーションページの基本構造
+- `.github/skills/jssp-localize-support/` 関連 - 多言語化（読み上げ言語）
+- `.github/skills/jssp-imds-theme/reference/` - imds コンポーネント別のアクセシビリティ対応

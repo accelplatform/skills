@@ -27,11 +27,9 @@ description: "プレゼンテーションページの実装方針"
       gap: 3em;
     }
   </style>
-  <!-- 展示页面的脚本 -->
+  <!-- 展示页面的脚本（不将 $data 置于全局作用域，而是通过 IIFE 进行作用域隔离） -->
   <script>
-    // 用于展示页面联动的绑定变量
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     // 页面加载后的处理
     document.addEventListener('DOMContentLoaded', () => {
       // 获取安全令牌
@@ -99,6 +97,7 @@ description: "プレゼンテーションページの実装方針"
         initializeView($data.result);
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -128,7 +127,7 @@ description: "プレゼンテーションページの実装方針"
 ### 变量声明
 
 展示页面内的 JavaScript 在浏览器中执行，因此不适用 Rhino 的限制。
-`jssp-code-style.instructions.md` 中的 `const` 限制仅适用于函数容器（`.js`），不得应用于 HTML 内的脚本。
+`jssp-code-style.md` 中的 `const` 限制仅适用于函数容器（`.js`），不得应用于 HTML 内的脚本。
 
 - **不重新赋值的变量**：使用 `const`
 - **重新赋值的变量**：使用 `let`
@@ -201,8 +200,12 @@ var participants = [];                  // 不使用 var
 
 ### 嵌入 JSON 时
 
+不将 `$data` 定义为全局变量，而是作为立即执行函数（IIFE）的参数传递，将其限定在该作用域内（参见后文"绑定变量 `$data` 的作用域化（IIFE）"）。
+
 ```javascript
-const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+(function($data) {
+  // 在此处实现引用 $data 的处理
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 ```
 
 - `<imart>` 标签的 value 属性不得用双引号括起来
@@ -237,6 +240,37 @@ let value = '<imart type="string" value=$imwSystemMatterId escapeXml="false" esc
 5. 向客户端发送响应
 6. 处理转移到接收响应的客户端（浏览器等）
 7. 通过 DOMContentLoaded 执行浏览器端的初始化处理
+
+## 绑定变量 `$data` 的作用域化（IIFE）
+
+### 适用条件
+
+**适用于所有画面。** 无论是单独显示的普通画面，还是作为门户页面 Portlet（部件）多重配置的画面，均使用以下 IIFE 模式。
+
+### 原因
+
+若将 `const $data = <imart>...</imart>;` 直接写成独立的 `<script>` 标签，`$data` 会成为全局变量。只要画面单独显示就不会有问题，但当同一门户页面上并排放置多个相同画面（Portlet）时，后加载的实例的 `$data` 会覆盖先加载实例的 `$data`，导致显示行为不符合预期。将 IIFE 作用域化作为所有画面的标准做法，即可在日后将画面改造为 Portlet 时无需返工，同时也能避免污染全局命名空间。
+
+### 实现模式
+
+```html
+<script>
+(function($data) {
+  document.addEventListener('DOMContentLoaded', () => {
+    // TODO: 在此处添加画面初始化处理（引用 $data）
+  });
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
+</script>
+```
+
+- 不再将 `const $data = <imart>...</imart>;` 写成独立的 `<script>` 标签（旧模式），而是将 `$data` 作为立即执行函数（IIFE）的参数传递
+- 即使作为 IIFE 参数传递，`escapeXml="false" escapeJs="false"` 的值也不变（与"嵌入 JSON 时"在 `<script>` 内原样输出 JSON 的判断标准相同）
+- 将 `DOMContentLoaded` 监听器、`initializeView` 等处理全部放入 IIFE 内，`$data` 以外的局部变量、函数也一并限定在该作用域内
+- 完整细节请参阅本页开头的"基本结构"。Portlet 特有的附加事项（省略页头、页脚等）请参阅 `.github/skills/jssp-page-generator/assets/simple-portlet.md`
+
+### 注意：元素 id 的冲突
+
+通过 IIFE 可以避免 `$data` 的冲突，但 `id="xxx-table"` 等元素 id 仍然是每个画面固定不变的。如果门户以将多个实例直接并排放置在同一 DOM 中的方式嵌入（而非用 iframe 隔离），id 重复可能导致 `document.getElementById()` 只返回第一个实例的元素。请根据门户的嵌入方式（是否用 iframe 隔离）酌情考虑将 id 按实例唯一化。
 
 ## maxlength 属性的使用方针
 
@@ -323,7 +357,7 @@ function toggleLocationDetailRequired() {
 ## 日期输入（imuiCalendar）
 
 日期输入使用 `<imart type="imuiCalendar">` 而非 `<input type="date">`。
-使用方法、属性、注意事项及日期时间输入（日期 + 时间的组合）模式，请参考 `skills/jssp-imds-theme/reference/imui-html-calendar.md`。
+使用方法、属性、注意事项及日期时间输入（日期 + 时间的组合）模式，请参考 `.github/skills/jssp-imds-theme/reference/imui-html-calendar.md`。
 
 ## 输入字段的宽度控制
 
@@ -402,7 +436,7 @@ if (!userCode || userCode.length === 0) {
 }
 ```
 
-其他模式（数值、正则表达式、邮箱、日期格式、可选项等）请参考 `assets/simple-form.md` 中的「验证模式集」。
+其他模式（数值、正则表达式、邮箱、日期格式、可选项等）请参考 `.github/skills/jssp-page-generator/assets/simple-form.md` 中的「验证模式集」。
 
 ### 实现方针
 
@@ -419,7 +453,7 @@ if (!userCode || userCode.length === 0) {
 
 ### 实现方针
 
-架构概要（完整实现请参考 `assets/simple-form.md`）：
+架构概要（完整实现请参考 `.github/skills/jssp-page-generator/assets/simple-form.md`）：
 
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
@@ -512,14 +546,14 @@ function callbackXxxSearch(result) {
 ### 实现方针
 
 - 使用超链接或调用同一主机内的 REST API 时，以相对路径指定上下文路径下的路径
-  - 例：访问 `http://localhost/imart/foo/bar` 时，URL 指定为 `foo/bar`
+  - 例：访问 `http://127.0.0.1/imart/foo/bar` 时，URL 指定为 `foo/bar`
 - 该相对路径与路由配置文件中定义的 `file-mapping` 标签的 `path` 属性去除开头 `/` 后的内容一致
   - 例：路由配置文件为 `<file-mapping path="/sample/user/list" page="sample/user/user_list">` 时，打开展示页面 `sample/user/user_list` 的 URL 应指定为 `sample/user/list`
 
 ### 上下文路径
 
 - 上下文路径是由主机名、端口号、部署目标根目录名构成的 URL
-  - 例：`http://localhost/imart/`
+  - 例：`http://127.0.0.1/imart/`
 - 由于 `<imart type="head">` 标签将上下文路径指定在 `<base>` 标签中，推荐在指定 URL 时以相对路径指定上下文路径之后的路径
 
 ## API 的调用
@@ -565,7 +599,7 @@ async function register(request) {
   - API 预期 application/x-www-form-urlencoded 时，使用 `URLSearchParams` 指定请求参数
   - API 预期 application/json 时，使用 `JSON.stringify()` 指定请求参数
 - 异步处理使用 Promise，并使用 `async`、`await` 提高代码可读性
-- 响应格式为 `{error: bool, data | errorMessage}`（参见 `jssp-error-handling.instructions.md`「API 响应结构（JSON）」）
+- 响应格式为 `{error: bool, data | errorMessage}`（参见 `jssp-error-handling.md`「API 响应结构（JSON）」）
   - 通过 `result.error` 进行分支，错误时直接显示 `result.errorMessage`（`[代码] 消息` 格式）
   - HTTP 状态码（200 / 400 / 405 / 500）由 API 端设置。客户端不进行单独判断，仅以 `result.error` 进行判断
 - 正常结束时使用 `imuiShowSuccessMessage()` 显示处理完成消息

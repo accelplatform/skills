@@ -26,31 +26,5 @@
       "from": "simple-rule-condition_zh_CN.md",
       "to": "simple-rule-condition.md"
     }
-  ],
-  "replacements": [
-    {
-      "type": "text",
-      "target": "{{AGENT_RULES}}",
-      "values": [
-        {
-          "condition": {
-            "agent": "claude-code"
-          },
-          "value": "rules"
-        },
-        {
-          "condition": {
-            "agent": "github-copilot"
-          },
-          "value": "instructions"
-        },
-        {
-          "condition": {
-            "agent": "codex"
-          },
-          "value": "requirements"
-        }
-      ]
-    }
   ]
 }

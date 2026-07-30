@@ -1088,6 +1088,17 @@ if (require.main === module) {
     console.error('Usage: node validate-jssp-code.js <directory-or-file>');
     process.exit(2);
   }
+  if (process.argv.length > 3) {
+    let ignoredArgs = process.argv.slice(3);
+    console.error('Error: このスクリプトは 1 個のパス（ディレクトリまたは単一ファイル）のみ受け付けます。');
+    console.error('  渡されたパス: ' + targetPath);
+    console.error('  無視される追加引数: ' + ignoredArgs.join(', '));
+    console.error('');
+    console.error('複数ファイルをまとめて検証する場合は、個々のファイルではなく共通の親ディレクトリを渡してください');
+    console.error('（例: src/main/jssp/src/{機能名}/view/xxx.js と .html を個別に渡すのではなく、');
+    console.error('      src/main/jssp/src/{機能名}/ をディレクトリごと渡す）。');
+    process.exit(2);
+  }
   if (!fs.existsSync(targetPath)) {
     console.error('Path not found: ' + targetPath);
     process.exit(2);

@@ -1,0 +1,36 @@
+{
+  "servers": {
+    "im_logic": {
+      "type": "http",
+      "url": "http://127.0.0.1/imart/copilot/mcp/development/im_logic",
+      "headers": {
+        "Authorization": "Bearer <API-KEY>"
+      }
+    },
+    "im_workflow": {
+      "type": "http",
+      "url": "http://127.0.0.1/imart/copilot/mcp/development/im_workflow",
+      "headers": {
+        "Authorization": "Bearer <API-KEY>"
+      }
+    },
+    "staging_log": {
+      "type": "http",
+      "url": "http://127.0.0.1/imart/copilot/mcp/development/staging/logs",
+      "headers": {
+        "Authorization": "Bearer <API-KEY>"
+      }
+    },
+    "frontend_fix": {
+      "type": "http",
+      "url": "http://127.0.0.1/imart/copilot/mcp/development/staging/frontend-fix",
+      "headers": {
+        "Authorization": "Bearer <API-KEY>"
+      }
+    },
+    "dev-knowledge-8.0.37": {
+      "type": "http",
+      "url": "https://dev-knowledge.intra-mart.jp/8.0.37/mcp"
+    }
+  }
+}

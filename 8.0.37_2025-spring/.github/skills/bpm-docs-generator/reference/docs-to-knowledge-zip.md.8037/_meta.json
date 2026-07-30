@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "module": "im_activiti"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "docs-to-knowledge-zip_ja.md",
+      "to": "docs-to-knowledge-zip.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "docs-to-knowledge-zip_en.md",
+      "to": "docs-to-knowledge-zip.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "docs-to-knowledge-zip_zh_CN.md",
+      "to": "docs-to-knowledge-zip.md"
+    }
+  ]  
+}

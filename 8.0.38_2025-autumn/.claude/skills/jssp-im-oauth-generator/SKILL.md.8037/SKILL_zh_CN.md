@@ -96,14 +96,14 @@ jssp-im-oauth-generator/
 
 实现业务逻辑时，JSSP 的标准编码规约・错误处理・安全规约 **均适用**。视需要参考以下内容。
 
-- `{{AGENT_ROOT}}/rules/jssp-function-container.md` - 基本结构
-- `{{AGENT_ROOT}}/rules/jssp-error-handling.md` - 错误响应・HTTP 状态码
-- `{{AGENT_ROOT}}/rules/jssp-logging.md` - 日志输出
-- `{{AGENT_ROOT}}/rules/jssp-security.md` - SQL 注入・机密信息处理
-- `{{AGENT_ROOT}}/rules/jssp-2way-sql.md` - 涉及 DB 访问时
-- `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()`
-- `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/api-account-context.md` - 获取认证用户
-- `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/argument-request.md` - `request` 参数
+- `.claude/rules/jssp-function-container.md` - 基本结构
+- `.claude/rules/jssp-error-handling.md` - 错误响应・HTTP 状态码
+- `.claude/rules/jssp-logging.md` - 日志输出
+- `.claude/rules/jssp-security.md` - SQL 注入・机密信息处理
+- `.claude/rules/jssp-2way-sql.md` - 涉及 DB 访问时
+- `.claude/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()`
+- `.claude/skills/jssp-page-generator/reference/api-account-context.md` - 获取认证用户
+- `.claude/skills/jssp-page-generator/reference/argument-request.md` - `request` 参数
 
 ---
 
@@ -196,7 +196,7 @@ spec.json 的结构与参考 XML 一一对应，因此无需边看参考边决�
 ### 步骤 4：执行 build-oauth.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
+node .claude/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
      /tmp/{功能名}.spec.json
 ```
 
@@ -213,7 +213,7 @@ build-oauth.js 自动执行的内容:
 
 ```bash
 # spec 更新 → 仅重新生成 XML（保持 JSSP 业务逻辑）
-node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
+node .claude/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
      /tmp/{功能名}.spec.json --xml-only
 ```
 
@@ -233,7 +233,7 @@ build-oauth.js 生成的 JSSP 骨架包含:
 手工补充 `processBusinessLogic` 的内容。参考 `reference/oauth-resource-implementation.md` 与 `assets/sample-oauth-get-user.md` 的实现示例。
 
 **补充时的规约:**
-- 涉及 DB 访问时遵循 `{{AGENT_ROOT}}/rules/jssp-2way-sql.md`，将 SQL 文件外置于 `src/main/jssp/src/{功能名}/sql/` 目录下，使用 `executeByTemplate`
+- 涉及 DB 访问时遵循 `.claude/rules/jssp-2way-sql.md`，将 SQL 文件外置于 `src/main/jssp/src/{功能名}/sql/` 目录下，使用 `executeByTemplate`
 - 响应 JSON 不得包含 **机密信息（密码、认证令牌、未脱敏的个人信息）**
 - 用户不存在等情况以 `throwApiError(ERROR_CODE_*, 404, '...')` 抛出（已在 spec 的 `extraErrorCodes` 中常量化）
 

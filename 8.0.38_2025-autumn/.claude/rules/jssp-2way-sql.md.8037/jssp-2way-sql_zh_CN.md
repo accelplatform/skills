@@ -410,7 +410,7 @@ for (let i = 0; i < items.length; i++) {
 
 ## 相关文件
 
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - SQL 注入防护的整体方针
-- `skills/jssp-page-generator/reference/api-database.md` - Database API 参考
+- `.claude/rules/jssp-security.md` - SQL 注入防护的整体方针
+- `.claude/skills/jssp-page-generator/reference/api-database.md` - Database API 参考
 - `d.ts/platform/database/im-ssjs-tenant-database.d.ts` - TenantDatabase 类型定义
 - `d.ts/platform/database/im-ssjs-shared-database.d.ts` - SharedDatabase 类型定义

@@ -267,8 +267,7 @@ function transferErrorPage(code, message) {
   </style>
   <!-- Presentation page scripts -->
   <script>
-    // Bind variable for presentation page linkage
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+    (function($data) {
 
     document.addEventListener('DOMContentLoaded', () => {
       // Flag for always-on validation check
@@ -444,6 +443,7 @@ function transferErrorPage(code, message) {
         }
       }
     });
+    })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -630,7 +630,7 @@ When a user requests "Create a workflow application screen", use the code in the
 - **Icon-only buttons** (no text, e.g., delete trash icon) should use normal size. Using `is-small` / `is-x-small` makes the icon too small to operate
 - Required input field labels must always have required marks (`imds-required-label-required` class + `data-required-label="Required"`)
 - Use `imuiCalendar` (always specify `floatable="true"`) instead of `<input type="date">` for date input. Do not use inline display (without `floatable`)
-- **Implement validation according to the conventions in `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md`** (key rules below):
+- **Implement validation according to the conventions in `.github/instructions/jssp-presentation-page.instructions.md`** (key rules below):
   - Do not use `maxlength` attribute. Character count limits are communicated via validation error messages
   - Validation-related functions should be defined in this order: `clearValidationError` → `showValidationError` → `createRequest` → `getValidationErrors` → `resetValidationError` → `validateCurrentStep`
   - `showValidationError` gets the parent with `errorElement.closest('.imds-field')` and sets `activeValidation = true` at the end

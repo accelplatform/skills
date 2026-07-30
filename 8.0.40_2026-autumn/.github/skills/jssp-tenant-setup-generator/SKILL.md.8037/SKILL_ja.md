@@ -1,6 +1,6 @@
 ---
 name: jssp-tenant-setup-generator
-description: intra-mart Accel Platform のテナント環境セットアップ（Importer）用資材一式を新規生成する。Importer 形式の config XML、ロール、認可（ポリシー / リソース / リソースグループ / サブジェクトグループ）、メニューグループ、ジョブスケジューラ、拡張インポート JS、DDL/DML SQL スケルトン、IM-Workflow インポート連携（storage/public の WF 定義 XML を storage/system にコピーし、DataImportExecutor で取り込む拡張インポート JS を生成）、IM-LogicDesigner インポート連携（storage/public のロジックフロー ZIP を storage/system にコピーし、LogicFlowImporter で取り込む拡張インポート JS を生成）を spec.json から多言語展開（ja/en/zh_CN）で一括生成する。「テナント初期セットアップ資材を作って」「Importer インポート資材を作って」「初期データインポート用 XML を作って」「セットアップ XML を作って」「IM-Workflow をテナント環境セットアップで取り込みたい」「ワークフロー定義のインポートをセットアップに組み込んで」「IM-LogicDesigner のロジックフローをテナント環境セットアップで取り込みたい」と言及されたときに使用。
+description: intra-mart Accel Platform のテナント環境セットアップ（Importer）用資材一式を新規生成する。Importer 形式の config XML、ロール、認可（ポリシー / リソース / リソースグループ / サブジェクトグループ）、メニューグループ、ジョブスケジューラ、拡張インポート JS、DDL/DML SQL スケルトン、ポートレット登録 DML（JSSP プレゼンテーションページをポータルのポートレットとして登録する b_m_portlet_* テーブルへの DML 生成）、IM-Workflow インポート連携（storage/public の WF 定義 XML を storage/system にコピーし、DataImportExecutor で取り込む拡張インポート JS を生成）、IM-LogicDesigner インポート連携（storage/public のロジックフロー ZIP を storage/system にコピーし、LogicFlowImporter で取り込む拡張インポート JS を生成）を spec.json から多言語展開（ja/en/zh_CN）で一括生成する。「テナント初期セットアップ資材を作って」「Importer インポート資材を作って」「初期データインポート用 XML を作って」「セットアップ XML を作って」「ポートレットを登録するDMLを作って」「ポータルのポートレットをテナント環境セットアップに含めたい」「IM-Workflow をテナント環境セットアップで取り込みたい」「ワークフロー定義のインポートをセットアップに組み込んで」「IM-LogicDesigner のロジックフローをテナント環境セットアップで取り込みたい」と言及されたときに使用。
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -17,6 +17,7 @@ intra-mart Accel Platform の **Importer**（テナント環境セットアッ�
 |---------|-------------|--------|
 | インポート設定 | `import-<artifactId>-config-1.xml` | - |
 | データベース | `<key>-ddl.sql` / `<key>-dml.sql` | - |
+| ポートレット登録 | `<key>_sample-dml.sql`（`b_m_portlet_info` / `b_m_portlet_mode` / `b_m_portlet_title_info` への実 INSERT） | - |
 | ロール | `<key>-role.xml` | ja / en / zh_CN |
 | 認可リソースグループ | `<key>-authz-resource-group.xml` | ja / en / zh_CN |
 | 認可リソース | `<key>-authz-resource.xml` | ja / en / zh_CN |
@@ -29,6 +30,7 @@ intra-mart Accel Platform の **Importer**（テナント環境セットアッ�
 | IM-Workflow インポート XML | `storage/system` 配下にコピー | - |
 | IM-LogicDesigner インポート JS | `<key>/initialize/<key>_logic_import.js` | - |
 | IM-LogicDesigner インポート ZIP | `storage/system` 配下にコピー | - |
+| IMW ロジックフロープラグイン登録 JS | `<key>/initialize/<key>_import.js`（`doImport` で `WorkflowLogicFlowManager` を使用） | - |
 
 ## ファイル構成
 
@@ -48,6 +50,8 @@ jssp-tenant-setup-generator/
 │   ├── extends-import.md          # 拡張インポートクラス（doImport）仕様
 │   ├── workflow-import.md         # IM-Workflow インポート（workflowImport）仕様
 │   ├── logic-import.md            # IM-LogicDesigner インポート（logicImport）仕様
+│   ├── imw-logic-plugin-import.md # IMW ロジックフロープラグイン登録（doImport + WorkflowLogicFlowManager）仕様
+│   ├── multi-config.md            # 複数 config 運用（バージョンアップ / 同一バージョン内 config 追加）
 │   ├── database-sql.md            # DDL/DML スケルトン仕様
 │   └── checklist.md               # 生成後のセルフチェックリスト
 └── examples/
@@ -105,7 +109,7 @@ src/main/storage/system/products/import/basic/<key>/<version>/
 ### スコープ外: ファンクションコンテナのランタイム SQL
 
 ファンクションコンテナから `db.executeByTemplate` / `db.execute` で **実行時に呼び出す業務 SQL**（SELECT / INSERT / UPDATE / DELETE 等の 2WaySQL テンプレート）は本セクションのスコープ外。
-これらは `src/main/jssp/src/{機能名}/sql/` に配置する（詳細は `{{AGENT_RULES}}/jssp-2way-sql{{AGENT_RULE_FILE}}.md`）。
+これらは `src/main/jssp/src/{機能名}/sql/` に配置する（詳細は `.github/instructions/jssp-2way-sql.instructions.md`）。
 
 ### `storage/system` 配下 vs `storage/public` 配下の使い分け
 
@@ -133,8 +137,11 @@ spec.json の `workflowImport` / `logicImport` セクションは、**ユーザ�
 - 「Importer のインポート XML を一式作って」
 - 「テナント環境セットアップ用の認可リソース・ロール定義を作って」
 - 「初期データインポートのスケルトンを生成して」
+- 「JSSP 画面をポートレットとしてテナント環境セットアップに登録したい」（`portletImport` を含める場合）
 - 「IM-Workflow のインポートをテナント環境セットアップで取り込みたい」（`storage/public/im_workflow/` に WF 定義 XML がある場合）★ 明示指定時のみ
 - 「IM-LogicDesigner のインポートをテナント環境セットアップで取り込みたい」（`storage/public/im_logic/` にロジックフロー ZIP がある場合）★ 明示指定時のみ
+- 「IM-LogicDesigner のフローを IM-Workflow の処理対象者プラグインとして登録したい」★ 明示指定時のみ
+- 「LD フローを WF プラグインとして自動登録したい」★ 明示指定時のみ
 
 ## 生成手順
 
@@ -156,6 +163,7 @@ spec.json の `workflowImport` / `logicImport` セクションは、**ユーザ�
 | ジョブスケジューラ（任意） | NO | 定期バッチがあれば |
 | メニューグループ（任意） | NO | メニュー登録があれば |
 | DDL/DML テーブル（任意） | NO | 独自テーブルがあれば |
+| ポートレット定義（任意） | NO | JSSP 画面をポータルのポートレットとして登録したい場合（`portlet_cd`・表示するページパス・タイトル 3 言語） |
 | 拡張インポート処理（任意） | NO | doImport(tenantId) で初期化処理がある場合 |
 
 > **configNumber のヒアリングについて**
@@ -287,6 +295,25 @@ spec.json の `workflowImport` / `logicImport` セクションは、**ユーザ�
   // 9. 拡張インポート（任意） — true なら doImport(tenantId) のスケルトン JS を生成
   "extendsImport": true,
 
+  // 9.5. ポートレット登録（任意） — JSSP 画面をポータルのポートレットとして登録する
+  //      b_m_portlet_info / b_m_portlet_mode / b_m_portlet_title_info への実 INSERT 文を
+  //      <key>_sample-dml.sql に生成する（database が無くてもこれだけで DML ファイルが出力される）
+  //      詳細は reference/portlet-import.md 参照
+  "portletImport": {
+    "portlets": [
+      {
+        "portletCd": "any_app_summary",
+        "path": "any_app/portlet/summary_view/index",
+        "editable": false,
+        "titles": {
+          "name": { "ja": "Any App サマリ", "en": "Any App Summary", "zh_CN": "Any App 摘要" },
+          "application": { "ja": "Any App", "en": "Any App", "zh_CN": "Any App" },
+          "description": { "ja": "Any App の概要を表示します。", "en": "Displays an overview of Any App.", "zh_CN": "显示 Any App 的概览。" }
+        }
+      }
+    ]
+  },
+
   // 10. IM-Workflow インポート（任意） — files に列挙した XML を storage/public/im_workflow/
   //     から storage/system 配下にコピーし、取り込み用の <key>_workflow_import.js を生成
   "workflowImport": {
@@ -317,15 +344,17 @@ spec.json の `workflowImport` / `logicImport` セクションは、**ユーザ�
 | [reference/menu-group.md](reference/menu-group.md) | メニューグループ XML の最小構造 |
 | [reference/job-scheduler.md](reference/job-scheduler.md) | ジョブ・ジョブネット定義 XML |
 | [reference/extends-import.md](reference/extends-import.md) | `doImport(tenantId)` の実装規約 |
+| [reference/portlet-import.md](reference/portlet-import.md) | ポートレット登録（`portletImport.portlets`、`b_m_portlet_*` への DML 生成、対象外項目） |
 | [reference/workflow-import.md](reference/workflow-import.md) | IM-Workflow インポートの仕組み（`workflowImport.files`、生成 JS の構造、依存順序） |
 | [reference/logic-import.md](reference/logic-import.md) | IM-LogicDesigner インポートの仕組み（`logicImport.files`、`LogicFlowImporter` の Java 直接アクセス） |
+| [reference/multi-config.md](reference/multi-config.md) | 複数 config 運用（バージョンアップ / 同一バージョン内 config 追加）の手順・サンプル |
 | [reference/database-sql.md](reference/database-sql.md) | DDL/DML SQL スケルトンのフォーマット |
 | [reference/checklist.md](reference/checklist.md) | 生成後セルフチェック |
 
 ### 3. build-setup-import.js を実行
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
+node .github/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js \
      <spec.json のパス>
 ```
 
@@ -337,6 +366,7 @@ build-setup-import.js が自動で行うこと:
 - 名前空間 (`xmlns`) の自動付与
 - ロール ID / 認可リソース ID 等の参照整合性チェック（spec 内部で参照されていない ID は警告）
 - DDL/DML のスケルトン SQL 生成（テーブル名にコメントのみ）
+- `portletImport.portlets` から `b_m_portlet_info` / `b_m_portlet_mode` / `b_m_portlet_title_info` への実 INSERT 文生成（コメントのみのスケルトンではなく、そのままテナント環境セットアップで投入可能な DML）
 - 拡張インポート JS スケルトン生成（`doImport(tenantId)` を空関数で出力）
 - IM-Workflow インポート XML のコピー（`storage/public/im_workflow/` → `storage/system/products/import/basic/<key>/<version>/`）と専用 JS（`<key>_workflow_import.js`）生成
 - IM-LogicDesigner インポート ZIP のコピー（`storage/public/im_logic/` → `storage/system/products/import/basic/<key>/<version>/`）と専用 JS（`<key>_logic_import.js`）生成（`Packages.jp.co.intra_mart.foundation.logic.LogicServiceProvider` 経由）
@@ -348,85 +378,14 @@ build-setup-import.js が自動で行うこと:
 
 ## 複数 config 運用
 
-`import-<artifactId>-config-N.xml` を 2 つ以上に分けたいケースは大きく 2 パターンある。どちらも **既存の config-1.xml には触れず、新 config を追加** する点は共通だが、`spec.version` の扱いと出力先パスが異なる。
+`import-<artifactId>-config-N.xml` を 2 つ以上に分けるケースは 2 パターンある。
 
-| パターン | `spec.version` | 出力先 | 用途 |
-|---|---|---|---|
-| **(I) バージョンアップ** | `1.0.0` → `1.1.0` 等に上げる | 新バージョンディレクトリ `1.1.0/`（資材ファイル名に suffix なし） | リリース後の機能追加・スキーマ拡張など、テナント側に追加投入したい差分 |
-| **(II) 同一バージョン内 config 追加** | 据え置き（例: `1.0.0` のまま） | 同じ `1.0.0/` 配下にファイル名末尾 `-<N>` サフィックス付き（例: `equip-authz-policy-2.xml`） | LogicDesigner ルーティングが生成するリソースに後追いでポリシーを当てる等、**同一バージョンの初版投入時** に実行順序を制御したい場合 |
+| パターン | 用途 |
+|---|---|
+| **(I) バージョンアップ** | `spec.version` を上げて新バージョンディレクトリに差分を追加 |
+| **(II) 同一バージョン内 config 追加** | `spec.version` 据え置きで `configNumber` だけ増やし、ファイル名末尾に `-<N>` サフィックスを付与 |
 
-### 共通の設計原則
-
-- **既存の `import-<artifactId>-config-N.xml` には触れない**（変更すると既存テナントへの再投入が必要になる）
-- 新規分は **`import-<artifactId>-config-(N+1).xml`** を新規追加する
-- セットアップは `config-1.xml` → `config-2.xml` → ... の順に **全て** 実行される（intra-mart Importer の仕様）
-- そのため新 config には **差分のみ** を記述する（既に投入済みの内容は含めない）
-
-### パターン (I): バージョンアップ運用
-
-1. **差分 spec.json を作成**（例: `equip-v110.spec.json`）
-   - `"version": "1.1.0"`, `"configNumber": 2` を指定
-   - 追加・変更する要素のみ記述（既存ロールや認可は含めない）
-2. **build スクリプト実行**
-   ```bash
-   node {{AGENT_ROOT}}/skills/jssp-tenant-setup-generator/scripts/build-setup-import.js equip-v110.spec.json
-   ```
-3. **既存ファイル保護**: 出力先に既存ファイルがあると **エラーで停止** する
-   - 意図的に上書きする場合は `--force` フラグを付ける（通常は使わない）
-4. **生成結果**:
-   - `src/main/conf/products/import/basic/<artifactId>/import-<artifactId>-config-2.xml`（新規）
-   - `src/main/storage/system/products/import/basic/<key>/1.1.0/...`（新規、差分のみ。**ファイル名に suffix なし**）
-   - 既存の `config-1.xml` や `1.0.0/` は触られない
-
-### パターン (II): 同一バージョン内 config 追加
-
-`spec.version` を据え置きで `configNumber` だけ増やすと、出力ファイル名のベース部末尾に `-<N>` サフィックスが付く（例: `equip-authz-policy-2.xml`）。これにより同じ `<version>/` 配下に複数 config の資材が共存できる。
-
-主なユースケース: LogicDesigner のルーティングと、それに対する認可ポリシーを **初版セットアップ内で実行順序制御** したい場合。詳細は [reference/logic-import.md](reference/logic-import.md#ルーティング向け認可ポリシーの投入順序) 参照。
-
-### 差分 spec.json のサンプル
-
-```jsonc
-{
-  "key": "equip",
-  "version": "1.1.0",
-  "configNumber": 2,                           // ← 既存 config-1.xml に影響しないよう 2 を指定
-  "shortName": "eqp",
-  "displayNames": { "ja": "...", "en": "...", "zh_CN": "..." },
-
-  // 既存ロールには触れず、追加分のみ
-  "roles": [
-    {
-      "id": "equip_auditor",
-      "name": "equip_auditor",
-      "category": "equip",
-      "displayNames": { "ja": "監査担当者", "en": "Auditor", "zh_CN": "审计员" }
-    }
-  ],
-
-  // 既存リソースには触れず、追加分のみ
-  "authzResources": [
-    {
-      "id": "equip-audit-log",
-      "uri": "service://equip/audit/log",
-      "parentGroup": "equip-http-services",
-      "displayNames": { "ja": "監査ログ", "en": "Audit Log", "zh_CN": "审计日志" }
-    }
-  ],
-
-  // 新リソースに対する認可ポリシーのみ
-  "authzPolicies": [
-    { "resource": "equip-audit-log", "type": "service", "action": "execute",
-      "subject": "S(b_m_role:equip_auditor)", "effect": "PERMIT" }
-  ]
-}
-```
-
-### パターン (I) の注意
-
-- **DDL の差分**: 既存テーブルへ ALTER TABLE する場合、PostgreSQL/Oracle/SQL Server で構文が異なるため `1.1.0/equip-ddl_postgre.sql` 等の 3 方言別ファイルで対応
-- **重複投入の防止**: config-1.xml で投入したロール ID を再度 config-2.xml に書かないこと（Importer がエラーまたは上書きする）
-- **メニューグループ**: 既に投入済みのメニュー項目を変更したい場合は menu-id を維持しつつ menu-items の構造を差分で書くか、別途運用検討が必要
+いずれも **既存の config-N.xml には触れず** 新 config を追加する。手順・具体例・差分 spec.json サンプルは [reference/multi-config.md](reference/multi-config.md) を参照。
 
 ## 注意事項
 

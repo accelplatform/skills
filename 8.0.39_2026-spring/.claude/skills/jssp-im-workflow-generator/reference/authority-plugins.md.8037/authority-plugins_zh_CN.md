@@ -418,7 +418,7 @@ parameter 和 targetCode 值相同。分隔符为竖线 `|`（非插入符 `^`�
 
 ### 流程定义的创建
 
-有关创建步骤和 spec.json 模板，请参考 `jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md`。
+有关创建步骤和 spec.json 模板，请参考 `.claude/skills/jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md`。
 
 **输出（必须）**
 

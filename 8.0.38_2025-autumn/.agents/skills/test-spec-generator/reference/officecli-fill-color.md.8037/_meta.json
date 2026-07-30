@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "officecli-fill-color_ja.md",
+      "to": "officecli-fill-color.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "officecli-fill-color_en.md",
+      "to": "officecli-fill-color.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "officecli-fill-color_zh_CN.md",
+      "to": "officecli-fill-color.md"
+    }
+  ]
+}

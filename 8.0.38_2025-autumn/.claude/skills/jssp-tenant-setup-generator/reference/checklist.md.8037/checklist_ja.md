@@ -63,7 +63,7 @@ build-setup-import.js を実行した後、以下を確認すること。
 ## IM-Workflow インポート（`workflowImport` を指定した場合）
 
 - [ ] 元の WF XML が **UTF-16** でエンコードされている（`<?xml version="1.0" encoding="UTF-16"?>`）
-- [ ] WF XML の `<data>` 直下のセクション（`<contents>` / `<route>` / `<flow>` / `<matter_property>` / `<rule>`）が **2 スペースインデント** で記述されている（`extractTopLevelSection` の前提）
+- [ ] WF XML の `<data>` 直下のセクション（`<contents>` / `<route>` / `<flow>` / `<matter_property>` / `<rule>`）が **2 スペースインデント** で記述されている（`extractTopLevelSections` の前提）。`<rule>` 等、同名タグが複数並ぶ場合も `extractTopLevelSections` が全ブロックを配列で取得するため個別の対応は不要
 - [ ] `import-<artifactId>-config-<N>.xml` の `<extends-import>` に `<key>_workflow_import.js` を指す `<extends-import-class>` 行が含まれている（`extendsImport` 併用時は 2 行並列）
 - [ ] 対象環境が **8.0.37 (2025 Spring) 以降** である（`DataImportExecutor` / `SystemStorage` / `TenantInfoManager` の要件）
 - [ ] テナント環境セットアップ実行後、`<key>.workflow_import` ロガーに「workflow import completed.」が出ている

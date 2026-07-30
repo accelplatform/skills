@@ -72,7 +72,7 @@ WHERE
 npm run check:types:room
 
 # 任意のパスを対象にする場合
-bash {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{機能名}/
+bash .github/skills/jssp-page-generator/scripts/check-types.sh src/main/jssp/src/{機能名}/
 ```
 
 **0 issues になるまで修正する。**
@@ -244,7 +244,7 @@ load('/room/common/datetime_util.js');
 load('/room/common/datetime_util');
 ```
 
-- 2WaySQL の `executeByTemplate` / `fetchByTemplate` に渡すパスも同様に `.sql` を付けないルール（`jssp-2way-sql.instructions.md` 参照）。intra-mart の外部リソース参照パス指定は **拡張子を含めないのが原則** と覚える
+- 2WaySQL の `executeByTemplate` / `fetchByTemplate` に渡すパスも同様に `.sql` を付けないルール（`jssp-2way-sql.md` 参照）。intra-mart の外部リソース参照パス指定は **拡張子を含めないのが原則** と覚える
 - 機能フォルダ起点の絶対パス（先頭スラッシュあり）で統一する: `load('/room/common/xxx')`
 
 **検証方法:** `validate-jssp-code.js` の `JSSP-JS-025` が `load('...*.js')` パターンを自動検出する。
@@ -447,7 +447,7 @@ function getUserName(userId, localeId, tenantLocale) {
 - `IMMUserManager.getUsers()` はバルク取得だが、サーバ環境・バージョンによって `data` が空配列または `error: true` を返す場合がある（無音失敗）
 - 参加者リスト等でユーザ名を確実に解決する必要がある場合は **`getUser()`（単数）をループで呼ぶ** こと
 - `result.data.locales[locale].userName` でアクセスする（`displayName` プロパティは `UserListNodeInfo` のみに存在し、`UserInfo` には存在しない。`JSSP-JS-019` が誤用を自動検出する）
-- `locales` 自体の null チェック＋ロケールフォールバックを必ず入れること（`jssp-function-container.instructions.md` 参照）
+- `locales` 自体の null チェック＋ロケールフォールバックを必ず入れること（`jssp-function-container.md` 参照）
 - 取得失敗時は `userId` をフォールバックとして使うこと（例外を握りつぶさず `warn` ログを出力すること）
 
 ### 4-2. 画面側の初期化コード
@@ -573,4 +573,4 @@ location.href = url;
 IM-Workflow 画面を生成した場合は、以下を順に実行する。
 
 1. `validate-workflow-code.js` を実行し、0 error を確認する
-2. `jssp-im-workflow-usage/reference/screen-generation-checklist.md` の全項目を実行する
+2. `.github/skills/jssp-im-workflow-usage/reference/screen-generation-checklist.md` の全項目を実行する

@@ -63,7 +63,7 @@
 ## IM-Workflow 导入（指定了 `workflowImport` 的情况）
 
 - [ ] 原始 WF XML 以 **UTF-16** 编码（`<?xml version="1.0" encoding="UTF-16"?>`）
-- [ ] WF XML 中 `<data>` 直下的各节（`<contents>` / `<route>` / `<flow>` / `<matter_property>` / `<rule>`）使用 **2 个空格缩进** 编写（这是 `extractTopLevelSection` 的前提）
+- [ ] WF XML 中 `<data>` 直下的各节（`<contents>` / `<route>` / `<flow>` / `<matter_property>` / `<rule>`）使用 **2 个空格缩进** 编写（这是 `extractTopLevelSections` 的前提）。即使 `<rule>` 等标签并列多个，`extractTopLevelSections` 也会以数组形式取得全部区块，无需额外处理
 - [ ] `import-<artifactId>-config-<N>.xml` 的 `<extends-import>` 中包含指向 `<key>_workflow_import.js` 的 `<extends-import-class>` 行（与 `extendsImport` 并用时为 2 行并列）
 - [ ] 目标环境为 **8.0.37 (2025 Spring) 或以上**（`DataImportExecutor` / `SystemStorage` / `TenantInfoManager` 的要求）
 - [ ] 执行租户环境安装后，`<key>.workflow_import` 日志中输出了 "workflow import completed."

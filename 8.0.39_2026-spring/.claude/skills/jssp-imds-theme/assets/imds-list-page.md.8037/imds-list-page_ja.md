@@ -102,7 +102,7 @@ imds-container
     <table>
       <thead>
         <tr>
-          <th class="col-edit"><span>編集</span></th>
+          <th class="col-edit has-text-centered"><span>編集</span></th>
           <th><span>商品コード</span></th>
           <th><span>商品名</span></th>
           <th><span>単価</span></th>
@@ -168,7 +168,7 @@ imds-container
               <table>
                 <thead>
                   <tr>
-                    <th class="col-edit has-content-only"><span>編集</span></th>
+                    <th class="col-edit has-text-centered"><span>編集</span></th>
                     <th><span>商品コード</span></th>
                     <th><span>商品名</span></th>
                     <th><span>単価</span></th>

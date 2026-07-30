@@ -72,7 +72,7 @@ let contextPath = Web.getContextPath();
 
 ```javascript
 let baseUrl = Web.base();
-// 示例："http://localhost/imart"
+// 示例："http://127.0.0.1/imart"
 ```
 
 ### 获取请求信息

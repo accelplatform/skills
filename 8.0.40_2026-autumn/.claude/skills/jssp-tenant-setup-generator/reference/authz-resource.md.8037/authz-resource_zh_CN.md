@@ -88,13 +88,17 @@
 
 ## URI 方案
 
-本项目仅使用 `service://`。
+`spec.authzResources`（本节所说明的、由用户手写的授权资源）仅使用 `service://`。
 
 | 方案 | 用途 |
 |------|------|
 | `service://<key>/<path>` | HTTP / 内部服务（包含从画面、API、作业调用的处理在内的所有授权对象） |
 
 intra-mart 可能还存在其他授权资源 URI 方案，但本技能集合仅针对 `service://`，将包括画面、路由在内的所有处理均以 `service://` 表示。
+
+### 例外：`portletImport` 自动生成的授权资源
+
+指定 `spec.portletImport.portlets` 时，会自动生成使用 `im-portal-portlet://<portletCd>` / `im-portal-portlet-editmode://<portletCd>` 方案的授权资源到 `<key>-authz-resource.xml` 中（无需在 `spec.authzResources` 中手写）。这是 `spec.authzResources` 的 `service://` 限定规则范围之外的特例，用于将 `authz-policy` 一侧直接把哈希值写入 `resource`（不经过 `id`）的方式，在管理画面中可视化呈现。详情请参阅 [portlet-import.md](portlet-import.md#授权资源key-authz-resourcexml的自动生成)。
 
 ## spec.json 中的写法
 

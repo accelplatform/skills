@@ -1,0 +1,229 @@
+---
+name: jssp-page-generator
+description: intra-mart JSSP の画面・ファンクションコンテナ・共通処理・ルーティング設定を新規生成する。画面を作成、新しいページを追加、JSSP ファイルを作って、フォームを実装して、一覧画面を作成して、入力画面を追加して、と言及されたときに使用。CRUD 画面やフォーム画面の生成にはこのスキルを起点にすること。init関数を含むサーバサイド処理もこのスキルの対象。ジョブスケジューラのバッチ処理は jssp-im-job-generator、ワークフロー関連は jssp-im-workflow-usage を使うこと。
+---
+
+■■ 参照ルール チェックリスト（必須） ■■
+
+実装着手前に、以下を確認すること。未チェック項目がある場合は着手不可。
+
+- [ ] [jssp-2way-sql](../../../requirements/jssp-2way-sql/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-function-container](../../../requirements/jssp-function-container/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
+
+
+# JSSP コード生成支援スキル
+
+## 目的
+
+intra-mart Accel Platform の JSSP コードを新規に生成するためのスキルセット。
+テンプレートや規約に従って、新規ファイルを作成・構成するための手順を説明する。
+
+## 生成対象
+
+- **ファンクションコンテナ** (.js) - サーバサイドロジック（init 関数がエントリーポイント）
+- **プレゼンテーションページ** (.html) - 画面表示
+- **共通処理** (.js) - サーバサイドの共通処理
+- **ルーティング設定** (.xml) - URL 設定
+
+※ ジョブプログラムは `jssp-im-job-generator`、ワークフロー関連は `jssp-im-workflow-usage` を使うこと。
+
+## 参照すべき規約
+
+本スキルは `.js`（ファンクションコンテナ）+ `.html`（プレゼンテーションページ）の両方を生成するため、関連規約が多い。全体像は `.agents/requirements/README.md` の「規約ファイル一覧（一行要約 + 適用範囲タグ）」を参照。本スキル特有の重要度:
+
+| 規約 | 取り扱い |
+|------|---------|
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | 🟢 **必読** — `.html` の HTML 構造・バリデーション・id 命名 |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **必読** — `init()` 構造・validateRequest |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` / `.agents/requirements/jssp-file-structure/AGENTS.md` | 🟢 必読 |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-security/AGENTS.md` | 🟢 必読 — フォーム入力 + API があるため両方関連 |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🟡 **DB 操作を含む実装の場合のみ参照**。読み取り専用 UI 等 DB に触れない画面では不要 |
+| `.agents/requirements/jssp-logging/AGENTS.md` | 🟡 ログ実装時のみ |
+| `.agents/requirements/jssp-accessibility/AGENTS.md` | 🟠 **業務要件次第** — 仕様書で明示要求があった場合のみ厚く適用。指示がなければ最小限（`imdsConfirm`、`aria-label`、装飾アイコンの `aria-hidden` 等の基本）に留める |
+
+## 使用タイミング
+
+ユーザが以下のような依頼をした場合：
+- 「○○画面を作成して」
+- 「新しい JSSP ファイルを追加」
+- 「一覧画面を作って」
+- 「入力フォームを実装して」
+- 「CRUD 画面を作成して」
+
+---
+
+## 統合ワークフロー
+
+**このワークフローを上から順番に実行すること。ステップの省略・順序変更は禁止。**
+各ステップは完了してから次へ進むこと。ユーザへの報告はステップ 11 完了後に行う。
+
+---
+
+### ステップ 1: 要件ヒアリング
+
+ユーザから以下を確認する。
+
+- 画面名・機能の概要
+- 配置パス（`src/main/jssp/src/` 配下のどこに置くか）
+- 新規テーブルが必要かどうか
+- **画面が IM-共通マスタの値（ユーザ・組織・会社・グループ・ロール）を入力させるフィールドを含むかどうか** → 含む場合は `jssp-im-master-usage` スキルを併用してマスタ検索ダイアログとして実装する（自前 `<input>` でのコード手打ち入力は禁止）
+- **ポータル画面のポートレット（部品）として、同一画面に複数配置されうるかどうか** → 該当する場合は `assets/simple-portlet.md` を使用する（ヘッダ・フッタを含めない、`$data` を IIFE でスコープ化する等、通常画面と異なる実装方針になるため）
+
+---
+
+### ステップ 2: アセットサンプルの読み込み
+
+画面タイプに応じて、対応するアセットファイルを **Read ツールで開いて読み込む。**
+このステップを省略してはならない。アセットには imds 準拠の構造・クラス名の使用例が含まれている。
+
+| 画面タイプ | 読み込むファイル |
+|-----------|----------------|
+| 入力フォーム | `assets/simple-form.md` |
+| 一覧画面 | `assets/simple-list.md` |
+| ウィザード | `assets/simple-wizard.md` |
+| カレンダー画面 | `assets/sample-calendar.md` |
+| ポートレット画面（ポータル部品、複数配置されうる） | `assets/simple-portlet.md` |
+| ファイルアップロード/ダウンロード REST-API | `assets/file-upload-download-api.md`（バイナリ転送は `reference/api-binary-stream.md` も合わせて読み込むこと） |
+| 生 JSON 受信 REST-API（POST `application/json`） | `assets/post-json-api.md` |
+
+---
+
+### ステップ 3: imds コンポーネント reference の読み込み
+
+`jssp-imds-theme` スキルを参照し、画面に含まれる UI コンポーネントごとに **対応する reference ファイルを Read ツールで開いて読み込む。**
+記憶や推測で imds のクラス名・タグ構造を書いてはならない。
+
+| コンポーネント | reference ファイル |
+|--------------|-------------------|
+| テキストボックス | `.agents/skills/jssp-imds-theme/reference/imds-html-textbox.md` |
+| テキストエリア | `.agents/skills/jssp-imds-theme/reference/imds-html-textarea.md` |
+| セレクト（選択肢） | `.agents/skills/jssp-imds-theme/reference/imds-html-select.md` |
+| チェックボックス | `.agents/skills/jssp-imds-theme/reference/imds-html-checkbox.md` |
+| ラジオボタン | `.agents/skills/jssp-imds-theme/reference/imds-html-radio.md` |
+| ボタン | `.agents/skills/jssp-imds-theme/reference/imds-html-button.md` |
+| テーブル | `.agents/skills/jssp-imds-theme/reference/imds-html-table.md` |
+| ダイアログ | `.agents/skills/jssp-imds-theme/reference/imds-html-dialog.md` |
+| ダイアログ + フォーム（新規作成・編集等） | `.agents/skills/jssp-imds-theme/reference/imds-html-dialog-form.md` |
+| ページネーション | `.agents/skills/jssp-imds-theme/reference/imds-html-pagination.md` |
+| フィールド（ラベル付き） | `.agents/skills/jssp-imds-theme/reference/imds-html-field.md` |
+| フィールドグループ | `.agents/skills/jssp-imds-theme/reference/imds-html-field-group.md` |
+| タブ | `.agents/skills/jssp-imds-theme/reference/imds-html-tabs.md` |
+| アコーディオン | `.agents/skills/jssp-imds-theme/reference/imds-html-accordion.md` |
+| カレンダー入力 | `.agents/skills/jssp-imds-theme/reference/imui-html-calendar.md` |
+| バナーメッセージ | `.agents/skills/jssp-imds-theme/reference/imds-html-banner-message.md` |
+| インラインメッセージ | `.agents/skills/jssp-imds-theme/reference/imds-html-inline-message.md` |
+
+上記以外のコンポーネントは `.agents/skills/jssp-imds-theme/reference/` 配下に格納されている。
+
+---
+
+### ステップ 4: ファンクションコンテナ・ルーティングの生成
+
+`.agents/requirements/jssp-function-container/AGENTS.md` と `.agents/requirements/jssp-presentation-page/AGENTS.md` を参照してコードを生成する。
+
+- ファンクションコンテナ（.js）を `src/main/jssp/src/{機能名}/` に生成する
+- **ポートレット画面（`assets/simple-portlet.md`）の場合はルーティング設定を生成しない**。ポートレットはポータル機能（`b_m_portlet_info.path`）から直接呼び出され、ルーティングテーブルを経由しないため（詳細は `.agents/requirements/jssp-file-structure/AGENTS.md` の「ルーティングテーブル経由で呼ばれない画面の例外規約」参照）
+- 上記以外の画面では、ルーティング設定（.xml）を必要に応じて生成する
+  - 各 `file-mapping` には `<authz uri="service://{機能名}/{処理}" action="execute" />` を**必ず明示**する。`welcome-all` / `<authz-default>` による認可スキップは**原則禁止**
+  - ここで参照した認可リソース（`service://...`）は **`jssp-tenant-setup-generator` で必ず定義**する（policy / resource / resource-group / subject-group）。未定義のままデプロイすると対象 URL へのアクセスが常に **403** で拒否される
+- セキュアトークンを使用すること（`reference/secure-token-check.md` を参照）
+- 参照先で `TODO` が書かれている場合は、その指示どおりに実装する
+
+---
+
+### ステップ 5: プレゼンテーションページ（HTML）の生成
+
+ステップ 2・3 で読み込んだアセットと reference の HTML スニペットをベースに `.html` を生成する。
+
+**禁止事項:**
+- アセットや reference を読まずに、記憶や推測で imds のクラス名・構造を書くこと
+- `jssp-imds-theme` の reference に存在しないクラス名を使用すること（例: `imds-selectbox` は存在しない、正しくは `imds-select`）
+- imds コンポーネントを使わず、独自の HTML/CSS 構造を定義すること
+- アセットの HTML 構造（フォームのトップレベル構造、`imds-field-container` / `imds-field-group` / `imds-field` のネスト、`is-horizontal` / `imds-w-15` 等のレイアウトクラス）を**独自判断で改変すること**。アセット側の構造はそのまま流用し、ラベル文言・`id`・入力種別・バリデーション内容だけを置き換えること
+- 「縦並びの方が見やすい」「項目が多いので簡略化したい」等の**独自のデザイン判断に基づくレイアウト変更**（例: `is-horizontal` → `is-vertical` への変更、`imds-field-container` / `imds-field-group` の省略）。アセットと異なる構造が必要な場合は、**生成前にユーザへ確認**すること
+- アセットに記述されている **JSDoc コメント（`/** ... */`）やセクション区切りコメント（`// ===...===`）を省略すること**。冗長に見えても、規約（`.agents/requirements/jssp-function-container/AGENTS.md`）でこれらは必須項目として扱う。残すことで関数の意図がコード内で明示され、後続のレビューや改修が容易になる。アセットに含まれるコメントは原則そのまま写経し、変更が必要な場合は内容を該当機能用にリライトするだけにとどめること（削除はしない）
+
+**必須ルール:**
+- ラベル付きフォーム要素は `imds-field` + `imds-field-label` + `imds-field-control` 構造を使うこと
+- テーブルは `imds-table` > `imds-table-inner` > `table` の二重ラッパー構造を使うこと
+- ボタンの状態（primary/outlined 等）は reference の状態クラスを使い、CSS で色を付けないこと
+- フォーム本体の構造は**アセットの該当スニペットを 1 行ずつ写経する**ことを前提とし、独自に `imds-field` 単独で使う構造へ簡略化しないこと。`imds-field-container has-accent-color` 直下に `imds-field-group` を配置する形が標準パターンである
+
+---
+
+### ステップ 6: DDL の生成（新規テーブルが必要な場合のみ）
+
+仕様書に DDL 不要の指示がある場合はスキップする。それ以外は以下を `src/main/storage/system/products/import/basic/{機能名}/{version}/` 配下に出力すること。
+
+**配置先固定の理由**: DDL とサンプル DML は **テナント環境セットアップ（Importer）で一括投入される**運用が前提のため、`jssp-tenant-setup-generator` を直接使うかどうかに関わらず、必ず `storage/system` 配下のこのパスに配置する（インポート画面から個別投入できない資材のため）。詳細は `jssp-tenant-setup-generator/SKILL.md` の「DDL / サンプル DML 配置の意義」セクション参照。
+
+`{version}` の決定優先順位:
+1. ユーザー指示・仕様書で明示されたバージョン
+2. プロジェクトルートの `module.xml`（または `src/main/jssp/module.xml`）の `<version>` タグの値
+3. プロジェクトルートの `pom.xml` の `<version>` タグの値（`<parent>` 内の version は除外）
+4. 上記いずれもなければ `1.0.0`
+
+| ファイル | 内容 |
+|---------|------|
+| `src/main/storage/system/products/import/basic/{機能名}/{version}/{機能名}-ddl_postgre.sql` | CREATE TABLE 文（PostgreSQL 用） |
+| `src/main/storage/system/products/import/basic/{機能名}/{version}/{機能名}-ddl_oracle.sql` | CREATE TABLE 文（Oracle 用） |
+| `src/main/storage/system/products/import/basic/{機能名}/{version}/{機能名}-ddl_sqlserver.sql` | CREATE TABLE 文（SQLServer 用） |
+| `src/main/storage/system/products/import/basic/{機能名}/{version}/{機能名}_sample-dml.sql` | サンプルレコードの INSERT 文（全 DB 共通、**推奨**） |
+
+`import-<key>-config-1.xml` の `<create-file>` / `<insert-file>` 参照は **suffix なし**（例: `{機能名}-ddl.sql` / `{機能名}_sample-dml.sql`）で書く。intra-mart Importer が接続先 DB に合わせて自動で `_postgre` / `_oracle` / `_sqlserver` を付与し、suffix 付きが無ければ suffix なしファイルにフォールバックする。
+
+- **DDL は 3 方言別ファイル**（型・制約構文が DB ごとに違うため）
+- **DML は 1 ファイルに一本化**（INSERT 文は標準 SQL の範囲で書けば全 DB 共通でよい）
+
+DML で方言依存構文（PostgreSQL の `ON CONFLICT`、Oracle の `MERGE` 等）を使う場合のみ、`{機能名}_sample-dml_postgre.sql` 等の 3 方言別ファイルにする。
+
+DDL 生成時の詳細ルールは本ファイル末尾の「DDL 生成ルール詳細」セクションを参照すること。
+
+---
+
+### ステップ 7〜10: 生成後検証（サブエージェントに委譲）
+
+**Agent ツール**を使ってサブエージェントを起動し、検証・修正をすべて委譲する。
+メイン会話のコンテキストを保護するため、検証作業はサブエージェントに完結させること。
+
+サブエージェントへのプロンプトに含める内容:
+- `jssp-page-verifier` スキルを実行すること
+- 対象パス: `src/main/jssp/src/{機能名}/`
+- DDL を生成した場合のみ DDL パス: `src/main/storage/system/products/import/basic/{機能名}/{version}/`
+- エラーが 0 件になるまで修正を繰り返すこと
+- 完了後に各ステップの結果サマリーを返すこと
+
+サブエージェントが完了したら結果サマリーを確認し、問題がなければステップ 11 へ進む。
+
+---
+
+### ステップ 11: コードレビュー・セキュリティチェック
+
+ステップ 7〜10 が完了したら、以下の 2 スキルを **利用可能な場合のみ** 順に実行する。
+スキルが存在しない場合はスキップしてよい。ユーザへの報告前に完了させること。
+
+1. `jssp-code-review` スキルが利用可能であれば実行する
+2. `jssp-security-check` スキルが利用可能であれば実行する
+
+**ここまで完了したらユーザに報告する。**
+
+---
+
+## DDL 生成ルール詳細
+
+ステップ 6 で DDL を生成する際は以下のルールに従うこと。
+
+- テーブル名・カラム名は生成したファンクションコンテナの SQL と一致させること
+- **カラムの型は `reference/ddl-type-mapping.md` の型マッピング表に従うこと**（記憶や推測で型名を書かない）
+- DDL は DB 製品ごとにファイルを分けること（型名・デフォルト値の構文が異なるため）
+- サンプル DML は標準 SQL の INSERT 文で記述し、3製品共通で使用できるようにすること
+- マスタテーブルにはサンプルレコードを 3〜5 件程度 INSERT すること

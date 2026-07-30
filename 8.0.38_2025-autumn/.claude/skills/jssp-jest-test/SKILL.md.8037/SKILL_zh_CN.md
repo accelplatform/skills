@@ -23,7 +23,7 @@ description: 使用 jest-on-rhino 支持函数容器（.js）的单元测试创�
 
 1. 加载目标函数容器（js）
 2. 确定要测试的函数和逻辑
-3. 根据 `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md` 的测试观点设计测试用例
+3. 根据 `.claude/rules/jssp-testing.md` 的测试观点设计测试用例
 4. 按照本技能的模板和模拟模式生成测试代码
 5. 按照"测试的执行"步骤运行测试，直至全部通过
 

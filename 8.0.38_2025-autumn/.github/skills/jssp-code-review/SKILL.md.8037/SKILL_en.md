@@ -17,7 +17,7 @@ Reviews code written in the intra-mart Accel Platform script development model (
 Run the following command to first identify problems that can be detected by the script.
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <output path>
+node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js <output path>
 ```
 
 If errors or warnings are output, record them as-is and report along with the Step 2 review results.
@@ -40,7 +40,7 @@ Read the code to verify the following items.
 
 - [ ] Are bind variables stringified with `JSON.stringify()`?
 - [ ] After `JSON.stringify()`, is `.replace(/\//g, '\\/') ` used for escaping?
-- [ ] In the presentation page, is the format `const $data = <imart ...>` used to receive them?
+- [ ] In the presentation page, are they received using the IIFE form `(function($data) { ... })(<imart ...>);`, avoiding `$data` as a global variable?
 
 #### 2-3. Error Handling
 

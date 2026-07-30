@@ -48,10 +48,12 @@ doImport(tenantId)
         ├ SystemStorage で XML を UTF-16 で読込
         └ for each dataType ('matter_property' → 'rule' → 'contents' → 'route' → 'flow'):
             importSingleSection()
-              ├ extractTopLevelSection() で該当ブロックを切り出し
-              ├ 一時 XML として UTF-16 で書き出し
-              ├ executeImport() で DataImportExecutor.importData() 呼び出し
-              └ 一時ファイルを削除（finally）
+              ├ extractTopLevelSections() で該当タグの全ブロックを配列で切り出し
+              └ for each block:
+                  importSectionBody()
+                    ├ 一時 XML として UTF-16 で書き出し
+                    ├ executeImport() で DataImportExecutor.importData() 呼び出し
+                    └ 一時ファイルを削除（finally）
 ```
 
 ### dataType の値
@@ -70,13 +72,15 @@ doImport(tenantId)
 
 ### XML の分割
 
-`WorkflowXmlImporter` は **1 回の `importData` 呼び出しに対し、`dataType` に対応する単一セクションをルート要素とする XML** を要求する。元のインポート XML は `<data>` 直下に複数セクションをまとめて格納しているため、`extractTopLevelSection` で該当セクションを切り出し、`<?xml version="1.0" encoding="UTF-16"?>` を付加した一時 XML として再構成してから渡す。
+`WorkflowXmlImporter` は **1 回の `importData` 呼び出しに対し、`dataType` に対応する単一セクションをルート要素とする XML** を要求する。元のインポート XML は `<data>` 直下に複数セクションをまとめて格納しているため、`extractTopLevelSections` で該当セクションを切り出し、`<?xml version="1.0" encoding="UTF-16"?>` を付加した一時 XML として再構成してから渡す。
 
-`extractTopLevelSection` は **行頭インデント 2 スペース** のタグだけをトップレベルとして拾うため、ネストされた同名タグ（例: `<contents>` 内の `<contents>`）に誤マッチしない。元 XML のインデントが 2 スペース以外になった場合は調整が必要。
+`<contents>` / `<route>` / `<flow>` / `<matter_property>` は通常 1 セクションのみだが、`<rule>`（分岐ルール）は複数の申請パターンに対応するため `<data>` 直下に同名タグが連続して並ぶことが多い。`extractTopLevelSections` は該当タグの出現箇所をすべて走査し、**配列で全ブロックを返す**（`indexOf` の単発検索ではなく、1 件見つけるごとに検索位置を進めてループする）。`importSingleSection` はこの配列を受け取り、`importSectionBody` で 1 ブロックずつ個別に一時 XML 化・`importData` 呼び出しを行うため、同名タグが何個並んでいても取りこぼさない。
+
+`extractTopLevelSections` は **行頭インデント 2 スペース** のタグだけをトップレベルとして拾うため、ネストされた同名タグ（例: `<contents>` 内の `<contents>`）に誤マッチしない。元 XML のインデントが 2 スペース以外になった場合は調整が必要。
 
 ### 一時ファイル
 
-一時 XML は `tmp/<key>_<tenantId>_<dataType>.xml` というパスで **PublicStorage** 配下に作成し、`finally` で必ず削除する。テナント ID と dataType・key を含めることで、並列実行や複数テナント取り込み時の衝突を回避する。
+一時 XML は `tmp/<key>_<tenantId>_<dataType>_<index>.xml` というパスで **PublicStorage** 配下に作成し、`finally` で必ず削除する。テナント ID・dataType・key に加え、同名タグが複数並ぶ場合を想定して連番 `index`（`extractTopLevelSections` が返す配列内の位置）を含めることで、並列実行や複数テナント取り込み時の衝突を回避する。
 
 書き込み前に `ensureTemporaryDirectory()` を呼び、PublicStorage の `tmp/` ディレクトリが存在しない場合は `makeDirectories()` で作成する。SystemStorage では未作成ディレクトリへの書き込みが失敗するため、PublicStorage を採用し、加えて `tmp/` の事前作成を保証している。
 

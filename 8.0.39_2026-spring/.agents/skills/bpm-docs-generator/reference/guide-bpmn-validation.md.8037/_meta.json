@@ -1,0 +1,57 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "module": "im_activiti"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "guide-bpmn-validation_ja.md",
+      "to": "guide-bpmn-validation.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "guide-bpmn-validation_en.md",
+      "to": "guide-bpmn-validation.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "guide-bpmn-validation_zh_CN.md",
+      "to": "guide-bpmn-validation.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{RUNTIME}}",
+      "values": [
+        {
+          "condition": {
+            "packageManager": "bun"
+          },
+          "value": "bun"
+        },
+        {
+          "condition": {
+            "accelplatformVersion": ">=8.0.37"
+          },
+          "value": "node"
+        }
+      ]
+    }
+  ]
+}

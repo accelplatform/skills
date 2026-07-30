@@ -13,14 +13,14 @@ allowed-tools: Bash, Read, Write, Glob, mcp__im_workflow__list_authority_plugins
 
 ## 需参照的规约
 
-本技能仅生成 **XML 定义文件**（`.xml`），不实现 `.js` / `.html`（实现由 `jssp-im-workflow-usage` 负责）。因此需参照的规约最少化。全局视图请参阅 `{{AGENT_RULES}}/README.md`。
+本技能仅生成 **XML 定义文件**（`.xml`），不实现 `.js` / `.html`（实现由 `jssp-im-workflow-usage` 负责）。因此需参照的规约最少化。全局视图请参阅 `.github/instructions/README.md`。
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-file-structure.instructions.md` | 🟢 必读 — XML 的输出位置（`src/main/storage/public/im_workflow/`） |
-| `jssp-naming.instructions.md` | 🟢 必读 — workflowName / shortName 等命名 |
-| `jssp-function-container.instructions.md` / `jssp-presentation-page.instructions.md` / `jssp-code-style.instructions.md` 等 | 🔴 **本技能单独不需要**（仅 XML 生成。`.js` / `.html` 的实现由 `jssp-im-workflow-usage` 负责） |
-| `jssp-2way-sql.instructions.md` / `jssp-accessibility.instructions.md` / `jssp-logging.instructions.md` 等 | 🔴 **本技能单独不需要** |
+| `jssp-file-structure.md` | 🟢 必读 — XML 的输出位置（`src/main/storage/public/im_workflow/`） |
+| `jssp-naming.md` | 🟢 必读 — workflowName / shortName 等命名 |
+| `jssp-function-container.md` / `jssp-presentation-page.md` / `jssp-code-style.md` 等 | 🔴 **本技能单独不需要**（仅 XML 生成。`.js` / `.html` 的实现由 `jssp-im-workflow-usage` 负责） |
+| `jssp-2way-sql.md` / `jssp-accessibility.md` / `jssp-logging.md` 等 | 🔴 **本技能单独不需要** |
 
 ## 生成对象
 
@@ -343,7 +343,7 @@ XML 结构（3语言区域展开·2版本·插件双重注册等）由 `build-wo
 ### 3. 执行 build-workflow.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
+node .github/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
      /tmp/<workflowName>.spec.json
 ```
 
@@ -363,7 +363,7 @@ build-workflow.js 自动执行的内容：
 ### 4. 使用 validate-workflow.js 验证
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
+node .github/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
      <输出的 .xml>
 ```
 

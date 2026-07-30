@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "simple-portlet_ja.md",
+      "to": "simple-portlet.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "simple-portlet_en.md",
+      "to": "simple-portlet.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-portlet_zh_CN.md",
+      "to": "simple-portlet.md"
+    }
+  ]
+}

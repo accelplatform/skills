@@ -27,11 +27,9 @@ description: "プレゼンテーションページの実装方針"
       gap: 3em;
     }
   </style>
-  <!-- プレゼンテーションページのスクリプト -->
+  <!-- プレゼンテーションページのスクリプト（$data をグローバル領域に置かず IIFE でスコープ化する） -->
   <script>
-    // プレゼンテーションページ連携用のバインド変数
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     // ページロード後の処理
     document.addEventListener('DOMContentLoaded', () => {
       // セキュアトークン取得
@@ -99,6 +97,7 @@ description: "プレゼンテーションページの実装方針"
         initializeView($data.result);
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -128,7 +127,7 @@ description: "プレゼンテーションページの実装方針"
 ### 変数宣言
 
 プレゼンテーションページ内の JavaScript はブラウザで実行されるため、Rhino の制約は適用されない。
-`jssp-code-style.instructions.md` の `const` 制限はファンクションコンテナ（`.js`）専用であり、HTML 内スクリプトには適用しないこと。
+`jssp-code-style.md` の `const` 制限はファンクションコンテナ（`.js`）専用であり、HTML 内スクリプトには適用しないこと。
 
 - **再代入しない変数**: `const` を使用する
 - **再代入する変数**: `let` を使用する
@@ -201,8 +200,12 @@ var participants = [];                  // var は使用しない
 
 ### JSON を埋め込む場合
 
+`$data` はグローバル変数として定義せず、即時実行関数（IIFE）の引数として渡し、スコープ内に閉じ込める（後述の「バインド変数 `$data` のスコープ化（IIFE）」を参照）。
+
 ```javascript
-const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+(function($data) {
+  // ここに $data を参照する処理を実装する
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 ```
 
 - <imart> タグの value 属性は、ダブルクォートで囲んではならない
@@ -237,6 +240,37 @@ let value = '<imart type="string" value=$imwSystemMatterId escapeXml="false" esc
 5. クライアントへレスポンスを送信する
 6. レスポンスを受け取ったクライアント側（ブラウザ等）へ処理が移動する
 7. DOMContentLoaded でブラウザ側の初期化処理を実行する
+
+## バインド変数 `$data` のスコープ化（IIFE）
+
+### 適用条件
+
+**全ての画面で適用する。** 通常の 1 画面単独表示の画面、ポータル画面のポートレット（部品）として複数配置される画面の別を問わず、以下の IIFE パターンを使用する。
+
+### 理由
+
+`const $data = <imart>...</imart>;` を独立した `<script>` タグでそのまま定義すると、`$data` はグローバル変数になる。1 画面が単独で表示される限りは問題にならないが、同一ポータル画面に同じ画面（ポートレット）が複数配置されると、後から読み込まれたインスタンスの `$data` が先に読み込まれたインスタンスの `$data` を上書きしてしまい、意図しない表示になる。全画面で IIFE スコープ化を標準にしておくことで、後から画面をポートレット化する際にも改修が不要になり、グローバル名前空間の汚染も避けられる。
+
+### 実装パターン
+
+```html
+<script>
+(function($data) {
+  document.addEventListener('DOMContentLoaded', () => {
+    // TODO: ここに画面の初期化処理を追加します（$data を参照する）
+  });
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
+</script>
+```
+
+- `const $data = <imart>...</imart>;` を独立した `<script>` タグとして書く旧パターンは使わず、即時実行関数（IIFE）の引数として `$data` を渡す
+- IIFE の引数として渡す場合も `escapeXml="false" escapeJs="false"` という値は変更しない（`<script>` 内で JSON をそのまま出力する「JSON を埋め込む場合」と同じ判定基準のため）
+- `DOMContentLoaded` イベントリスナーや `initializeView` 等の処理はすべて IIFE 内に含め、`$data` 以外のローカル変数・関数もスコープ内に閉じ込める
+- 基本構造の詳細は本ページ冒頭の「基本構造」を参照。ポートレット固有の追加事項（ヘッダ・フッタの省略等）は `.github/skills/jssp-page-generator/assets/simple-portlet.md` を参照すること
+
+### 注意: 要素 id の衝突
+
+IIFE 化によって `$data` の衝突は防げるが、`id="xxx-table"` 等の要素 id は依然として画面ごとに固定のままである。ポータル側が同一 DOM 内に複数インスタンスをそのまま並べる方式の場合、id の重複により `document.getElementById()` が最初のインスタンスの要素しか返さない問題が起こりうる。ポータルの埋め込み方式（iframe で分離されるかどうか）を踏まえ、必要に応じて id をインスタンスごとに一意化する対応を検討すること。
 
 ## maxlength 属性の使用方針
 
@@ -323,7 +357,7 @@ function toggleLocationDetailRequired() {
 ## 日付入力・日時入力（imuiCalendar）
 
 日付入力には `<input type="date">` ではなく `<imart type="imuiCalendar">` を使用する。
-使用方法・属性・注意事項・日時入力（日付 + 時刻の組み合わせ）パターンは `skills/jssp-imds-theme/reference/imui-html-calendar.md` を参照すること。
+使用方法・属性・注意事項・日時入力（日付 + 時刻の組み合わせ）パターンは `.github/skills/jssp-imds-theme/reference/imui-html-calendar.md` を参照すること。
 
 ## 入力フィールドの幅制御
 
@@ -402,7 +436,7 @@ if (!userCode || userCode.length === 0) {
 }
 ```
 
-その他のパターン（数値・正規表現・メール・日付形式・任意項目等）は `assets/simple-form.md` の「バリデーションパターン集」を参照すること。
+その他のパターン（数値・正規表現・メール・日付形式・任意項目等）は `.github/skills/jssp-page-generator/assets/simple-form.md` の「バリデーションパターン集」を参照すること。
 
 ### 実装方針
 
@@ -419,7 +453,7 @@ if (!userCode || userCode.length === 0) {
 
 ### 実装方針
 
-アーキテクチャの概要（完全実装は `assets/simple-form.md` を参照）:
+アーキテクチャの概要（完全実装は `.github/skills/jssp-page-generator/assets/simple-form.md` を参照）:
 
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
@@ -512,14 +546,14 @@ function callbackXxxSearch(result) {
 ### 実装方針
 
 - ハイパーリンクや、同じホスト内の REST-API を呼び出す場合は、コンテキストパス配下を相対パスで指定する
-  - 例: `http://localhost/imart/foo/bar` にアクセスする場合、URL 指定は `foo/bar` とする
+  - 例: `http://127.0.0.1/imart/foo/bar` にアクセスする場合、URL 指定は `foo/bar` とする
 - この相対パスは、ルーティング設定ファイルに定義した `file-mapping` タグの `path` 属性で、先頭の `/` を除去したものと一致する
   - 例： ルーティング設定ファイルが `<file-mapping path="/sample/user/list" page="sample/user/user_list">` の場合、プレゼンテーションページ `sample/user/user_list` を開く URL は `sample/user/list` と指定すること
 
 ### コンテキストパス
 
 - コンテキストパスとは、ホスト名・ポート番号・デプロイ先のルートディレクトリ名で構成されている URL のこと
-  - 例: `http://localhost/imart/`
+  - 例: `http://127.0.0.1/imart/`
 - `<imart type="head">` タグによって、コンテキストパスが `<base>` タグに指定されているため、URL 指定時はコンテキストパス以降のパスを相対で指定することを推奨
 
 ## API の呼び出し
@@ -565,7 +599,7 @@ async function register(request) {
   - Content-Type が application/x-www-form-urlencoded を想定している場合、リクエストパラメータを `URLSearchParams` で指定する
   - Content-Type が application/json を想定している場合、リクエストパラメータを `JSON.stringify()` で指定する
 - 非同期処理は Promise を使用し、`async`, `await` を使用してコードを見やすくする
-- レスポンス形式は `{error: bool, data | errorMessage}`（→ `jssp-error-handling.instructions.md`「API レスポンスの構造（JSON）」）
+- レスポンス形式は `{error: bool, data | errorMessage}`（→ `jssp-error-handling.md`「API レスポンスの構造（JSON）」）
   - `result.error` で分岐し、エラー時は `result.errorMessage`（`[コード] メッセージ` 形式）をそのまま表示する
   - HTTP ステータスコード（200 / 400 / 405 / 500）は API 側が設定する。クライアントでは個別判定せず、`result.error` のみで判定する
 - 正常終了時は `imuiShowSuccessMessage()` で処理完了メッセージを表示する

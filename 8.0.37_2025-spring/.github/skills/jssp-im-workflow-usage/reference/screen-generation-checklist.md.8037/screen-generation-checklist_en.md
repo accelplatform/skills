@@ -23,7 +23,7 @@ After completing the generation of screen programs (.html / .js), perform self-v
 
 ### Validation Structure
 
-- [ ] Validation function group conforming to `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md` (`clearValidationError`, `showValidationError`, `createRequest`, `getValidationErrors`, `resetValidationError`, `validateCurrentStep`) is defined in this order
+- [ ] Validation function group conforming to `.github/instructions/jssp-presentation-page.instructions.md` (`clearValidationError`, `showValidationError`, `createRequest`, `getValidationErrors`, `resetValidationError`, `validateCurrentStep`) is defined in this order
 - [ ] Real-time re-validation using `activeValidation` flag is implemented (text input uses `input` event, select/date uses `change` event)
 
 ### When Using imuiCalendar
@@ -50,7 +50,7 @@ After completing the generation of screen programs (.html / .js), perform self-v
   - Add `id="fieldName-label"` to the label span (**no colons**; no class)
   - Define a `toggleRequiredMark(id, condition)` function and call it at the same timing as the display control
   - Example: `toggleRequiredMark('period-end-label', periodType === 'temporary')`
-  - For the full naming convention, see "Naming Convention for the `id` Attribute" in `{{AGENT_RULES}}/jssp-presentation-page{{AGENT_RULE_FILE}}.md`
+  - For the full naming convention, see "Naming Convention for the `id` Attribute" in `.github/instructions/jssp-presentation-page.instructions.md`
 
 ### Input Field Width Control
 

@@ -52,6 +52,18 @@ function computeMenuGroupHash(menuGroupId) {
   return crypto.createHash('sha256').update(base).digest('hex');
 }
 
+// ポートレット CD から、表示権限（type="im-portal-portlet"）の認可リソース ID を計算する
+// intra-mart は内部で base = "im-portal-portlet://<portletCd>" を SHA-256 ハッシュ化している
+function computePortletViewHash(portletCd) {
+  return crypto.createHash('sha256').update('im-portal-portlet://' + portletCd).digest('hex');
+}
+
+// ポートレット CD から、編集権限（type="im-portal-portlet-editmode"）の認可リソース ID を計算する
+// intra-mart は内部で base = "im-portal-portlet-editmode://<portletCd>" を SHA-256 ハッシュ化している
+function computePortletEditHash(portletCd) {
+  return crypto.createHash('sha256').update('im-portal-portlet-editmode://' + portletCd).digest('hex');
+}
+
 const LOCALES = ['ja', 'en', 'zh_CN'];
 
 // 既存ファイルへの上書きを許可するか（--force で true にセットされる）
@@ -205,6 +217,20 @@ function escapeXml(s) {
     .replace(/'/g, '&apos;');
 }
 
+// SQL 文字列リテラル用エスケープ（シングルクォートを二重化）
+function escapeSql(s) {
+  return String(s).replace(/'/g, "''");
+}
+
+// ポートレット関連テーブル（b_m_portlet_*）の rec_date に埋め込む値。
+// rec_date は timestamp 型ではなく varchar 型で、"yyyy/MM/dd|HH:mm:ss" 固定フォーマット。
+// ビルド実行時刻を使用する。
+function formatDmlDate(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return date.getFullYear() + '/' + pad(date.getMonth() + 1) + '/' + pad(date.getDate())
+    + '|' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
+}
+
 function writeFileSafe(dryRun, outPath, content) {
   if (dryRun) {
     const marker = fs.existsSync(outPath) ? ' [OVERWRITE]' : '';
@@ -321,12 +347,56 @@ function buildAuthzResourceGroupLocale(spec, locale) {
   return lines.join('\n');
 }
 
+// spec.portletImport.portlets から、ポートレットの表示権限（および editable===true の場合は編集権限）に
+// 対応する認可リソースの定義を組み立てる。
+// authz-policy 側は id を持たない生のハッシュ値を resource 属性に直接書く仕様のため、
+// ここで生成する authz-resource の id もポリシーと同じ手順（computePortletViewHash /
+// computePortletEditHash）で計算したハッシュ値にする（人間可読な id にすると authz-policy の
+// resource 属性と一致せず、管理画面上でリソースとポリシーが紐付かない）。
+const EDIT_MODE_SUFFIX = { ja: '（編集モード）', en: ' (Edit Mode)', zh_CN: '（编辑模式）' };
+
+// ポートレット由来の authz-resource / authz-policy エントリに付与するコメント。
+// view / editmode それぞれのエントリの直前に1行ずつ添える。
+const PORTLET_AUTHZ_COMMENT = { view: 'ポートレット設定', editmode: 'ポートレット編集モード設定' };
+
+function getPortletAuthzResourceEntries(spec) {
+  const entries = [];
+  for (const p of (spec.portletImport || {}).portlets || []) {
+    if (!p || !p.portletCd) continue;
+    const baseDisplayNames = (p.titles && p.titles.application) || {};
+    entries.push({
+      kind: 'view',
+      id: computePortletViewHash(p.portletCd),
+      uri: 'im-portal-portlet://' + p.portletCd,
+      parentGroup: 'im-portal-portlet',
+      displayNames: baseDisplayNames,
+    });
+    // editmode 用の認可リソースは editable の値に関わらず常に生成する
+    // （認可ポリシー側と同じ方針。詳細は buildAuthzPolicy 内のコメントを参照）。
+    const editDisplayNames = {};
+    for (const loc of LOCALES) {
+      if (baseDisplayNames[loc]) {
+        editDisplayNames[loc] = baseDisplayNames[loc] + (EDIT_MODE_SUFFIX[loc] || '');
+      }
+    }
+    entries.push({
+      kind: 'editmode',
+      id: computePortletEditHash(p.portletCd),
+      uri: 'im-portal-portlet-editmode://' + p.portletCd,
+      parentGroup: 'im-portal-portlet-editmode',
+      displayNames: editDisplayNames,
+    });
+  }
+  return entries;
+}
+
 function buildAuthzResourceBase(spec) {
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<root xmlns="http://www.intra-mart.jp/authz/imex/resource">',
   ];
   const resources = spec.authzResources || [];
+  const portletResources = getPortletAuthzResourceEntries(spec);
   for (let i = 0; i < resources.length; i++) {
     if (i > 0) lines.push('');
     const r = resources[i];
@@ -335,6 +405,17 @@ function buildAuthzResourceBase(spec) {
       lines.push('    <parent-group id="' + escapeXml(r.parentGroup) + '" />');
     }
     lines.push('  </authz-resource>');
+  }
+  if (portletResources.length > 0) {
+    if (resources.length > 0) lines.push('');
+    for (let i = 0; i < portletResources.length; i++) {
+      if (i > 0) lines.push('');
+      const r = portletResources[i];
+      lines.push('  <!-- ' + PORTLET_AUTHZ_COMMENT[r.kind] + ' -->');
+      lines.push('  <authz-resource id="' + escapeXml(r.id) + '" uri="' + escapeXml(r.uri) + '">');
+      lines.push('    <parent-group id="' + escapeXml(r.parentGroup) + '" />');
+      lines.push('  </authz-resource>');
+    }
   }
   lines.push('</root>', '');
   return lines.join('\n');
@@ -346,6 +427,7 @@ function buildAuthzResourceLocale(spec, locale) {
     '<root xmlns="http://www.intra-mart.jp/authz/imex/resource">',
   ];
   const resources = (spec.authzResources || []).filter(r => r.displayNames && r.displayNames[locale]);
+  const portletResources = getPortletAuthzResourceEntries(spec).filter(r => r.displayNames && r.displayNames[locale]);
   for (let i = 0; i < resources.length; i++) {
     if (i > 0) lines.push('');
     const r = resources[i];
@@ -355,6 +437,19 @@ function buildAuthzResourceLocale(spec, locale) {
     lines.push('      <name locale="' + locale + '">' + escapeXml(dn) + '</name>');
     lines.push('    </display-name>');
     lines.push('  </authz-resource>');
+  }
+  if (portletResources.length > 0) {
+    if (resources.length > 0) lines.push('');
+    for (let i = 0; i < portletResources.length; i++) {
+      if (i > 0) lines.push('');
+      const r = portletResources[i];
+      const dn = r.displayNames[locale];
+      lines.push('  <authz-resource uri="' + escapeXml(r.uri) + '">');
+      lines.push('    <display-name>');
+      lines.push('      <name locale="' + locale + '">' + escapeXml(dn) + '</name>');
+      lines.push('    </display-name>');
+      lines.push('  </authz-resource>');
+    }
   }
   lines.push('</root>', '');
   return lines.join('\n');
@@ -445,6 +540,36 @@ function buildAuthzPolicy(spec) {
           + ' subject="' + DEFAULT_TENANT_MANAGER_SUBJECT + '">PERMIT</authz-policy>'
       );
     }
+  }
+  // 既定ポリシー: テナント管理者をポートレット（portletImport.portlets）の表示・編集権限に PERMIT で自動付与。
+  // resource はポートレット CD のハッシュ値（im-portal-portlet / im-portal-portlet-editmode）。
+  // editable は b_m_portlet_mode.user_flag（実際に編集操作自体が許可されるか）のみを左右し、
+  // 認可ポリシー・認可リソースの生成有無には影響しない。im-portal-portlet-editmode は
+  // editable の値に関わらず常に生成する（editable=false でも「権限としては持つが、
+  // ポートレット自体が表示専用モードのため編集操作はブロックされる」状態にしておき、
+  // 後から editable=true に切り替えても認可資材の再生成が不要になるようにするため）。
+  // 既に同一 (hash, type, tenant_manager) のポリシーが明示されている場合は二重出力しない。
+  const defaultPortletPolicies = [];
+  for (const p of (spec.portletImport || {}).portlets || []) {
+    if (!p || !p.portletCd) continue;
+    const viewHash = computePortletViewHash(p.portletCd);
+    if (!emitted.has(keyOf(viewHash, 'im-portal-portlet', DEFAULT_TENANT_MANAGER_SUBJECT))) {
+      defaultPortletPolicies.push({ resource: viewHash, type: 'im-portal-portlet', kind: 'view' });
+      emitted.add(keyOf(viewHash, 'im-portal-portlet', DEFAULT_TENANT_MANAGER_SUBJECT));
+    }
+    const editHash = computePortletEditHash(p.portletCd);
+    if (!emitted.has(keyOf(editHash, 'im-portal-portlet-editmode', DEFAULT_TENANT_MANAGER_SUBJECT))) {
+      defaultPortletPolicies.push({ resource: editHash, type: 'im-portal-portlet-editmode', kind: 'editmode' });
+      emitted.add(keyOf(editHash, 'im-portal-portlet-editmode', DEFAULT_TENANT_MANAGER_SUBJECT));
+    }
+  }
+  for (const pp of defaultPortletPolicies) {
+    lines.push('  <!-- ' + PORTLET_AUTHZ_COMMENT[pp.kind] + ' -->');
+    lines.push(
+      '  <authz-policy resource="' + escapeXml(pp.resource) + '"'
+        + ' type="' + pp.type + '" action="execute"'
+        + ' subject="' + DEFAULT_TENANT_MANAGER_SUBJECT + '">PERMIT</authz-policy>'
+    );
   }
   lines.push('</root>', '');
   return lines.join('\n');
@@ -843,13 +968,21 @@ function buildWorkflowImportJs(spec, workflowFiles) {
     '}',
     '',
     'function importSingleSection(executor, xml, dataType, localeId, tenantId, logger) {',
-    '  let body = extractTopLevelSection(xml, dataType);',
-    '  if (body === null) {',
+    '  // <data> 直下に同名タグ（例: <rule> ×複数）が並ぶケースがあるため、',
+    '  // 全出現ブロックを配列で取得し、1 ブロックずつ importData する。',
+    '  let bodies = extractTopLevelSections(xml, dataType);',
+    '  if (bodies.length === 0) {',
     '    logger.info(\'[' + key + '] section not present, skipped: {}\', dataType);',
     '    return;',
     '  }',
     '',
-    '  let temporaryPath = \'tmp/' + key + '_\' + tenantId + \'_\' + dataType + \'.xml\';',
+    '  for (let i = 0; i < bodies.length; i++) {',
+    '    importSectionBody(executor, bodies[i], dataType, i, localeId, tenantId, logger);',
+    '  }',
+    '}',
+    '',
+    'function importSectionBody(executor, body, dataType, index, localeId, tenantId, logger) {',
+    '  let temporaryPath = \'tmp/' + key + '_\' + tenantId + \'_\' + dataType + \'_\' + index + \'.xml\';',
     '  let temporaryStorage = new PublicStorage(temporaryPath);',
     '  let content = \'<?xml version="1.0" encoding="UTF-16"?>\\n\' + body;',
     '  if (!temporaryStorage.write(content, \'UTF-16\')) {',
@@ -902,27 +1035,36 @@ function buildWorkflowImportJs(spec, workflowFiles) {
     '  }',
     '}',
     '',
-    '// <data> 直下の <tag ...>...</tag> ブロックを抽出する。',
-    '// 入力は <data> 直下にインデント2スペースで <contents>/<route>/<flow> 等が並ぶ前提。',
+    '// <data> 直下の <tag ...>...</tag> ブロックを全て抽出する。',
+    '// 入力は <data> 直下にインデント2スペースで <contents>/<route>/<flow>/<rule> 等が並ぶ前提。',
     '// ネストされた同名タグに誤マッチしないよう、行頭2スペースのものだけを拾う。',
-    'function extractTopLevelSection(xml, tag) {',
+    '// <rule> のように同名タグが複数並ぶセクションでも取りこぼさないよう、',
+    '// 1件見つけるごとに検索位置を進めながらループし、配列で返す。',
+    'function extractTopLevelSections(xml, tag) {',
     '  let startMarker = \'\\n  <\' + tag;',
     '  let endMarker = \'\\n  </\' + tag + \'>\';',
+    '  let bodies = [];',
+    '  let searchFrom = 0;',
     '',
-    '  let startIndex = xml.indexOf(startMarker);',
-    '  if (startIndex < 0) {',
-    '    return null;',
+    '  while (true) {',
+    '    let startIndex = xml.indexOf(startMarker, searchFrom);',
+    '    if (startIndex < 0) {',
+    '      break;',
+    '    }',
+    '    startIndex += 1;',
+    '',
+    '    let endIndex = xml.indexOf(endMarker, startIndex);',
+    '    if (endIndex < 0) {',
+    '      break;',
+    '    }',
+    '    endIndex += endMarker.length;',
+    '',
+    '    // 左端のインデント2スペースを取り除いてルート要素として整える',
+    '    bodies.push(xml.substring(startIndex, endIndex).replace(/^  /gm, \'\'));',
+    '    searchFrom = endIndex;',
     '  }',
-    '  startIndex += 1;',
     '',
-    '  let endIndex = xml.indexOf(endMarker, startIndex);',
-    '  if (endIndex < 0) {',
-    '    return null;',
-    '  }',
-    '  endIndex += endMarker.length;',
-    '',
-    '  // 左端のインデント2スペースを取り除いてルート要素として整える',
-    '  return xml.substring(startIndex, endIndex).replace(/^  /gm, \'\');',
+    '  return bodies;',
     '}',
     '',
   ];
@@ -1031,8 +1173,82 @@ function buildDdlSql(spec, dialect) {
   return lines.join('\n');
 }
 
+// ポートレット登録 DML（既存の intra-mart 標準テーブル b_m_portlet_* への実 INSERT 文）
+// spec.portletImport.portlets の各要素から、ポートレット本体・編集モード・
+// タイトル（name / application / description × ja / en / zh_CN）の INSERT 文を組み立てる。
+// ポータルへの配置・表示設定（b_m_portlet_layout / b_m_portlet_display_set）は
+// ポータル管理画面側の表示設定であり、対象外（本スキルはポートレット定義のみを担当）。
+// intra-mart 標準テーブルの固定長カラム制限。
+// b_m_portlet_info.portlet_cd / b_m_portlet_mode.portlet_mode_cd はいずれも VARCHAR(20) であり、
+// これを超える値を INSERT すると "値は型character varying(20)としては長すぎます" で
+// テナント環境セットアップのインポートが失敗する（アプリケーション層のバリデーションが効かないため、
+// build 時に検出して早期にエラーにする）。
+const PORTLET_CD_MAX_LENGTH = 20;
+const PORTLET_MODE_CD_MAX_LENGTH = 20;
+
+function buildPortletDmlLines(spec) {
+  const portlets = (spec.portletImport || {}).portlets || [];
+  if (portlets.length === 0) return [];
+
+  const recUserCd = 'system';
+  const recDate = formatDmlDate(new Date());
+  const lines = [];
+
+  for (const p of portlets) {
+    if (!p.portletCd) throw new Error('spec.portletImport.portlets[].portletCd is required');
+    if (!p.path) throw new Error('spec.portletImport.portlets["' + p.portletCd + '"].path is required');
+    const portletCd = p.portletCd;
+    if (portletCd.length > PORTLET_CD_MAX_LENGTH) {
+      throw new Error(
+        'spec.portletImport.portlets["' + portletCd + '"].portletCd は ' + portletCd.length + ' 文字ですが、'
+        + 'b_m_portlet_info.portlet_cd は VARCHAR(' + PORTLET_CD_MAX_LENGTH + ') のため '
+        + PORTLET_CD_MAX_LENGTH + ' 文字以内にしてください（超過するとインポート時に '
+        + '"値は型character varying(20)としては長すぎます" で失敗します）。'
+      );
+    }
+    const portletModeCd = p.portletModeCd || (portletCd + '_mode');
+    if (portletModeCd.length > PORTLET_MODE_CD_MAX_LENGTH) {
+      throw new Error(
+        'spec.portletImport.portlets["' + portletCd + '"] の portletModeCd ("' + portletModeCd + '") は '
+        + portletModeCd.length + ' 文字ですが、b_m_portlet_mode.portlet_mode_cd は VARCHAR('
+        + PORTLET_MODE_CD_MAX_LENGTH + ') のため ' + PORTLET_MODE_CD_MAX_LENGTH + ' 文字以内にしてください。'
+        + '既定では portletCd + "_mode" になるため、portletCd を短くするか portletModeCd を明示的に短く指定してください。'
+      );
+    }
+    const pageParam = p.pageParam || '';
+    // editable: false（既定）は表示のみ（作成者以外は編集不可）、true は表示・編集の両方が可能。
+    // 実際に「誰が」表示・編集できるかは authz-policy 側（im-portal-portlet / im-portal-portlet-editmode）で制御する。
+    const userFlag = p.editable === true ? 1 : 0;
+
+    lines.push('-- ポートレット本体: ' + portletCd + '（' + p.path + '）');
+    lines.push('INSERT INTO b_m_portlet_info (portlet_cd, portlet_name, producer_id, page_kind, menulinkset_cd, path, page_param, application_id, service_id, sso_flag, title_bar_flag, cache_config, entity_id_prefix, open_flag, user_portal_flag, group_portal_flag, portlet_height, rec_user_cd, rec_date, global_portal_flag)');
+    lines.push("VALUES ('" + escapeSql(portletCd) + "', 'imart.PresentationPagePortlet', '', 'pagebase', '', '"
+      + escapeSql(p.path) + "', '" + escapeSql(pageParam) + "', '', '', 0, 1, 0, 'imart|PresentationPagePortlet', 1, 1, 1, -1, '"
+      + recUserCd + "', '" + recDate + "', NULL);");
+    lines.push('');
+
+    lines.push('-- ポートレットモード（' + (userFlag === 1 ? '表示・編集可' : '表示のみ') + '）: ' + portletCd);
+    lines.push('INSERT INTO b_m_portlet_mode (portlet_mode_cd, portlet_cd, portlet_mode, user_flag, access_check_flag, rec_user_cd, rec_date)');
+    lines.push("VALUES ('" + escapeSql(portletModeCd) + "', '" + escapeSql(portletCd) + "', 'EDIT', " + userFlag + ", 0, '" + recUserCd + "', '" + recDate + "');");
+    lines.push('');
+
+    lines.push('-- ポートレットタイトル（name / application / description × ja / en / zh_CN）: ' + portletCd);
+    for (const itemType of ['name', 'application', 'description']) {
+      const values = (p.titles && p.titles[itemType]) || {};
+      for (const loc of LOCALES) {
+        const value = values[loc] || '';
+        lines.push('INSERT INTO b_m_portlet_title_info (title_type, identification_id, item_type, locale, value, rec_user_cd, rec_date)');
+        lines.push("VALUES ('portlet', '" + escapeSql(portletCd) + "', '" + itemType + "', '" + loc + "', '"
+          + escapeSql(value) + "', '" + recUserCd + "', '" + recDate + "');");
+        lines.push('');
+      }
+    }
+  }
+  return lines;
+}
+
 function buildDmlSql(spec, dialect) {
-  if (!spec.database) return null;
+  if (!spec.database && !spec.portletImport) return null;
   const isCommon = dialect === 'common';
   const lines = [
     '-- =============================================================================',
@@ -1049,11 +1265,12 @@ function buildDmlSql(spec, dialect) {
   }
   lines.push('-- =============================================================================');
   lines.push('');
-  for (const t of spec.database.tables || []) {
+  for (const t of (spec.database || {}).tables || []) {
     lines.push('-- ' + t.name + ' への初期データがあればここに記述');
     lines.push('-- INSERT INTO ' + t.name + ' (...) VALUES (...);');
     lines.push('');
   }
+  lines.push(...buildPortletDmlLines(spec));
   return lines.join('\n');
 }
 
@@ -1257,7 +1474,9 @@ function main() {
   }
 
   // -- authz-resource --
-  if ((spec.authzResources || []).length > 0) {
+  // spec.authzResources が空でも、portletImport.portlets があれば
+  // ポートレットの表示・編集権限に対応する認可リソースを出力する。
+  if ((spec.authzResources || []).length > 0 || getPortletAuthzResourceEntries(spec).length > 0) {
     const fname = key + '-authz-resource' + fnameSuffix;
     writeFileSafe(args.dryRun, path.join(baseAbs, fname + '.xml'), buildAuthzResourceBase(spec));
     files.authzResource = { base: baseRel + fname + '.xml' };
@@ -1290,11 +1509,12 @@ function main() {
   }
 
   // -- authz-policy (no locale variants) --
-  // authzPolicies が空でも、authzResources / menuGroups があれば tenant_manager の
-  // 既定ポリシーが自動付与されるため、その場合もファイルを書き出す。
+  // authzPolicies が空でも、authzResources / menuGroups / portletImport があれば
+  // tenant_manager の既定ポリシーが自動付与されるため、その場合もファイルを書き出す。
   if ((spec.authzPolicies || []).length > 0
       || (spec.authzResources || []).length > 0
-      || (spec.menuGroups || []).length > 0) {
+      || (spec.menuGroups || []).length > 0
+      || ((spec.portletImport || {}).portlets || []).length > 0) {
     const fname = key + '-authz-policy' + fnameSuffix + '.xml';
     writeFileSafe(args.dryRun, path.join(baseAbs, fname), buildAuthzPolicy(spec));
     files.authzPolicy = baseRel + fname;
@@ -1318,18 +1538,23 @@ function main() {
   //   - DDL は型・制約構文が DB ごとに違うため、常に 3 方言別で出力
   //   - DML はデフォルト 1 ファイル一本化（INSERT は標準 SQL で全 DB 共通でよい）。
   //     spec.database.dmlPerDialect === true の場合のみ 3 方言別で出力
+  // DDL は独自テーブル（spec.database）がある場合のみ出力する。
+  // portletImport は既存の intra-mart 標準テーブル（b_m_portlet_*）への DML のみで、
+  // DDL（CREATE TABLE）は不要。
   if (spec.database) {
     for (const dialect of DB_DIALECTS) {
       writeFileSafe(args.dryRun, path.join(baseAbs, key + '-ddl' + fnameSuffix + '_' + dialect + '.sql'), buildDdlSql(spec, dialect));
     }
-    if (spec.database.dmlPerDialect === true) {
+    files.ddl = baseRel + key + '-ddl' + fnameSuffix + '.sql';
+  }
+  if (spec.database || spec.portletImport) {
+    if (spec.database && spec.database.dmlPerDialect === true) {
       for (const dialect of DB_DIALECTS) {
         writeFileSafe(args.dryRun, path.join(baseAbs, key + '_sample-dml' + fnameSuffix + '_' + dialect + '.sql'), buildDmlSql(spec, dialect));
       }
     } else {
       writeFileSafe(args.dryRun, path.join(baseAbs, key + '_sample-dml' + fnameSuffix + '.sql'), buildDmlSql(spec, 'common'));
     }
-    files.ddl = baseRel + key + '-ddl' + fnameSuffix + '.sql';
     files.dml = baseRel + key + '_sample-dml' + fnameSuffix + '.sql';
   }
 

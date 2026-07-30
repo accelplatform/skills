@@ -24,15 +24,15 @@ description: 生成调用 intra-mart IM 通用主数据检索（imACMSearch）�
 
 ## 需参照的规约
 
-本技能生成嵌入画面的 HTML 片段（`imACMSearch` 调用）。本技能单独不生成 `.js`，因此应参照的规约集中于 HTML 系。全局视图请参阅 `{{AGENT_RULES}}/README.md`。
+本技能生成嵌入画面的 HTML 片段（`imACMSearch` 调用）。本技能单独不生成 `.js`，因此应参照的规约集中于 HTML 系。全局视图请参阅 `.github/instructions/README.md`。
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-presentation-page.instructions.md` | 🟢 **必读** — HTML 结构、id 命名 |
-| `jssp-naming.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 必读 |
+| `jssp-presentation-page.md` | 🟢 **必读** — HTML 结构、id 命名 |
+| `jssp-naming.md` / `jssp-file-structure.md` | 🟢 必读 |
 | `jssp-imds-theme` 技能的 reference | 🟢 必读（不得凭记忆书写 imds 类名） |
-| `jssp-function-container.instructions.md` / `jssp-2way-sql.instructions.md` / `jssp-error-handling.instructions.md` 等 | 🔴 **本技能单独不需要**（由调用方技能适用） |
-| `jssp-accessibility.instructions.md` | 🟠 **业务需求依赖** — 主数据检索对话框通过 imds 标准实现已具备基础 ARIA，通常无需追加厚涂 |
+| `jssp-function-container.md` / `jssp-2way-sql.md` / `jssp-error-handling.md` 等 | 🔴 **本技能单独不需要**（由调用方技能适用） |
+| `jssp-accessibility.md` | 🟠 **业务需求依赖** — 主数据检索对话框通过 imds 标准实现已具备基础 ARIA，通常无需追加厚涂 |
 
 ## 完成品示例
 

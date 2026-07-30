@@ -13,7 +13,7 @@ A mechanism for safely building dynamic SQL containing conditional branches by e
 
 - Use 2WaySQL for **SELECT queries where WHERE clauses or conditions change dynamically**
 - Simple fixed SQL or single-parameter one-shot execution can also use `select` / `execute` + `DbParameter`
-- **String concatenation for SQL construction is strictly prohibited** (see jssp-security.instructions.md)
+- **String concatenation for SQL construction is strictly prohibited** (see jssp-security.md)
 
 ## SQL File Placement
 
@@ -410,7 +410,7 @@ for (let i = 0; i < items.length; i++) {
 
 ## Related
 
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - Overall SQL injection prevention policy
-- `skills/jssp-page-generator/reference/api-database.md` - Database API reference
+- `.github/instructions/jssp-security.instructions.md` - Overall SQL injection prevention policy
+- `.github/skills/jssp-page-generator/reference/api-database.md` - Database API reference
 - `d.ts/platform/database/im-ssjs-tenant-database.d.ts` - TenantDatabase type definitions
 - `d.ts/platform/database/im-ssjs-shared-database.d.ts` - SharedDatabase type definitions

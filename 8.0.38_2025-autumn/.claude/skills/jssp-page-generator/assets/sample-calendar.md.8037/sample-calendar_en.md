@@ -380,8 +380,6 @@ function transferErrorPage(code, message) {
 <imart type="head">
   <!-- Title -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
-  <!-- Bind variable for presentation page integration -->
-  <script>const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;</script>
   <!-- Styles -->
   <style>
     /* ===== Calendar Navigation ===== */
@@ -515,8 +513,9 @@ function transferErrorPage(code, message) {
       flex-shrink: 0;
     }
   </style>
-  <!-- Client-side script -->
+  <!-- Client-side script (scope $data via an IIFE instead of leaving it in the global scope) -->
   <script>
+  (function($data) {
   document.addEventListener('DOMContentLoaded', () => {
 
     if ($data.error && $data.error.code) {
@@ -712,6 +711,7 @@ function transferErrorPage(code, message) {
     renderLegend(orderedWeekDays);
     setupNavigation(data);
   });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

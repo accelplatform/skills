@@ -194,8 +194,7 @@ function transferErrorPage(code, message) {
   </style>
   <!-- プレゼンテーションページのスクリプト -->
   <script>
-    // プレゼンテーションページ連携用のバインド変数
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+    (function($data) {
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -247,6 +246,7 @@ function transferErrorPage(code, message) {
         initializeView($data.result.formParameter);
       }
     });
+    })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

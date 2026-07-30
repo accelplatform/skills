@@ -73,8 +73,10 @@ Screens invoked **through a different path that bypasses the routing table** fol
 | Invocation path | Placement / naming rules | Owning skill |
 |---|---|---|
 | IM-Workflow engine (via `scriptPath` in the XML) | `{feature}/workflow/{screen-kind}/index.js` (screen kind is expressed by the directory; file name is unified to `index`) | `jssp-im-workflow-usage` |
+| Portal feature (via `b_m_portlet_info.path`) | `{feature}/view/index.js` (placed using this page's `view/{view}.js` pattern, but no routing configuration or routing authorization is created) | `jssp-page-generator` (`assets/simple-portlet.md`) |
+| IM-ContentsSearch (via `<template-path>`) | `im_contents_search/template/{feature}.js` / `.html` (no file naming convention as long as it follows the script development model's structure; no routing configuration or routing authorization is created) | `jssp-im-contents-search-generator` |
 
-These exception screens are dispatched via a content-definition XML or a platform feature, so they do not need URL routing and can have several screens (apply / approve / detail, etc.) inside one feature.
+These exception screens are dispatched via a content-definition XML or a platform feature, so they do not need URL routing (IM-Workflow screens can additionally have several screens — apply / approve / detail, etc. — inside one feature).
 When generating these, refer to the SKILL.md of each owning skill.
 
 ### Mandatory .html Files

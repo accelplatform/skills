@@ -379,8 +379,6 @@ function transferErrorPage(code, message) {
 <imart type="head">
   <!-- タイトル -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
-  <!-- プレゼンテーションページ連携用のバインド変数 -->
-  <script>const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;</script>
   <!-- スタイル -->
   <style>
     /* ===== カレンダーナビゲーション ===== */
@@ -514,8 +512,9 @@ function transferErrorPage(code, message) {
       flex-shrink: 0;
     }
   </style>
-  <!-- クライアントサイドスクリプト -->
+  <!-- クライアントサイドスクリプト（$data をグローバル領域に置かず IIFE でスコープ化する） -->
   <script>
+  (function($data) {
   document.addEventListener('DOMContentLoaded', () => {
 
     if ($data.error && $data.error.code) {
@@ -707,6 +706,7 @@ function transferErrorPage(code, message) {
     renderLegend(orderedWeekDays);
     setupNavigation(data);
   });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

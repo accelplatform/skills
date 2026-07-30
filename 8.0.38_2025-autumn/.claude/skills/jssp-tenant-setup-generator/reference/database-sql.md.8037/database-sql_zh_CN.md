@@ -93,7 +93,7 @@ CREATE TABLE 的主体（列定义、约束）需要由用户手动追加。
 -- );
 ```
 
-针对各 DB 方言的类型与语法分别写入对应的文件。类型映射请参考 `skills/jssp-page-generator/reference/ddl-type-mapping.md`。
+针对各 DB 方言的类型与语法分别写入对应的文件。类型映射请参考 `.claude/skills/jssp-page-generator/reference/ddl-type-mapping.md`。
 
 ### `<key>_sample-dml.sql` 的骨架示例（合并，推荐）
 

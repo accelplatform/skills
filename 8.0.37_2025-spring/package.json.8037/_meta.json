@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "module": "im_activiti"
+      },
+      "from": "package_im_activiti.json",
+      "to": "package.json"
+    },
+    {
+      "from": "package.json",
+      "to": "package.json"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "regex",
+      "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
+      "replacement": "{{$artifactId}}",
+      "condition": {
+        "accelplatformVersion": "8.0.37"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
+      "replacement": "{{$projectVersion}}",
+      "condition": {
+        "accelplatformVersion": "8.0.37"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_DESCRIPTION\\}\\}",
+      "replacement": "{{$description}}",
+      "condition": {
+        "accelplatformVersion": "8.0.37"
+      }
+    }
+  ]
+}

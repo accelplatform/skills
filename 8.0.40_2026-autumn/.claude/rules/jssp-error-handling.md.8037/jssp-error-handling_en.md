@@ -180,8 +180,7 @@ For mutation APIs (POST/PUT/DELETE), always verify the secure token as CSRF prot
 
 ```html
 <script>
-  const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+(function($data) {
   document.addEventListener('DOMContentLoaded', function() {
     if ($data.error.code) {
       imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
@@ -193,6 +192,7 @@ For mutation APIs (POST/PUT/DELETE), always verify the secure token as CSRF prot
   function renderPage(result) {
     // Screen rendering processing
   }
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 </script>
 ```
 

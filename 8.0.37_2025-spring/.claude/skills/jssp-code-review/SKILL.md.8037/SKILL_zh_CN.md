@@ -17,7 +17,7 @@ allowed-tools: Bash, Read, Glob
 执行以下命令，首先找出脚本可检测的问题。
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <成果物输出路径>
+node .claude/skills/jssp-page-generator/scripts/validate-jssp-code.js <成果物输出路径>
 ```
 
 如果输出了错误或警告，原样记录，与步骤 2 的审查结果一并报告。
@@ -40,7 +40,7 @@ node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <�
 
 - [ ] 绑定变量是否用 `JSON.stringify()` 字符串化？
 - [ ] `JSON.stringify()` 后是否用 `.replace(/\//g, '\\/') ` 进行转义？
-- [ ] 表示页面是否以 `const $data = <imart ...>` 格式接收？
+- [ ] 表示页面是否以 `(function($data) { ... })(<imart ...>);` 的 IIFE 形式接收，且未将 `$data` 设为全局变量？
 
 #### 2-3. 错误处理
 

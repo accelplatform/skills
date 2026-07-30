@@ -22,7 +22,7 @@ description: 为 intra-mart JSSP 表示页面（HTML）生成 Playwright E2E 测
 
 1. 加载目标表示页面（HTML）
 2. 从 HTML 结构中确定可测试的元素（表格、表单、对话框、按钮等）
-3. 根据 `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md` 的测试观点设计测试用例
+3. 根据 `.github/instructions/jssp-testing.instructions.md` 的测试观点设计测试用例
 4. **在生成测试代码之前**，向用户确认以下 2 项（不得先生成代码）
 
    **确认 ①：截图（布局视认用）**
@@ -46,7 +46,7 @@ description: 为 intra-mart JSSP 表示页面（HTML）生成 Playwright E2E 测
 | `assets/test-validation.md` | 验证（必填、字符类型、字符数、范围、重复、实时解除）的测试实例 |
 | `assets/test-button-style.md` | 按钮样式（is-primary / is-danger）及确认对话框的测试实例 |
 | `assets/test-mailpit.md` | 使用 mailpit 对邮件发送功能的 E2E 测试（通过 HTTP API 验证邮件、在代理之下访问 mailpit 的方法、获取 CSRF 安全令牌的模式） |
-| `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md` | 测试观点和配置规范 |
+| `.github/instructions/jssp-testing.instructions.md` | 测试观点和配置规范 |
 
 ## 测试设计原则
 
@@ -158,7 +158,7 @@ await expect(page.locator('h1#page-title')).toBeVisible();        // ③ 页面�
 
 ## 注意事项
 
-- 测试观点的详情请参考 `{{AGENT_RULES}}/jssp-testing{{AGENT_RULE_FILE}}.md`
+- 测试观点的详情请参考 `.github/instructions/jssp-testing.instructions.md`
 - 由于 HTML 的 `maxlength` 属性不使用，必须在验证测试中确认字符数超限
 - `toHaveText` 可能不匹配单元格内的 `<span>` 结构，推荐使用 `toContainText`
 - **实时验证（即时错误解除）的测试必须一次生成所有模式。** 不遗漏地包含 `assets/test-validation.md` 的"实时验证"部分定义的以下 6 个观点：

@@ -60,6 +60,10 @@ intra-mart Accel Platform の JSSP（スクリプト開発モデル）による�
     - テナント管理機能が持つ標準タスク（認可・リポジトリ操作・メール送信等 125 種）に対応 ※拡張は MCP を使用（予定）
     - 標準マッピング関数（数値演算・文字列操作・配列操作・JSON・BASE64 等 52 種）に対応 ※拡張は MCP を使用（予定）
     - ユーザ定義タスク（JavaScript・REST・SQL・Database Fetch・テンプレート）に対応 ※拡張は MCP を使用（予定）
+- JSSP 画面から既存のロジックフロー（ルーティング定義済み）を呼び出したい
+  - ⇒ `jssp-im-logic-usage`（+ `jssp-page-generator`）
+    - swagger spec（`<BASE-URL>/logic/all-api-docs`）を取得・解析し、リクエスト/レスポンス構造を特定した上で `fetch` 呼び出しコードを生成
+    - 権限不足（401/403）の場合は認可設定の案内メッセージを提示
 
 ### 多言語化したい
 
@@ -86,12 +90,19 @@ intra-mart Accel Platform の JSSP（スクリプト開発モデル）による�
 - 業務画面の E2E テストを作りたい
   - ⇒ `jssp-playwright-test`
     - Playwright を使用した JSSP 画面（html + js のペア）の E2E テストを生成（調整中）
+- 仕様書から試験観点一覧・試験項目書を作りたい（Excel または HTML）
+  - ⇒ `test-spec-generator`
+    - 仕様書ファイルから、xlsx（officecli 使用）または HTML の試験観点一覧・試験項目書を生成
 
-### 本番適用の準備をしたい
+### セットアップ資材を作りたい
 
-- テナント環境セットアップ資材を作成したい
+- テナント環境セットアップ資材を作成したい・本番適用の準備をしたい
   - ⇒ `jssp-tenant-setup-generator`
     - 成果物をもとに、必要なロール・認可・メニュー・ジョブ、および、セットアップ設定ファイルを用意
+    - メニューは「サイトマップ（PC用）」のみ
+- サンプルデータセットアップ資材を作成したい
+  - ⇒ `jssp-sample-setup-generator`
+    - モジュールを試用するためのサンプルデータ（DDL/DML）や、試用に必要なロール・認可・メニュー・ジョブ、および、セットアップ設定ファイルを用意
     - メニューは「サイトマップ（PC用）」のみ
 
 ## 制限事項
@@ -103,7 +114,7 @@ intra-mart Accel Platform の JSSP（スクリプト開発モデル）による�
 - 生成物の正確性チェックのため、Node.js のスクリプトを実行する。一時的に `/tmp` を使用。
 - IM-Workflow: マスタ定義の JSSP-API は対象外。案件取得/操作系のみサポート。
 - IM-Workflow: 一覧表示パターン・フローグループ・メディア・メッセージは生成しない。
-- IM-LogicDesigner: JSSP 業務画面からの IM-LogicDesigner 呼び出しは、ルーティング経由限定。
+- IM-LogicDesigner: JSSP 業務画面からの IM-LogicDesigner 呼び出しは、ルーティング経由限定（呼び出し側の実装は `jssp-im-logic-usage` が担当）。
 - IM-LogicDesigner: ルーティングはデフォルトでは生成されない。必要であれば、具体的な指示が必要。
 - IM-LogicDesigner: MCP でもサポートされていないユーザ定義は、JavaScript ユーザ定義で代用する。
 - IM-LogicDesigner: トリガ・ロジックフローのプレビュー画像生成は生成しない。

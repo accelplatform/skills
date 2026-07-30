@@ -28,12 +28,12 @@ SSJS 向け API は公式には提供されていないため、Rhino の `Packa
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-function-container.instructions.md` | 🟢 **必読** — テンプレート JS の `init()` 構造 |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` | 🟢 必読 |
-| `jssp-error-handling.instructions.md` / `jssp-logging.instructions.md` | 🟢 **必読** — クローラは詳細ログとエラー処理が必須 |
-| `jssp-2way-sql.instructions.md` | 🟡 **2WaySQL を使用する場合のみ参照**（クローラ対象の検索に 2WaySQL を使用する場合など） |
-| `jssp-presentation-page.instructions.md` | 🟡 テンプレート HTML の基本構造（imcs 専用クラスは本スキルの assets を優先） |
-| `jssp-security.instructions.md` | 🟡 テンプレート HTML 実装時は XSS 対策セクションを参照。検索結果コンテンツ（`request` 引数）のデータは Apache Solr 由来のデータのため、格納型 XSS の可能性はゼロではない。DOM 操作では `textContent` を使用し `innerHTML` は iAP 内部生成 HTML のみに限定すること |
+| `jssp-function-container.md` | 🟢 **必読** — テンプレート JS の `init()` 構造 |
+| `jssp-naming.md` / `jssp-code-style.md` | 🟢 必読 |
+| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必読** — クローラは詳細ログとエラー処理が必須 |
+| `jssp-2way-sql.md` | 🟡 **2WaySQL を使用する場合のみ参照**（クローラ対象の検索に 2WaySQL を使用する場合など） |
+| `jssp-presentation-page.md` | 🟡 テンプレート HTML の基本構造（imcs 専用クラスは本スキルの assets を優先） |
+| `jssp-security.md` | 🟡 テンプレート HTML 実装時は XSS 対策セクションを参照。検索結果コンテンツ（`request` 引数）のデータは Apache Solr 由来のデータのため、格納型 XSS の可能性はゼロではない。DOM 操作では `textContent` を使用し `innerHTML` は iAP 内部生成 HTML のみに限定すること |
 
 ---
 
@@ -130,7 +130,7 @@ SSJS 向け API は公式には提供されていないため、Rhino の `Packa
 **プレゼンテーションページの必須実装:**
 - ルートは `<div>` とし、各 CSS クラス（`imcs-content-detail-title` / `imcs-content-detail-subtitle` / `imcs-content-detail-option` / `imcs-content-detail-snippets`）を持つ HTML スケルトンを先に記述する
 - `<div>` の末尾に IIFE 形式の `<script>` ブロックを置く
-- `const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;` で JSON を展開する
+- `<script>` タグの直後に `(function($data) {` を配置し、IIFE の引数として `<imart type="string" value=$data escapeXml="false" escapeJs="false" />` で展開した JSON を受け取る（`$data` をグローバル変数にしない）
 - `$data.error.code` が設定されている場合はコンテナを非表示にして処理を中断する
 - `document.currentScript.parentElement` でコンテナを取得し、`querySelector` で各要素を参照して `textContent` / `innerHTML` で値をセットする
 
@@ -153,6 +153,8 @@ SSJS 向け API は公式には提供されていないため、Rhino の `Packa
 - 子の TYPE の `type` 属性には `"<親の TYPE>$<子の TYPE>"` ではなく子の TYPE のみ指定し、`<parent-type>` で親を明示する
 - `<require-dynamic-fields>` にはテンプレート HTML で **表示する動的フィールドのみ**を宣言する
 - `<template-path>` には `.jssp` 拡張子を使う（`.js` / `.html` のペアを指す）
+
+**検索結果テンプレートに `routing-jssp-config/` のルーティング設定は不要**。テンプレートは IM-ContentsSearch が `<template-path>` を介して直接呼び出すため、通常の画面のような URL ルーティングを経由しない（詳細は `.github/instructions/jssp-file-structure.instructions.md` の「ルーティングテーブル経由で呼ばれない画面の例外規約」参照）。
 
 ---
 

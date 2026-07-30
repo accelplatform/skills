@@ -203,10 +203,10 @@ imds-table                                # 表格容器（尺寸与滚动控制
 ### isDetailsButton（详情按钮列）
 
 添加详情按钮列。
-在 `th` / `td` 上添加 `has-content-only`。
+`th` 仅包含表头文本，因此添加 `has-text-centered` 使其居中。`td` 仅包含按钮，因此添加 `has-content-only`。
 
 ```html
-<th class="has-content-only"><span>详情</span></th>
+<th class="has-text-centered"><span>详情</span></th>
 <!-- tbody 各行 -->
 <td class="has-content-only">
   <button type="button" class="imds-button is-ghost is-small">
@@ -276,9 +276,10 @@ imds-table                                # 表格容器（尺寸与滚动控制
 - 标签基本上左对齐
 - 但以下情况使用居中对齐
 
-  **居中对齐**：在 `th` 上指定 `has-text-right` 类
+  **居中对齐**：在 `th` 上指定 `has-text-centered` 类
   - 显示对表格进行操作的按钮时
   - 显示表示状态的图标时
+  - 仅显示「编辑」「详情」等表头文本时（此时不使用 `has-content-only`。`has-content-only` 仅用于 th 本身不含表头文本、只包含复选框等组件的情况）
 
 ### tbody
 
@@ -304,4 +305,5 @@ imds-table                                # 表格容器（尺寸与滚动控制
 - 固定列的 `td` 须添加背景色类（如 `is-cyan`），否则滚动时背景将变为透明
 - 排序处理通过 JavaScript 实现（切换图标和数据排序）
 - 按钮、复选框等不需要单元格内边距时使用 `has-content-only`
+- 若 `th` 中含有表头文本（如 `<span>编辑</span>`），请勿添加 `has-content-only`。需要居中时请使用 `has-text-centered`。`has-content-only` 仅限于 th 自身只包含复选框等组件、不含表头文本的情况
 - 多个变体可以组合使用（例如：`is-sticky is-hoverable is-stripe`）

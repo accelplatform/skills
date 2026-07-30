@@ -215,8 +215,7 @@ function transferErrorPage(code, message) {
   </style>
   <!-- Presentation page script -->
   <script>
-    // Bind variable for presentation page integration
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+    (function($data) {
 
     document.addEventListener('DOMContentLoaded', () => {
       // Initial screen display
@@ -249,6 +248,7 @@ function transferErrorPage(code, message) {
         initializeView($data.result);
       }
     });
+    })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -411,5 +411,5 @@ Keep the confirmation submission button (`confirm-button` / `workflowOpenPage('5
 
 ## Required Verification After Generation
 
-Following the "Required Verification After Generation" in `SKILL.md`, perform `validate-workflow-code.js` → manual checks → cross-checking against `jssp-imds-theme/reference`.
+Following the "Required Verification After Generation" in `SKILL.md`, perform `validate-workflow-code.js` → manual checks → cross-checking against `.claude/skills/jssp-imds-theme/reference/`.
 In particular, confirm that input fields under `<imart type="workflowOpenPage">` do not have a `name` attribute (only hidden fields have `name`).

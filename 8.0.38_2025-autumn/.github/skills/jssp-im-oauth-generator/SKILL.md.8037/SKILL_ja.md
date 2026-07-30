@@ -68,15 +68,15 @@ jssp-im-oauth-generator/
 
 | 確認項目 | 例 |
 |---------|-----|
-| 機能名(ディレクトリ名・XML ファイル名) | `sample_oauth`、`equipment_api` |
+| 機能名（ディレクトリ名・XML ファイル名） | `sample_oauth`、`equipment_api` |
 | API 名・ファイル名 | `get_user`、`list_equipments` |
-| 公開 URL(`path`) | `/oauth/sample_oauth/get_user` |
+| 公開 URL（`path`） | `/oauth/sample_oauth/get_user` |
 | HTTP メソッド | `GET` / `POST` / `PUT` / `DELETE` |
 | クエリ／ボディパラメータ | `userCd` 必須・文字列 100 文字以内 など |
-| 必要な scope(新規定義か既存利用か) | `sample_oauth_user_read` 新規 |
-| **認可リソース(`<authz>`)** | 各リソースに `uri/action` の認可リソースを必ず指定する(`welcome-all` による認可スキップは禁止)。`uri` は `service://{機能名}/{API名}`、`action` は通常 `execute`。詳細は `reference/oauth-resources-config.md`「`<authz>` の書き方と scope との関係」を参照。**認可リソースのインポート資材生成(`jssp-tenant-setup-generator`)が併せて必要になる旨をユーザに確認すること** |
-| クライアント情報(既存クライアントを利用するか、新規作成するか) | client_id・client_secret・redirect-uri |
-| 業務ロジック内容 | AccountInfoManager から取得して JSON 返却 など(手動補完するため概要だけで OK) |
+| 必要な scope（新規定義か既存利用か） | `sample_oauth_user_read` 新規 |
+| **認可リソース（`<authz>`）** | 各リソースに `uri/action` の認可リソースを必ず指定する（`welcome-all` による認可スキップは禁止）。`uri` は `service://{機能名}/{API名}`、`action` は通常 `execute`。詳細は `reference/oauth-resources-config.md`「`<authz>` の書き方と scope との関係」を参照。**認可リソースのインポート資材生成（`jssp-tenant-setup-generator`）が併せて必要になる旨をユーザに確認すること** |
+| クライアント情報（既存クライアントを利用するか、新規作成するか） | client_id・client_secret・redirect-uri |
+| 業務ロジック内容 | AccountInfoManager から取得して JSON 返却 など（手動補完するため概要だけで OK） |
 
 判断が分かれる項目は、勝手に決めずユーザに確認すること。
 
@@ -90,20 +90,20 @@ jssp-im-oauth-generator/
 |---------|------|
 | `reference/oauth-overview.md` | 全体像、通常 REST-API との差異 |
 | `reference/oauth-scopes-config.md` | scope 定義 XML の仕様 |
-| `reference/oauth-resources-config.md` | リソース URL 設定 XML の仕様(特に `<authz>` の (A)(B) 選択) |
+| `reference/oauth-resources-config.md` | リソース URL 設定 XML の仕様（特に `<authz>` の (A)(B) 選択） |
 | `reference/oauth-client-details-config.md` | クライアント詳細設定 XML の仕様 |
-| `reference/oauth-resource-implementation.md` | JSSP(.js)実装方針・ビジネスロジックの書き方 |
+| `reference/oauth-resource-implementation.md` | JSSP（.js）実装方針・ビジネスロジックの書き方 |
 
 業務ロジックを実装する際は JSSP の標準的なコーディング規約・エラーハンドリング・セキュリティ規約が **すべて適用される**。必要に応じて以下を参照すること。
 
-- `{{AGENT_ROOT}}/instructions/jssp-function-container.instructions.md` - 基本構造
-- `{{AGENT_ROOT}}/instructions/jssp-error-handling.instructions.md` - エラーレスポンス・HTTP ステータス
-- `{{AGENT_ROOT}}/instructions/jssp-logging.instructions.md` - ログ出力
-- `{{AGENT_ROOT}}/instructions/jssp-security.instructions.md` - SQL インジェクション・機密情報の取扱い
-- `{{AGENT_ROOT}}/instructions/jssp-2way-sql.instructions.md` - DB アクセスがある場合
-- `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()`
-- `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/api-account-context.md` - 認証ユーザ取得
-- `{{AGENT_ROOT}}/skills/jssp-page-generator/reference/argument-request.md` - `request` 引数
+- `.github/instructions/jssp-function-container.instructions.md` - 基本構造
+- `.github/instructions/jssp-error-handling.instructions.md` - エラーレスポンス・HTTP ステータス
+- `.github/instructions/jssp-logging.instructions.md` - ログ出力
+- `.github/instructions/jssp-security.instructions.md` - SQL インジェクション・機密情報の取扱い
+- `.github/instructions/jssp-2way-sql.instructions.md` - DB アクセスがある場合
+- `.github/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()`
+- `.github/skills/jssp-page-generator/reference/api-account-context.md` - 認証ユーザ取得
+- `.github/skills/jssp-page-generator/reference/argument-request.md` - `request` 引数
 
 ---
 
@@ -114,7 +114,7 @@ spec.json の構造はリファレンス XML と 1 対 1 対応しているの�
 
 ```jsonc
 {
-  "feature": "sample_oauth",                    // 機能名(ディレクトリ・XML ファイル名)
+  "feature": "sample_oauth",                    // 機能名（ディレクトリ・XML ファイル名）
   "errorCodeProduct": "IWP",                    // エラーコード接頭辞 E.{IWP}.{FEATURE}.{API}.NNNNN
 
   "scopes": [                                   // 複数可。3 言語 (ja/en/zh_CN) 標準で用意する
@@ -129,22 +129,22 @@ spec.json の構造はリファレンス XML と 1 対 1 対応しているの�
     }
   ],
 
-  "resources": [                                // 公開する REST-API の URL マッピング(複数可)
+  "resources": [                                // 公開する REST-API の URL マッピング（複数可）
     {
       "id": "sample-oauth-get-user",            // <client-resource id>
       "path": "/oauth/sample_oauth/get_user",   // 公開 URL
       "type": "jssp",                           // jssp または java
-      "file": "get_user",                       // JSSP ファイル名(拡張子なし)
+      "file": "get_user",                       // JSSP ファイル名（拡張子なし）
                                                 //   → target は自動で {feature}/oauth/{file}
       "authz": { "uri": "service://sample_oauth/get_user", "action": "execute" },
                                                 // 必須。welcome-all は使用不可。uri/action を指定すると
                                                 //   <authz uri="..." action="..." /> が出力される
-                                                //   (省略や "welcome-all" 指定は build-oauth.js がエラーで停止)
+                                                //   （省略や "welcome-all" 指定は build-oauth.js がエラーで停止）
       "scopes": ["sample_oauth_user_read"],
 
       "api": {                                  // JSSP 骨格生成用パラメータ
-        "title": "ユーザ情報取得 REST-API(OAuth 公開版)",
-        "description": "...(@description コメントの内容)",
+        "title": "ユーザ情報取得 REST-API（OAuth 公開版）",
+        "description": "...（@description コメントの内容）",
         "logPrefix": "sample_oauth/get_user",   // logger 内の [...] プレフィクス
         "allowedMethods": ["GET"],
         "parameters": [                         // バリデーション自動生成用
@@ -163,7 +163,7 @@ spec.json の構造はリファレンス XML と 1 対 1 対応しているの�
     }
   ],
 
-  "clients": [                                  // クライアントアプリケーション登録(複数可)
+  "clients": [                                  // クライアントアプリケーション登録（複数可）
     {
       "clientId": "sample-oauth-client",
       "grantType": "authorization_code",
@@ -184,8 +184,8 @@ spec.json の構造はリファレンス XML と 1 対 1 対応しているの�
 ```
 
 **spec.json 作成時の注意:**
-- `feature` は **lowercase snake_case** のみ(小文字英数字・アンダースコア)
-- `scopes[].id` を `resources[].scopes[]` と `clients[].scopes[]` から **必ず一致した名前で参照** する(不一致は build スクリプトが検出してエラー)
+- `feature` は **lowercase snake_case** のみ（小文字英数字・アンダースコア）
+- `scopes[].id` を `resources[].scopes[]` と `clients[].scopes[]` から **必ず一致した名前で参照** する（不一致は build スクリプトが検出してエラー）
 - `path` が `routing-jssp-config` の URL と重複しないか、事前に `src/main/conf/routing-jssp-config/` を Glob で確認すること
 - `<localizations>` の 3 言語 (`ja` / `en` / `zh_CN`) は **標準で全部書く**
 - `api.parameters` は build スクリプトが `validateRequest()` に自動展開する。必須／最大長／正規表現を spec で表現すれば、対応するバリデーションコードが生成される
@@ -196,24 +196,24 @@ spec.json の構造はリファレンス XML と 1 対 1 対応しているの�
 ### ステップ 4: build-oauth.js を実行
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
+node .github/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
      /tmp/{機能名}.spec.json
 ```
 
 build-oauth.js が自動で行うこと:
-- spec.json のバリデーション(scope ID 不一致・必須フィールド欠如・スキーマ不正をチェックして即停止)
-- `src/main/conf/oauth-client-scopes-config/{feature}.xml` を生成(既存上書き)
-- `src/main/conf/oauth-client-resources-config/{feature}.xml` を生成(既存上書き)
-- `src/main/conf/oauth-client-details-config/{feature}.xml` を生成(既存上書き)
-- `src/main/jssp/src/{feature}/oauth/{file}.js` を生成(**既存ファイルがあるとスキップして警告**、業務ロジックの誤消失防止)
+- spec.json のバリデーション（scope ID 不一致・必須フィールド欠如・スキーマ不正をチェックして即停止）
+- `src/main/conf/oauth-client-scopes-config/{feature}.xml` を生成（既存上書き）
+- `src/main/conf/oauth-client-resources-config/{feature}.xml` を生成（既存上書き）
+- `src/main/conf/oauth-client-details-config/{feature}.xml` を生成（既存上書き）
+- `src/main/jssp/src/{feature}/oauth/{file}.js` を生成（**既存ファイルがあるとスキップして警告**、業務ロジックの誤消失防止）
 - ロケール 3 言語の展開、エラーコード定数の連番付与、バリデーション関数の自動展開、JSDoc 整形
 
 **フラグ:**
 - `--xml-only` … XML 3 ファイルのみ更新し JSSP は触らない。**spec を後から変更したとき、業務ロジック実装済みの .js を保護したまま XML だけ再生成する**ために使う
 
 ```bash
-# spec 更新 → XML だけ再生成(JSSP の業務ロジックは保持)
-node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
+# spec 更新 → XML だけ再生成（JSSP の業務ロジックは保持）
+node .github/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
      /tmp/{機能名}.spec.json --xml-only
 ```
 
@@ -225,7 +225,7 @@ node {{AGENT_ROOT}}/skills/jssp-im-oauth-generator/scripts/build-oauth.js \
 
 build-oauth.js が生成する JSSP 骨格には:
 - `init(request)` 全体構造
-- `checkMethod()` / `validateRequest()`(spec の `parameters` から自動展開)
+- `checkMethod()` / `validateRequest()`（spec の `parameters` から自動展開）
 - `throwApiError()` / `throwValidationError()`
 - `sendJsonResponse()`
 - `processBusinessLogic(request)` が **TODO コメント付きの空関数** として配置される
@@ -233,9 +233,9 @@ build-oauth.js が生成する JSSP 骨格には:
 `processBusinessLogic` の中身を手動補完すること。`reference/oauth-resource-implementation.md` と `assets/sample-oauth-get-user.md` の実装例を参考にする。
 
 **補完時の規約:**
-- DB アクセスを伴う場合は `{{AGENT_ROOT}}/instructions/jssp-2way-sql.instructions.md` に従い、`src/main/jssp/src/{機能名}/sql/` 配下に SQL ファイルを外部化し `executeByTemplate` を使う
-- レスポンス JSON には **機密情報(パスワード・認証トークン・マスクなしの個人情報)を含めない**
-- ユーザ未存在等は `throwApiError(ERROR_CODE_*, 404, '...')` でスロー(spec の `extraErrorCodes` で定数化済み)
+- DB アクセスを伴う場合は `.github/instructions/jssp-2way-sql.instructions.md` に従い、`src/main/jssp/src/{機能名}/sql/` 配下に SQL ファイルを外部化し `executeByTemplate` を使う
+- レスポンス JSON には **機密情報（パスワード・認証トークン・マスクなしの個人情報）を含めない**
+- ユーザ未存在等は `throwApiError(ERROR_CODE_*, 404, '...')` でスロー（spec の `extraErrorCodes` で定数化済み）
 
 ---
 
@@ -243,13 +243,13 @@ build-oauth.js が生成する JSSP 骨格には:
 
 build-oauth.js が以下を自動検証するため、ここではスクリプトでは検出できない **手動補完後の項目** のみを確認する。
 
-> **build-oauth.js が自動チェック済み:** spec.json のスキーマ・必須フィールド・scope ID の参照整合性(resources・clients から参照される scope が `scopes[]` に存在するか)
+> **build-oauth.js が自動チェック済み:** spec.json のスキーマ・必須フィールド・scope ID の参照整合性（resources・clients から参照される scope が `scopes[]` に存在するか）
 
 | チェック項目 | 確認内容 |
 |------------|---------|
-| URL 重複なし | `oauth-client-resources-config` の `path` が `routing-jssp-config` の URL と重複していないか(Glob と Grep で確認) |
-| セキュアトークン検証不在 | 補完した業務ロジック内に `verifySecureToken` / `X-Intramart-Secure-Token` 文字列が混入していないか(Grep で確認) |
-| **認可リソースの整合** | 各 `<client-resource>` に `<authz uri/action>` が明示されており、対応する認可リソースのインポート資材(`jssp-tenant-setup-generator` で生成)が用意されているか |
+| URL 重複なし | `oauth-client-resources-config` の `path` が `routing-jssp-config` の URL と重複していないか（Glob と Grep で確認） |
+| セキュアトークン検証不在 | 補完した業務ロジック内に `verifySecureToken` / `X-Intramart-Secure-Token` 文字列が混入していないか（Grep で確認） |
+| **認可リソースの整合** | 各 `<client-resource>` に `<authz uri/action>` が明示されており、対応する認可リソースのインポート資材（`jssp-tenant-setup-generator` で生成）が用意されているか |
 | 業務ロジックの実装 | `processBusinessLogic` の `// TODO:` コメントが残っていないか |
 | jssp-page-generator のスクリプト | `validate-jssp-code.js` が利用可能なら、生成 `.js` に対して実行する |
 
@@ -257,13 +257,13 @@ build-oauth.js が以下を自動検証するため、ここではスクリプ�
 報告には以下を含める:
 
 - 使用した spec.json のパス
-- 生成したファイル一覧(パス)
-- 公開エンドポイント URL(コンテキストパス付き想定)
+- 生成したファイル一覧（パス）
+- 公開エンドポイント URL（コンテキストパス付き想定）
 - 要求 scope
-- 想定リクエスト例(`curl` 等)
+- 想定リクエスト例（`curl` 等）
 - 既存クライアントを利用 / 新規クライアント作成 のいずれを行ったか
-- 認可リソース(`uri/action`)の指定内容。**次に `jssp-tenant-setup-generator` で対応する認可資材を生成する必要がある旨を明記**
-- ユーザ側で **デプロイ後に確認すべき項目**(管理画面で scope / client / resource が登録されたか、ビルドフィルタで client-secret が置換されているか、別オリジンからアクセスする場合は CORS 許可設定が必要か 等)
+- 認可リソース（`uri/action`）の指定内容。**次に `jssp-tenant-setup-generator` で対応する認可資材を生成する必要がある旨を明記**
+- ユーザ側で **デプロイ後に確認すべき項目**（管理画面で scope / client / resource が登録されたか、ビルドフィルタで client-secret が置換されているか、別オリジンからアクセスする場合は CORS 許可設定が必要か 等）
 
 ---
 
@@ -277,7 +277,7 @@ build-oauth.js が以下を自動検証するため、ここではスクリプ�
 
 ## 関連スキル
 
-- `jssp-page-generator` - 通常の画面・REST-API(CSRF セキュアトークン版)
-- `jssp-im-master-usage` - IM-共通マスタ検索(ユーザ・組織・会社の検索ダイアログ)
-- `jssp-tenant-setup-generator` - テナント環境セットアップ資材生成(OAuth クライアント情報のフィルタ置換運用などをここに組み込む)
+- `jssp-page-generator` - 通常の画面・REST-API（CSRF セキュアトークン版）
+- `jssp-im-master-usage` - IM-共通マスタ検索（ユーザ・組織・会社の検索ダイアログ）
+- `jssp-tenant-setup-generator` - テナント環境セットアップ資材生成（OAuth クライアント情報のフィルタ置換運用などをここに組み込む）
 - `jssp-code-review` / `jssp-security-check` - 生成後の品質チェック

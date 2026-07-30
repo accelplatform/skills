@@ -151,7 +151,7 @@ IM-LogicDesigner 的 JavaScript 定义中可以使用 JSSP 的各种 API，但�
 
 #### LIKE 搜索时的注意事项（LIKE 模式注入对策）
 
-使用 LIKE 运算符时，需要采取与 `jssp-2way-sql.instructions.md` 中"LIKE 搜索时的转义"相同的对策。
+使用 LIKE 运算符时，需要采取与 `jssp-2way-sql.md` 中"LIKE 搜索时的转义"相同的对策。
 
 1. **SQL 中必须附加 `ESCAPE '\'` 子句**
 2. **LIKE 特殊字符（`\`、`%`、`_`）的转义和通配符添加必须在服务器端进行** — 不得从客户端发送 `%keyword%`

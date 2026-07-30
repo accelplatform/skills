@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "sample-call_ja.md",
+      "to": "sample-call.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "sample-call_en.md",
+      "to": "sample-call.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "sample-call_zh_CN.md",
+      "to": "sample-call.md"
+    }
+  ]
+}

@@ -30,11 +30,11 @@ src/main/jssp/src/{機能名}/oauth/{file}.js
 | `init(request)` をエントリーポイントとして実装 | ○ | ○ |
 | HTTP メソッド検証（405 拒否） | ○ | ○ |
 | リクエストパラメータバリデーション（400） | ○ | ○ |
-| **セキュアトークン検証** | ○(更新系で必須) | ×(OAuth トークンで認証されるため不要) |
+| **セキュアトークン検証** | ○（更新系で必須） | ×（OAuth トークンで認証されるため不要） |
 | `Web.getHTTPResponse().setStatus()` で適切な HTTP ステータス | ○ | ○ |
 | エラー JSON は `{ error: true, errorMessage: "[コード] メッセージ" }` 形式 | ○ | ○ |
 | 正常 JSON は `{ error: false, data: {...} }` 形式 | ○ | ○ |
-| バインド変数 (`$data` 等) の使用 | ○(画面側で参照) | ×(HTML を返さないため不要) |
+| バインド変数 (`$data` 等) の使用 | ○（画面側で参照） | ×（HTML を返さないため不要） |
 
 ## エントリーポイントの骨格
 
@@ -157,7 +157,7 @@ let locale = accountContext.locale;        // ロケール
 // ... AccountContext のフィールドはほぼ通常画面と同等
 ```
 
-> 詳細は `skills/jssp-page-generator/reference/api-account-context.md` を参照すること。
+> 詳細は `.claude/skills/jssp-page-generator/reference/api-account-context.md` を参照すること。
 
 ## リクエストパラメータの取得
 
@@ -169,9 +169,9 @@ let locale = accountContext.locale;        // ロケール
 | `request.getMethod()` | `GET` / `POST` / `PUT` / `DELETE` 等 |
 | `request.getHeader('Header-Name')` | リクエストヘッダ |
 | `request.getContentType()` | Content-Type |
-| `request.getInputStream()` | リクエストボディ(バイナリ／JSON 等)。`application/json` を受け取る場合はストリームから読み出す |
+| `request.getInputStream()` | リクエストボディ（バイナリ／JSON 等）。`application/json` を受け取る場合はストリームから読み出す |
 
-`application/json` ボディを受け取る場合の実装パターンは `skills/jssp-page-generator/assets/post-json-api.md` を参照すること(OAuth 版でもボディ取得手順は同じ)。
+`application/json` ボディを受け取る場合の実装パターンは `.claude/skills/jssp-page-generator/assets/post-json-api.md` を参照すること（OAuth 版でもボディ取得手順は同じ）。
 
 ## レスポンスとステータスコード
 
@@ -190,30 +190,30 @@ httpResponse.sendMessageBodyString(JSON.stringify(response));
 | `405` | 想定外の HTTP メソッド |
 | `500` | サーバ内部エラー |
 
-`401` / `403` は **プラットフォームの OAuth ディスパッチャ側** で返される(トークンが無効・期限切れ・scope 不足)。リソース実装内で組み立てる必要はない。
+`401` / `403` は **プラットフォームの OAuth ディスパッチャ側** で返される（トークンが無効・期限切れ・scope 不足）。リソース実装内で組み立てる必要はない。
 
 ## 機密情報の取り扱い
 
-- レスポンス JSON に **パスワード・認証トークン・個人情報(マスクなしの電話番号やメール等)を含めない**
-- ログ出力時も同様（`{{AGENT_RULES}}/jssp-logging{{AGENT_RULE_FILE}}.md` の `MaskUtil` を活用）
-- レスポンスの `userCd`(ユーザコード)は通常の REST-API でも返す情報なので問題ないが、**パスワードハッシュ・セッション ID 等は厳禁**
+- レスポンス JSON に **パスワード・認証トークン・個人情報（マスクなしの電話番号やメール等）を含めない**
+- ログ出力時も同様（`.claude/rules/jssp-logging.md` の `MaskUtil` を活用）
+- レスポンスの `userCd`（ユーザコード）は通常の REST-API でも返す情報なので問題ないが、**パスワードハッシュ・セッション ID 等は厳禁**
 
 ## 関連リファレンス
 
 - `oauth-overview.md` - 全体像
 - `oauth-resources-config.md` - URL マッピングと scope の指定
-- `skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()` の詳細
-- `skills/jssp-page-generator/reference/api-account-context.md` - 認証ユーザコンテキスト
-- `skills/jssp-page-generator/reference/argument-request.md` - request 引数
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - エラーレスポンス形式・HTTP ステータス
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - SQL インジェクション・XSS 対策(OAuth API でも同様に適用)
+- `.claude/skills/jssp-page-generator/reference/api-web.md` - `Web.getHTTPResponse()` の詳細
+- `.claude/skills/jssp-page-generator/reference/api-account-context.md` - 認証ユーザコンテキスト
+- `.claude/skills/jssp-page-generator/reference/argument-request.md` - request 引数
+- `.claude/rules/jssp-error-handling.md` - エラーレスポンス形式・HTTP ステータス
+- `.claude/rules/jssp-security.md` - SQL インジェクション・XSS 対策（OAuth API でも同様に適用）
 
 ## チェックリスト
 
-(上の「必須事項」表で網羅される基本項目は省略。実装〜レビュー時に追加で確認すべき固有項目のみ列挙)
+（上の「必須事項」表で網羅される基本項目は省略。実装〜レビュー時に追加で確認すべき固有項目のみ列挙）
 
-- [ ] エラーコードが `E.{製品}.{機能}.{API名}.{連番}` 形式か(5xx に `ERROR_CODE_INTERNAL` を割り当てたか)
+- [ ] エラーコードが `E.{製品}.{機能}.{API名}.{連番}` 形式か（5xx に `ERROR_CODE_INTERNAL` を割り当てたか）
 - [ ] 4xx 系は `logger.warn`、5xx 系は `logger.error` でログ出力しているか
-- [ ] レスポンスに機密情報(パスワード・トークン・マスクなしの個人情報等)が含まれていないか
-- [ ] SQL アクセスがある場合は `DbParameter` でバインドしているか(文字列連結禁止、`{{AGENT_RULES}}/jssp-2way-sql{{AGENT_RULE_FILE}}.md` 参照)
+- [ ] レスポンスに機密情報（パスワード・トークン・マスクなしの個人情報等）が含まれていないか
+- [ ] SQL アクセスがある場合は `DbParameter` でバインドしているか（文字列連結禁止、`.claude/rules/jssp-2way-sql.md` 参照）
 - [ ] `Contexts.getAccountContext()` でユーザコンテキストを参照する場合、null チェックを入れているか

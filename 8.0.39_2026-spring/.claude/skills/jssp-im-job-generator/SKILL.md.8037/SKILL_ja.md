@@ -13,7 +13,7 @@ intra-mart Accel Platform のジョブスケジューラで実行されるジョ
 
 ## 参照すべき規約
 
-本スキルはバッチ処理（`.js` のみ、画面なし）を生成する。全体像は `{{AGENT_RULES}}/README.md` 参照。
+本スキルはバッチ処理（`.js` のみ、画面なし）を生成する。全体像は `.claude/rules/README.md` 参照。
 
 | 規約 | 取り扱い |
 |------|---------|
@@ -113,12 +113,12 @@ function execute() {
 生成したファイルに対して `validate-jssp-code.js` を実行する。**エラーが 0 件になるまで修正を繰り返す。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
+node .claude/skills/jssp-page-generator/scripts/validate-jssp-code.js src/main/jssp/src/{機能名}/
 ```
 
 ### ステップ 2: 手動チェック
 
-`jssp-page-generator/reference/post-generation-verification.md` のステップ 1〜3 を実行する（ステップ 4 の画面検証はジョブには不要）。
+`.claude/skills/jssp-page-generator/reference/post-generation-verification.md` のステップ 1〜3 を実行する（ステップ 4 の画面検証はジョブには不要）。
 
 ### ステップ 3: コードレビュー・セキュリティチェック（自動実行）
 

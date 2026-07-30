@@ -151,7 +151,7 @@ IM-LogicDesigner の JavaScript 定義では JSSP の各 API が使用できる�
 
 #### LIKE 検索時の注意（LIKE パターンインジェクション対策）
 
-LIKE 演算子を使用する場合、`jssp-2way-sql.instructions.md` の「LIKE 検索時のエスケープ」と同じ対策が必要。
+LIKE 演算子を使用する場合、`jssp-2way-sql.md` の「LIKE 検索時のエスケープ」と同じ対策が必要。
 
 1. **SQL に `ESCAPE '\'` 句を必ず付与する**
 2. **LIKE 特殊文字（`\`、`%`、`_`）のエスケープとワイルドカード付与はサーバサイドで行う** — クライアントから `%keyword%` を送信してはならない

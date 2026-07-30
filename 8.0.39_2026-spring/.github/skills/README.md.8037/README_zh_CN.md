@@ -60,6 +60,10 @@
     - 支持租户管理功能提供的标准任务（授权・仓库操作・邮件发送等共 125 种）※扩展计划通过 MCP 支持
     - 支持标准映射函数（数值运算・字符串操作・数组操作・JSON・BASE64 等共 52 种）※扩展计划通过 MCP 支持
     - 支持用户自定义任务（JavaScript・REST・SQL・Database Fetch・模板）※扩展计划通过 MCP 支持
+- 想从 JSSP 画面调用已存在（已配置路由）的逻辑流
+  - ⇒ `jssp-im-logic-usage`（+ `jssp-page-generator`）
+    - 获取并解析 swagger spec（`<BASE-URL>/logic/all-api-docs`），确定请求/响应结构后生成 `fetch` 调用代码
+    - 权限不足（401/403）时提示认可设置的引导信息
 
 ### 想要进行多语言化
 
@@ -86,12 +90,19 @@
 - 想为业务画面创建 E2E 测试
   - ⇒ `jssp-playwright-test`
     - 使用 Playwright 生成 JSSP 画面（html + js 配对）的 E2E 测试（调整中）
+- 想根据规格书创建测试观点一览表・测试项目书（Excel 或 HTML）
+  - ⇒ `test-spec-generator`
+    - 根据规格书文件，生成 xlsx（使用 officecli）或 HTML 格式的测试观点一览表・测试项目书
 
-### 想要准备生产部署
+### 想要创建设置资源
 
-- 想创建租户环境搭建资源
+- 想创建租户环境设置资源・想准备生产部署
   - ⇒ `jssp-tenant-setup-generator`
-    - 基于交付物，准备必要的角色・授权・菜单・作业，以及搭建配置文件
+    - 基于交付物，准备必要的角色・授权・菜单・作业，以及设置配置文件
+    - 菜单仅为"站点地图（PC 用）"
+- 想创建示例数据设置资源
+  - ⇒ `jssp-sample-setup-generator`
+    - 准备用于试用模块的示例数据（DDL/DML）、试用所需的角色・授权・菜单・作业，以及设置配置文件
     - 菜单仅为"站点地图（PC 用）"
 
 ## 限制事项
@@ -103,7 +114,7 @@
 - 为检查生成物的正确性，会执行 Node.js 脚本。临时使用 `/tmp`。
 - IM-Workflow：主定义的 JSSP-API 不在对象范围。仅支持案件获取/操作系。
 - IM-Workflow：列表显示模式・流程组・媒体・消息不生成。
-- IM-LogicDesigner：从 JSSP 业务画面调用 IM-LogicDesigner，仅限通过路由。
+- IM-LogicDesigner：从 JSSP 业务画面调用 IM-LogicDesigner，仅限通过路由（调用方的实现由 `jssp-im-logic-usage` 负责）。
 - IM-LogicDesigner：默认不生成路由。如有必要，需给出具体指示。
 - IM-LogicDesigner：连 MCP 也不支持的用户自定义，用 JavaScript 用户自定义代替。
 - IM-LogicDesigner：触发器・逻辑流的预览图像不生成。

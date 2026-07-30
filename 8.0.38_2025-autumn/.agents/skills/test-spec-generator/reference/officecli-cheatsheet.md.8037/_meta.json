@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "officecli-cheatsheet_ja.md",
+      "to": "officecli-cheatsheet.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "officecli-cheatsheet_en.md",
+      "to": "officecli-cheatsheet.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "officecli-cheatsheet_zh_CN.md",
+      "to": "officecli-cheatsheet.md"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "module": "im_activiti"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "guide-process-definition-key-replacement_ja.md",
+      "to": "guide-process-definition-key-replacement.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "guide-process-definition-key-replacement_en.md",
+      "to": "guide-process-definition-key-replacement.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "guide-process-definition-key-replacement_zh_CN.md",
+      "to": "guide-process-definition-key-replacement.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{RUNTIME}}",
+      "values": [
+        {
+          "condition": {
+            "packageManager": "bun"
+          },
+          "value": "bun"
+        },
+        {
+          "condition": {
+            "accelplatformVersion": ">=8.0.37"
+          },
+          "value": "node"
+        }
+      ]
+    }
+  ]
+}

@@ -95,16 +95,16 @@ declare class ListSearchCondition {
   /**
    * レコードの取得件数を設定します。
    *
-   * @param count レコードの取得件数
+   * @param count レコードの取得件数（数値を文字列で指定）
    * @return data に null を格納した WorkflowResultInfo（処理の成否は resultStatus を参照）
    */
-  setCount(count: number): WorkflowResultInfo<null>;
+  setCount(count: string): WorkflowResultInfo<null>;
 
   /**
    * レコードの取得位置を設定します。
    *
-   * @param offset レコードの取得位置
+   * @param offset レコードの取得位置（数値を文字列で指定）
    * @return data に null を格納した WorkflowResultInfo（処理の成否は resultStatus を参照）
    */
-  setOffset(offset: number): WorkflowResultInfo<null>;
+  setOffset(offset: string): WorkflowResultInfo<null>;
 }

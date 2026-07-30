@@ -17,7 +17,7 @@ user-invocable: true
 
 ## 步骤
 
-1. 运行 `node {{AGENT_ROOT}}/skills/jssp-page-generator/scripts/validate-jssp-code.js <目标路径>`，梳理脚本可检测的问题。
+1. 运行 `node .github/skills/jssp-page-generator/scripts/validate-jssp-code.js <目标路径>`，梳理脚本可检测的问题。
 2. 读取目标文件，用 LLM 审查脚本无法检测的事项（命名规则、绑定变量、错误处理、结构等）。
 3. 汇总并报告所有问题。
 

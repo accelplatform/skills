@@ -155,8 +155,6 @@ function transferErrorPage(code, message) {
 <imart type="head">
   <!-- タイトル -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
-  <!-- プレゼンテーションページ連携用のバインド変数 -->
-  <script>const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;</script>
   <!-- プレゼンテーションページの独自スタイル -->
   <style>
     /* テーブル上部のエリアはフレックスで配置 */
@@ -183,8 +181,9 @@ function transferErrorPage(code, message) {
       width: 4em;
     }
   </style>
-  <!-- プレゼンテーションページのスクリプト -->
+  <!-- プレゼンテーションページのスクリプト（$data をグローバル領域に置かず IIFE でスコープ化する） -->
   <script>
+  (function($data) {
   document.addEventListener('DOMContentLoaded', () => {
     // 定数
     const STORAGE_KEY = 'product_stock_data';
@@ -384,6 +383,7 @@ function transferErrorPage(code, message) {
       renderTable();
     }
   });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -421,7 +421,7 @@ function transferErrorPage(code, message) {
               <table>
                 <thead>
                   <tr>
-                    <th class="col-edit has-content-only"><span>編集</span></th>
+                    <th class="col-edit has-text-centered"><span>編集</span></th>
                     <th><span>商品コード</span></th>
                     <th><span>商品名</span></th>
                     <th><span>単価</span></th>

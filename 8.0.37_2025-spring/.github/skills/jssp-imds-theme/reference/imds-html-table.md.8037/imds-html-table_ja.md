@@ -203,10 +203,10 @@ imds-table                                # テーブルコンテナ（サイズ
 ### isDetailsButton（詳細ボタン列）
 
 詳細ボタン列を追加する。
-`th` / `td` に `has-content-only` を付与する。
+`th` はヘッダテキストのみのため `has-text-centered` を付与して中央寄せにする。`td` はボタンのみのため `has-content-only` を付与する。
 
 ```html
-<th class="has-content-only"><span>詳細</span></th>
+<th class="has-text-centered"><span>詳細</span></th>
 <!-- tbody 内の各行 -->
 <td class="has-content-only">
   <button type="button" class="imds-button is-ghost is-small">
@@ -276,9 +276,10 @@ imds-table                                # テーブルコンテナ（サイズ
 - ラベルは基本的に左寄せで配置する
 - ただし、以下のケースは中央寄せを使用する
 
-  **中央寄せ**: `th` に `has-text-right` クラスを指定
+  **中央寄せ**: `th` に `has-text-centered` クラスを指定
   - テーブルに対する操作ボタンを表示する場合
   - ステータスを表すアイコンを表示する場合
+  - 「編集」「詳細」等のヘッダテキストのみを表示する場合（`has-content-only` は使用しない。`has-content-only` は th 自体がチェックボックス等のコンポーネントのみで、ヘッダテキストを持たない場合にのみ使用する）
 
 ### tbody
 
@@ -304,4 +305,5 @@ imds-table                                # テーブルコンテナ（サイズ
 - 列固定時の `td` には背景色クラス（`is-cyan` 等）を付与しないとスクロール時に背景が透過する
 - ソート処理は JavaScript で実装する（アイコン切替とデータ並び替え）
 - `has-content-only` はボタンやチェックボックスなどセル余白が不要な場合に使用する
+- `th` にヘッダテキスト（`<span>編集</span>` 等）がある場合は `has-content-only` を付与しない。中央寄せにしたい場合は `has-text-centered` を使う。`has-content-only` は th 自身がチェックボックス等のコンポーネントのみで、ヘッダテキストを持たない場合に限る
 - 複数のバリエーションは組み合わせ可能（例: `is-sticky is-hoverable is-stripe`）

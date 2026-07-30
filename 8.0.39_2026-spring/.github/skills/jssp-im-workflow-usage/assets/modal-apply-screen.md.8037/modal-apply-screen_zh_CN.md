@@ -212,8 +212,7 @@ function transferErrorPage(code, message) {
   </style>
   <!-- 表现页面的脚本 -->
   <script>
-    // 表现页面联动用的绑定变量
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+    (function($data) {
 
     document.addEventListener('DOMContentLoaded', () => {
       // 校验检查常时执行标志
@@ -417,6 +416,7 @@ function transferErrorPage(code, message) {
         initializeView($data.result);
       }
     });
+    })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

@@ -143,8 +143,6 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
 <imart type="head">
   <!-- 标题 -->
   <title><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.TITLE" escapeXml="true" escapeJs="false" /> - <imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.SUBTITLE" escapeXml="true" escapeJs="false" /></title>
-  <!-- 展示页面集成用绑定变量 -->
-  <script>const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;</script>
   <!-- 展示页面自定义样式 -->
   <style>
   .button-spacing {
@@ -152,8 +150,9 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
     gap: 3em;
   }
   </style>
-  <!-- 展示页面脚本 -->
+  <!-- 展示页面脚本（通过 IIFE 将 $data 限定作用域，不放入全局） -->
   <script>
+  (function($data) {
   document.addEventListener('DOMContentLoaded', () => {
     // 初始化页面显示
     function initializeView(result) {
@@ -280,6 +279,7 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
       initializeView($data.result);
     }
   });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

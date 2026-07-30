@@ -28,12 +28,12 @@ Both Crawler-only and template-only generation are supported depending on the si
 
 | Convention | Handling |
 |------|---------|
-| `jssp-function-container.instructions.md` | 🟢 **Required** — `init()` structure of the template JS |
-| `jssp-naming.instructions.md` / `jssp-code-style.instructions.md` | 🟢 Required |
-| `jssp-error-handling.instructions.md` / `jssp-logging.instructions.md` | 🟢 **Required** — Crawlers require detailed logging and error handling |
-| `jssp-2way-sql.instructions.md` | 🟡 **Reference only when using 2WaySQL** (e.g., when using 2WaySQL for Crawler source queries) |
-| `jssp-presentation-page.instructions.md` | 🟡 Basic structure of the template HTML (imcs-specific classes: refer to this skill's assets first) |
-| `jssp-security.instructions.md` | 🟡 Refer to the XSS countermeasure section when implementing template HTML. Since search result content (the `request` argument) comes from Apache Solr, the risk of stored XSS is not zero. Use `textContent` for DOM manipulation and restrict `innerHTML` to iAP-internally-generated HTML only |
+| `jssp-function-container.md` | 🟢 **Required** — `init()` structure of the template JS |
+| `jssp-naming.md` / `jssp-code-style.md` | 🟢 Required |
+| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **Required** — Crawlers require detailed logging and error handling |
+| `jssp-2way-sql.md` | 🟡 **Reference only when using 2WaySQL** (e.g., when using 2WaySQL for Crawler source queries) |
+| `jssp-presentation-page.md` | 🟡 Basic structure of the template HTML (imcs-specific classes: refer to this skill's assets first) |
+| `jssp-security.md` | 🟡 Refer to the XSS countermeasure section when implementing template HTML. Since search result content (the `request` argument) comes from Apache Solr, the risk of stored XSS is not zero. Use `textContent` for DOM manipulation and restrict `innerHTML` to iAP-internally-generated HTML only |
 
 ---
 
@@ -130,7 +130,7 @@ Example output files:
 **Required implementations in the Presentation page:**
 - Use `<div>` as the root, preceded by an HTML skeleton with the CSS classes `imcs-content-detail-title` / `imcs-content-detail-subtitle` / `imcs-content-detail-option` / `imcs-content-detail-snippets`
 - Place an IIFE-style `<script>` block at the end of the `<div>`
-- Expand the JSON via `const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;`
+- Place `(function($data) {` immediately after the `<script>` tag, receiving the JSON expanded via `<imart type="string" value=$data escapeXml="false" escapeJs="false" />` as the IIFE argument (do not make `$data` a global variable)
 - If `$data.error.code` is set, hide the container and stop processing
 - Get the container via `document.currentScript.parentElement` and reference each element using `querySelector`, setting values with `textContent` / `innerHTML`
 
@@ -153,6 +153,8 @@ Generate the following file with reference to `reference/template-config.md`.
 - For child TYPEs, specify only the child TYPE in the `type` attribute (not `"<parent_TYPE>$<child_TYPE>"`), and explicitly declare the parent using `<parent-type>`
 - In `<require-dynamic-fields>`, declare **only the Dynamic fields that are displayed** in the template HTML
 - Use the `.jssp` extension for `<template-path>` (refers to the `.js` / `.html` pair)
+
+**Search result templates do not need routing configuration under `routing-jssp-config/`.** The template is invoked directly by IM-ContentsSearch via `<template-path>`, so it does not go through URL routing like a normal screen (see the "Exception Rules for Screens Not Called Through the Routing Table" section in `.github/instructions/jssp-file-structure.instructions.md` for details).
 
 ---
 

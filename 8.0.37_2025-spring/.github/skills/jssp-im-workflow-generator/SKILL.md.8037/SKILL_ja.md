@@ -13,14 +13,14 @@ IM-Workflow のインポート用 XML 定義ファイルを、プロンプトの
 
 ## 参照すべき規約
 
-本スキルは **XML 定義ファイル**（`.xml`）のみを生成し、`.js` / `.html` の実装は行わない（実装は `jssp-im-workflow-usage` の責務）。そのため参照すべき規約は最小限。全体像は `{{AGENT_RULES}}/README.md` 参照。
+本スキルは **XML 定義ファイル**（`.xml`）のみを生成し、`.js` / `.html` の実装は行わない（実装は `jssp-im-workflow-usage` の責務）。そのため参照すべき規約は最小限。全体像は `.github/instructions/README.md` 参照。
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-file-structure.instructions.md` | 🟢 必読 — XML の出力先（`src/main/storage/public/im_workflow/`） |
-| `jssp-naming.instructions.md` | 🟢 必読 — workflowName / shortName 等の命名 |
-| `jssp-function-container.instructions.md` / `jssp-presentation-page.instructions.md` / `jssp-code-style.instructions.md` 等 | 🔴 **本スキル単独では不要**（XML 生成のみ。`.js` / `.html` の実装は `jssp-im-workflow-usage` の責務） |
-| `jssp-2way-sql.instructions.md` / `jssp-accessibility.instructions.md` / `jssp-logging.instructions.md` 等 | 🔴 **本スキル単独では不要** |
+| `jssp-file-structure.md` | 🟢 必読 — XML の出力先（`src/main/storage/public/im_workflow/`） |
+| `jssp-naming.md` | 🟢 必読 — workflowName / shortName 等の命名 |
+| `jssp-function-container.md` / `jssp-presentation-page.md` / `jssp-code-style.md` 等 | 🔴 **本スキル単独では不要**（XML 生成のみ。`.js` / `.html` の実装は `jssp-im-workflow-usage` の責務） |
+| `jssp-2way-sql.md` / `jssp-accessibility.md` / `jssp-logging.md` 等 | 🔴 **本スキル単独では不要** |
 
 ## 生成対象
 
@@ -53,7 +53,7 @@ IM-Workflow のインポート用 XML 定義ファイルを、プロンプトの
 
 ### 動的承認フロー（条件付き多段承認）の選択指針
 
-案件データの条件で承認者を増減させる多段承認は、**`matterProperties` + `rules` + `branch_start` ノード（分岐ルート）** がデフォルト。判断フロー・典型例（取得価格 10 万円以上で部門マネージャの追加承認）・他の実現方法（案件開始処理 / MCP `mcp__im_workflow__resolve_authority`）との使い分けは [reference/dynamic-approval-flow.md](reference/dynamic-approval-flow.md) を参照。
+案件データの条件で承認者を増減させる多段承認は、**`matterProperties` + `rules` + `branch_start` ノード（分岐ルート）** がデフォルト。判断フロー・典型例（取得価格 10 万円以上で部門マネージャの追加承認）・他の実現方法（案件開始処理 / カスタムプラグイン）との使い分けは [reference/dynamic-approval-flow.md](reference/dynamic-approval-flow.md) を参照。
 
 ## ファイル構成
 
@@ -77,8 +77,7 @@ jssp-im-workflow-generator/
 ├── mcp-spec/                   # MCP エンドポイント仕様
 │   ├── endpoints.md            # MCP エンドポイント仕様（処理対象者プラグイン）
 │   └── schemas/
-│       ├── mcp__im_workflow__list_authority_plugins.response.json
-│       └── mcp__im_workflow__resolve_authority.response.json
+│       └── mcp__im_workflow__list_authority_plugins.response.json
 ├── examples/
 │   ├── straight.spec.json    # 直線ルートの spec サンプル
 │   └── branch.spec.json      # ネスト分岐ルートの spec サンプル
@@ -129,20 +128,28 @@ jssp-im-workflow-generator/
 | 「営業部のWF担当者」（組織＋ロール） | 特定組織＋ロール | `.department_and_role` |
 | 「田中さん」（個人名） | ユーザ直接指定 | `.user` |
 | 「経理部」（組織名のみ） | 組織指定 | `.department` |
+| 「IM-LogicDesignerで取得」「フローIDで動的決定」 | IM-LogicDesigner フロー連携 | `.logic_flow_user` |
 
 **重要:**
 - **apply ノード**（申請権限）では `.role`（例: `im_workflow_user`）を使用すること。`apply_user_*` 系の動的プラグインは apply 拡張ポイントでは使用できない。
 - 役職名のみの指示（「課長」「部長」等）では `.post`（直接指定）を使用しないこと。`.post` は組織を絞らないため全組織の該当役職者が対象になり、業務上の意図と合わない。デフォルトは **`.apply_user_department_and_post`**（申請者の所属組織＋役職）を使用する。
 - ロール名のみの指示（「WF管理者」等）では `.role`（直接指定）を使用する。ロールはシステム管理・機能権限の性質が強く、組織で絞ると承認者不在になるリスクがある。
 - 上記はサフィックスの選択ルール。拡張ポイント（`approve` vs `approve.static`）は直前ノードの種類で別途決まる。直前が人間ノード → `approve.{サフィックス}`、直前がシステムノード → `approve.static.{サフィックス}`。両方の判断を必ず適用すること。
-- 上記いずれにも合致しない指示（例: 「2026/10/01以降に入社したユーザ」等のカスタム条件）は、MCP `mcp__im_workflow__resolve_authority` で解決する。詳細は [mcp-spec/endpoints.md](mcp-spec/endpoints.md) 参照。
+- 上記いずれにも合致しない指示（例: 「2026/10/01以降に入社したユーザ」等のカスタム条件）は、`mcp__im_workflow__list_authority_plugins` でキーワード検索してカスタムプラグインを探す。詳細は [mcp-spec/endpoints.md](mcp-spec/endpoints.md) 参照。
+- **`.logic_flow_user`** を使用する場合、`targetCode` は JSON オブジェクトで渡してよい（`build-workflow.js` が自動的に JSON 文字列に変換する）。`targetType` の明示指定も不要（`logic_flow_user` と自動推論される）。
+  ```jsonc
+  // approve / confirm ノードで IM-LogicDesigner フロー連携
+  { "id": "01", "type": "approve", "name": "Approver",
+    "plugin": { "suffix": "logic_flow_user",
+                "targetCode": { "flowId": "my_authority_flow", "version": null, "versionDecide": false } } }
+  ```
 
 #### targetCode に渡す値の取得方法
 
 上記の例で示している `ps003`、`comp_sample_01^comp_sample_01^ps003` 等は intra-mart 標準サンプルテナント（`comp_sample_01`）の値であり、**実プロジェクトでは異なるコード体系**が使われる。実コードの取得元は以下の優先順位で確認すること:
 
 1. **プロジェクト仕様書・設計書**に明記されている場合 → そのコードを使用する（最優先）
-2. **MCP `mcp__im_workflow__resolve_authority`** で承認者の自然言語記述を渡し、解決結果から `targetCode` を取得
+2. **`mcp__im_workflow__list_authority_plugins`** でプラグインを特定し、`parameterHint` を参考に必要なコード値をユーザに確認する
 3. 上記いずれも得られない場合 → サンプル値を仮置きし、**ユーザに「実コードを確認してください」と必ず明示確認する**（サンプル値のまま納品しない）
 
 役職コード・組織コード・ロールID 等のサンプル一覧は `reference/authority-plugins.md` の「サンプルデータ」セクション参照（**学習教材としての参照用途のみ**。実コードとして転記しない）。
@@ -235,7 +242,7 @@ XML の構造（3ロケール展開・2バージョン・プラグイン二重�
 | `end` | nodeTyp_End | 終了 |
 | `apply` | nodeTyp_Apply | 申請 |
 | `approve` | nodeTyp_Approve | 承認 |
-| `confirm` | nodeTyp_Confirm | 確認（閲覧のみ・承認権限なし） |
+| `confirm` | nodeTyp_Confirm | 確認（閲覧のみ・承認権限なし）。**メインフローとは別の終端枝**として承認ノード等にぶら下げる。直線ルート（straight）で nodes に並べると次ノードに自動接続されてバリデーターエラーになるため、**必ず `edges` を明示して確認ノードへの接続のみを記述し、確認ノードからの outgoing edge は書かない**こと。 |
 | `branch_start` | nodeTyp_Branch_Start | 分岐開始 |
 | `branch_end` | nodeTyp_Branch_End | 分岐終了 |
 | `sync_start` | nodeTyp_Sync_Start | 同期開始 |
@@ -351,7 +358,7 @@ spec の `flowSettings` オブジェクトで IM-Workflow のフロー定義の�
 ### 3. build-workflow.js を実行
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
+node .github/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
      /tmp/<workflowName>.spec.json
 ```
 
@@ -371,7 +378,7 @@ build-workflow.js が自動で行うこと:
 ### 4. validate-workflow.js で検証
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
+node .github/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
      <出力された.xml>
 ```
 

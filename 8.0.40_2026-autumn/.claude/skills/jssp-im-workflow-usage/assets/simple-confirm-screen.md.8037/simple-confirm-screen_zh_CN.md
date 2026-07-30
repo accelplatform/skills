@@ -215,8 +215,7 @@ function transferErrorPage(code, message) {
   </style>
   <!-- 展示页面的脚本 -->
   <script>
-    // 用于展示页面联动的绑定变量
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+    (function($data) {
 
     document.addEventListener('DOMContentLoaded', () => {
       // 画面的初始显示
@@ -249,6 +248,7 @@ function transferErrorPage(code, message) {
         initializeView($data.result);
       }
     });
+    })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -411,5 +411,5 @@ function transferErrorPage(code, message) {
 
 ## 生成后的必须验证
 
-请按照 `SKILL.md` 的「生成后的必须验证」，实施 `validate-workflow-code.js` → 手动检查 → 与 `jssp-imds-theme/reference` 比对。
+请按照 `SKILL.md` 的「生成后的必须验证」，实施 `validate-workflow-code.js` → 手动检查 → 与 `.claude/skills/jssp-imds-theme/reference/` 比对。
 特别要确认 `<imart type="workflowOpenPage">` 下的输入字段不附 `name` 属性（仅 hidden 字段持有 `name`）。

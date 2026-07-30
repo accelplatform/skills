@@ -24,15 +24,15 @@ When generating screens with `jssp-im-workflow-usage` or `jssp-page-generator` a
 
 ## Conventions to Reference
 
-This skill generates HTML snippets (with `imACMSearch` calls) that get embedded into screens. It does not generate `.js` on its own, so the relevant conventions are HTML-centric. See `{{AGENT_RULES}}/README.md` for the full picture.
+This skill generates HTML snippets (with `imACMSearch` calls) that get embedded into screens. It does not generate `.js` on its own, so the relevant conventions are HTML-centric. See `.github/instructions/README.md` for the full picture.
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-presentation-page.instructions.md` | 🟢 **Required** — HTML structure, id naming |
-| `jssp-naming.instructions.md` / `jssp-file-structure.instructions.md` | 🟢 Required |
+| `jssp-presentation-page.md` | 🟢 **Required** — HTML structure, id naming |
+| `jssp-naming.md` / `jssp-file-structure.md` | 🟢 Required |
 | References in the `jssp-imds-theme` skill | 🟢 Required (do not write imds class names from memory) |
-| `jssp-function-container.instructions.md` / `jssp-2way-sql.instructions.md` / `jssp-error-handling.instructions.md` etc. | 🔴 **Not needed for this skill alone** (the calling skill applies them) |
-| `jssp-accessibility.instructions.md` | 🟠 **Business-requirement-dependent** — the master search dialog already has basic ARIA via the imds standard implementation, so additional thick layering is usually unnecessary |
+| `jssp-function-container.md` / `jssp-2way-sql.md` / `jssp-error-handling.md` etc. | 🔴 **Not needed for this skill alone** (the calling skill applies them) |
+| `jssp-accessibility.md` | 🟠 **Business-requirement-dependent** — the master search dialog already has basic ARIA via the imds standard implementation, so additional thick layering is usually unnecessary |
 
 ## Finished Sample Assets
 

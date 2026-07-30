@@ -123,7 +123,7 @@ function doImport(tenantId) {
 | 检查返回值 `txResult.isSuccess()` | 判定事务成败（必须） |
 | 通过变量将业务异常传递到外部 | 因为回调内的 `throw` 不会向外传播 |
 
-详情请参见 `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` 和 `jssp-page-generator/reference/post-generation-verification.md`（步骤 3-7：Transaction.begin 的返回值检查）。
+详情请参见 `.claude/rules/jssp-error-handling.md` 和 `jssp-page-generator/reference/post-generation-verification.md`（步骤 3-7：Transaction.begin 的返回值检查）。
 
 ## spec.json 中的指定
 

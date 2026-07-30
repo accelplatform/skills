@@ -26,31 +26,5 @@
       "from": "AGENTS_zh_CN.md",
       "to": "AGENTS.md"
     }
-  ],
-  "replacements": [
-    {
-      "type": "text",
-      "target": "{{AGENT_RULES}}",
-      "values": [
-        {
-          "condition": {
-            "agent": "codex"
-          },
-          "value": "rules"
-        },
-        {
-          "condition": {
-            "agent": "github-copilot"
-          },
-          "value": "instructions"
-        },
-        {
-          "condition": {
-            "agent": "codex"
-          },
-          "value": "requirements"
-        }
-      ]
-    }
   ]
 }

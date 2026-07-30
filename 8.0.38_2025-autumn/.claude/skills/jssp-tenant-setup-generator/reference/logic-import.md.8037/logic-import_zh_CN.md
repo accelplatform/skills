@@ -75,7 +75,7 @@ let importer = Packages.jp.co.intra_mart.foundation.logic.LogicServiceProvider
 importer.importData(inputStream);
 ```
 
-这是 `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` 中"禁止 Java 直接访问"原则的例外用途。**在业务 SSJS 中一律禁止**，**仅在租户环境搭建的扩展导入 JS 中允许**。理由：
+这是 `.claude/rules/jssp-security.md` 中"禁止 Java 直接访问"原则的例外用途。**在业务 SSJS 中一律禁止**，**仅在租户环境搭建的扩展导入 JS 中允许**。理由：
 
 - IM-LogicDesigner 的加载在 SSJS API 中无法实现，只能通过 Java 完成
 - 扩展导入 JS 是租户管理用的特殊入口点，不处理外部输入，攻击面有限

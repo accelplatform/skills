@@ -13,7 +13,7 @@ allowed-tools: Bash, Read, Write, Glob, mcp__im_workflow__list_authority_plugins
 
 ## 需参照的规约
 
-本技能仅生成 **XML 定义文件**（`.xml`），不实现 `.js` / `.html`（实现由 `jssp-im-workflow-usage` 负责）。因此需参照的规约最少化。全局视图请参阅 `{{AGENT_RULES}}/README.md`。
+本技能仅生成 **XML 定义文件**（`.xml`），不实现 `.js` / `.html`（实现由 `jssp-im-workflow-usage` 负责）。因此需参照的规约最少化。全局视图请参阅 `.claude/rules/README.md`。
 
 | 规约 | 处理方式 |
 |------|---------|
@@ -343,7 +343,7 @@ XML 结构（3语言区域展开·2版本·插件双重注册等）由 `build-wo
 ### 3. 执行 build-workflow.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
+node .claude/skills/jssp-im-workflow-generator/scripts/build-workflow.js \
      /tmp/<workflowName>.spec.json
 ```
 
@@ -363,7 +363,7 @@ build-workflow.js 自动执行的内容：
 ### 4. 使用 validate-workflow.js 验证
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
+node .claude/skills/jssp-im-workflow-generator/scripts/validate-workflow.js \
      <输出的 .xml>
 ```
 

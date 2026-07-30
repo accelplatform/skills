@@ -203,8 +203,7 @@ Dynamic fields (only those declared in `<require-dynamic-fields>` are present):
   <div class="imcs-content-detail-snippets"></div>
 
   <script type="text/javascript">
-    (function() {
-      const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+    (function($data) {
       const container = document.currentScript.parentElement;
 
       if ($data.error.code) {
@@ -241,7 +240,7 @@ Dynamic fields (only those declared in `<require-dynamic-fields>` are present):
         span.innerHTML = snippet;
         snippetsContainer.appendChild(span);
       });
-    })();
+    })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </div>
 ```

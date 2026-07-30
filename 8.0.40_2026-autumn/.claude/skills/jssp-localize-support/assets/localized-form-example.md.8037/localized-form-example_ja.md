@@ -143,8 +143,6 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
 <imart type="head">
   <!-- タイトル -->
   <title><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.TITLE" escapeXml="true" escapeJs="false" /> - <imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.SUBTITLE" escapeXml="true" escapeJs="false" /></title>
-  <!-- プレゼンテーションページ連携用のバインド変数 -->
-  <script>const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;</script>
   <!-- プレゼンテーションページの独自スタイル -->
   <style>
   .button-spacing {
@@ -152,8 +150,9 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
     gap: 3em;
   }
   </style>
-  <!-- プレゼンテーションページのスクリプト -->
+  <!-- プレゼンテーションページのスクリプト（$data をグローバル領域に置かず IIFE でスコープ化する） -->
   <script>
+  (function($data) {
   document.addEventListener('DOMContentLoaded', () => {
     // 画面の初期表示
     function initializeView(result) {
@@ -280,6 +279,7 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
       initializeView($data.result);
     }
   });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 

@@ -107,11 +107,7 @@ function init(request) {
 </title>
 
 <script>
-  // バインド変数の場合のみ、value="$data" と書いてはならず、value=$data のようにクォートを使用せず書く
-  // バインド変数以外については、type='string' と書いてはならず、type="string" のように必ずダブルクォートで囲む
-  // これは imart タグ独自の仕様によるもの
-  const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+(function($data) {
   document.addEventListener('DOMContentLoaded', () => {
     // 各種 function は、外部から直接実行されないようにするため、
     // DOMContentLoaded イベント内に定義する
@@ -127,6 +123,10 @@ function init(request) {
       initializeView($data.result);
     }
   });
+// バインド変数の場合のみ、value="$data" と書いてはならず、value=$data のようにクォートを使用せず書く
+// バインド変数以外については、type='string' と書いてはならず、type="string" のように必ずダブルクォートで囲む
+// これは imart タグ独自の仕様によるもの
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 </script>
 ```
 

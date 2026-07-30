@@ -160,7 +160,7 @@ If unsure, run `validate-imds.js` and check whether a `IMDS-U-001` warning is ra
 
 ### Form Implementation Pattern (Mandatory Reference: `assets/simple-form.md`)
 
-When implementing input forms, always follow the canonical pattern in `skills/jssp-page-generator/assets/simple-form.md`.
+When implementing input forms, always follow the canonical pattern in `.claude/skills/jssp-page-generator/assets/simple-form.md`.
 Placing individual `imds-field` items in a flat list is incorrect. The standard is the nested structure: **`imds-field-container > imds-field-group > imds-field-group-label + imds-field-group-control > imds-field`**.
 
 ```html
@@ -278,7 +278,7 @@ Tables must always be implemented with the double-structure of `imds-table` and 
 After generating or editing HTML, always run the imds structural validation with the following command.
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <target file or directory>
+node .claude/skills/jssp-imds-theme/scripts/validate-imds.js <target file or directory>
 ```
 
 ### Validation Rules
@@ -307,7 +307,7 @@ node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <target file
 | Tag | `imds-tag` is limited to `span` elements |
 | Textarea | `imds-textarea` is limited to `textarea` elements (do not confuse with textbox) |
 | Element type | `imds-select`=`select`, `imds-textbox`=`input`, `imds-textarea`=`textarea`, `imds-checkbox`/`imds-radio`=`label`, plus the element type for each component's base class |
-| Undefined class detection | Classes with `imds-*` prefix that are not in `reference/` or `{{AGENT_ROOT}}/{{AGENT_RULES}}/` are reported as `IMDS-U-001` (warning). Helps catch typos or imaginary classes (e.g., `imds-page-header`) |
+| Undefined class detection | Classes with `imds-*` prefix that are not in `reference/` or `.claude/rules/` are reported as `IMDS-U-001` (warning). Helps catch typos or imaginary classes (e.g., `imds-page-header`) |
 
 ### Handling Validation Results
 
@@ -323,14 +323,14 @@ node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <target file
 2. Get the HTML for the password input field from `textbox.md` (change to `type="password"`)
 3. Load `button.md` to get the login button (`is-primary`)
 4. Place each element with appropriate labels using `imds-field`
-5. Run `node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <generated file>` and confirm PASS
+5. Run `node .claude/skills/jssp-imds-theme/scripts/validate-imds.js <generated file>` and confirm PASS
 
 ### Creating a Data List Screen
 
 1. Load `table.md` to get the basic table structure
 2. Load `button.md` to place the new registration button (`is-primary`) and edit button (`is-outlined`)
 3. Load `imds-html-dialog.md` as needed to implement a confirmation dialog (use `imds-html-dialog-form.md` for dialogs containing an input form)
-4. Run `node {{AGENT_ROOT}}/skills/jssp-imds-theme/scripts/validate-imds.js <generated file>` and confirm PASS
+4. Run `node .claude/skills/jssp-imds-theme/scripts/validate-imds.js <generated file>` and confirm PASS
 
 ## Troubleshooting
 

@@ -27,11 +27,9 @@ description: "プレゼンテーションページの実装方針"
       gap: 3em;
     }
   </style>
-  <!-- Scripts for the presentation page -->
+  <!-- Scripts for the presentation page ($data is scoped with an IIFE instead of the global scope) -->
   <script>
-    // Bind variable for presentation page integration
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     // Processing after page load
     document.addEventListener('DOMContentLoaded', () => {
       // Get secure token
@@ -99,6 +97,7 @@ description: "プレゼンテーションページの実装方針"
         initializeView($data.result);
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -128,7 +127,7 @@ description: "プレゼンテーションページの実装方針"
 ### Variable Declarations
 
 JavaScript inside presentation pages runs in the browser, so Rhino restrictions do not apply.
-The `const` restriction in `jssp-code-style.instructions.md` is exclusive to function containers (`.js`) and must not be applied to scripts inside HTML.
+The `const` restriction in `jssp-code-style.md` is exclusive to function containers (`.js`) and must not be applied to scripts inside HTML.
 
 - **Variables that are not reassigned**: use `const`
 - **Variables that are reassigned**: use `let`
@@ -201,8 +200,12 @@ Good example:
 
 ### When Embedding JSON
 
+Do not define `$data` as a global variable; pass it as an argument to an immediately invoked function expression (IIFE) to confine it to that scope (see "Scoping the Bind Variable `$data` (IIFE)" below).
+
 ```javascript
-const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+(function($data) {
+  // Implement processing that references $data here
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
 ```
 
 - The value attribute of the `<imart>` tag must not be enclosed in double quotes
@@ -237,6 +240,37 @@ Presentation pages are displayed in the following order.
 5. The response is sent to the client
 6. Processing moves to the client side (browser, etc.) that received the response
 7. Browser-side initialization processing is executed via DOMContentLoaded
+
+## Scoping the Bind Variable `$data` (IIFE)
+
+### Applicability
+
+**Apply this to every screen.** Use the IIFE pattern below regardless of whether the screen is a normal, standalone screen or a screen placed multiple times as a portlet component on a portal page.
+
+### Rationale
+
+Defining `const $data = <imart>...</imart>;` as-is in an independent `<script>` tag makes `$data` a global variable. This is not a problem as long as a screen is displayed standalone, but when the same screen (portlet) is placed multiple times on the same portal page, the `$data` of an instance loaded later overwrites the `$data` of an instance loaded earlier, resulting in unintended display behavior. Making IIFE scoping the standard for every screen means no rework is needed later if a screen is turned into a portlet, and it also avoids polluting the global namespace.
+
+### Implementation Pattern
+
+```html
+<script>
+(function($data) {
+  document.addEventListener('DOMContentLoaded', () => {
+    // TODO: Add screen initialization processing here (referencing $data)
+  });
+})(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
+</script>
+```
+
+- Do not write `const $data = <imart>...</imart>;` as an independent `<script>` tag (the old pattern); instead pass `$data` as an argument to an immediately invoked function expression (IIFE)
+- Even when passing it as an IIFE argument, keep `escapeXml="false" escapeJs="false"` unchanged (the same criterion as the "When Embedding JSON" pattern, which outputs the JSON as-is inside `<script>`)
+- Put all processing such as the `DOMContentLoaded` listener and `initializeView` inside the IIFE, and confine local variables and functions other than `$data` to that scope as well
+- See "Basic Structure" at the top of this page for full details. For portlet-specific additions (omitting the header/footer, etc.), see `.github/skills/jssp-page-generator/assets/simple-portlet.md`
+
+### Note: Element id Collisions
+
+While the IIFE resolves the `$data` collision, element ids such as `id="xxx-table"` remain fixed per screen. If the portal embeds multiple instances directly into the same DOM (rather than isolating them in iframes), duplicate ids can cause `document.getElementById()` to return only the element of the first instance. Consider making ids unique per instance as needed, based on how the portal embeds the portlet (whether instances are isolated in iframes).
 
 ## Policy on Using the maxlength Attribute
 
@@ -323,7 +357,7 @@ The `JSSP-HTML-018` rule in `jssp-page-generator/scripts/validate-jssp-code.js` 
 ## Date Input (imuiCalendar)
 
 For date input, use `<imart type="imuiCalendar">` instead of `<input type="date">`.
-For usage, attributes, notes, and the date-time input pattern (date + time combination), refer to `skills/jssp-imds-theme/reference/imui-html-calendar.md`.
+For usage, attributes, notes, and the date-time input pattern (date + time combination), refer to `.github/skills/jssp-imds-theme/reference/imui-html-calendar.md`.
 
 ## Controlling Input Field Width
 
@@ -402,7 +436,7 @@ if (!userCode || userCode.length === 0) {
 }
 ```
 
-For other patterns (numeric, regex, email, date format, optional fields, etc.), refer to the "Validation Pattern Catalogue" in `assets/simple-form.md`.
+For other patterns (numeric, regex, email, date format, optional fields, etc.), refer to the "Validation Pattern Catalogue" in `.github/skills/jssp-page-generator/assets/simple-form.md`.
 
 ### Implementation Policy
 
@@ -419,7 +453,7 @@ For other patterns (numeric, regex, email, date format, optional fields, etc.), 
 
 ### Implementation Policy
 
-Overview of the architecture (see `assets/simple-form.md` for the full implementation):
+Overview of the architecture (see `.github/skills/jssp-page-generator/assets/simple-form.md` for the full implementation):
 
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
@@ -512,14 +546,14 @@ function callbackXxxSearch(result) {
 ### Implementation Policy
 
 - When using hyperlinks or calling REST APIs within the same host, specify the path under the context path as a relative path
-  - Example: To access `http://localhost/imart/foo/bar`, specify the URL as `foo/bar`
+  - Example: To access `http://127.0.0.1/imart/foo/bar`, specify the URL as `foo/bar`
 - This relative path matches the `path` attribute of the `file-mapping` tag defined in the routing configuration file, with the leading `/` removed
   - Example: If the routing configuration file has `<file-mapping path="/sample/user/list" page="sample/user/user_list">`, specify the URL to open the presentation page `sample/user/user_list` as `sample/user/list`
 
 ### Context Path
 
 - The context path is the URL composed of the host name, port number, and root directory name of the deployment destination
-  - Example: `http://localhost/imart/`
+  - Example: `http://127.0.0.1/imart/`
 - Since the context path is specified in the `<base>` tag by the `<imart type="head">` tag, it is recommended to specify the path after the context path as a relative path when specifying URLs
 
 ## Calling APIs
@@ -565,7 +599,7 @@ async function register(request) {
   - If the API expects application/x-www-form-urlencoded, specify request parameters using `URLSearchParams`
   - If the API expects application/json, specify request parameters using `JSON.stringify()`
 - Use Promises for asynchronous processing, and use `async` and `await` to make code readable
-- The response format is `{error: bool, data | errorMessage}` (see `jssp-error-handling.instructions.md` "API Response Structure (JSON)")
+- The response format is `{error: bool, data | errorMessage}` (see `jssp-error-handling.md` "API Response Structure (JSON)")
   - Branch on `result.error` and, on error, display `result.errorMessage` (in `[code] message` format) directly
   - The HTTP status code (200 / 400 / 405 / 500) is set by the API. The client should not check it individually and should branch only on `result.error`
 - On successful completion, display a completion message using `imuiShowSuccessMessage()`

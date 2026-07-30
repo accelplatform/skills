@@ -75,7 +75,7 @@ let importer = Packages.jp.co.intra_mart.foundation.logic.LogicServiceProvider
 importer.importData(inputStream);
 ```
 
-これは `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` の「Java 直接アクセス禁止」原則の例外となる用途。**業務 SSJS では一律禁止**、**テナント環境セットアップの拡張インポート JS でのみ容認** する。理由:
+これは `.github/instructions/jssp-security.instructions.md` の「Java 直接アクセス禁止」原則の例外となる用途。**業務 SSJS では一律禁止**、**テナント環境セットアップの拡張インポート JS でのみ容認** する。理由:
 
 - IM-LogicDesigner の取り込みは SSJS API では実現できず、Java 経由しか手段がない
 - 拡張インポート JS はテナント管理用の特殊なエントリポイントで、外部入力を扱わないため攻撃面が限定的

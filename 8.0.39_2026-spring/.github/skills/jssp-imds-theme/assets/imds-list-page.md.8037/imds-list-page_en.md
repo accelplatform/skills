@@ -102,7 +102,7 @@ Define column headers with `thead` and dynamically generate rows with JavaScript
     <table>
       <thead>
         <tr>
-          <th class="col-edit"><span>Edit</span></th>
+          <th class="col-edit has-text-centered"><span>Edit</span></th>
           <th><span>Product Code</span></th>
           <th><span>Product Name</span></th>
           <th><span>Unit Price</span></th>
@@ -168,7 +168,7 @@ Specify `id="pagination"` and dynamically generate `imds-pagination` with JavaSc
               <table>
                 <thead>
                   <tr>
-                    <th class="col-edit has-content-only"><span>Edit</span></th>
+                    <th class="col-edit has-text-centered"><span>Edit</span></th>
                     <th><span>Product Code</span></th>
                     <th><span>Product Name</span></th>
                     <th><span>Unit Price</span></th>

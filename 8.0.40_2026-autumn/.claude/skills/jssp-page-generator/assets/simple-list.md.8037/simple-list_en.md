@@ -155,8 +155,6 @@ function transferErrorPage(code, message) {
 <imart type="head">
   <!-- Title -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
-  <!-- Bind variable for presentation page integration -->
-  <script>const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;</script>
   <!-- Presentation page custom styles -->
   <style>
     /* Area above the table uses flex layout */
@@ -183,8 +181,9 @@ function transferErrorPage(code, message) {
       width: 4em;
     }
   </style>
-  <!-- Presentation page scripts -->
+  <!-- Presentation page scripts (scope $data via an IIFE instead of leaving it in the global scope) -->
   <script>
+  (function($data) {
   document.addEventListener('DOMContentLoaded', () => {
     // Constants
     const STORAGE_KEY = 'product_stock_data';
@@ -384,6 +383,7 @@ function transferErrorPage(code, message) {
       renderTable();
     }
   });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -421,7 +421,7 @@ function transferErrorPage(code, message) {
               <table>
                 <thead>
                   <tr>
-                    <th class="col-edit has-content-only"><span>Edit</span></th>
+                    <th class="col-edit has-text-centered"><span>Edit</span></th>
                     <th><span>Product Code</span></th>
                     <th><span>Product Name</span></th>
                     <th><span>Unit Price</span></th>

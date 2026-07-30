@@ -203,7 +203,7 @@ Header は、ページ上部のエリアを表示する部品です。
     </div>
   </div>
   ```
-  ※ `jssp-accessibility.instructions.md` の「プレゼンテーションページに `<header>` を追加してはならない」はプラットフォームのグローバルヘッダとの重複を避ける主旨であり、imds の `<header class="imds-header">`（ページ内ヘッダ）はこの規則の対象外。
+  ※ `jssp-accessibility.md` の「プレゼンテーションページに `<header>` を追加してはならない」はプラットフォームのグローバルヘッダとの重複を避ける主旨であり、imds の `<header class="imds-header">`（ページ内ヘッダ）はこの規則の対象外。
 - 「ページヘッダ」を表すのに `imds-page-header` / `imds-page-header-title` / `imds-page-header-actions` といったクラス名を使ってはならない（リファレンスに存在しない架空のクラス。CSS が当たらず崩れる）。正しくは `imds-header` / `imds-header-title` / `imds-header-actions`。
 - ヘッダ内の配置順序: `imds-header-back-button` / `imds-header-icon` / `imds-header-nav` → `imds-header-title` → `imds-header-additional` → `imds-header-reload-button` → `imds-header-actions`
 - `imds-header-icon`、`imds-header-back-button`、`imds-header-nav` は排他的に使用する（同時に配置しない）

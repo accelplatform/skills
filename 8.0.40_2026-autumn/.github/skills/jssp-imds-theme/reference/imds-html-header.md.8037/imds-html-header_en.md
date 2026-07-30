@@ -203,7 +203,7 @@ Actions that add, remove, or edit the list's business data — such as "New", "A
     </div>
   </div>
   ```
-  ※ The rule "do not add `<header>` to presentation pages" in `jssp-accessibility.instructions.md` aims to avoid duplication with the platform's global header, and the imds `<header class="imds-header">` (in-page header) is exempt from this rule.
+  ※ The rule "do not add `<header>` to presentation pages" in `jssp-accessibility.md` aims to avoid duplication with the platform's global header, and the imds `<header class="imds-header">` (in-page header) is exempt from this rule.
 - Do not use class names like `imds-page-header` / `imds-page-header-title` / `imds-page-header-actions` to represent the "page header" (these are imaginary classes not in the reference. CSS will not apply, and the layout will break). The correct names are `imds-header` / `imds-header-title` / `imds-header-actions`.
 - Order of placement inside the header: `imds-header-back-button` / `imds-header-icon` / `imds-header-nav` → `imds-header-title` → `imds-header-additional` → `imds-header-reload-button` → `imds-header-actions`
 - `imds-header-icon`, `imds-header-back-button`, and `imds-header-nav` are used exclusively (do not place simultaneously)

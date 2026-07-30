@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "module": "im_activiti"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "guide-to-be-discussed_ja.md",
+      "to": "guide-to-be-discussed.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "guide-to-be-discussed_en.md",
+      "to": "guide-to-be-discussed.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "guide-to-be-discussed_zh_CN.md",
+      "to": "guide-to-be-discussed.md"
+    }
+  ]  
+}

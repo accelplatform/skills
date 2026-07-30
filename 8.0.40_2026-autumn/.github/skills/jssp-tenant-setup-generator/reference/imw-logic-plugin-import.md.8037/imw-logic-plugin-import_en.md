@@ -7,7 +7,7 @@ By registering via `WorkflowLogicFlowManager` during tenant environment setup, m
 ## Use Cases
 
 - You have created a flow for a processing-target plugin in IM-LogicDesigner and want it registered automatically during tenant environment setup
-- After generating the flow definition following `jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md`
+- After generating the flow definition following `.github/skills/jssp-im-workflow-usage/assets/logic-flow-authority-plugin.md`
 
 ---
 

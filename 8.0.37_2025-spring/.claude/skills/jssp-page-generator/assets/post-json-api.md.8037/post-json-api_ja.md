@@ -69,7 +69,7 @@ src/main/conf/routing-jssp-config/
 
 - 成功時: `application/json` で `{error:false, data:{...}}`
 - 失敗時: `application/json` で `{error:true, errorMessage:"[コード] メッセージ"}` を HTTP 4xx/5xx と共に返す
-- エラーコード命名は `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` に従う
+- エラーコード命名は `.claude/rules/jssp-error-handling.md` に従う
 
 ### `ApiError` 型の扱い
 
@@ -433,9 +433,9 @@ function init(request) {
       font-size: 0.875em;
     }
   </style>
+  <!-- $data をグローバル領域に置かず IIFE でスコープ化する -->
   <script>
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
-
+  (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
       const POST_JSON_API_PATH = 'sample_api/api/post_json';
       const SAMPLE_REQUEST = {
@@ -546,6 +546,7 @@ function init(request) {
         imuiShowErrorMessage([$data.error.code, $data.error.message].join('\n'));
       }
     });
+  })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -684,13 +685,13 @@ POST は更新操作とみなして `X-Intramart-Secure-Token` を要求する�
 
 ### `ApiError` typedef を使わない（再掲）
 
-`@typedef {Error & {code, httpStatus}} ApiError` をファイル単位で宣言すると `tsc` の `TS2300 Duplicate identifier` を引き起こす。**インライン `@type` 注釈でキャストするのが本テンプレートの標準形**。詳細は `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` を参照。
+`@typedef {Error & {code, httpStatus}} ApiError` をファイル単位で宣言すると `tsc` の `TS2300 Duplicate identifier` を引き起こす。**インライン `@type` 注釈でキャストするのが本テンプレートの標準形**。詳細は `.claude/rules/jssp-error-handling.md` を参照。
 
 ## 関連
 
 - `reference/argument-request.md` - `request.getMessageBodyAsString()` の仕様
 - `reference/api-secure-token-manager.md` - CSRF トークンの検証
 - `reference/secure-token-check.md` - クライアント＋サーバの一連の検証パターン
-- `{{AGENT_RULES}}/jssp-error-handling{{AGENT_RULE_FILE}}.md` - エラーコード命名規則と API エラーレスポンス形式
-- `{{AGENT_RULES}}/jssp-security{{AGENT_RULE_FILE}}.md` - 入力検証の全体方針
+- `.claude/rules/jssp-error-handling.md` - エラーコード命名規則と API エラーレスポンス形式
+- `.claude/rules/jssp-security.md` - 入力検証の全体方針
 - `assets/file-upload-download-api.md` - multipart/form-data（ファイル）の場合

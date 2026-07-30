@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "workflow-import_ja.md",
+      "to": "workflow-import.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "workflow-import_en.md",
+      "to": "workflow-import.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "workflow-import_zh_CN.md",
+      "to": "workflow-import.md"
+    }
+  ]
+}

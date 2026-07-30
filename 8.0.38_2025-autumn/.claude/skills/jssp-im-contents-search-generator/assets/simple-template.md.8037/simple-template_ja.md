@@ -203,8 +203,7 @@ iAP 生成フィールド（常に存在）:
   <div class="imcs-content-detail-snippets"></div>
 
   <script type="text/javascript">
-    (function() {
-      const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+    (function($data) {
       const container = document.currentScript.parentElement;
 
       if ($data.error.code) {
@@ -241,7 +240,7 @@ iAP 生成フィールド（常に存在）:
         span.innerHTML = snippet;
         snippetsContainer.appendChild(span);
       });
-    })();
+    })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </div>
 ```

@@ -26,31 +26,5 @@
       "from": "copilot-instructions_zh_CN.md",
       "to": "copilot-instructions.md"
     }
-  ],
-  "replacements": [
-    {
-      "type": "text",
-      "target": "{{AGENT_RULES}}",
-      "values": [
-        {
-          "condition": {
-            "agent": "github-copilot"
-          },
-          "value": "rules"
-        },
-        {
-          "condition": {
-            "agent": "github-copilot"
-          },
-          "value": "instructions"
-        },
-        {
-          "condition": {
-            "agent": "codex"
-          },
-          "value": "requirements"
-        }
-      ]
-    }
   ]
 }

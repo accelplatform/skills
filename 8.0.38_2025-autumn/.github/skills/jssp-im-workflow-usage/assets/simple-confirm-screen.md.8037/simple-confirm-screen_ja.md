@@ -215,8 +215,7 @@ function transferErrorPage(code, message) {
   </style>
   <!-- プレゼンテーションページのスクリプト -->
   <script>
-    // プレゼンテーションページ連携用のバインド変数
-    const $data = <imart type="string" value=$data escapeXml="false" escapeJs="false" />;
+    (function($data) {
 
     document.addEventListener('DOMContentLoaded', () => {
       // 画面の初期表示
@@ -249,6 +248,7 @@ function transferErrorPage(code, message) {
         initializeView($data.result);
       }
     });
+    })(<imart type="string" value=$data escapeXml="false" escapeJs="false" />);
   </script>
 </imart>
 
@@ -411,5 +411,5 @@ function transferErrorPage(code, message) {
 
 ## 生成後の必須検証
 
-`SKILL.md` の「生成後の必須検証」に従い、`validate-workflow-code.js` → 手動チェック → `jssp-imds-theme/reference` 照合を実施すること。
+`SKILL.md` の「生成後の必須検証」に従い、`validate-workflow-code.js` → 手動チェック → `.github/skills/jssp-imds-theme/reference/` 照合を実施すること。
 特に `<imart type="workflowOpenPage">` 配下の入力フィールドに `name` 属性を付けない（hidden フィールドのみ `name` を持つ）点を確認する。

@@ -11,7 +11,7 @@ The function `execute(parameter)` is called by the workflow engine.
 
 **Notes**:
 - Do not start a DB transaction within this program
-- Since branch condition programs are function containers, follow the coding conventions in `{{AGENT_RULES}}/` (use of `let`, naming conventions, etc.)
+- Since branch condition programs are function containers, follow the coding conventions in `.claude/rules/` (use of `let`, naming conventions, etc.)
 
 ## File Structure
 

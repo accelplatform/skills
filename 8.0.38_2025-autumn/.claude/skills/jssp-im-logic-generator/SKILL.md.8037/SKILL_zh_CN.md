@@ -164,7 +164,7 @@ jssp-im-logic-generator/
 ### 3. 将 spec 写入临时文件并执行 build-flow.js
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/build-flow.js \
+node .claude/skills/jssp-im-logic-generator/scripts/build-flow.js \
      /tmp/<flowId>.spec.json \
      --zip
 ```
@@ -263,7 +263,7 @@ fetch('logic/api/sample/ajax/execute', {
 自动验证 build-flow.js 的输出。**生成后必须执行。**
 
 ```bash
-node {{AGENT_ROOT}}/skills/jssp-im-logic-generator/scripts/validate-flow.js \
+node .claude/skills/jssp-im-logic-generator/scripts/validate-flow.js \
      <flow_definition.json 或 .zip>
 ```
 

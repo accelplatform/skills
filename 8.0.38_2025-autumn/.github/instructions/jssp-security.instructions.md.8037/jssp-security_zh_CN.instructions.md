@@ -92,8 +92,10 @@ let result = db.select(sql, [status, departmentCd]);
 
 ```html
 <script type="text/javascript">
-// JSON 嵌入：escapeXml/escapeJs 均设为 false
-const $userData = <imart type="string" value=$userData escapeXml="false" escapeJs="false" />;
+// JSON 嵌入：escapeXml/escapeJs 均设为 false。$userData 不作为全局变量，而是作为 IIFE 的参数进行作用域隔离
+(function($userData) {
+  // ...
+})(<imart type="string" value=$userData escapeXml="false" escapeJs="false" />);
 
 // 字符串字面量：escapeXml=false, escapeJs=true
 let value = '<imart type="string" value=$myValue escapeXml="false" escapeJs="true"></imart>';
@@ -104,7 +106,7 @@ let value = '<imart type="string" value=$myValue escapeXml="false" escapeJs="tru
 
 | 用途 | `escapeXml` | `escapeJs` | 原因 |
 |------|:-----------:|:----------:|------|
-| JSON 嵌入（`const $data = ...`） | `false` | `false` | JSON 整体原样输出，两者均不需要 |
+| JSON 嵌入（作为 IIFE 参数传递） | `false` | `false` | JSON 整体原样输出，两者均不需要 |
 | JS 字符串字面量（`let x = '...'`） | `false` | **`true`** | 需要对引号等 JS 特殊字符进行转义 |
 
 **注意**：指定 `escapeXml="false"` 或 `escapeJs="false"` 时，必须确认数据来自可信来源。
