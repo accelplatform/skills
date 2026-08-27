@@ -24,6 +24,8 @@ Each convention file states its **application scope** at the top. Use the **scop
 
 ## Convention File List (One-Line Summary + Scope Tag)
 
+### For JSSP (Script Development Model)
+
 | File | One-line summary | Scope |
 |------|------------------|-------|
 | `jssp-overview.md` | Project overview and tech stack | 🟢 Always |
@@ -39,6 +41,18 @@ Each convention file states its **application scope** at the top. Use the **scop
 | `jssp-testing.md` | Unit testing (jest-on-rhino) | 🟡 When writing tests |
 | `jssp-performance.md` | Compiler settings / session.js | 🟡 When tuning performance |
 | `jssp-accessibility.md` | ARIA / WCAG 2.1 AA / screen readers | 🟠 **Business-requirement-dependent** — apply thickly only when the spec explicitly requires it; otherwise keep to the basics (`imdsConfirm`, basic `aria-label`, etc.) |
+
+### For Java (JavaEE Development Model)
+
+| File | One-line summary | Scope |
+|------|------------------|-------|
+| `java-architecture.md` | Layer structure / dependency rules / exception hierarchy / factory pattern | 🟢 Always (when implementing Java) |
+| `java-service-layer.md` | Service layer implementation rules / transaction boundaries / exception conversion | 🟢 Always (when implementing the `service` package) |
+| `java-entity.md` | Entity class (Mirage ORM) design conventions / audit trail fields | 🟡 When generating Entity classes (`entity` package) |
+| `java-code-style.md` | `final` / string literals / `equals()` / raw type prohibition | 🟢 Always (when generating `.java`) |
+| `java-naming.md` | Package / class / method / variable naming conventions | 🟢 Always |
+| `java-javadoc.md` | JavaDoc conventions for classes and methods | 🟢 Always |
+| `java-logging.md` | Log levels / masking secrets / log-level decisions by exception type | 🟡 When implementing logging |
 
 ## Localization
 

@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "oauth-overview_en.md",
-      "to": "oauth-overview.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "oauth-overview_zh_CN.md",
+      "to": "oauth-overview.md"
+    },
+    {
+      "from": "oauth-overview_en.md",
       "to": "oauth-overview.md"
     }
   ]

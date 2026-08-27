@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-debug_en.md",
-      "to": "api-debug.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-debug_zh_CN.md",
+      "to": "api-debug.md"
+    },
+    {
+      "from": "api-debug_en.md",
       "to": "api-debug.md"
     }
   ]

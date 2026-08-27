@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "jssp-presentation-page_en.md",
-      "to": "jssp-presentation-page.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "jssp-presentation-page_zh_CN.md",
+      "to": "jssp-presentation-page.md"
+    },
+    {
+      "from": "jssp-presentation-page_en.md",
       "to": "jssp-presentation-page.md"
     }
   ]

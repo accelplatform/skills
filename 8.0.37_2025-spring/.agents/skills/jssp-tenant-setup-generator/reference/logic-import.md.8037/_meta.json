@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "logic-import_en.md",
-      "to": "logic-import.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "logic-import_zh_CN.md",
+      "to": "logic-import.md"
+    },
+    {
+      "from": "logic-import_en.md",
       "to": "logic-import.md"
     }
   ]

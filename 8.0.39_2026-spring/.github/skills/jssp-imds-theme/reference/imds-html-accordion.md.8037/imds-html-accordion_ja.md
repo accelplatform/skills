@@ -196,6 +196,52 @@ Accordion は、常に表示する必要のないエリアを閉じておく際�
 - `fa-solid fa-triangle-exclamation` - 警告
 - `fa-solid fa-circle-info` - 情報・補足
 
+### `is-outlined` + `imui-table`（詳細情報の表示・移行注記付き）
+
+詳細情報を非表示にしておき、必要な場合のみ参照できるようにする用途。`div.imds-accordion` に `is-outlined` を付与し、`imds-accordion-content` 内に `table.imui-table`（旧テーマの imui コンポーネント）を配置する構成。
+
+> **移行に関する注記**: 将来的に `imui-table` は `imds-table` を使用する方法へ移行予定。現時点では `imds-table` 側で本パターン（`th`/`td` を用いた項目名・値の表形式表示、`rowspan`/`colspan` の混在）に完全対応できていないため、暫定的に `imui-table` との組み合わせをサンプルとして提供している。`imds-table` への移行後もこの `imds-accordion is-outlined` の構造自体はそのまま利用できる。
+
+```html
+<div class="imds-accordion is-outlined">
+  <input type="checkbox" id="todo-replace-:r6:" />
+  <label for="todo-replace-:r6:" class="imds-accordion-title">
+    <span class="imds-accordion-title-inner">
+      <span>ワークフロー名</span>
+      <span class="imds-accordion-caption">workflow-id</span>
+    </span>
+    <span class="imds-icon is-small imds-accordion-chevron"><i class="fa-solid fa-angle-down"></i></span>
+  </label>
+  <div class="imds-accordion-content">
+    <div class="imds-px-4 imds-pt-3 imds-pb-1">
+      <table class="imui-table">
+        <tbody>
+          <tr>
+            <th colspan="2"><label>アプリケーション名</label></th>
+            <td>AccelStudioアプリケーション名</td>
+          </tr>
+          <tr>
+            <th rowspan="2" class="wd-15"><label>ワークフロー情報</label></th>
+            <th class="wd-15"><label>定義名</label></th>
+            <td>ワークフロー名 （ ID: workflow-id ）</td>
+          </tr>
+          <tr>
+            <th><label>備考</label></th>
+            <td>
+              <p>
+                「ワークフロー名」のフロー定義です。
+                <br />
+                このフロー定義はサンプルです。
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+```
+
 ## アクセシビリティ対応
 
 - `input[type="checkbox"]` と `label` の `id` / `for` 属性を一致させ、クリックで開閉できるようにする

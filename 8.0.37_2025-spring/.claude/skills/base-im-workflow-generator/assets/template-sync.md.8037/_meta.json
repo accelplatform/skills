@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "template-sync_ja.md",
+      "to": "template-sync.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "template-sync_zh_CN.md",
+      "to": "template-sync.md"
+    },
+    {
+      "from": "template-sync_en.md",
+      "to": "template-sync.md"
+    }
+  ]
+}

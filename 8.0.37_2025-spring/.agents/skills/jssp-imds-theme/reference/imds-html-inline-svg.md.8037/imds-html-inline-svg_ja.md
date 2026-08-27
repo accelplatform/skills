@@ -92,6 +92,20 @@ SVG を直接 HTML に埋め込むことで、色やサイズを CSS で制御�
 </button>
 ```
 
+### is-ghost アイコンのみボタン
+
+テキストを伴わず、インライン SVG アイコンのみで構成する `is-ghost` ボタン。
+
+```html
+<button type="button" class="imds-button is-ghost">
+  <span class="imds-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <!-- SVG パスデータ -->
+    </svg>
+  </span>
+</button>
+```
+
 ### Tag との組み合わせ
 
 ```html
@@ -105,9 +119,33 @@ SVG を直接 HTML に埋め込むことで、色やサイズを CSS で制御�
 </span>
 ```
 
+### is-yellow タグ
+
+```html
+<span class="imds-tag is-yellow">
+  <span class="imds-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+      <!-- SVG パスデータ（塗り fill="#fff" 等、タグの背景色に対して視認できる色を指定） -->
+    </svg>
+  </span>
+  <span>コメント</span>
+</span>
+```
+
 ## 実装上の注意
 
 - SVG に `fill="currentColor"` を指定すると、カラークラス（`is-primary` 等）の色が反映される
 - マルチカラーの SVG は直接 `fill` 属性で色を指定するため、カラークラスは効かない
 - アクセシビリティ: 意味のあるアイコンには `aria-label` を `span.imds-icon` に付与する。装飾目的のアイコンには `aria-hidden="true"` を付与する
 - SVG の `width` / `height` 属性はサイズクラスで上書きされるが、`viewBox` は必ず指定すること
+- `is-white`（白色）のアイコンは、背景が明るい場所ではアイコンが見えなくなる。必ず暗い背景色を持つコンテナ（例: `white-icon-background` のような濃色背景のラッパー要素）内に配置すること
+
+```html
+<div class="white-icon-background">
+  <span class="imds-icon is-white">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
+      <!-- SVG パスデータ -->
+    </svg>
+  </span>
+</div>
+```

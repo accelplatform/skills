@@ -649,74 +649,73 @@ function init(request) {
   </script>
 </imart>
 
-<div id="container">
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="fa-solid fa-cloud-arrow-up"></i></span>
-        </span>
+<!-- 整个页面的容器（配置在 intra-mart 主题的 imui-container 内部，因此不附加 id） -->
+<div class="imds-container">
+  <header class="imds-header">
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1 id="page-title"><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+  </header>
+
+  <main>
+    <imart type="imSecureToken" />
+
+    <section class="imds-py-3 imds-px-4" aria-labelledby="upload-section-title">
+      <h2 id="upload-section-title" class="imds-mb-3">上传</h2>
+      <div class="imds-field" for=":uploadFile:">
+        <div class="imds-field-label">
+          <label for=":uploadFile:" class="has-text-weight-bold">文件</label>
+        </div>
+        <div class="imds-field-control">
+          <div class="file-upload-actions">
+            <input type="file" id=":uploadFile:" name="uploadFile" />
+            <button type="button" class="imds-button is-primary" id="upload-button">
+              <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></span>
+              <span class="imds-button-text">上传</span>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1 id="page-title"><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+
+      <div id="upload-result" class="upload-result-card" style="display:none;" role="status" aria-live="polite">
+        <h3 class="imds-mb-2">上传结果</h3>
+        <dl>
+          <dt>文件键（fileKey）</dt>
+          <dd id=":resultFileKey:"></dd>
+          <dt>保存文件名</dt>
+          <dd id=":resultFileName:"></dd>
+          <dt>原文件名</dt>
+          <dd id=":resultOriginalFileName:"></dd>
+          <dt>大小</dt>
+          <dd id=":resultSize:"></dd>
+        </dl>
       </div>
-    </header>
+    </section>
 
-    <main>
-      <imart type="imSecureToken" />
-
-      <section class="imds-py-3 imds-px-4" aria-labelledby="upload-section-title">
-        <h2 id="upload-section-title" class="imds-mb-3">上传</h2>
-        <div class="imds-field" for=":uploadFile:">
-          <div class="imds-field-label">
-            <label for=":uploadFile:" class="has-text-weight-bold">文件</label>
-          </div>
-          <div class="imds-field-control">
-            <div class="file-upload-actions">
-              <input type="file" id=":uploadFile:" name="uploadFile" />
-              <button type="button" class="imds-button is-primary" id="upload-button">
-                <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></span>
-                <span class="imds-button-text">上传</span>
-              </button>
-            </div>
-          </div>
+    <section class="imds-py-3 imds-px-4" aria-labelledby="download-section-title">
+      <h2 id="download-section-title" class="imds-mb-3">下载</h2>
+      <div class="imds-field" for=":downloadFileKey:">
+        <div class="imds-field-label">
+          <label for=":downloadFileKey:" class="has-text-weight-bold">文件键（fileKey）</label>
         </div>
-
-        <div id="upload-result" class="upload-result-card" style="display:none;" role="status" aria-live="polite">
-          <h3 class="imds-mb-2">上传结果</h3>
-          <dl>
-            <dt>文件键（fileKey）</dt>
-            <dd id=":resultFileKey:"></dd>
-            <dt>保存文件名</dt>
-            <dd id=":resultFileName:"></dd>
-            <dt>原文件名</dt>
-            <dd id=":resultOriginalFileName:"></dd>
-            <dt>大小</dt>
-            <dd id=":resultSize:"></dd>
-          </dl>
+        <div class="imds-field-control">
+          <input type="text" id=":downloadFileKey:" name="downloadFileKey" class="imds-textbox" placeholder="uploads/yyyymmdd_hhmmss_xxxxxxxx/filename.ext" />
         </div>
-      </section>
-
-      <section class="imds-py-3 imds-px-4" aria-labelledby="download-section-title">
-        <h2 id="download-section-title" class="imds-mb-3">下载</h2>
-        <div class="imds-field" for=":downloadFileKey:">
-          <div class="imds-field-label">
-            <label for=":downloadFileKey:" class="has-text-weight-bold">文件键（fileKey）</label>
-          </div>
-          <div class="imds-field-control">
-            <input type="text" id=":downloadFileKey:" name="downloadFileKey" class="imds-textbox" placeholder="uploads/yyyymmdd_hhmmss_xxxxxxxx/filename.ext" />
-          </div>
-        </div>
-        <div class="file-upload-actions">
-          <button type="button" class="imds-button is-primary" id="download-button">
-            <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i></span>
-            <span class="imds-button-text">下载</span>
-          </button>
-        </div>
-      </section>
-    </main>
-  </div>
+      </div>
+      <div class="file-upload-actions">
+        <button type="button" class="imds-button is-primary" id="download-button">
+          <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i></span>
+          <span class="imds-button-text">下载</span>
+        </button>
+      </div>
+    </section>
+  </main>
 </div>
 ```
 

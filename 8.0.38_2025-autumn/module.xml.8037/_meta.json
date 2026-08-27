@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "replacements": [
+    {
+      "type": "foreach",
+      "target": "{{DEPENDENCIES}}",
+      "items": "modules",
+      "template": "<dependency>\n      <module-id>{{$item.groupId}}.{{$item.artifactId}}</module-id>\n      <verified-version min=\"{{$item.version}}\">{{$item.version}}</verified-version>\n    </dependency>",
+      "separator": "\n    "
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{GROUP_ID\\}\\}",
+      "replacement": "{{$group}}"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
+      "replacement": "{{$artifactId}}"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_NAME\\}\\}",
+      "replacement": "{{$name}}"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
+      "replacement": "{{$projectVersion}}"
+    }
+  ],
+  "rename": [
+    {
+      "from": "module.xml",
+      "to": "module.xml"
+    }
+  ]
+}

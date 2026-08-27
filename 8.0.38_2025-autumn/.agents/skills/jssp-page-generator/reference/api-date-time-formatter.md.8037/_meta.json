@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-date-time-formatter_en.md",
-      "to": "api-date-time-formatter.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-date-time-formatter_zh_CN.md",
+      "to": "api-date-time-formatter.md"
+    },
+    {
+      "from": "api-date-time-formatter_en.md",
       "to": "api-date-time-formatter.md"
     }
   ]

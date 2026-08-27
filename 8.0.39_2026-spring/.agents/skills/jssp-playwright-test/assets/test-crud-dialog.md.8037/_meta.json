@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "test-crud-dialog_en.md",
-      "to": "test-crud-dialog.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "test-crud-dialog_zh_CN.md",
+      "to": "test-crud-dialog.md"
+    },
+    {
+      "from": "test-crud-dialog_en.md",
       "to": "test-crud-dialog.md"
     }
   ]

@@ -25,16 +25,14 @@ description: "アクセシビリティ規約（スクリーンリーダー対応
 intra-mart Accel Platform 的全局页眉、全局菜单和页脚由**平台（主题）输出**。
 因此，各展示页面中**不得添加** `<header>` / `<nav>` / `<footer>`（否则会与平台提供的地标重复）。
 
-页面的根结构遵循 `jssp-presentation-page.md` 的规范，只放置 `<main>`。
+页面的根结构遵循 `jssp-presentation-page.md` 的规范，只放置 `<main>`。根标签（`<div>`；class 遵循所使用的 UI 主题）在普通画面中不附加 `id`（因其位于 intra-mart 主题输出的 `<div id="imui-container">` 内部）。仅 Portlet 画面例外，附加 `id="app-portlet-{功能ID}-container"`。
 
 ```html
-<div id="container">
-  <div class="imds-container">
-    <main>
-      <h1>页面标题</h1>
-      <!-- 主要内容 -->
-    </main>
-  </div>
+<div>
+  <main>
+    <h1>页面标题</h1>
+    <!-- 主要内容 -->
+  </main>
 </div>
 ```
 
@@ -382,7 +380,7 @@ document.getElementById('search-result-count').textContent =
 
 ### 页面结构
 
-- [ ] 根结构是否为 `<div id="container"><div class="imds-container"><main>...</main></div></div>`
+- [ ] 根结构是否为 `<div><main>...</main></div>`（普通画面不附加 `id`；仅 Portlet 画面附加 `id="app-portlet-{功能ID}-container"`；class 遵循所使用的 UI 主题）
 - [ ] 页面中只有一个 `<main>`，且未同时添加 `role="main"`
 - [ ] 标题是否按 `h1` → `h2` → `h3` 的顺序不跳级
 

@@ -24,6 +24,8 @@
 
 ## 規約ファイル一覧（一行要約 + 適用範囲タグ）
 
+### JSSP（スクリプト開発モデル）向け
+
 | ファイル | 一行要約 | 適用範囲 |
 |---------|---------|---------|
 | `jssp-overview.instructions.md` | プロジェクト概要・技術スタック | 🟢 常時 |
@@ -39,6 +41,18 @@
 | `jssp-testing.instructions.md` | 単体テスト（jest-on-rhino） | 🟡 テスト実装時 |
 | `jssp-performance.instructions.md` | コンパイラ設定 / session.js | 🟡 パフォーマンスチューニング時 |
 | `jssp-accessibility.instructions.md` | ARIA / WCAG 2.1 AA / スクリーンリーダー | 🟠 **業務要件次第**（仕様書に明示指示があるときのみ厚く適用。指示がなければ `imdsConfirm` / 基本的な `aria-label` 等の最低限のみ） |
+
+### Java（JavaEE 開発モデル）向け
+
+| ファイル | 一行要約 | 適用範囲 |
+|---------|---------|---------|
+| `java-architecture.instructions.md` | レイヤー構造・依存関係ルール・例外階層・ファクトリパターン | 🟢 常時（Java 実装時） |
+| `java-service-layer.instructions.md` | サービス層（Service）の実装ルール・トランザクション境界・例外変換 | 🟢 常時（`service` パッケージ実装時） |
+| `java-entity.instructions.md` | Entity クラス（Mirage ORM）の設計規約・監査証跡フィールド | 🟡 Entity クラス（`entity` パッケージ）生成時 |
+| `java-code-style.instructions.md` | `final` / 文字列リテラル / `equals()` / raw type 禁止 | 🟢 常時（`.java` 生成時） |
+| `java-naming.instructions.md` | パッケージ・クラス・メソッド・変数の命名規則 | 🟢 常時 |
+| `java-javadoc.instructions.md` | クラス・メソッドの JavaDoc 記述規約 | 🟢 常時 |
+| `java-logging.instructions.md` | ログレベル / 機密情報マスク / 例外タイプ別ログ判断 | 🟡 ログ実装時 |
 
 ## ローカライズ
 

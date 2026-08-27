@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "argument-request_en.md",
-      "to": "argument-request.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "argument-request_zh_CN.md",
+      "to": "argument-request.md"
+    },
+    {
+      "from": "argument-request_en.md",
       "to": "argument-request.md"
     }
   ]

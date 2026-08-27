@@ -186,26 +186,24 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- ページ全体のコンテナ（ポートレット部品のため、ヘッダ・フッタは含めない） -->
-<div id="container">
-  <div class="imds-container">
-    <main>
-      <div class="imds-table is-narrow" id="portlet-sample-table">
-        <div class="imds-table-inner">
-          <table>
-            <thead>
-              <tr>
-                <th><span>項目コード</span></th>
-                <th><span>項目名</span></th>
-                <th><span>ステータス</span></th>
-              </tr>
-            </thead>
-            <tbody id="portlet-sample-table-body"></tbody>
-          </table>
-        </div>
+<!-- ページ全体のコンテナ（ポートレット部品のため、ヘッダ・フッタは含めない。同一ポータル画面に異なるポートレットが複数配置された場合に DOM 操作のスコープを画面ごとに区別するため、id="app-portlet-{機能名}-container" を付与する） -->
+<div id="app-portlet-{機能名}-container" class="imds-container">
+  <main>
+    <div class="imds-table is-narrow" id="portlet-sample-table">
+      <div class="imds-table-inner">
+        <table>
+          <thead>
+            <tr>
+              <th><span>項目コード</span></th>
+              <th><span>項目名</span></th>
+              <th><span>ステータス</span></th>
+            </tr>
+          </thead>
+          <tbody id="portlet-sample-table-body"></tbody>
+        </table>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 </div>
 ```
 

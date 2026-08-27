@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "imart-tag-im-secure-token_en.md",
-      "to": "imart-tag-im-secure-token.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "imart-tag-im-secure-token_zh_CN.md",
+      "to": "imart-tag-im-secure-token.md"
+    },
+    {
+      "from": "imart-tag-im-secure-token_en.md",
       "to": "imart-tag-im-secure-token.md"
     }
   ]

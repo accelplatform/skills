@@ -186,15 +186,21 @@ Header 是用于显示页面上部区域的部件。
 
 - **`imds-header-title` 的内部必须采用「`<p>副标题</p>` + `<h1>标题</h1>`」的两段式结构**（仅在「无副标题」变体的情况下可省略 `<p>`）。仅在 `<h1>` 中直接写页面名的实现是错误的。请按照参考基础代码片段，在上段 `<p>` 放置应用名/模块名（例如「公司物品借用系统」「物品主数据」），在下段 `<h1>` 放置页面名（例如「保管位置管理」「审批列表」），两者均应通过函数容器的 `$subTitle` / `$title` 绑定，使用 `<imart type="string" value=$subTitle ...>` 输出（不直接在 HTML 中书写）。
 
-- **`<header class="imds-header">` 必须放置在 `<main>` 的外部**。imds 主题的 CSS 以放置在 `<div class="imds-container">` 直接下方的 `<header>` 为前提应用样式（图标位置、边距等），放在 `<main>` 内部会导致布局错乱，发生 `imds-header-icon` 图标不显示等故障。
+- **`<header class="imds-header">` 必须放置在 `<main>` 的外部**。imds 主题的 CSS 以放置在 `<div class="imds-container">` 直接下方的 `<header>` 为前提应用样式（图标位置、边距等），放在 `<main>` 内部会导致布局错乱，发生 `imds-header-icon` 图标不显示等故障。**根 `<div>` 必须整合为一个，不要在内部再嵌套一层 `imds-container` 的 `<div>` 作为中间包装层**（根据 `jssp-presentation-page.md` 的规约，intra-mart 的主题功能会自动用 `<div id="imui-container">` 包裹页面内容，因此根标签不附加 id，只附加 `imds-container` 类）。
   ```html
   <!-- OK -->
-  <div id="container">
+  <div class="imds-container">
+    <header class="imds-header">...</header>   <!-- 在 main 外部 -->
+    <main>
+      ...
+    </main>
+  </div>
+
+  <!-- NG（中间包装层：将 imds-container 的 div 又嵌套了一层） -->
+  <div>
     <div class="imds-container">
-      <header class="imds-header">...</header>   <!-- 在 main 外部 -->
-      <main>
-        ...
-      </main>
+      <header class="imds-header">...</header>
+      <main>...</main>
     </div>
   </div>
   ```

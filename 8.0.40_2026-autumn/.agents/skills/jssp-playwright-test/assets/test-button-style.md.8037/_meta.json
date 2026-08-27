@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "test-button-style_en.md",
-      "to": "test-button-style.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "test-button-style_zh_CN.md",
+      "to": "test-button-style.md"
+    },
+    {
+      "from": "test-button-style_en.md",
       "to": "test-button-style.md"
     }
   ]

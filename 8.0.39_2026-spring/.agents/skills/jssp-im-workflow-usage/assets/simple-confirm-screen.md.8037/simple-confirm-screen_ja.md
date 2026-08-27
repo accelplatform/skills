@@ -266,115 +266,113 @@ function transferErrorPage(code, message) {
     imwNextApplicationId=$imwNextApplicationId
     imwNextServiceId=$imwNextServiceId>
 
-  <!-- ページ全体のコンテナ -->
-  <div id="container">
-    <div class="imds-container">
-      <header class="imds-header">
-        <div class="imds-header-back-button">
-          <button type="button" id="imw-back-button" class="imds-button is-ghost is-large" aria-label="戻る">
-            <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
-          </button>
-        </div>
-        <div class="imds-header-icon">
-          <span class="imds-icon-wrapper is-large">
-            <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-          </span>
-        </div>
-        <div class="imds-header-title">
-          <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-          <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-        </div>
-      </header>
-      <main>
-        <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-          <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-            <h2 class="imds-heading is-bordered is-size-2 is-cyan">発注情報</h2>
-            <div class="imds-field-container has-accent-color">
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>部品コード</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":partCode:" class="imds-text"></span>
-                    </div>
-                  </div>
-                </div>
+  <!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-back-button">
+        <button type="button" id="imw-back-button" class="imds-button is-ghost is-large" aria-label="戻る">
+          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
+        </button>
+      </div>
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+      </div>
+    </header>
+    <main>
+      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <h2 class="imds-heading is-bordered is-size-2 is-cyan">発注情報</h2>
+          <div class="imds-field-container has-accent-color">
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>部品コード</span>
               </div>
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>部品名</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":partName:" class="imds-text"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>単価</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":unitPrice:" class="imds-text"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>個数</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":quantity:" class="imds-text"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>合計金額</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":totalAmount:" class="imds-text"></span>
-                    </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":partCode:" class="imds-text"></span>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-          <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-            <h2 class="imds-heading is-bordered is-size-2 is-cyan">申請理由</h2>
-            <div class="imds-field-container has-accent-color">
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>理由</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":reason:" class="imds-text"></span>
-                    </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>部品名</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":partName:" class="imds-text"></span>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-        </div>
-        <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
-          <button type="button" id="confirm-button" class="imds-button is-primary" style="min-width: 8em;">確認</button>
-        </div>
-      </main>
-    </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>単価</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":unitPrice:" class="imds-text"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>個数</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":quantity:" class="imds-text"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>合計金額</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":totalAmount:" class="imds-text"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <h2 class="imds-heading is-bordered is-size-2 is-cyan">申請理由</h2>
+          <div class="imds-field-container has-accent-color">
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>理由</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":reason:" class="imds-text"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+        <button type="button" id="confirm-button" class="imds-button is-primary" style="min-width: 8em;">確認</button>
+      </div>
+    </main>
   </div>
 </imart>
 

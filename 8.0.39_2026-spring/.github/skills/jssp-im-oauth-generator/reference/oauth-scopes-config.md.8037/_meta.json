@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "oauth-scopes-config_en.md",
-      "to": "oauth-scopes-config.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "oauth-scopes-config_zh_CN.md",
+      "to": "oauth-scopes-config.md"
+    },
+    {
+      "from": "oauth-scopes-config_en.md",
       "to": "oauth-scopes-config.md"
     }
   ]

@@ -186,26 +186,24 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- 整个页面的容器（由于是 Portlet 部件，不包含页头、页脚） -->
-<div id="container">
-  <div class="imds-container">
-    <main>
-      <div class="imds-table is-narrow" id="portlet-sample-table">
-        <div class="imds-table-inner">
-          <table>
-            <thead>
-              <tr>
-                <th><span>项目代码</span></th>
-                <th><span>项目名称</span></th>
-                <th><span>状态</span></th>
-              </tr>
-            </thead>
-            <tbody id="portlet-sample-table-body"></tbody>
-          </table>
-        </div>
+<!-- 整个页面的容器（由于是 Portlet 部件，不包含页头、页脚。当同一门户页面配置了多个不同的 Portlet 时，为了按画面区分 DOM 操作的作用范围，附加 id="app-portlet-{功能名}-container"） -->
+<div id="app-portlet-{功能名}-container" class="imds-container">
+  <main>
+    <div class="imds-table is-narrow" id="portlet-sample-table">
+      <div class="imds-table-inner">
+        <table>
+          <thead>
+            <tr>
+              <th><span>项目代码</span></th>
+              <th><span>项目名称</span></th>
+              <th><span>状态</span></th>
+            </tr>
+          </thead>
+          <tbody id="portlet-sample-table-body"></tbody>
+        </table>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 </div>
 ```
 

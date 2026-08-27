@@ -56,6 +56,12 @@ SVG 画像等のカスタムアイコンを使用する場合に利用します�
   <span class="imds-button-text">既存のリソースを追加</span>
 </button>
 
+<!-- 新しいタブで開くボタン（is-outlined） -->
+<button type="button" class="imds-button is-outlined">
+  <span class="imds-icon"><img src="img/url.svg" /></span>
+  <span class="imds-button-text">新しいタブで開く</span>
+</button>
+
 <!-- アイコンのみボタン -->
 <button type="button" class="imds-button is-ghost">
   <span class="imds-icon"><img src="img/addition.svg" /></span>

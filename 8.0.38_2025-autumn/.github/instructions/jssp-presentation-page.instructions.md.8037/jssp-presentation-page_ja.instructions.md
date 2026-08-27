@@ -101,13 +101,11 @@ description: "プレゼンテーションページの実装方針"
   </script>
 </imart>
 
-<!-- ページ全体のコンテナ -->
-<div id="container">
-  <div class="imds-container">
-    <main>
-      <!-- メインコンテンツ -->
-    </main>
-  </div>
+<!-- ページ全体のコンテナ（intra-mart テーマが出力する <div id="imui-container"> の内側に配置されるため、画面側で id は付与しない。class は使用する UI テーマの規約に従う） -->
+<div>
+  <main>
+    <!-- メインコンテンツ -->
+  </main>
 </div>
 ```
 
@@ -119,8 +117,13 @@ description: "プレゼンテーションページの実装方針"
 - 必要な JavaScript ライブラリは、<imart type="head"> タグ内に <script> タグで追加する
   - ただし、極力ライブラリは採用せず、vanilla JavaScript で実装できる場合は、vanilla で実装する
   - Microsoft Edge, Chrome, Safari で動作するコードにする
-- ルートタグは <div> タグを使用し、id 属性に `container` を付与する
+- ルートタグは `<div>` とし、**画面側で `id` 属性を付与しない**
+  - intra-mart のテーマ機能により、プレゼンテーションページの内容は常に `<div id="imui-container">` の内側へ自動的に配置される。画面側で重ねて `id="container"` を付与すると `<div id="imui-container"><div id="container">...</div></div>` という無駄な二重ラッパーになるため、付与しない
+  - ルートタグの `class` は、プロジェクトで採用する UI テーマの規約に従う（本ページは特定の UI テーマに依存しない基本規約のため、具体的なクラス名はここでは規定しない）。**imds テーマを使用する場合は** `.github/skills/jssp-imds-theme` の規約に従い `class="imds-container"` を付与する。UI テーマを使用しない場合は class 自体不要
   - 必要なタグは、ルートタグ配下にすべて実装する
+  - **例外**: 同一ポータル画面にポートレット（部品）として複数配置されうる画面に限り、ルートタグに `id="app-portlet-{機能ID}-container"` を付与する（詳細は `.github/skills/jssp-page-generator/assets/simple-portlet.md` 参照）
+- DOM 操作でルート要素を特定する必要がある場合（React.js / Vue.js のマウント先指定、直接 DOM 操作でのスコープ限定等）は、通常画面では `document.getElementById('imui-container')` を使用する
+  - **注意**: intra-mart の一部ポータル構成ではポートレットが iframe で分離されないケースがある。同一ページ内に他画面の DOM が同居しうるため、`document.querySelectorAll()` 等をページ全体に対して無制限に行わず、必ず自画面のルート要素（`imui-container` またはポートレットの `app-portlet-{機能ID}-container`）配下に限定して DOM 操作を行うこと
 - <imart> タグの value 属性は、ダブルクォートで囲んではならない
 - ページロード時の初期化処理は、`DOMContentLoaded` イベントを使用する
 
@@ -270,7 +273,9 @@ let value = '<imart type="string" value=$imwSystemMatterId escapeXml="false" esc
 
 ### 注意: 要素 id の衝突
 
-IIFE 化によって `$data` の衝突は防げるが、`id="xxx-table"` 等の要素 id は依然として画面ごとに固定のままである。ポータル側が同一 DOM 内に複数インスタンスをそのまま並べる方式の場合、id の重複により `document.getElementById()` が最初のインスタンスの要素しか返さない問題が起こりうる。ポータルの埋め込み方式（iframe で分離されるかどうか）を踏まえ、必要に応じて id をインスタンスごとに一意化する対応を検討すること。
+IIFE 化によって `$data` の衝突は防げるが、`id="xxx-table"` 等の要素 id は依然として画面ごとに固定のままである。ポータル側が同一 DOM 内に複数インスタンスをそのまま並べる方式（iframe で分離されない方式）の場合、id の重複により `document.getElementById()` が最初のインスタンスの要素しか返さない問題が起こりうる。
+
+ルートタグへの `id="app-portlet-{機能ID}-container"` 付与（前述）は、**異なるポートレット同士**が同一ページに配置された場合の DOM スコープ分離には有効だが、**同一ポートレットが同一ページに複数配置されるケース**は、両インスタンスが同一の HTML ソースから描画されるため `{機能ID}` も同じ値になり、この方式だけでは id 重複を解決できない。同一ポートレットの複数配置を許容する運用の場合は、この制約を許容した上で運用するか、別途インスタンス単位の一意化（ポータル側から渡されるインスタンス識別子の付与等）を個別に検討すること。
 
 ## maxlength 属性の使用方針
 
@@ -291,7 +296,8 @@ IIFE 化によって `$data` の衝突は防げるが、`id="xxx-table"` 等の�
 | **ボタン**（`-button` サフィックス） | **`xxx-button`**（コロンなし） | `id="apply-button"` | ハイフン含むのでグローバル汚染なし。`.value` 等のプロパティアクセスもしない |
 | **ダイアログ**（`-dialog` サフィックス） | **`xxx-dialog`**（コロンなし） | `id="user-select-dialog"` | 同上 |
 | **フォーム**（`-form` サフィックス） | **`xxx-form`**（コロンなし） | `id="main-form"` | 同上 |
-| **ルートコンテナ・その他構造要素** | コロンなし | `id="container"` | 同上 |
+| **通常画面のルートコンテナ** | id 付与なし | `<div>`（id なし。class は使用する UI テーマの規約に従う。例: imds テーマ使用時は `class="imds-container"`） | intra-mart テーマが `<div id="imui-container">` で画面内容を自動的に包むため、画面側で id を重ねて付与しない |
+| **ポートレット画面のルートコンテナ** | **`app-portlet-{機能ID}-container`**（コロンなし） | `id="app-portlet-imds_demo-container"` | 同一ポータル画面に複数の異なるポートレットが配置された場合に、DOM 操作のスコープを画面ごとに区別するため。**{機能ID}** は画面のフォルダ名（機能名）を使用する。ただし同一ポートレットが同一ページに複数配置されるケースの id 重複までは解決しない（後述「注意: 要素 id の衝突」参照） |
 
 ### ラベル span の使い分け（常時必須 vs 条件付き必須）
 

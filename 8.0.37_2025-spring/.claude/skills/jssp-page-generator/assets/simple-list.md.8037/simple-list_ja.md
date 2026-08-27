@@ -387,58 +387,56 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- ページ全体のコンテナ -->
-<div id="container">
-  <div class="imds-container">
-    <!-- ヘッダ -->
-    <header class="imds-header">
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-      </div>
-    </header>
+<!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
+<div class="imds-container">
+  <!-- ヘッダ -->
+  <header class="imds-header">
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+  </header>
 
-    <!-- メインコンテンツ -->
-    <main>
-      <div class="imds-py-3">
-        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
-          <div class="button-area imds-mb-3">
-            <div class="imds-input-group">
-              <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="検索キーワード">
-              <button type="button" title="検索" class="imds-button">
-                <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
-              </button>
-            </div>
-            <button type="button" id="create-button" class="imds-button is-primary">新規作成</button>
+  <!-- メインコンテンツ -->
+  <main>
+    <div class="imds-py-3">
+      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
+        <div class="button-area imds-mb-3">
+          <div class="imds-input-group">
+            <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="検索キーワード">
+            <button type="button" title="検索" class="imds-button">
+              <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+            </button>
           </div>
-          <div class="imds-table" id="stock-table">
-            <div class="imds-table-inner">
-              <table>
-                <thead>
-                  <tr>
-                    <th class="col-edit has-text-centered"><span>編集</span></th>
-                    <th><span>商品コード</span></th>
-                    <th><span>商品名</span></th>
-                    <th><span>単価</span></th>
-                    <th><span>在庫数</span></th>
-                    <th><span>倉庫番号</span></th>
-                    <th><span>備考</span></th>
-                  </tr>
-                </thead>
-                <tbody id="stock-table-body"></tbody>
-              </table>
-            </div>
+          <button type="button" id="create-button" class="imds-button is-primary">新規作成</button>
+        </div>
+        <div class="imds-table" id="stock-table">
+          <div class="imds-table-inner">
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-edit has-text-centered"><span>編集</span></th>
+                  <th><span>商品コード</span></th>
+                  <th><span>商品名</span></th>
+                  <th><span>単価</span></th>
+                  <th><span>在庫数</span></th>
+                  <th><span>倉庫番号</span></th>
+                  <th><span>備考</span></th>
+                </tr>
+              </thead>
+              <tbody id="stock-table-body"></tbody>
+            </table>
           </div>
-          <div class="imds-py-3" id="pagination"></div>
-        </section>
-      </div>
-    </main>
-  </div>
+        </div>
+        <div class="imds-py-3" id="pagination"></div>
+      </section>
+    </div>
+  </main>
 </div>
 ```
 

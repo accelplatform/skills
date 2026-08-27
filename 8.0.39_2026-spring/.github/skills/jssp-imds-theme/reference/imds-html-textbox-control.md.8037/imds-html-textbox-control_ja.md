@@ -19,6 +19,12 @@ TextboxControl は、テキストボックス内にアイコンを配置する�
 | imds-textbox-control | div 要素 | テキストボックスコントロールコンテナ | 必須 |
 | is-left | imds-textbox-control | アイコンを左側に配置 | オプション |
 | is-right | imds-textbox-control | アイコンを右側に配置（デフォルト） | オプション |
+| is-static | input.imds-textbox（内側） | 参照専用の静的表示状態（`readonly` と併用、Textbox 側のクラス） | オプション |
+| is-x-small | input.imds-textbox（内側） | 極小サイズ | オプション |
+| is-small | input.imds-textbox（内側） | 小サイズ | オプション |
+| is-normal | input.imds-textbox（内側） | 標準サイズ | オプション |
+| is-medium | input.imds-textbox（内側） | 中サイズ | オプション |
+| is-large | input.imds-textbox（内側） | 大サイズ | オプション |
 
 ## HTML スニペット
 
@@ -42,6 +48,36 @@ TextboxControl は、テキストボックス内にアイコンを配置する�
 ```html
 <div class="imds-textbox-control is-left">   <!-- アイコン左 -->
 <div class="imds-textbox-control is-right">  <!-- アイコン右 -->
+```
+
+### is-static（参照専用の静的表示、内側の input に付与）
+
+値は編集できないが、値の選択やコピーはできる参照専用状態。`input.imds-textbox` に `is-static` クラスと `readonly` 属性を付与する（コンテナの `imds-textbox-control` 自体には付与しない）。
+
+```html
+<div class="imds-textbox-control">
+  <input
+    type="text"
+    class="imds-textbox is-static"
+    readonly
+    value="text" />
+  <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+</div>
+```
+
+### size（サイズ、内側の input に付与）
+
+`input.imds-textbox` にサイズクラスを付与する。アイコンのサイズは入力欄より一段階小さいクラスを指定するとバランスが取れる（`is-large` の入力欄には `is-medium` のアイコン等）。
+
+```html
+<div class="imds-textbox-control">
+  <input type="text" class="imds-textbox is-x-small" value="" />
+  <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+</div>
+<div class="imds-textbox-control">
+  <input type="text" class="imds-textbox is-large" value="" />
+  <span class="imds-icon is-medium"><i class="fa-solid fa-magnifying-glass"></i></span>
+</div>
 ```
 
 ## 組み合わせ例
@@ -127,6 +163,7 @@ Popover と組み合わせてドロップダウン選択を実現する。
 
 - テキストボックスコントロールは `div.imds-textbox-control > input.imds-textbox + span.imds-icon` の構造で記述する
 - アイコン位置のデフォルトは右側（`is-right` 省略可）
+- `is-static` / サイズクラス（`is-x-small`〜`is-large`）は `imds-textbox-control` ではなく、内側の `input.imds-textbox` に付与する
 - クリアボタンは `imds-field-control` 内に `imds-textbox-control` と並列で配置する
 - コンボボックスは Popover（`imds-popover`）で `imds-textbox-control` をラップする
 - バリデーションエラー時は `imds-field` に `imds-validation-error` を付与し、`imds-error-text` でメッセージを表示する

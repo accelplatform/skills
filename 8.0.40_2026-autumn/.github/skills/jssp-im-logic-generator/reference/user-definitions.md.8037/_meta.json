@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "user-definitions_en.md",
-      "to": "user-definitions.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "user-definitions_zh_CN.md",
+      "to": "user-definitions.md"
+    },
+    {
+      "from": "user-definitions_en.md",
       "to": "user-definitions.md"
     }
   ]

@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "validate-xml-encoding_ja.md",
+      "to": "validate-xml-encoding.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "validate-xml-encoding_zh_CN.md",
+      "to": "validate-xml-encoding.md"
+    },
+    {
+      "from": "validate-xml-encoding_en.md",
+      "to": "validate-xml-encoding.md"
+    }
+  ]
+}

@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "imds-html-dialog_en.md",
-      "to": "imds-html-dialog.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "imds-html-dialog_zh_CN.md",
+      "to": "imds-html-dialog.md"
+    },
+    {
+      "from": "imds-html-dialog_en.md",
       "to": "imds-html-dialog.md"
     }
   ]

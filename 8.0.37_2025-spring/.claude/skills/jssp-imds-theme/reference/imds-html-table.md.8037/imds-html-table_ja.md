@@ -43,6 +43,7 @@ imds-table                                # テーブルコンテナ（サイズ
 | is-sticky | th / td 要素 | 列固定（横スクロール時） | オプション |
 | is-border-right | th / td 要素 | 固定列の右側に境界線を表示 | オプション |
 | is-sortable | th 要素 | ソート可能列 | オプション |
+| is-max-content | imds-table | 横スクロール推奨（列幅をコンテンツ幅基準にする） | オプション |
 | is-active | tr / td 要素 | アクティブ（選択済み）ハイライト | オプション |
 | has-content-only | th / td 要素 | セル内余白を除去（ボタン・チェックボックス用） | オプション |
 | has-text-right | td 要素 | テキスト右寄せ（数値列向け） | オプション |
@@ -134,6 +135,22 @@ imds-table                                # テーブルコンテナ（サイズ
 <div class="imds-table is-stripe" ...>
 ```
 
+### isMaxContent（横スクロール推奨）
+
+列数が多い・各セルの文字数が多いなど横スクロールが発生する可能性が高いテーブルには、`div.imds-table` に `is-max-content` を付与する。
+列幅がコンテンツ幅基準になり、セル内の折り返しを避けられる。
+
+```html
+<div class="imds-table is-hoverable is-sticky is-area-bordered is-max-content" ...>
+```
+
+逆に、列数が少なく横スクロールさせずに全列を表示したい場合は `is-max-content` を付与しない。この場合、長い文字列は折り返されて表示される。
+
+```html
+<!-- 横スクロールさせない場合（is-max-content なし） -->
+<div class="imds-table is-hoverable is-sticky is-area-bordered" ...>
+```
+
 ### isNarrow（コンパクト）
 
 テーブル全体に適用する場合は `div.imds-table` に、特定の行のみに適用する場合は `tr` に `is-narrow` を付与する。
@@ -183,19 +200,18 @@ imds-table                                # テーブルコンテナ（サイズ
 
 チェックボックス列を追加する。
 `th` / `td` に `has-content-only` を付与してセル余白を除去する。
+テーブル文脈のチェックボックスは `label.imds-checkbox` 内に `input` のみを置き、`span` は付与しない（フォーム単体のチェックボックスと異なる点に注意）。
 
 ```html
 <th class="has-content-only">
   <label class="imds-checkbox">
-    <input type="checkbox" />
-    <span></span>
+    <input type="checkbox" id="checkbox-all-xxxxx" />
   </label>
 </th>
 <!-- tbody 内の各行にも同構造の td を追加 -->
 <td class="has-content-only">
   <label class="imds-checkbox">
-    <input type="checkbox" />
-    <span></span>
+    <input type="checkbox" id="checkbox-child-0-xxxxx" />
   </label>
 </td>
 ```
@@ -217,16 +233,25 @@ imds-table                                # テーブルコンテナ（サイズ
 
 ### isSortable（ソート可能）
 
-ソート対象の `th` に `is-sortable` を付与し、ソートアイコンを追加する。
+ソート対象の `th` に `is-sortable` を付与し、`imds-table-column-actions > button.imds-table-sorter > span.imds-table-sort-label + span.imds-icon` の構造でソートボタンを追加する。
+`span.imds-icon` の中には `fa-sort-up`（昇順アイコン）・`fa-sort-down`（降順アイコン）の 2 つの `<i>` を常に両方記述し、CSS でソート状態に応じた表示切替を行う（1 アイコンのみを動的に差し替える実装ではない）。
+`button.imds-table-sorter` には現在の操作を表す `title` 属性（例: `"昇順に並べ替え"` / `"降順に並べ替え"` / `"並べ替えを解除"`）を付与する。
 
 ```html
 <th class="is-sortable">
-  <span>ヘッダ2</span>
-  <span class="imds-icon"><i class="fa-solid fa-sort-up"></i></span>
+  <div class="imds-table-column-actions">
+    <button class="imds-table-sorter" title="昇順に並べ替え">
+      <span class="imds-table-sort-label">ヘッダ2</span>
+      <span class="imds-icon">
+        <i class="fa-solid fa-sort-up"></i>
+        <i class="fa-solid fa-sort-down"></i>
+      </span>
+    </button>
+  </div>
 </th>
 ```
 
-ソート方向に応じてアイコンを切り替える: `fa-sort-up`（昇順）/ `fa-sort-down`（降順）/ `fa-sort`（未ソート）。
+ソート状態は「昇順 → 降順 → 未適用」の順で切り替える。`title` はその時点で次にクリックすると発生する操作を表す文言にする。
 
 ### hasTextRight（テキスト右寄せ）
 
@@ -269,6 +294,34 @@ imds-table                                # テーブルコンテナ（サイズ
 <td class="is-warning is-active"> <!-- 色 + アクティブの組み合わせ -->
 ```
 
+### 縦型レイアウト（項目名と値の横並び表示）
+
+詳細・参照画面やダイアログでサマリー情報を表示する際に使用する、項目名と値を横並びで表示するテーブル。
+表の行に見出しを配置する場合は `th` を使用する（`thead` は使わず `tbody` 内に `th`/`td` を交互に並べる）。
+
+```html
+<div class="imds-table is-bordered is-area-bordered">
+  <div class="imds-table-inner">
+    <table>
+      <tbody>
+        <tr>
+          <th><span>アプリケーション名</span></th>
+          <td><span>アプリケーション1</span></td>
+          <th><span>アプリケーションID</span></th>
+          <td><span>sample_app_1</span></td>
+        </tr>
+        <tr>
+          <th><span>カテゴリ名</span></th>
+          <td><span>カテゴリ1</span></td>
+          <th><span>カテゴリID</span></th>
+          <td><span>ct_1</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+```
+
 ## アクセシビリティ対応
 
 ### ヘッダラベル
@@ -303,7 +356,9 @@ imds-table                                # テーブルコンテナ（サイズ
 - `is-sticky`（テーブル全体）と `is-sticky`（th/td）は異なる用途: 前者はヘッダ行固定、後者は列固定
 - 列固定時の `left` 値は前の固定列の幅に応じて手動で計算する
 - 列固定時の `td` には背景色クラス（`is-cyan` 等）を付与しないとスクロール時に背景が透過する
-- ソート処理は JavaScript で実装する（アイコン切替とデータ並び替え）
+- ソート処理は JavaScript で実装する（`is-sortable` 状態クラスの切替とデータ並び替え）。ヘッダ内のソートアイコンは `fa-sort-up` / `fa-sort-down` の2つを常に併記し、CSS 側の状態クラスで表示を切り替える
+- 横スクロールが発生しやすい（列数・文字数が多い）テーブルには `is-max-content` を付与する。列数が少なく横スクロールさせたくない場合は付与しない
 - `has-content-only` はボタンやチェックボックスなどセル余白が不要な場合に使用する
 - `th` にヘッダテキスト（`<span>編集</span>` 等）がある場合は `has-content-only` を付与しない。中央寄せにしたい場合は `has-text-centered` を使う。`has-content-only` は th 自身がチェックボックス等のコンポーネントのみで、ヘッダテキストを持たない場合に限る
 - 複数のバリエーションは組み合わせ可能（例: `is-sticky is-hoverable is-stripe`）
+- **行・セルの背景色に独自クラスを使わない**。imds は `td` 側に背景色を当てているため、`tr` に独自クラスで `background-color` を指定しても `td` の背景色に上書きされて見えない（クラスは付いているのに見た目が変わらない、気づきにくい不具合になる）。選択済み行のハイライトは `is-active`（[isActive（アクティブ行 / セル）](#isactiveアクティブ行--セル)）、状態に応じた色分けは `is-danger` / `is-warning` / `is-success` 等のカラークラス（[color（セル背景色）](#colorセル背景色)）を使うこと。`is-active` とカラークラスは組み合わせ可能

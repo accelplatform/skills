@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "jssp-naming_en.md",
-      "to": "jssp-naming.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "jssp-naming_zh_CN.md",
+      "to": "jssp-naming.md"
+    },
+    {
+      "from": "jssp-naming_en.md",
       "to": "jssp-naming.md"
     }
   ]

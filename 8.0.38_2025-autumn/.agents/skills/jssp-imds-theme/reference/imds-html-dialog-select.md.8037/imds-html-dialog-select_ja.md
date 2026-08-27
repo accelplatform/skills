@@ -143,36 +143,34 @@ document.getElementById('route-select-dialog').close();
 
 ### 1. 単一選択（行クリックでハイライト）
 
-選択中の行に `is-selected`（独自クラス）を付ける運用が一般的。
+選択中の行には imds の正規クラス `is-active`（[imds-html-table.md](imds-html-table.md) の isActive）を付与する。
+`is-selected` 等の独自クラスで `tr` に `background-color` を指定する方法は使わないこと。imds は `td` 側に背景色を当てているため、`tr` の独自背景色は `td` の背景色に上書きされて実際には表示されない（クラスは付与されているのに見た目が変わらない不具合になる）。`is-active` は `td` 側にもスタイルが当たるため、この上書き問題が起きない。
 
 ```html
 <tbody>
   <tr data-value="route-1"><td><span>値-1-1</span></td>...</tr>
-  <tr class="is-selected" data-value="route-2"><td><span>値-2-1</span></td>...</tr>
+  <tr class="is-active" data-value="route-2"><td><span>値-2-1</span></td>...</tr>
   <tr data-value="route-3"><td><span>値-3-1</span></td>...</tr>
 </tbody>
 ```
 
-```css
-/* プレゼンテーションページ側で定義（imds の標準クラスではない） */
-.imds-table tbody tr.is-selected { background-color: #e6f0ff; }
-```
-
 ```javascript
-// 行クリックで選択行を切り替え
+// 行クリックで選択行を切り替え（is-active は imds の標準クラスのため独自 CSS は不要）
 document.querySelectorAll('#route-select-dialog tbody tr').forEach(function (tr) {
   tr.addEventListener('click', function () {
-    document.querySelectorAll('#route-select-dialog tbody tr.is-selected')
-      .forEach(function (e) { e.classList.remove('is-selected'); });
-    tr.classList.add('is-selected');
+    document.querySelectorAll('#route-select-dialog tbody tr.is-active')
+      .forEach(function (e) { e.classList.remove('is-active'); });
+    tr.classList.add('is-active');
   });
 });
 // 行ダブルクリックで即確定する UX を加えたい場合は dblclick も拾う
 ```
 
+**アクセシビリティ上の注意**: 行の背景色（ハイライト）のみで選択状態を伝えるのは、色を判別しにくいユーザやキーボードのみで操作するユーザにとって不十分。行クリックはマウス操作に限られるため、キーボード操作・スクリーンリーダー対応が必要な画面では次項「2. ラジオボタンでの単一選択」を併用し、行クリックとラジオの `change` の両方から同じ選択処理を呼んで状態を同期させること。
+
 ### 2. ラジオボタンでの単一選択（明示的）
 
-選択 UI を視覚的に明示したい場合は、先頭列にラジオを置く。
+選択 UI を視覚的に明示したい場合や、キーボード操作・スクリーンリーダー対応が必要な場合は、先頭列にラジオを置く。ラジオボタンにすることで選択状態が支援技術に伝わり（スクリーンリーダーの読み上げ対象になる）、`Tab` でのフォーカス・矢印キーでの選択も可能になる。
 
 ```html
 <thead>
@@ -184,12 +182,14 @@ document.querySelectorAll('#route-select-dialog tbody tr').forEach(function (tr)
 </thead>
 <tbody>
   <tr>
-    <td><label class="imds-radio"><input type="radio" name="route" value="route-1" /></label></td>
+    <td class="has-content-only"><label class="imds-radio"><input type="radio" name="route" value="route-1" aria-label="route-1 申請ルートA" /></label></td>
     <td><span>route-1</span></td>
     <td><span>申請ルートA</span></td>
   </tr>
 </tbody>
 ```
+
+行クリックでの選択も両立させたい場合は、1 の `is-active` 切替処理とラジオの `checked` 設定を 1 つの関数（例: `selectRow()`）にまとめ、`tr` の `click` と `input` の `change` の両方から呼ぶ。`radio.checked = true` は明示的に代入する（ラジオ／ラベルのクリックは `tr` にもバブリングして二重に呼ばれるが、処理は冪等にしておけば問題ない）。ラベルテキストを持たないラジオには `aria-label` を付与する（「ID + 名称」等、行を一意に識別できる文言）。値・`aria-label` 等のデータ由来の属性は `innerHTML` 文字列連結ではなく `setAttribute` で設定する（XSS 対策）。
 
 ラジオの詳細は [imds-html-radio.md](imds-html-radio.md) を参照。
 
@@ -322,10 +322,10 @@ input.addEventListener('input', function () {
 
   ```javascript
   var primary = document.querySelector('#route-select-dialog .imds-button.is-primary');
-  primary.disabled = !document.querySelector('#route-select-dialog tbody tr.is-selected');
+  primary.disabled = !document.querySelector('#route-select-dialog tbody tr.is-active');
   ```
 
-- **行クリックでの選択は `is-selected` を自前定義**。`is-selected` は imds の標準クラスではないため、ページ側 CSS で `background-color` を当てる必要がある。チェックボックス・ラジオ併用なら CSS 不要で `:checked` + `:has()` セレクタで強調することも可能
+- **選択行のハイライトは `is-active`（imds 標準クラス）を使う**。`is-selected` 等の独自クラスで `tr` に `background-color` を指定する方法は使わないこと（`td` の背景色に上書きされて機能しない。詳細は「1. 単一選択」を参照）。チェックボックス・ラジオ併用なら `:checked` + `:has()` セレクタで強調することも可能
 - **ダブルクリックでの即確定**は強い UX だが、誤操作リスクもある。マスタ選択など「行が見えればすぐ選べる」場面のみ採用し、確認が必要な選択（権限変更等）では `click` で選択 → `選択` ボタン押下で確定の 2 ステップにする
 - **大量データ対策**: クライアントサイドだけで数千件を `<tbody>` に積むと描画が遅い。サーバサイドフィルタ + ページネーション（[imds-html-pagination.md](imds-html-pagination.md)）に切り替える
 - **IM-共通マスタの選択** はこのパターンを自作せず、`jssp-im-master-usage` スキルの `imACMSearch` タグを使うこと（パラメータやコールバックの詳細は同スキル reference を参照）

@@ -10,6 +10,9 @@
  *   - 001-099 : tag-element 系（クラスが正しい要素に付与されているか）
  *   - 100-199 : parent 系（親子関係）
  *   - 200-299 : required-descendant 系（必須子孫クラスの存在）
+ *   - 300-399 : exclusive-descendant 系（同一コンポーネント内で同時配置してはならないクラスの組）
+ *   - 400-499 : forbidden-class 系（あるクラスに付与してはならない別クラス。他コンポーネント用クラスの誤用等）
+ *   - 500-599 : 個別コンポーネント固有のカスタムチェック（宣言的ルールに乗らない検証。例: IMDS-TABLE-500 の colspan 列数一致、IMDS-DIVIDER-500 の hr/div 使い分け）
  *
  * 検証対象:
  *   1. tag-element        … クラス X は要素 Y に付与しなければならない
@@ -18,7 +21,11 @@
  *                          （例: imds-field-label の直接の親は imds-field）
  *   3. required-descendant … クラス X を持つ要素は、特定の子孫クラス Y を持たねばならない
  *                          （例: imds-field は imds-field-label と imds-field-control を持つ）
- *   4. unknown            … reference/rules に記載のない imds-* クラスを検出（warning）
+ *   4. exclusive-descendant … クラス X を持つ要素の子孫に、クラス A とクラス B が同時に存在してはならない
+ *                          （例: imds-header 内に imds-header-nav と imds-header-icon を同時配置しない）
+ *   5. forbidden-class     … クラス X を持つ要素に、指定した禁止クラス群のいずれかを付与してはならない
+ *                          （例: imds-tag に is-success 等の intent クラスを付与しない）
+ *   6. unknown             … reference/rules に記載のない imds-* クラスを検出（warning）
  *
  * 使い方:
  *   node validate-imds.js <ディレクトリまたはファイル>
@@ -517,6 +524,13 @@ const IMDS_RULES = [
     severity: 'error',
     message: 'header.imds-header 内に必須の imds-header-title がありません（タイトル領域は必須）'
   },
+  {
+    id: 'IMDS-HEADER-300', component: 'Header', type: 'exclusive-descendant',
+    triggerClass: 'imds-header', triggerTag: 'header',
+    classA: 'imds-header-nav', classB: 'imds-header-icon',
+    severity: 'error',
+    message: 'header.imds-header 内で imds-header-nav と imds-header-icon を同時に配置しないでください（nav は icon の代替であり排他）'
+  },
 
   // ===========================================================
   // Tabs (imds-tabs)
@@ -899,6 +913,13 @@ const IMDS_RULES = [
     severity: 'error',
     message: 'imds-tag クラスは span 要素に付与してください（正しい構造: span.imds-tag > span）'
   },
+  {
+    id: 'IMDS-TAG-400', component: 'Tag', type: 'forbidden-class',
+    triggerClass: 'imds-tag',
+    forbiddenClasses: ['is-success', 'is-danger', 'is-warning', 'is-error', 'is-info', 'is-ghost', 'is-outlined', 'is-primary'],
+    severity: 'error',
+    message: 'imds-tag には intent クラス（is-success/is-danger/is-warning/is-error/is-info/is-ghost/is-outlined/is-primary 等、他コンポーネント用のクラス）を付与できません。tag の色指定は色名クラス（is-blue/is-green/is-red/is-yellow/is-orange/is-cyan/is-gray/is-gray-light）とトーン（is-light/is-dark）を使用してください（reference/imds-html-tag.md 参照）'
+  },
 
   // ===========================================================
   // Icon (imds-icon)
@@ -938,12 +959,10 @@ const IMDS_RULES = [
   // ===========================================================
   // Divider (imds-divider)
   // ===========================================================
-  {
-    id: 'IMDS-DIVIDER-001', component: 'Divider', type: 'tag-element',
-    triggerClass: 'imds-divider', requiredTag: 'div',
-    severity: 'error',
-    message: 'imds-divider クラスは div 要素に付与してください（<hr> ではなく <div>）'
-  },
+  // 注意: imds-divider のタグ種別チェックは宣言的な tag-element 型ではなく、
+  // validateDividerTag()（カスタムチェック、IMDS-DIVIDER-500）で行う。
+  // 水平区切りは <hr class="imds-divider">、垂直区切りは <div class="imds-divider is-vertical">
+  // が正しく、単一の requiredTag では表現できないため（reference/imds-html-divider.md 参照）。
 
   // ===========================================================
   // Csjs (Client-Side JavaScript polyfill 必須シンボル)
@@ -1121,6 +1140,9 @@ function indexRules(rules) {
   const parent = [];           // type: 'parent'
   // requiredDescendantsByClass: triggerClass -> rule[]
   const requiredDescendantsByClass = Object.create(null);
+  // exclusiveDescendantsByClass: triggerClass -> rule[]
+  const exclusiveDescendantsByClass = Object.create(null);
+  const forbiddenClass = [];   // type: 'forbidden-class'
   const jsSymbol = [];         // type: 'js-symbol-required'
 
   for (const r of rules) {
@@ -1133,11 +1155,18 @@ function indexRules(rules) {
         requiredDescendantsByClass[r.triggerClass] = [];
       }
       requiredDescendantsByClass[r.triggerClass].push(r);
+    } else if (r.type === 'exclusive-descendant') {
+      if (!exclusiveDescendantsByClass[r.triggerClass]) {
+        exclusiveDescendantsByClass[r.triggerClass] = [];
+      }
+      exclusiveDescendantsByClass[r.triggerClass].push(r);
+    } else if (r.type === 'forbidden-class') {
+      forbiddenClass.push(r);
     } else if (r.type === 'js-symbol-required') {
       jsSymbol.push(r);
     }
   }
-  return { tagElement, parent, requiredDescendantsByClass, jsSymbol };
+  return { tagElement, parent, requiredDescendantsByClass, exclusiveDescendantsByClass, forbiddenClass, jsSymbol };
 }
 
 /**
@@ -1194,6 +1223,150 @@ function validateJsSymbols(filePath, raw, rules, lines) {
   return findings;
 }
 
+/**
+ * 「0件表示（EmptyState 等）」の単一セル行における colspan の列数不一致を検出する（IMDS-TABLE-500）。
+ *
+ * `<table>` 内に `<thead>` があれば thead 内の最初の `<tr>` の `<th>` 数、無ければ
+ * table 内最初の `<tr>` の `<th>` 数を「実際の列数」とみなす。
+ * `<tbody>` 内で「1行に <td> が1つだけ、かつ colspan 属性を持つ」行（0件表示等の典型パターン）を見つけ、
+ * その colspan の値が実際の列数と一致しない場合に警告する。
+ *
+ * ネストした <table> や、複数列にまたがる通常の集計行等を誤検出しないよう、
+ * 「tbody 内で td が 1 個だけの行」に限定してチェックする（E-7 は EmptyState 等の
+ * 単一セル・0件表示行を対象とする観点のため）。
+ *
+ * @param {string} filePath
+ * @param {string} raw
+ * @param {string[]} lines
+ * @returns {Array} findings
+ */
+function validateColspanConsistency(filePath, raw, lines) {
+  const findings = [];
+  const content = stripNonStructural(raw);
+
+  // 行番号ルックアップ用（stripNonStructural 後のオフセット基準）
+  const lineOffsets = [0];
+  for (let i = 0; i < content.length; i++) {
+    if (content[i] === '\n') lineOffsets.push(i + 1);
+  }
+
+  // <table ...> ... </table> ブロックを（非ネスト前提で）抽出する
+  const tableRe = /<table\b[^>]*>([\s\S]*?)<\/table>/g;
+  let tableMatch;
+
+  while ((tableMatch = tableRe.exec(content)) !== null) {
+    const tableBody = tableMatch[1];
+    const tableStartOffset = tableMatch.index;
+
+    // 実際の列数を決定: thead があれば thead 内最初の tr の th 数、無ければ table 内最初の tr の th 数
+    let headerScope = tableBody;
+    const theadMatch = /<thead\b[^>]*>([\s\S]*?)<\/thead>/.exec(tableBody);
+    if (theadMatch) {
+      headerScope = theadMatch[1];
+    }
+    const firstTrMatch = /<tr\b[^>]*>([\s\S]*?)<\/tr>/.exec(headerScope);
+    if (!firstTrMatch) continue;
+    const thCount = (firstTrMatch[1].match(/<th\b/g) || []).length;
+    if (thCount === 0) continue;
+
+    // tbody 内の行を走査し、「td が1個だけ・colspan 属性あり」の行を対象にする
+    const tbodyMatch = /<tbody\b[^>]*>([\s\S]*?)<\/tbody>/.exec(tableBody);
+    if (!tbodyMatch) continue;
+    const tbodyContent = tbodyMatch[1];
+    const tbodyOffsetInTable = tbodyMatch.index + tbodyMatch[0].indexOf(tbodyMatch[1]);
+
+    const trRe = /<tr\b[^>]*>([\s\S]*?)<\/tr>/g;
+    let trMatch;
+    while ((trMatch = trRe.exec(tbodyContent)) !== null) {
+      const trContent = trMatch[1];
+      const tdMatches = trContent.match(/<td\b[^>]*>/g) || [];
+      if (tdMatches.length !== 1) continue;
+
+      const colspanMatch = /colspan\s*=\s*["']?(\d+)["']?/.exec(tdMatches[0]);
+      if (!colspanMatch) continue;
+
+      const colspanValue = parseInt(colspanMatch[1], 10);
+      if (colspanValue === thCount) continue;
+
+      const absoluteOffset = tableStartOffset + tbodyOffsetInTable + trMatch.index;
+      const lineNum = offsetToLine(lineOffsets, absoluteOffset);
+
+      findings.push({
+        file: filePath,
+        line: lineNum,
+        ruleId: 'IMDS-TABLE-500',
+        component: 'Table',
+        severity: 'warning',
+        message: `0件表示行の colspan="${colspanValue}" が実際の列数（th ${thCount} 個）と一致していません。EmptyState 等の単一セル行では colspan を列数と一致させてください（reference/imds-html-empty-state.md 参照）`,
+        matchedText: (lines[lineNum - 1] || '').trim().substring(0, 80)
+      });
+    }
+  }
+
+  return findings;
+}
+
+/**
+ * imds-divider のタグ種別を検証する（IMDS-DIVIDER-500）。
+ *
+ * 水平区切りは `<hr class="imds-divider">`、垂直区切りは `<div class="imds-divider is-vertical">` が正しい
+ * （reference/imds-html-divider.md 参照）。単一の requiredTag では表現できないため、
+ * 宣言的な tag-element ルールではなくこのカスタムチェックで検証する。
+ *
+ * - `imds-divider` を持つ要素が `hr` でも `div` でもない → エラー
+ * - `div` に付与されているが `is-vertical` が無い → エラー（水平区切りのつもりなら `<hr>` を使うべき）
+ *
+ * @param {string} filePath
+ * @param {string} raw
+ * @param {string[]} lines
+ * @returns {Array} findings
+ */
+function validateDividerTag(filePath, raw, lines) {
+  const findings = [];
+  const content = stripNonStructural(raw);
+
+  const lineOffsets = [0];
+  for (let i = 0; i < content.length; i++) {
+    if (content[i] === '\n') lineOffsets.push(i + 1);
+  }
+
+  const tagRe = /<([a-zA-Z][a-zA-Z0-9:-]*)((?:[^>"']|"[^"]*"|'[^']*')*)\/?>/g;
+  let m;
+  while ((m = tagRe.exec(content)) !== null) {
+    const tagLower = m[1].toLowerCase();
+    const attrsStr = m[2];
+    const classes = extractClasses(attrsStr);
+    if (classes.indexOf('imds-divider') === -1) continue;
+
+    const lineNum = offsetToLine(lineOffsets, m.index);
+    const matchedText = (lines[lineNum - 1] || '').trim().substring(0, 80);
+
+    if (tagLower !== 'hr' && tagLower !== 'div') {
+      findings.push({
+        file: filePath,
+        line: lineNum,
+        ruleId: 'IMDS-DIVIDER-500',
+        component: 'Divider',
+        severity: 'error',
+        message: 'imds-divider クラスは hr（水平区切り）または div（垂直区切り、is-vertical 付与）に付与してください',
+        matchedText: matchedText
+      });
+    } else if (tagLower === 'div' && classes.indexOf('is-vertical') === -1) {
+      findings.push({
+        file: filePath,
+        line: lineNum,
+        ruleId: 'IMDS-DIVIDER-500',
+        component: 'Divider',
+        severity: 'error',
+        message: 'div.imds-divider に is-vertical がありません。垂直区切り以外（水平区切り）は <hr class="imds-divider"> を使用してください',
+        matchedText: matchedText
+      });
+    }
+  }
+
+  return findings;
+}
+
 // ========================================
 // HTML 1ファイル検証
 // ========================================
@@ -1214,7 +1387,7 @@ function validateImds(filePath, rules, knownClasses) {
     if (content[i] === '\n') lineOffsets.push(i + 1);
   }
 
-  const { tagElement, parent, requiredDescendantsByClass, jsSymbol } = indexRules(rules);
+  const { tagElement, parent, requiredDescendantsByClass, exclusiveDescendantsByClass, forbiddenClass, jsSymbol } = indexRules(rules);
 
   const findings = [];
 
@@ -1223,6 +1396,14 @@ function validateImds(filePath, rules, knownClasses) {
     const jsFindings = validateJsSymbols(filePath, raw, jsSymbol, lines);
     for (const f of jsFindings) findings.push(f);
   }
+
+  // --- colspan 列数一致チェック（宣言的ルールに乗らないため常時実行）---
+  const colspanFindings = validateColspanConsistency(filePath, raw, lines);
+  for (const f of colspanFindings) findings.push(f);
+
+  // --- Divider タグ種別チェック（宣言的ルールに乗らないため常時実行）---
+  const dividerFindings = validateDividerTag(filePath, raw, lines);
+  for (const f of dividerFindings) findings.push(f);
 
   // スタック要素:
   //   { tag, classes, lineNum,
@@ -1261,6 +1442,21 @@ function validateImds(filePath, rules, knownClasses) {
                   severity: pr.rule.severity || 'error',
                   message: pr.rule.message,
                   matchedText: pr.openText
+                });
+              }
+            }
+          }
+          if (closing.pendingExclusive && closing.pendingExclusive.length > 0) {
+            for (const pe of closing.pendingExclusive) {
+              if (closing.seenChildClasses.has(pe.rule.classA) && closing.seenChildClasses.has(pe.rule.classB)) {
+                findings.push({
+                  file: filePath,
+                  line: closing.lineNum,
+                  ruleId: pe.rule.id,
+                  component: pe.rule.component,
+                  severity: pe.rule.severity || 'error',
+                  message: pe.rule.message,
+                  matchedText: pe.openText
                 });
               }
             }
@@ -1328,6 +1524,25 @@ function validateImds(filePath, rules, knownClasses) {
       }
     }
 
+    // --- forbidden-class ルール ---
+    for (const rule of forbiddenClass) {
+      if (classes.indexOf(rule.triggerClass) === -1) continue;
+      for (const forbidden of rule.forbiddenClasses) {
+        if (classes.indexOf(forbidden) !== -1) {
+          findings.push({
+            file: filePath,
+            line: lineNum,
+            ruleId: rule.id,
+            component: rule.component,
+            severity: rule.severity || 'error',
+            message: rule.message,
+            matchedText: matched
+          });
+          break;
+        }
+      }
+    }
+
     // --- parent ルール ---
     for (const rule of parent) {
       if (rule.triggerTag && tagLower !== rule.triggerTag) continue;
@@ -1353,6 +1568,7 @@ function validateImds(filePath, rules, knownClasses) {
         classes: classes,
         lineNum: lineNum,
         pendingRequired: [],
+        pendingExclusive: [],
         seenChildClasses: new Set()
       };
 
@@ -1366,6 +1582,17 @@ function validateImds(filePath, rules, knownClasses) {
           // skipIfContext: 指定クラスが祖先にある場合はチェックしない
           if (r.skipIfContext && hasAncestorWithClass(stack, r.skipIfContext)) continue;
           entry.pendingRequired.push({ rule: r, openText: matched });
+        }
+      }
+
+      // この要素が exclusive-descendant のトリガクラスを持っていれば、
+      // 閉じタグ時に「子孫に禁止の組み合わせが無いか」を検証するためのルールを記憶する。
+      for (const cls of classes) {
+        const ruleList = exclusiveDescendantsByClass[cls];
+        if (!ruleList) continue;
+        for (const r of ruleList) {
+          if (r.triggerTag && r.triggerTag !== tagLower) continue;
+          entry.pendingExclusive.push({ rule: r, openText: matched });
         }
       }
 
@@ -1396,6 +1623,21 @@ function validateImds(filePath, rules, knownClasses) {
             severity: pr.rule.severity || 'error',
             message: pr.rule.message,
             matchedText: pr.openText
+          });
+        }
+      }
+    }
+    if (top.pendingExclusive && top.pendingExclusive.length > 0) {
+      for (const pe of top.pendingExclusive) {
+        if (top.seenChildClasses.has(pe.rule.classA) && top.seenChildClasses.has(pe.rule.classB)) {
+          findings.push({
+            file: filePath,
+            line: top.lineNum,
+            ruleId: pe.rule.id,
+            component: pe.rule.component,
+            severity: pe.rule.severity || 'error',
+            message: pe.rule.message,
+            matchedText: pe.openText
           });
         }
       }

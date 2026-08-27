@@ -87,9 +87,38 @@ CheckboxGroup は、Checkbox の配置方向を制御する部品です。
 </div>
 ```
 
+### 等間隔配置（imds-w-33）
+
+項目数が多く複数行になる場合は、視認性を高めるため `div.imds-checkbox-group` に `imds-w-33` を付与し、各項目を等間隔（3等分）に配置する。ラベルの文字数がばらついても列がずれない。
+
+```html
+<div class="imds-field">
+  <div class="imds-field-label"><label for="todo-replace-:ra:">Label</label></div>
+  <div class="imds-field-control">
+    <div class="imds-checkbox-group is-horizontal imds-w-33">
+      <label class="imds-checkbox">
+        <input type="checkbox" />
+        <span>xxxxxxxxxx</span>
+      </label>
+      <label class="imds-checkbox">
+        <input type="checkbox" />
+        <span>xxx</span>
+      </label>
+      <label class="imds-checkbox">
+        <input type="checkbox" />
+        <span>xxxxx</span>
+      </label>
+      <!-- 同構造の label を必要数繰り返す -->
+    </div>
+  </div>
+</div>
+```
+
+`imds-w-33` を付与しない場合、項目の文字数によって次項目の開始位置が不揃いになり視認性が下がる（NG例）ため、項目数が多いときは必ず付与する。
+
 ## アクセシビリティ対応
 
-- 項目数が多く複数行になる場合は、視認性を高めるため等間隔に配置する
+- 項目数が多く複数行になる場合は、視認性を高めるため `imds-w-33` で等間隔に配置する
 
 ## 実装上の注意
 
@@ -97,3 +126,5 @@ CheckboxGroup は、Checkbox の配置方向を制御する部品です。
 - 各チェックボックスの構造は Checkbox コンポーネントに準拠する
 - 入力フォームで使用する場合は Field（`imds-field`）でラップする
 - バリデーションエラー時は `imds-field` に `imds-validation-error` を付与し、`imds-error-text` でメッセージを表示する
+- `fieldset`/`legend` は使用しない。グループ化には `imds-field` + `imds-checkbox-group` + `label` の組み合わせを用いる（実DOMに `fieldset`/`legend` を使う例は存在しない）
+- 項目数が多く複数行になる場合は `imds-w-33` を付与して等間隔に配置する

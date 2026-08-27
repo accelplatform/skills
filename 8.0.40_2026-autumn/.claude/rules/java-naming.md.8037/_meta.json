@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "java-naming_ja.md",
+      "to": "java-naming.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "java-naming_zh_CN.md",
+      "to": "java-naming.md"
+    },
+    {
+      "from": "java-naming_en.md",
+      "to": "java-naming.md"
+    }
+  ]
+}

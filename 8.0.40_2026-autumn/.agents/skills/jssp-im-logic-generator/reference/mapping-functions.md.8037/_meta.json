@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "mapping-functions_en.md",
-      "to": "mapping-functions.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "mapping-functions_zh_CN.md",
+      "to": "mapping-functions.md"
+    },
+    {
+      "from": "mapping-functions_en.md",
       "to": "mapping-functions.md"
     }
   ]

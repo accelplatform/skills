@@ -22,15 +22,14 @@
     ├── callbackFromImMaster()     ... 接收选择结果的回调函数
     └── window.callbackFromImMaster ... 将回调函数注册为全局
 
-<div id="container">
-└── imds-container
-    └── main
-        └── form.imds-form
-            └── section
-                └── imds-field-container
-                    └── imds-field（私有组名称）
-                        ├── input[type="hidden"]    ... 私有组代码（隐藏字段）
-                        └── imds-textbox-control    ... 私有组名称（带搜索图标・只读）
+<div class="imds-container">
+└── main
+    └── form.imds-form
+        └── section
+            └── imds-field-container
+                └── imds-field（私有组名称）
+                    ├── input[type="hidden"]    ... 私有组代码（隐藏字段）
+                    └── imds-textbox-control    ... 私有组名称（带搜索图标・只读）
 ```
 
 ## 1. head 部分（搜索对话框的设置）
@@ -181,39 +180,37 @@
   </script>
 </imart>
 
-<!-- 页面整体容器 -->
-<div id="container">
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p>IM-共通主数据 示例</p>
-        <h1>私有组搜索</h1>
-      </div>
-    </header>
-    <main>
-      <form class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-          <div class="imds-field-container has-accent-color">
-            <div class="imds-field is-horizontal imds-w-15 sample-private-group">
-              <div class="imds-field-label"><label for=":privateGroupName:">私有组名称</label></div>
-              <div class="imds-field-control">
-                <div class="imds-textbox-control">
-                  <input type="hidden" id=":privateGroupCode:" value="">
-                  <input type="text" id=":privateGroupName:" placeholder="请选择私有组名称" class="imds-textbox" readonly value="">
-                  <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
-                </div>
+<!-- 页面整体容器（因位于 intra-mart 主题 imui-container 内部，故不附加 id） -->
+<div class="imds-container">
+  <header class="imds-header">
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p>IM-共通主数据 示例</p>
+      <h1>私有组搜索</h1>
+    </div>
+  </header>
+  <main>
+    <form class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+        <div class="imds-field-container has-accent-color">
+          <div class="imds-field is-horizontal imds-w-15 sample-private-group">
+            <div class="imds-field-label"><label for=":privateGroupName:">私有组名称</label></div>
+            <div class="imds-field-control">
+              <div class="imds-textbox-control">
+                <input type="hidden" id=":privateGroupCode:" value="">
+                <input type="text" id=":privateGroupName:" placeholder="请选择私有组名称" class="imds-textbox" readonly value="">
+                <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
               </div>
             </div>
           </div>
-        </section>
-      </form>
-    </main>
-  </div>
+        </div>
+      </section>
+    </form>
+  </main>
 </div>
 ```
 

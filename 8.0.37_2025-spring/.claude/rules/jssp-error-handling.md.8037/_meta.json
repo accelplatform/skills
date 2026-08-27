@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "jssp-error-handling_en.md",
-      "to": "jssp-error-handling.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "jssp-error-handling_zh_CN.md",
+      "to": "jssp-error-handling.md"
+    },
+    {
+      "from": "jssp-error-handling_en.md",
       "to": "jssp-error-handling.md"
     }
   ]

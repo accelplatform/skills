@@ -293,7 +293,7 @@ build-sample-setup-import.js が自動で行うこと:
 |--------|------|
 | **jssp-sample-setup-generator**（本スキル） | サンプルデータセットアップ資材一式（Importer 形式）の生成 |
 | jssp-tenant-setup-generator | テナント環境セットアップ資材一式の生成（モジュールの動作前提の構築） |
-| jssp-im-workflow-generator | IM-Workflow のワークフロー定義 XML の生成 |
+| base-im-workflow-generator | IM-Workflow のワークフロー定義 XML の生成 |
 | jssp-im-logic-generator | IM-LogicDesigner のフロー定義 JSON の生成 |
 | jssp-page-generator | 画面・ファンクションコンテナの生成 |
 | jssp-im-job-generator | ジョブプログラム（バッチ処理）本体の実装 |

@@ -103,6 +103,29 @@ ProgressBar は、実行中の処理の進捗状況を、棒状で視覚的・�
 </div>
 ```
 
+### ステータス別アイコンマッピング
+
+`showProgressWithIcon` で使用するアイコンは、ステータス（カラークラス）に応じて以下を使い分ける。
+
+| ステータス | カラークラス | アイコン | 意味の例 |
+|-----------|-------------|---------|---------|
+| 成功 | is-success | fa-circle-check | 完了 |
+| 警告 | is-warning | fa-triangle-exclamation | 進捗に遅延が発生している |
+| 危険 | is-danger | fa-triangle-exclamation | 進捗に大きく遅延が発生している |
+| エラー | is-error | fa-circle-xmark | エラーが発生した |
+
+```html
+<span class="imds-icon is-warning" title="進捗に遅延が発生しています">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+</span>
+<span class="imds-icon is-danger" title="進捗に大きく遅延が発生しています">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+</span>
+<span class="imds-icon is-error" title="エラーが発生しました">
+  <i class="fa-solid fa-circle-xmark"></i>
+</span>
+```
+
 ## 実装上の注意
 
 - 進捗率は `imds-progress-bar-fill` の `style="width: XX%;"` で制御する（0〜100%）

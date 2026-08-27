@@ -67,7 +67,7 @@ allowed-tools: Bash, Read, Write, Glob
 - `reference/api-im-workflow-modal-confirm.md` — 处理模态框 API（`imWorkflow.modal.showConfirm()`）参考
 - `reference/api-user-actv-matter-property-value.md` — 案件属性值 API 参考
 - `reference/screen-generation-checklist.md` — 画面生成时的自检清单
-- `.github/skills/jssp-im-workflow-generator/reference/node-types.md` — 节点类型·权限插件一览（相关技能）
+- `.github/skills/base-im-workflow-generator/reference/node-types.md` — 节点类型·权限插件一览（相关技能）
 
 ## 申请画面的方式选择
 
@@ -328,18 +328,18 @@ WARN [JSSP-JS-022] xxx.js:NN  存在传入 null 的可能性
 
 ## 与其他技能的边界·一致性职责
 
-本技能生成的文件位置必须**与 `jssp-im-workflow-generator` 生成的 XML 中 `<scriptPath>`（或 spec.json 的 `screens`）完全一致**。职责分担如下：
+本技能生成的文件位置必须**与 `base-im-workflow-generator` 生成的 XML 中 `<scriptPath>`（或 spec.json 的 `screens`）完全一致**。职责分担如下：
 
 | 职责 | 负责技能 |
 |------|----------|
-| 通过 spec.json 的 `screens` 决定画面路径 | `jssp-im-workflow-generator` |
-| XML 内 `<scriptPath>` 的输出 | `jssp-im-workflow-generator` |
+| 通过 spec.json 的 `screens` 决定画面路径 | `base-im-workflow-generator` |
+| XML 内 `<scriptPath>` 的输出 | `base-im-workflow-generator` |
 | 放置实际的 `.js` / `.html` 文件 | **本技能（usage）** |
 | 验证路径一致性 | `scripts/validate-workflow-code.js` 的 `WF-XML-001` |
 
 ### pageType 与本技能惯例目录的对应表
 
-由于 `jssp-im-workflow-generator` 的默认值已与本技能的惯例目录名保持一致，**新项目可在 spec.json 中省略 `screens`**。
+由于 `base-im-workflow-generator` 的默认值已与本技能的惯例目录名保持一致，**新项目可在 spec.json 中省略 `screens`**。
 
 | pageType | 键 | 本技能的放置位置 | 用途 |
 |---|---|---|---|
@@ -356,8 +356,8 @@ WARN [JSSP-JS-022] xxx.js:NN  存在传入 null 的可能性
 
 ### 推荐的生成顺序
 
-1. 使用 `jssp-im-workflow-generator` 创建 spec.json 并生成 XML（先确定画面路径）。
+1. 使用 `base-im-workflow-generator` 创建 spec.json 并生成 XML（先确定画面路径）。
 2. 用本技能生成 XML 引用的各画面文件。
 3. 运行 `validate-workflow-code.js`，确认未出现 `WF-XML-001` 警告（若出现，请区分是有意省略还是忘记生成）。
 
-详细对应表与共用模式请参阅 `jssp-im-workflow-generator` 技能的 SKILL.md 「与其他技能的边界·一致性职责」章节。
+详细对应表与共用模式请参阅 `base-im-workflow-generator` 技能的 SKILL.md 「与其他技能的边界·一致性职责」章节。

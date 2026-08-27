@@ -323,115 +323,113 @@ function transferErrorPage(code, message) {
     imwNextApplicationId=$imwNextApplicationId
     imwNextServiceId=$imwNextServiceId>
 
-  <!-- 页面整体容器 -->
-  <div id="container">
-    <div class="imds-container">
-      <header class="imds-header">
-        <div class="imds-header-back-button">
-          <button type="button" id="imw-back-button" class="imds-button is-ghost is-large">
-            <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-          </button>
-        </div>
-        <div class="imds-header-icon">
-          <span class="imds-icon-wrapper is-large">
-            <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-          </span>
-        </div>
-        <div class="imds-header-title">
-          <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-          <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-        </div>
-      </header>
-      <main>
-        <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-          <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-            <h2 class="imds-heading is-bordered is-size-2 is-cyan">发注信息</h2>
-            <div class="imds-field-container has-accent-color">
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>零件代码</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":partCode:" class="imds-text"></span>
-                    </div>
-                  </div>
-                </div>
+  <!-- 页面整体容器（因会被放置在 intra-mart 主题的 imui-container 内部，所以不附加 id） -->
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-back-button">
+        <button type="button" id="imw-back-button" class="imds-button is-ghost is-large">
+          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+        </button>
+      </div>
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+      </div>
+    </header>
+    <main>
+      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <h2 class="imds-heading is-bordered is-size-2 is-cyan">发注信息</h2>
+          <div class="imds-field-container has-accent-color">
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>零件代码</span>
               </div>
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>零件名称</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":partName:" class="imds-text"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>单价</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":unitPrice:" class="imds-text"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>数量</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":quantity:" class="imds-text"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>合计金额</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":totalAmount:" class="imds-text"></span>
-                    </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":partCode:" class="imds-text"></span>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-          <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-            <h2 class="imds-heading is-bordered is-size-2 is-cyan">申请理由</h2>
-            <div class="imds-field-container has-accent-color">
-              <div class="imds-field-group is-horizontal imds-w-15">
-                <div class="imds-field-group-label">
-                  <span>理由</span>
-                </div>
-                <div class="imds-field-group-control">
-                  <div class="imds-field">
-                    <div class="imds-field-control">
-                      <span id=":reason:" class="imds-text"></span>
-                    </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>零件名称</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":partName:" class="imds-text"></span>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-        </div>
-        <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
-          <button type="button" id="process-button" class="imds-button is-primary" style="min-width: 8em;">处理</button>
-        </div>
-      </main>
-    </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>单价</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":unitPrice:" class="imds-text"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>数量</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":quantity:" class="imds-text"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>合计金额</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":totalAmount:" class="imds-text"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <h2 class="imds-heading is-bordered is-size-2 is-cyan">申请理由</h2>
+          <div class="imds-field-container has-accent-color">
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>理由</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <span id=":reason:" class="imds-text"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+        <button type="button" id="process-button" class="imds-button is-primary" style="min-width: 8em;">处理</button>
+      </div>
+    </main>
   </div>
 </imart>
 

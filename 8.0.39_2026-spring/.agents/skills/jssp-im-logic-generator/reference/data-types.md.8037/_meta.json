@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "data-types_en.md",
-      "to": "data-types.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "data-types_zh_CN.md",
+      "to": "data-types.md"
+    },
+    {
+      "from": "data-types_en.md",
       "to": "data-types.md"
     }
   ]

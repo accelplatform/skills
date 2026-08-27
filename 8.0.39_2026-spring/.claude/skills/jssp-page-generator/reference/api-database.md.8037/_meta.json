@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-database_en.md",
-      "to": "api-database.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-database_zh_CN.md",
+      "to": "api-database.md"
+    },
+    {
+      "from": "api-database_en.md",
       "to": "api-database.md"
     }
   ]

@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "aci-builders_en.md",
-      "to": "aci-builders.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "aci-builders_zh_CN.md",
+      "to": "aci-builders.md"
+    },
+    {
+      "from": "aci-builders_en.md",
       "to": "aci-builders.md"
     }
   ]

@@ -283,123 +283,126 @@ E.APP.SKILLS.SIMPLE.FORM.00002=An error occurred during user registration. {0}
   </script>
 </imart>
 
-<!-- Page root container -->
+<!-- Page root container (no id, since it is placed inside the intra-mart theme's imui-container) -->
 <!-- ★ Labels in HTML are embedded with escapeXml="true" escapeJs="false" -->
-<div id="container">
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-back-button">
-        <button type="button" class="imds-button is-ghost is-large">
-          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-        </button>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.SUBTITLE" escapeXml="true" escapeJs="false" /></p>
-        <h1><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.TITLE" escapeXml="true" escapeJs="false" /></h1>
-      </div>
-    </header>
+<div class="imds-container">
+  <header class="imds-header">
+    <div class="imds-header-back-button">
+      <button type="button" class="imds-button is-ghost is-large">
+        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+      </button>
+    </div>
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="fa-solid fa-file"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.SUBTITLE" escapeXml="true" escapeJs="false" /></p>
+      <h1><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.TITLE" escapeXml="true" escapeJs="false" /></h1>
+    </div>
+  </header>
 
-    <main>
-      <!-- Secure token -->
-      <imart type="imSecureToken" />
+  <main>
+    <!-- Secure token -->
+    <imart type="imSecureToken" />
 
-      <form id="main-form" class="imds-form has-background-color-gray imds-scrollbar imds-py-4 imds-px-6">
-        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-          <h2 class="imds-heading is-bordered is-size-2 is-cyan"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.BASIC.INFO" escapeXml="true" escapeJs="false" /></h2>
-          <div class="imds-field-container has-accent-color">
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label">
-                <!-- ★ Message tags can also be embedded in HTML attributes -->
-                <span class="imds-required-label-required" data-required-label="<imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.REQUIRED" escapeXml="true" escapeJs="false" />"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.USER.CODE" escapeXml="true" escapeJs="false" /></span>
-              </div>
-              <div class="imds-field-group-control">
-                <div class="imds-field">
-                  <div class="imds-field-control">
-                    <input type="text" id=":userCode:" class="imds-textbox" name="userCode" value="" />
-                  </div>
-                  <!-- ★ Error text is set dynamically by JS, so leave it empty -->
-                  <span class="imds-error-text" for=":userCode:"></span>
+    <form id="main-form" class="imds-form has-background-color-gray imds-scrollbar imds-py-4 imds-px-6">
+      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+        <h2 class="imds-heading is-bordered is-size-2 is-cyan"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.BASIC.INFO" escapeXml="true" escapeJs="false" /></h2>
+        <div class="imds-field-container has-accent-color">
+          <div class="imds-field-group is-horizontal imds-w-15">
+            <div class="imds-field-group-label">
+              <!-- ★ Message tags can also be embedded in HTML attributes -->
+              <span class="imds-required-label-required" data-required-label="<imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.REQUIRED" escapeXml="true" escapeJs="false" />"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.USER.CODE" escapeXml="true" escapeJs="false" /></span>
+            </div>
+            <div class="imds-field-group-control">
+              <div class="imds-field">
+                <div class="imds-field-control">
+                  <input type="text" id=":userCode:" class="imds-textbox" name="userCode" value="" />
                 </div>
+                <!-- ★ Error text is set dynamically by JS, so leave it empty -->
+                <span class="imds-error-text" for=":userCode:"></span>
               </div>
             </div>
+          </div>
 
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label">
-                <span class="imds-required-label-required" data-required-label="<imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.REQUIRED" escapeXml="true" escapeJs="false" />"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.FULL.NAME" escapeXml="true" escapeJs="false" /></span>
-              </div>
-              <div class="imds-field-group-control">
-                <div class="imds-field-group">
-                  <div class="imds-field-group-control is-horizontal">
-                    <div class="imds-field">
-                      <div class="imds-field-label">
-                        <label for=":userLastName:"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.LAST.NAME" escapeXml="true" escapeJs="false" /></label>
-                      </div>
-                      <div class="imds-field-control">
-                        <input type="text" id=":userLastName:" class="imds-textbox" name="userLastName" value="" />
-                      </div>
-                      <span class="imds-error-text" for=":userLastName:"></span>
+          <div class="imds-field-group is-horizontal imds-w-15">
+            <div class="imds-field-group-label">
+              <span class="imds-required-label-required" data-required-label="<imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.REQUIRED" escapeXml="true" escapeJs="false" />"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.FULL.NAME" escapeXml="true" escapeJs="false" /></span>
+            </div>
+            <div class="imds-field-group-control">
+              <div class="imds-field-group">
+                <div class="imds-field-group-control is-horizontal">
+                  <div class="imds-field">
+                    <div class="imds-field-label">
+                      <label for=":userLastName:"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.LAST.NAME" escapeXml="true" escapeJs="false" /></label>
                     </div>
-                    <div class="imds-field">
-                      <div class="imds-field-label">
-                        <label for=":userFirstName:"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.FIRST.NAME" escapeXml="true" escapeJs="false" /></label>
-                      </div>
-                      <div class="imds-field-control">
-                        <input type="text" id=":userFirstName:" class="imds-textbox" name="userFirstName" value="" />
-                      </div>
-                      <span class="imds-error-text" for=":userFirstName:"></span>
+                    <div class="imds-field-control">
+                      <input type="text" id=":userLastName:" class="imds-textbox" name="userLastName" value="" />
                     </div>
+                    <span class="imds-error-text" for=":userLastName:"></span>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label">
-                <span><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.REGISTRATION.DATE" escapeXml="true" escapeJs="false" /></span>
-              </div>
-              <div class="imds-field-group-control">
-                <div class="imds-field">
-                  <div class="imds-field-control">
-                    <input type="text" id=":registrationDate:" class="imds-textbox" name="registrationDate" value="" style="max-width: 10em;" />
-                    <imart type="imuiCalendar" floatable="true" altField="#\\:registrationDate\\:" format="yyyy/MM/dd" />
-                  </div>
-                  <span class="imds-error-text" for=":registrationDate:"></span>
-                </div>
-              </div>
-            </div>
-
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label"><span><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.OTHER.INFO" escapeXml="true" escapeJs="false" /></span></div>
-              <div class="imds-field-group-control is-horizontal">
-                <div class="imds-field">
-                  <div class="imds-field-label">
-                    <label for=":age:"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE" escapeXml="true" escapeJs="false" /></label>
-                  </div>
-                  <div class="imds-field-control">
-                    <select id=":age:" class="imds-select" name="age">
-                      <option value=""><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.SELECT.PLACEHOLDER" escapeXml="true" escapeJs="false" /></option>
-                      <option value="10"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.10S" escapeXml="true" escapeJs="false" /></option>
-                      <option value="20"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.20S" escapeXml="true" escapeJs="false" /></option>
-                      <option value="30"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.30S" escapeXml="true" escapeJs="false" /></option>
-                      <option value="40"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.40S" escapeXml="true" escapeJs="false" /></option>
-                      <option value="50"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.50S" escapeXml="true" escapeJs="false" /></option>
-                      <option value="60"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.60S.PLUS" escapeXml="true" escapeJs="false" /></option>
-                    </select>
+                  <div class="imds-field">
+                    <div class="imds-field-label">
+                      <label for=":userFirstName:"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.FIRST.NAME" escapeXml="true" escapeJs="false" /></label>
+                    </div>
+                    <div class="imds-field-control">
+                      <input type="text" id=":userFirstName:" class="imds-textbox" name="userFirstName" value="" />
+                    </div>
+                    <span class="imds-error-text" for=":userFirstName:"></span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      </form>
 
-      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
-        <button type="button" id="register-button" class="imds-button is-primary" style="min-width: 8em;"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.REGISTER" escapeXml="true" escapeJs="false" /></button>
-        <button type="button" id="temporary-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.TEMP.SAVE" escapeXml="true" escapeJs="false" /></button>
-        <button type="button" id="delete-button" class="imds-button is-outlined is-danger" style="min-width: 8em;"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.DELETE" escapeXml="true" escapeJs="false" /></button>
-      </div>
-    </main>
-  </div>
+          <div class="imds-field-group is-horizontal imds-w-15">
+            <div class="imds-field-group-label">
+              <span><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.REGISTRATION.DATE" escapeXml="true" escapeJs="false" /></span>
+            </div>
+            <div class="imds-field-group-control">
+              <div class="imds-field">
+                <div class="imds-field-control">
+                  <input type="text" id=":registrationDate:" class="imds-textbox" name="registrationDate" value="" style="max-width: 10em;" />
+                  <imart type="imuiCalendar" floatable="true" altField="#\\:registrationDate\\:" format="yyyy/MM/dd" />
+                </div>
+                <span class="imds-error-text" for=":registrationDate:"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="imds-field-group is-horizontal imds-w-15">
+            <div class="imds-field-group-label"><span><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.OTHER.INFO" escapeXml="true" escapeJs="false" /></span></div>
+            <div class="imds-field-group-control is-horizontal">
+              <div class="imds-field">
+                <div class="imds-field-label">
+                  <label for=":age:"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE" escapeXml="true" escapeJs="false" /></label>
+                </div>
+                <div class="imds-field-control">
+                  <select id=":age:" class="imds-select" name="age">
+                    <option value=""><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.SELECT.PLACEHOLDER" escapeXml="true" escapeJs="false" /></option>
+                    <option value="10"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.10S" escapeXml="true" escapeJs="false" /></option>
+                    <option value="20"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.20S" escapeXml="true" escapeJs="false" /></option>
+                    <option value="30"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.30S" escapeXml="true" escapeJs="false" /></option>
+                    <option value="40"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.40S" escapeXml="true" escapeJs="false" /></option>
+                    <option value="50"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.50S" escapeXml="true" escapeJs="false" /></option>
+                    <option value="60"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.AGE.60S.PLUS" escapeXml="true" escapeJs="false" /></option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </form>
+
+    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+      <button type="button" id="register-button" class="imds-button is-primary" style="min-width: 8em;"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.REGISTER" escapeXml="true" escapeJs="false" /></button>
+      <button type="button" id="temporary-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.TEMP.SAVE" escapeXml="true" escapeJs="false" /></button>
+      <button type="button" id="delete-button" class="imds-button is-outlined is-danger" style="min-width: 8em;"><imart type="message" id="CAP.Z.APP.SKILLS.SIMPLE.FORM.DELETE" escapeXml="true" escapeJs="false" /></button>
+    </div>
+  </main>
 </div>
 ```
 

@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "imds-import-screen_ja.md",
+      "to": "imds-import-screen.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imds-import-screen_zh_CN.md",
+      "to": "imds-import-screen.md"
+    },
+    {
+      "from": "imds-import-screen_en.md",
+      "to": "imds-import-screen.md"
+    }
+  ]
+}

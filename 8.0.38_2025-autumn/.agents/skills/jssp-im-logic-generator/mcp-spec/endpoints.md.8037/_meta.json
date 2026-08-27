@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "endpoints_en.md",
-      "to": "endpoints.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "endpoints_zh_CN.md",
+      "to": "endpoints.md"
+    },
+    {
+      "from": "endpoints_en.md",
       "to": "endpoints.md"
     }
   ]
