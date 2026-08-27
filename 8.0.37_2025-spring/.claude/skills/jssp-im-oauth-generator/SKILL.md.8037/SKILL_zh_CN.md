@@ -9,7 +9,7 @@ allowed-tools: Bash, Read, Write, Glob
 ## 目的
 
 使用 intra-mart Accel Platform 的 **OAuth 提供方功能**，向外部客户端应用程序新公开带 OAuth 访问令牌认证的 REST-API 的技能。
-采用 **从一个 `spec.json` 通过 `scripts/build-oauth.js` 一次性生成 4 种资材（scope 定义、资源 URL 映射、客户端详细设置、JSSP 资源实现的骨架）** 的方式（与 `base-im-workflow-generator` 同方式）。
+采用 **从一个 `spec.json` 通过 `scripts/build-oauth.js` 一次性生成 4 种资材（scope 定义、资源 URL 映射、客户端详细设置、JSSP 资源实现的骨架）** 的方式（与 `jssp-im-workflow-generator` 同方式）。
 编码代理只编写 spec.json，XML 的细节结构和 JSSP 的共通骨架由脚本自动生成。
 
 ## 生成对象

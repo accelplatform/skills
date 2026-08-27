@@ -107,29 +107,6 @@ IconFont は、`<i>` タグを使用してアイコンを表示します。
 </button>
 ```
 
-### min-width-8em / button-spacing との組み合わせ
-
-ツールバーや操作エリアでは、`imds-button` の spacing ヘルパー（`min-width-8em`、`button-spacing`）と組み合わせて使用する。詳細は [imds-html-button.md](imds-html-button.md) を参照。
-
-```html
-<div class="button-spacing">
-  <button type="button" class="imds-button is-primary min-width-8em">
-    <span class="imds-icon"><i class="fa-solid fa-add"></i></span>
-    <span class="imds-button-text">新規作成</span>
-  </button>
-  <button type="button" class="imds-button is-danger min-width-8em">
-    <span class="imds-icon"><i class="fa-solid fa-trash-can"></i></span>
-    <span class="imds-button-text">削除</span>
-  </button>
-  <button type="button" class="imds-button is-outlined is-primary" aria-label="追加">
-    <span class="imds-icon is-primary"><i class="fa-solid fa-add"></i></span>
-  </button>
-  <button type="button" class="imds-button is-outlined is-danger" aria-label="削除">
-    <span class="imds-icon is-danger"><i class="fa-solid fa-trash-can"></i></span>
-  </button>
-</div>
-```
-
 ### Tag との組み合わせ
 
 ```html

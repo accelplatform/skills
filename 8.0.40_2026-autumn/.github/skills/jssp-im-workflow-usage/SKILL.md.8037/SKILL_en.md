@@ -67,7 +67,7 @@ This skill generates application/approval screens (`.html` + `.js`) and action p
 - `reference/api-im-workflow-modal-confirm.md` — Processing modal API (`imWorkflow.modal.showConfirm()`) reference
 - `reference/api-user-actv-matter-property-value.md` — Case property value API reference
 - `reference/screen-generation-checklist.md` — Self-check checklist for screen generation
-- `.github/skills/base-im-workflow-generator/reference/node-types.md` — Node types and authority plugin list (related skill)
+- `.github/skills/jssp-im-workflow-generator/reference/node-types.md` — Node types and authority plugin list (related skill)
 
 ## Choosing the Application Screen Method
 
@@ -328,18 +328,18 @@ WARN [JSSP-JS-022] xxx.js:NN  possibility of passing null
 
 ## Boundary and Consistency Responsibilities With Other Skills
 
-The file placement produced by this skill must **exactly match** the `<scriptPath>` values (or the `screens` in spec.json) produced by `base-im-workflow-generator`. Responsibility split:
+The file placement produced by this skill must **exactly match** the `<scriptPath>` values (or the `screens` in spec.json) produced by `jssp-im-workflow-generator`. Responsibility split:
 
 | Responsibility | Owning Skill |
 |---|---|
-| Decide screen paths via `screens` in spec.json | `base-im-workflow-generator` |
-| Output `<scriptPath>` inside the XML | `base-im-workflow-generator` |
+| Decide screen paths via `screens` in spec.json | `jssp-im-workflow-generator` |
+| Output `<scriptPath>` inside the XML | `jssp-im-workflow-generator` |
 | Place the actual `.js` / `.html` files | **This skill (usage)** |
 | Verify path consistency | `WF-XML-001` in `scripts/validate-workflow-code.js` |
 
 ### pageType ↔ this skill's convention directory mapping
 
-The defaults of `base-im-workflow-generator` are aligned with the convention directories used by this skill, so **for new projects, `screens` may be omitted in spec.json**.
+The defaults of `jssp-im-workflow-generator` are aligned with the convention directories used by this skill, so **for new projects, `screens` may be omitted in spec.json**.
 
 | pageType | Key | Placement in this skill | Purpose |
 |---|---|---|---|
@@ -356,8 +356,8 @@ The defaults of `base-im-workflow-generator` are aligned with the convention dir
 
 ### Recommended Generation Order
 
-1. Create spec.json with `base-im-workflow-generator` and generate the XML (screen paths are decided first).
+1. Create spec.json with `jssp-im-workflow-generator` and generate the XML (screen paths are decided first).
 2. Use this skill to generate each screen file referenced by the XML.
 3. Run `validate-workflow-code.js` and confirm no `WF-XML-001` warnings (if any appear, distinguish intentional omission from forgotten generation).
 
-For the detailed mapping table and screen-sharing patterns, see the "Boundary and Consistency Responsibilities With Other Skills" section in the `base-im-workflow-generator` skill's SKILL.md.
+For the detailed mapping table and screen-sharing patterns, see the "Boundary and Consistency Responsibilities With Other Skills" section in the `jssp-im-workflow-generator` skill's SKILL.md.

@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "imds-html-checkbox-group_zh_CN.md",
+      "from": "imds-html-checkbox-group_en.md",
       "to": "imds-html-checkbox-group.md"
     },
     {
-      "from": "imds-html-checkbox-group_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imds-html-checkbox-group_zh_CN.md",
       "to": "imds-html-checkbox-group.md"
     }
   ]

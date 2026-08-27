@@ -420,66 +420,68 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- Page overall container (the theme already wraps the page in imui-container, so no id is added here) -->
-<div class="imds-container">
-  <header class="imds-header">
-    <div class="imds-header-back-button">
-      <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="Back">
-        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
-      </button>
-    </div>
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-    </div>
-  </header>
-  <main>
-    <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-      <!-- TODO: Implement sections and fields here -->
-      <!-- The following is a sample structure (example field implementation) -->
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-        <h2 class="imds-heading is-bordered is-size-2 is-cyan">{Section Title}</h2>
-        <div class="imds-field-container has-accent-color">
-          <!-- Required field example -->
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label">
-              <span class="imds-required-label-required" data-required-label="Required">{Field Label}</span>
-            </div>
-            <div class="imds-field-group-control">
-              <div class="imds-field" for=":field1:">
-                <div class="imds-field-control">
-                  <input type="text" id=":field1:" class="imds-textbox" value="" />
-                </div>
-                <span class="imds-error-text" for=":field1:" style="display:none;"></span>
+<!-- Page overall container -->
+<div id="container">
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-back-button">
+        <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="Back">
+          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
+        </button>
+      </div>
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+      </div>
+    </header>
+    <main>
+      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+        <!-- TODO: Implement sections and fields here -->
+        <!-- The following is a sample structure (example field implementation) -->
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <h2 class="imds-heading is-bordered is-size-2 is-cyan">{Section Title}</h2>
+          <div class="imds-field-container has-accent-color">
+            <!-- Required field example -->
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span class="imds-required-label-required" data-required-label="Required">{Field Label}</span>
               </div>
-            </div>
-          </div>
-          <!-- Optional field example -->
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label">
-              <span>{Field Label}</span>
-            </div>
-            <div class="imds-field-group-control">
-              <div class="imds-field">
-                <div class="imds-field-control">
-                  <input type="text" id=":field2:" class="imds-textbox" value="" />
+              <div class="imds-field-group-control">
+                <div class="imds-field" for=":field1:">
+                  <div class="imds-field-control">
+                    <input type="text" id=":field1:" class="imds-textbox" value="" />
+                  </div>
+                  <span class="imds-error-text" for=":field1:" style="display:none;"></span>
                 </div>
               </div>
             </div>
+            <!-- Optional field example -->
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>{Field Label}</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <input type="text" id=":field2:" class="imds-textbox" value="" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
-      <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">Apply</button>
-      <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">Temporary Save</button>
-    </div>
-  </main>
+        </section>
+      </div>
+      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+        <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">Apply</button>
+        <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">Temporary Save</button>
+      </div>
+    </main>
+  </div>
 </div>
 ```
 

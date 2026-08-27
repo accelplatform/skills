@@ -167,51 +167,6 @@ Menu は、機能選択や画面遷移のアクションをリスト形式でメ
 </div>
 ```
 
-### ネスト（階層）メニュー
-
-`li` の `a` の直後に `ul.imds-menu-list` を配置することで、階層的なメニューを作成できる。子を持たない `li` にも空の `ul.imds-menu-list` を残すのが実DOMでの標準パターン（DOM 構造の一貫性のため）。
-
-```html
-<nav class="imds-menu is-borderless">
-  <div class="imds-menu-title">Menu Title</div>
-  <ul class="imds-menu-list">
-    <li>
-      <a><span>Menu 1</span></a>
-      <ul class="imds-menu-list">
-        <li>
-          <a><span>Menu 1-1</span></a>
-          <ul class="imds-menu-list">
-            <li>
-              <a><span>Menu 1-1-1</span></a>
-              <ul class="imds-menu-list"></ul>
-            </li>
-            <li>
-              <a><span>Menu 1-1-2</span></a>
-              <ul class="imds-menu-list"></ul>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a><span>Menu 1-2</span></a>
-          <ul class="imds-menu-list">
-            <li>
-              <a><span>Menu 1-2-1</span></a>
-              <ul class="imds-menu-list"></ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a><span>Menu 2</span></a>
-      <ul class="imds-menu-list"></ul>
-    </li>
-  </ul>
-</nav>
-```
-
-- 推奨する階層の深さの目安は 3 階層程度まで（上記例の `Menu 1-1-1` まで）。4 階層以上は操作性が低下するため避ける。
-
 ## アクセシビリティ対応
 
 ### 子階層メニュー

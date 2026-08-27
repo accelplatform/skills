@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "extends-import_zh_CN.md",
+      "from": "extends-import_en.md",
       "to": "extends-import.md"
     },
     {
-      "from": "extends-import_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "extends-import_zh_CN.md",
       "to": "extends-import.md"
     }
   ]

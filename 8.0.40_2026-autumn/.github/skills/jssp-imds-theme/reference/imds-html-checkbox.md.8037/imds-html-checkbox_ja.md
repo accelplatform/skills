@@ -76,5 +76,5 @@ Radio とは異なり、必須選択ではありません。
 
 - チェックボックスは `label.imds-checkbox > input[type="checkbox"] + span` の構造で記述する
 - `disabled` と `checked` は組み合わせ可能（チェック済みで無効化など）
-- 複数のチェックボックスをグループ化する場合は `fieldset`/`legend` は使用しない。`imds-field`（+ `imds-field-label`）で囲み、`div.imds-checkbox-group` にまとめる構造を使う（詳細は `imds-html-checkbox-group.md` を参照）
+- 複数のチェックボックスをグループ化する場合は `fieldset` と `legend` を使用する
 - チェック状態の変更は JavaScript で制御する

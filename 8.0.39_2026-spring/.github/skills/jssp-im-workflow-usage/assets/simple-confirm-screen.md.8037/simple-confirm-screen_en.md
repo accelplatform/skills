@@ -266,113 +266,115 @@ function transferErrorPage(code, message) {
     imwNextApplicationId=$imwNextApplicationId
     imwNextServiceId=$imwNextServiceId>
 
-  <!-- Container for the entire page (the theme already wraps the page in imui-container, so no id is added here) -->
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-back-button">
-        <button type="button" id="imw-back-button" class="imds-button is-ghost is-large" aria-label="Back">
-          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
-        </button>
-      </div>
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-      </div>
-    </header>
-    <main>
-      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-          <h2 class="imds-heading is-bordered is-size-2 is-cyan">Order Information</h2>
-          <div class="imds-field-container has-accent-color">
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label">
-                <span>Part Code</span>
+  <!-- Container for the entire page -->
+  <div id="container">
+    <div class="imds-container">
+      <header class="imds-header">
+        <div class="imds-header-back-button">
+          <button type="button" id="imw-back-button" class="imds-button is-ghost is-large" aria-label="Back">
+            <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
+          </button>
+        </div>
+        <div class="imds-header-icon">
+          <span class="imds-icon-wrapper is-large">
+            <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+          </span>
+        </div>
+        <div class="imds-header-title">
+          <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+          <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+        </div>
+      </header>
+      <main>
+        <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+          <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+            <h2 class="imds-heading is-bordered is-size-2 is-cyan">Order Information</h2>
+            <div class="imds-field-container has-accent-color">
+              <div class="imds-field-group is-horizontal imds-w-15">
+                <div class="imds-field-group-label">
+                  <span>Part Code</span>
+                </div>
+                <div class="imds-field-group-control">
+                  <div class="imds-field">
+                    <div class="imds-field-control">
+                      <span id=":partCode:" class="imds-text"></span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="imds-field-group-control">
-                <div class="imds-field">
-                  <div class="imds-field-control">
-                    <span id=":partCode:" class="imds-text"></span>
+              <div class="imds-field-group is-horizontal imds-w-15">
+                <div class="imds-field-group-label">
+                  <span>Part Name</span>
+                </div>
+                <div class="imds-field-group-control">
+                  <div class="imds-field">
+                    <div class="imds-field-control">
+                      <span id=":partName:" class="imds-text"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="imds-field-group is-horizontal imds-w-15">
+                <div class="imds-field-group-label">
+                  <span>Unit Price</span>
+                </div>
+                <div class="imds-field-group-control">
+                  <div class="imds-field">
+                    <div class="imds-field-control">
+                      <span id=":unitPrice:" class="imds-text"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="imds-field-group is-horizontal imds-w-15">
+                <div class="imds-field-group-label">
+                  <span>Quantity</span>
+                </div>
+                <div class="imds-field-group-control">
+                  <div class="imds-field">
+                    <div class="imds-field-control">
+                      <span id=":quantity:" class="imds-text"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="imds-field-group is-horizontal imds-w-15">
+                <div class="imds-field-group-label">
+                  <span>Total Amount</span>
+                </div>
+                <div class="imds-field-group-control">
+                  <div class="imds-field">
+                    <div class="imds-field-control">
+                      <span id=":totalAmount:" class="imds-text"></span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label">
-                <span>Part Name</span>
-              </div>
-              <div class="imds-field-group-control">
-                <div class="imds-field">
-                  <div class="imds-field-control">
-                    <span id=":partName:" class="imds-text"></span>
+          </section>
+          <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+            <h2 class="imds-heading is-bordered is-size-2 is-cyan">Application Reason</h2>
+            <div class="imds-field-container has-accent-color">
+              <div class="imds-field-group is-horizontal imds-w-15">
+                <div class="imds-field-group-label">
+                  <span>Reason</span>
+                </div>
+                <div class="imds-field-group-control">
+                  <div class="imds-field">
+                    <div class="imds-field-control">
+                      <span id=":reason:" class="imds-text"></span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label">
-                <span>Unit Price</span>
-              </div>
-              <div class="imds-field-group-control">
-                <div class="imds-field">
-                  <div class="imds-field-control">
-                    <span id=":unitPrice:" class="imds-text"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label">
-                <span>Quantity</span>
-              </div>
-              <div class="imds-field-group-control">
-                <div class="imds-field">
-                  <div class="imds-field-control">
-                    <span id=":quantity:" class="imds-text"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label">
-                <span>Total Amount</span>
-              </div>
-              <div class="imds-field-group-control">
-                <div class="imds-field">
-                  <div class="imds-field-control">
-                    <span id=":totalAmount:" class="imds-text"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-          <h2 class="imds-heading is-bordered is-size-2 is-cyan">Application Reason</h2>
-          <div class="imds-field-container has-accent-color">
-            <div class="imds-field-group is-horizontal imds-w-15">
-              <div class="imds-field-group-label">
-                <span>Reason</span>
-              </div>
-              <div class="imds-field-group-control">
-                <div class="imds-field">
-                  <div class="imds-field-control">
-                    <span id=":reason:" class="imds-text"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
-        <button type="button" id="confirm-button" class="imds-button is-primary" style="min-width: 8em;">Confirm</button>
-      </div>
-    </main>
+          </section>
+        </div>
+        <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+          <button type="button" id="confirm-button" class="imds-button is-primary" style="min-width: 8em;">Confirm</button>
+        </div>
+      </main>
+    </div>
   </div>
 </imart>
 

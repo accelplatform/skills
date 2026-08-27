@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "README_zh_CN.md",
+      "from": "README_en.md",
       "to": "README.md"
     },
     {
-      "from": "README_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "README_zh_CN.md",
       "to": "README.md"
     }
   ]

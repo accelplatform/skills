@@ -307,4 +307,3 @@ imds-table                                # 表格容器（尺寸与滚动控制
 - 按钮、复选框等不需要单元格内边距时使用 `has-content-only`
 - 若 `th` 中含有表头文本（如 `<span>编辑</span>`），请勿添加 `has-content-only`。需要居中时请使用 `has-text-centered`。`has-content-only` 仅限于 th 自身只包含复选框等组件、不含表头文本的情况
 - 多个变体可以组合使用（例如：`is-sticky is-hoverable is-stripe`）
-- **行/单元格的背景色请勿使用自定义类**。imds 是在 `td` 上设置背景色的，若在 `tr` 上用自定义类指定 `background-color`，会被 `td` 的背景色覆盖而实际不显示（类已附加但外观未变化，是一种不易察觉的缺陷）。选中行的高亮请使用 `is-active`（参见 [isActive（激活行 / 单元格）](#isactive激活行--单元格)），按状态着色请使用 `is-danger` / `is-warning` / `is-success` 等颜色类（参见 [color（单元格背景色）](#color单元格背景色)）。`is-active` 可与颜色类组合使用

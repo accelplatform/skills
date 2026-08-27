@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "simple-arc-matter-delete-listener_zh_CN.md",
+      "from": "simple-arc-matter-delete-listener_en.md",
       "to": "simple-arc-matter-delete-listener.md"
     },
     {
-      "from": "simple-arc-matter-delete-listener_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-arc-matter-delete-listener_zh_CN.md",
       "to": "simple-arc-matter-delete-listener.md"
     }
   ]

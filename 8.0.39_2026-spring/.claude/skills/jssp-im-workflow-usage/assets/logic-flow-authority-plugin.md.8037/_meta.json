@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "logic-flow-authority-plugin_zh_CN.md",
+      "from": "logic-flow-authority-plugin_en.md",
       "to": "logic-flow-authority-plugin.md"
     },
     {
-      "from": "logic-flow-authority-plugin_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "logic-flow-authority-plugin_zh_CN.md",
       "to": "logic-flow-authority-plugin.md"
     }
   ]

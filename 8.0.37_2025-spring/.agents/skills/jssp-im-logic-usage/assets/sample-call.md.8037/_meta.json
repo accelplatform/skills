@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "sample-call_zh_CN.md",
+      "from": "sample-call_en.md",
       "to": "sample-call.md"
     },
     {
-      "from": "sample-call_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "sample-call_zh_CN.md",
       "to": "sample-call.md"
     }
   ]

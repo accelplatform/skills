@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "imart-tag-workflow-open-page_zh_CN.md",
+      "from": "imart-tag-workflow-open-page_en.md",
       "to": "imart-tag-workflow-open-page.md"
     },
     {
-      "from": "imart-tag-workflow-open-page_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imart-tag-workflow-open-page_zh_CN.md",
       "to": "imart-tag-workflow-open-page.md"
     }
   ]

@@ -155,7 +155,7 @@ node .agents/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 ## 在 IM-Workflow 路由定义 XML 中的指定
 
 使用生成的流程的 `flowId`，在 IM-Workflow 路由定义 XML 中指定权限插件。
-使用 `base-im-workflow-generator` 技能生成 XML 时，请参照 `authority-plugins.md` 的"逻辑流指定系"章节中的 XML 示例，在 spec.json 中进行记述。
+使用 `jssp-im-workflow-generator` 技能生成 XML 时，请参照 `authority-plugins.md` 的"逻辑流指定系"章节中的 XML 示例，在 spec.json 中进行记述。
 
 ```xml
 <!-- 审批节点权限配置示例 -->

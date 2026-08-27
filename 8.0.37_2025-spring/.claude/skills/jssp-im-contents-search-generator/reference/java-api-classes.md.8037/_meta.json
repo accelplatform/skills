@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "java-api-classes_zh_CN.md",
+      "from": "java-api-classes_en.md",
       "to": "java-api-classes.md"
     },
     {
-      "from": "java-api-classes_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "java-api-classes_zh_CN.md",
       "to": "java-api-classes.md"
     }
   ]

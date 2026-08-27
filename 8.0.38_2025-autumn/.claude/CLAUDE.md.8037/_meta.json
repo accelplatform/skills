@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "CLAUDE_zh_CN.md",
+      "from": "CLAUDE_en.md",
       "to": "CLAUDE.md"
     },
     {
-      "from": "CLAUDE_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "CLAUDE_zh_CN.md",
       "to": "CLAUDE.md"
     }
   ]

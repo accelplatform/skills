@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "routing-response_zh_CN.md",
+      "from": "routing-response_en.md",
       "to": "routing-response.md"
     },
     {
-      "from": "routing-response_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "routing-response_zh_CN.md",
       "to": "routing-response.md"
     }
   ]

@@ -141,70 +141,9 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
 imdsConfirm._active = false;
 ```
 
-## HTML/CSS 構造リファレンス（imdsConfirm が生成する DOM）
-
-`imdsConfirm` 関数を呼び出すと、以下と等価な `<dialog class="imds-confirm-wrapper">` が `document.body` に動的挿入され、`showModal()` で表示される。関数定義自体（上記 JavaScript コード）は変更しないこと。以下はあくまで生成される HTML/CSS の構造・バリエーションの参照情報。
-
-```html
-<dialog class="imds-confirm-wrapper" style="max-width: 800px; min-width: 400px; max-height: 500px; min-height: 100px">
-  <div class="imds-confirm is-info">
-    <div class="imds-confirm-content-wrapper">
-      <button class="imds-confirm-close imds-button is-ghost">
-        <span class="imds-icon"><i class="fa-solid fa-xmark"></i></span>
-      </button>
-      <div class="imds-confirm-content">
-        <div class="imds-confirm-message-wrapper">
-          <div class="imds-confirm-icon">
-            <span class="imds-icon is-x-small is-info"><i class="fa-solid fa-circle-question"></i></span>
-          </div>
-          <div class="imds-confirm-message">
-            <p class="imds-confirm-message-title">Confirm のタイトル</p>
-            <div class="imds-confirm-message-content">Confirm の確認メッセージです。</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="imds-confirm-footer">
-      <div class="imds-confirm-footer-content">
-        <button type="button" class="imds-button">キャンセル</button>
-        <button type="button" class="imds-button is-primary">実行</button>
-      </div>
-    </div>
-  </div>
-</dialog>
-```
-
-### mode 別アイコン・ボタン色
-
-| mode | アイコン | 決定ボタン |
-|------|---------|-----------|
-| `is-info` | `fa-circle-question` | `imds-button is-primary` |
-| `is-warning` | `fa-triangle-exclamation` | `imds-button is-primary` |
-| `is-danger` | `fa-triangle-exclamation` | `imds-button is-danger` |
-
-### `is-vertical`（フッタボタンの縦積み）
-
-フッタのボタンをデフォルトの横並びではなく縦に積む場合、`imds-confirm-footer-content` に `is-vertical` を追加する。ボタン文言が長い、または3つ以上の選択肢を提示する場合に使用を検討する。`imdsConfirm` 関数自体は `is-vertical` を生成しないため、縦積みが必要な場合は個別に静的な `<dialog>` を実装すること。
-
-```html
-<div class="imds-confirm-footer">
-  <div class="imds-confirm-footer-content is-vertical">
-    <button type="button" class="imds-button">キャンセル</button>
-    <button type="button" class="imds-button is-primary">登録</button>
-  </div>
-</div>
-```
-
 ## 使用ガイドライン
 
 確認メッセージを表示する場合は、`window.confirm()` や `imuiConfirm()` ではなく、この `imdsConfirm()` を使用すること。
-
-### コピーガイドライン
-
-- **タイトル（`imds-confirm-message-title` / `title` 引数）**: 実行する操作を端的に表す。例:「定義情報を登録しますか？」「定義情報を削除しますか？」
-- **メッセージ（`imds-confirm-message-content` / `message` 引数）**: タイトルを補足する説明文。操作の影響範囲などユーザが判断するために必要な情報を簡潔に記載する。例:「更新すると既存の動作に影響を与える可能性があります。」「定義情報を削除すると、○○も削除されます。」
-- **ボタンのキャプション（`okButton.text`）**: クリックした際に何が起こるか明確に表す文言にする。「決定」「OK」のような操作内容が分からないキャプションは避け、「登録」「更新」「削除」等、実際の処理名を使う（デフォルトは「実行」）。
-- **デフォルトの選択肢**: 取り返しのつかない操作（削除等）をキャンセル以外のボタンにフォーカスさせない。`imdsConfirm` はキャンセルボタンを先頭に配置し既定フォーカスとする実装のため、この原則に従っている。
 
 ### mode の使い分け
 

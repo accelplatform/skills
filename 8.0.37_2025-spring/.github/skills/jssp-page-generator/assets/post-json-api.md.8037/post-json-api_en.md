@@ -549,86 +549,87 @@ A verification screen with a textarea for the request body and a textarea for di
   </script>
 </imart>
 
-<!-- Page-wide container (no id is added, since it is placed inside the intra-mart theme's <div id="imui-container">) -->
-<div class="imds-container">
-  <header class="imds-header">
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="fa-solid fa-code"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1 id="page-title"><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-    </div>
-  </header>
-
-  <main>
-    <imart type="imSecureToken" />
-
-    <section class="imds-py-3 imds-px-4" aria-labelledby="request-section-title">
-      <h2 id="request-section-title" class="imds-mb-3">Request</h2>
-      <div class="imds-field" for=":requestBody:">
-        <div class="imds-field-label">
-          <label for=":requestBody:" class="has-text-weight-bold">JSON body</label>
-        </div>
-        <div class="imds-field-control">
-          <textarea
-            id=":requestBody:"
-            name="requestBody"
-            class="imds-textarea post-json-request-body"
-            rows="10"
-            placeholder='{ "key": "value" }'></textarea>
-          <span class="imds-help-text">Sent as POST with Content-Type: application/json.</span>
-        </div>
+<div id="container">
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="fa-solid fa-code"></i></span>
+        </span>
       </div>
-      <div class="post-json-actions">
-        <button type="button" class="imds-button is-primary" id="send-button">
-          <span class="imds-icon"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></span>
-          <span class="imds-button-text">Send</span>
-        </button>
-        <button type="button" class="imds-button is-outlined" id="load-sample-button">
-          <span class="imds-button-text">Load sample</span>
-        </button>
-        <button type="button" class="imds-button is-ghost" id="clear-button">
-          <span class="imds-button-text">Clear</span>
-        </button>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1 id="page-title"><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
       </div>
-    </section>
+    </header>
 
-    <section class="imds-py-3 imds-px-4" aria-labelledby="response-section-title">
-      <h2 id="response-section-title" class="imds-mb-3">Response</h2>
-      <div id="post-json-response" class="post-json-response" style="display:none;" role="status" aria-live="polite">
-        <dl class="post-json-response-meta">
-          <div>
-            <dt>HTTP status</dt>
-            <dd id=":responseStatus:"></dd>
-          </div>
-          <div>
-            <dt>Received type</dt>
-            <dd id=":responseValueType:"></dd>
-          </div>
-          <div>
-            <dt>Summary</dt>
-            <dd id=":responseSummary:"></dd>
-          </div>
-        </dl>
-        <div class="imds-field" for=":responseBody:">
+    <main>
+      <imart type="imSecureToken" />
+
+      <section class="imds-py-3 imds-px-4" aria-labelledby="request-section-title">
+        <h2 id="request-section-title" class="imds-mb-3">Request</h2>
+        <div class="imds-field" for=":requestBody:">
           <div class="imds-field-label">
-            <label for=":responseBody:" class="has-text-weight-bold">Response body</label>
+            <label for=":requestBody:" class="has-text-weight-bold">JSON body</label>
           </div>
           <div class="imds-field-control">
             <textarea
-              id=":responseBody:"
-              name="responseBody"
-              class="imds-textarea post-json-response-body"
-              rows="15"
-              readonly></textarea>
+              id=":requestBody:"
+              name="requestBody"
+              class="imds-textarea post-json-request-body"
+              rows="10"
+              placeholder='{ "key": "value" }'></textarea>
+            <span class="imds-help-text">Sent as POST with Content-Type: application/json.</span>
           </div>
         </div>
-      </div>
-    </section>
-  </main>
+        <div class="post-json-actions">
+          <button type="button" class="imds-button is-primary" id="send-button">
+            <span class="imds-icon"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></span>
+            <span class="imds-button-text">Send</span>
+          </button>
+          <button type="button" class="imds-button is-outlined" id="load-sample-button">
+            <span class="imds-button-text">Load sample</span>
+          </button>
+          <button type="button" class="imds-button is-ghost" id="clear-button">
+            <span class="imds-button-text">Clear</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="imds-py-3 imds-px-4" aria-labelledby="response-section-title">
+        <h2 id="response-section-title" class="imds-mb-3">Response</h2>
+        <div id="post-json-response" class="post-json-response" style="display:none;" role="status" aria-live="polite">
+          <dl class="post-json-response-meta">
+            <div>
+              <dt>HTTP status</dt>
+              <dd id=":responseStatus:"></dd>
+            </div>
+            <div>
+              <dt>Received type</dt>
+              <dd id=":responseValueType:"></dd>
+            </div>
+            <div>
+              <dt>Summary</dt>
+              <dd id=":responseSummary:"></dd>
+            </div>
+          </dl>
+          <div class="imds-field" for=":responseBody:">
+            <div class="imds-field-label">
+              <label for=":responseBody:" class="has-text-weight-bold">Response body</label>
+            </div>
+            <div class="imds-field-control">
+              <textarea
+                id=":responseBody:"
+                name="responseBody"
+                class="imds-textarea post-json-response-body"
+                rows="15"
+                readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 </div>
 ```
 

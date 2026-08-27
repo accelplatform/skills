@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "job-scheduler_zh_CN.md",
+      "from": "job-scheduler_en.md",
       "to": "job-scheduler.md"
     },
     {
-      "from": "job-scheduler_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "job-scheduler_zh_CN.md",
       "to": "job-scheduler.md"
     }
   ]

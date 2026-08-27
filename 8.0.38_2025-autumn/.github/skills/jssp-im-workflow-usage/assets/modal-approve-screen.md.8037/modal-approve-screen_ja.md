@@ -250,52 +250,54 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-<div class="imds-container">
-  <header class="imds-header">
-    <div class="imds-header-back-button">
-      <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="戻る">
-        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
-      </button>
-    </div>
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-    </div>
-  </header>
-  <main>
-    <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-      <!-- TODO: 申請内容を読み取り専用で表示するセクションをここに実装する -->
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-        <h2 class="imds-heading is-bordered is-size-2 is-cyan">{セクションタイトル}</h2>
-        <div class="imds-field-container has-accent-color">
-          <!-- 読み取り専用フィールド例（申請者が入力した値を表示） -->
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label">
-              <span>{フィールドラベル}</span>
-            </div>
-            <div class="imds-field-group-control">
-              <div class="imds-field">
-                <div class="imds-field-control">
-                  <!-- 読み取り専用のため span で表示（id は initializeView から参照） -->
-                  <span id=":field1:" class="imds-text"></span>
+<!-- ページ全体のコンテナ -->
+<div id="container">
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-back-button">
+        <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="戻る">
+          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
+        </button>
+      </div>
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+      </div>
+    </header>
+    <main>
+      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+        <!-- TODO: 申請内容を読み取り専用で表示するセクションをここに実装する -->
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <h2 class="imds-heading is-bordered is-size-2 is-cyan">{セクションタイトル}</h2>
+          <div class="imds-field-container has-accent-color">
+            <!-- 読み取り専用フィールド例（申請者が入力した値を表示） -->
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>{フィールドラベル}</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <!-- 読み取り専用のため span で表示（id は initializeView から参照） -->
+                    <span id=":field1:" class="imds-text"></span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
-    <!-- 処理ボタン（承認/否認/差戻し等はモーダル内で選択） -->
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
-      <button type="button" id="process-button" class="imds-button is-primary" style="min-width: 8em;">処理</button>
-    </div>
-  </main>
+        </section>
+      </div>
+      <!-- 処理ボタン（承認/否認/差戻し等はモーダル内で選択） -->
+      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+        <button type="button" id="process-button" class="imds-button is-primary" style="min-width: 8em;">処理</button>
+      </div>
+    </main>
+  </div>
 </div>
 ```
 

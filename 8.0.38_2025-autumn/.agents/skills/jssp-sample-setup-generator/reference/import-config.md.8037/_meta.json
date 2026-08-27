@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "import-config_zh_CN.md",
+      "from": "import-config_en.md",
       "to": "import-config.md"
     },
     {
-      "from": "import-config_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "import-config_zh_CN.md",
       "to": "import-config.md"
     }
   ]

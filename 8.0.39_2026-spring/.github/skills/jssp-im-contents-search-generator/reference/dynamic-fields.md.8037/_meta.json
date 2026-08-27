@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "dynamic-fields_zh_CN.md",
+      "from": "dynamic-fields_en.md",
       "to": "dynamic-fields.md"
     },
     {
-      "from": "dynamic-fields_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "dynamic-fields_zh_CN.md",
       "to": "dynamic-fields.md"
     }
   ]

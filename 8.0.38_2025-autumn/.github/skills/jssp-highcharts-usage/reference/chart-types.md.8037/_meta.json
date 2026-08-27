@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "chart-types_zh_CN.md",
+      "from": "chart-types_en.md",
       "to": "chart-types.md"
     },
     {
-      "from": "chart-types_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "chart-types_zh_CN.md",
       "to": "chart-types.md"
     }
   ]

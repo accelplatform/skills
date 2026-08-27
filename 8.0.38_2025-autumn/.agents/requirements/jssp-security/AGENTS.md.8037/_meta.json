@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "AGENTS_zh_CN.md",
+      "from": "AGENTS_en.md",
       "to": "AGENTS.md"
     },
     {
-      "from": "AGENTS_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "AGENTS_zh_CN.md",
       "to": "AGENTS.md"
     }
   ]

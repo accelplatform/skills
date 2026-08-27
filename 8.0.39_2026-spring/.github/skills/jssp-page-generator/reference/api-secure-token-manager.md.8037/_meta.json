@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "api-secure-token-manager_zh_CN.md",
+      "from": "api-secure-token-manager_en.md",
       "to": "api-secure-token-manager.md"
     },
     {
-      "from": "api-secure-token-manager_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-secure-token-manager_zh_CN.md",
       "to": "api-secure-token-manager.md"
     }
   ]

@@ -510,104 +510,101 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- Page-level container (no id is added here because it sits inside the intra-mart theme's imui-container) -->
-<div class="imds-container">
-  <!-- Header -->
-  <header class="imds-header">
-    <div class="imds-header-back-button">
-      <button type="button" class="imds-button is-ghost is-large">
-        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-      </button>
-    </div>
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="fa-solid fa-file"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-    </div>
-  </header>
+<!-- Page container -->
+<div id="container">
+  <div class="imds-container">
+    <!-- Header -->
+    <header class="imds-header">
+      <div class="imds-header-back-button">
+        <button type="button" class="imds-button is-ghost is-large">
+          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+        </button>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+      </div>
+    </header>
 
-  <!-- Main content -->
-  <main>
-    <form id="main-form" class="imds-form has-background-color-gray imds-scrollbar imds-py-4 imds-px-6">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-        <h2 class="imds-heading is-bordered is-size-2 is-cyan">Basic Information</h2>
-        <div class="imds-field-container has-accent-color">
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label">
-              <span class="imds-required-label-required" data-required-label="Required">User Code</span>
-            </div>
-            <div class="imds-field-group-control">
-              <div class="imds-field" for=":userCode:">
-                <div class="imds-field-control">
-                  <input type="text" id=":userCode:" class="imds-textbox" name="userCode" value="" />
-                </div>
-                <span class="imds-error-text" for=":userCode:">Error message is displayed here.</span>
+    <!-- Main content -->
+    <main>
+      <form id="main-form" class="imds-form has-background-color-gray imds-scrollbar imds-py-4 imds-px-6">
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <h2 class="imds-heading is-bordered is-size-2 is-cyan">Basic Information</h2>
+          <div class="imds-field-container has-accent-color">
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span class="imds-required-label-required" data-required-label="Required">User Code</span>
               </div>
-            </div>
-          </div>
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label">
-              <span class="imds-required-label-required" data-required-label="Required">Full Name</span>
-            </div>
-            <div class="imds-field-group-control">
-              <div class="imds-field-group">
-                <div class="imds-field-group-control is-horizontal">
-                  <div class="imds-field" for=":userLastName:">
-                    <div class="imds-field-label">
-                      <label for=":userLastName:">Last Name</label>
-                    </div>
-                    <div class="imds-field-control">
-                      <input type="text" id=":userLastName:" class="imds-textbox" name="userLastName" value="" />
-                    </div>
-                    <span class="imds-error-text" for=":userLastName:">Error message is displayed here.</span>
+              <div class="imds-field-group-control">
+                <div class="imds-field" for=":userCode:">
+                  <div class="imds-field-control">
+                    <input type="text" id=":userCode:" class="imds-textbox" name="userCode" value="" />
                   </div>
-                  <div class="imds-field" for=":userFirstName:">
-                    <div class="imds-field-label">
-                      <label for=":userFirstName:">First Name</label>
+                  <span class="imds-error-text" for=":userCode:">Error message is displayed here.</span>
+                </div>
+              </div>
+            </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span class="imds-required-label-required" data-required-label="Required">Full Name</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field-group">
+                  <div class="imds-field-group-control is-horizontal">
+                    <div class="imds-field" for=":userLastName:">
+                      <div class="imds-field-label">
+                        <label for=":userLastName:">Last Name</label>
+                      </div>
+                      <div class="imds-field-control">
+                        <input type="text" id=":userLastName:" class="imds-textbox" name="userLastName" value="" />
+                      </div>
+                      <span class="imds-error-text" for=":userLastName:">Error message is displayed here.</span>
                     </div>
-                    <div class="imds-field-control">
-                      <input type="text" id=":userFirstName:" class="imds-textbox" name="userFirstName" value="" />
+                    <div class="imds-field" for=":userFirstName:">
+                      <div class="imds-field-label">
+                        <label for=":userFirstName:">First Name</label>
+                      </div>
+                      <div class="imds-field-control">
+                        <input type="text" id=":userFirstName:" class="imds-textbox" name="userFirstName" value="" />
+                      </div>
+                      <span class="imds-error-text" for=":userFirstName:">Error message is displayed here.</span>
                     </div>
-                    <span class="imds-error-text" for=":userFirstName:">Error message is displayed here.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label"><span>Other Information</span></div>
+              <div class="imds-field-group-control is-horizontal">
+                <div class="imds-field" for=":age:">
+                  <div class="imds-field-label">
+                    <label for=":age:">Age</label>
+                  </div>
+                  <div class="imds-field-control">
+                    <select id=":age:" class="imds-select" name="age">
+                      <option value="">Please select</option>
+                      <option value="10">Teens</option>
+                      <option value="20">Twenties</option>
+                      <option value="30">Thirties</option>
+                      <option value="40">Forties</option>
+                      <option value="50">Fifties</option>
+                      <option value="60">Sixties and above</option>
+                    </select>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label"><span>Other Information</span></div>
-            <div class="imds-field-group-control is-horizontal">
-              <div class="imds-field" for=":age:">
-                <div class="imds-field-label">
-                  <label for=":age:">Age</label>
-                </div>
-                <div class="imds-field-control">
-                  <select id=":age:" class="imds-select" name="age">
-                    <option value="">Please select</option>
-                    <option value="10">Teens</option>
-                    <option value="20">Twenties</option>
-                    <option value="30">Thirties</option>
-                    <option value="40">Forties</option>
-                    <option value="50">Fifties</option>
-                    <option value="60">Sixties and above</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </form>
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
-      <button type="button" id="register-button" class="imds-button is-primary" style="min-width: 8em;">Register</button>
-      <button type="button" id="temporary-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">Save Draft</button>
-      <button type="button" id="delete-button" class="imds-button is-outlined is-danger" style="min-width: 8em;">Delete</button>
-    </div>
-  </main>
+        </section>
+      </form>
+      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+        <button type="button" id="register-button" class="imds-button is-primary" style="min-width: 8em;">Register</button>
+        <button type="button" id="temporary-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">Save Draft</button>
+        <button type="button" id="delete-button" class="imds-button is-outlined is-danger" style="min-width: 8em;">Delete</button>
+      </div>
+    </main>
+  </div>
 </div>
 ```
 

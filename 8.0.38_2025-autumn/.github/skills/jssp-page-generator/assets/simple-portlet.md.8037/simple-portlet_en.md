@@ -186,24 +186,26 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- Full-page container (no header or footer, since this is a portlet component. Since the same portal page may place multiple different portlets, id="app-portlet-{feature}-container" is added so that DOM operations can be scoped per screen) -->
-<div id="app-portlet-{feature}-container" class="imds-container">
-  <main>
-    <div class="imds-table is-narrow" id="portlet-sample-table">
-      <div class="imds-table-inner">
-        <table>
-          <thead>
-            <tr>
-              <th><span>Item Code</span></th>
-              <th><span>Item Name</span></th>
-              <th><span>Status</span></th>
-            </tr>
-          </thead>
-          <tbody id="portlet-sample-table-body"></tbody>
-        </table>
+<!-- Full-page container (no header or footer, since this is a portlet component) -->
+<div id="container">
+  <div class="imds-container">
+    <main>
+      <div class="imds-table is-narrow" id="portlet-sample-table">
+        <div class="imds-table-inner">
+          <table>
+            <thead>
+              <tr>
+                <th><span>Item Code</span></th>
+                <th><span>Item Name</span></th>
+                <th><span>Status</span></th>
+              </tr>
+            </thead>
+            <tbody id="portlet-sample-table-body"></tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
 </div>
 ```
 

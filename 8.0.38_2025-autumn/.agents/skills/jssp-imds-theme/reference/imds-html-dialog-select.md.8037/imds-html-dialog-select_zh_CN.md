@@ -143,34 +143,36 @@ document.getElementById('route-select-dialog').close();
 
 ### 1. 单选（点击行高亮）
 
-请给选中行添加 imds 的标准类 `is-active`（参见 [imds-html-table.md](imds-html-table.md) 的 isActive）。
-不要使用 `is-selected` 等自定义类并在 `tr` 上设置 `background-color`。因为 imds 是在 `td` 上设置背景色的，`tr` 上的自定义背景会被 `td` 的背景色覆盖而实际不显示（类已附加但外观未变化）。`is-active` 同样会在 `td` 一侧生效，因此不存在这个覆盖问题。
+常用做法是给当前选中行加 `is-selected`（自定义类）。
 
 ```html
 <tbody>
   <tr data-value="route-1"><td><span>值-1-1</span></td>...</tr>
-  <tr class="is-active" data-value="route-2"><td><span>值-2-1</span></td>...</tr>
+  <tr class="is-selected" data-value="route-2"><td><span>值-2-1</span></td>...</tr>
   <tr data-value="route-3"><td><span>值-3-1</span></td>...</tr>
 </tbody>
 ```
 
+```css
+/* 在展示页一侧定义（不是 imds 的标准类） */
+.imds-table tbody tr.is-selected { background-color: #e6f0ff; }
+```
+
 ```javascript
-// 点击行切换选中（is-active 是 imds 的标准类，无需自定义 CSS）
+// 点击行切换选中
 document.querySelectorAll('#route-select-dialog tbody tr').forEach(function (tr) {
   tr.addEventListener('click', function () {
-    document.querySelectorAll('#route-select-dialog tbody tr.is-active')
-      .forEach(function (e) { e.classList.remove('is-active'); });
-    tr.classList.add('is-active');
+    document.querySelectorAll('#route-select-dialog tbody tr.is-selected')
+      .forEach(function (e) { e.classList.remove('is-selected'); });
+    tr.classList.add('is-selected');
   });
 });
 // 若希望双击立即确认，可同时监听 dblclick
 ```
 
-**无障碍注意事项**: 仅靠行的背景色（高亮）传达选中状态，对于色觉辨识困难或仅通过键盘操作的用户来说是不够的——点击行仅限于鼠标操作。在需要键盘操作、屏幕阅读器支持的画面中，请与下方的单选按钮模式组合使用，让行的 `click` 与单选按钮的 `change` 调用同一个选择处理函数，保持状态同步。
-
 ### 2. 用单选按钮单选（显式）
 
-希望显式呈现选择 UI，或需要键盘操作、屏幕阅读器支持时，在首列放置单选按钮。单选按钮可以让选中状态传达给辅助技术（成为屏幕阅读器的朗读对象），并可通过 `Tab` 聚焦、方向键在行间移动选择。
+希望显式呈现选择 UI 时，在首列放置单选按钮。
 
 ```html
 <thead>
@@ -182,14 +184,12 @@ document.querySelectorAll('#route-select-dialog tbody tr').forEach(function (tr)
 </thead>
 <tbody>
   <tr>
-    <td class="has-content-only"><label class="imds-radio"><input type="radio" name="route" value="route-1" aria-label="route-1 申请路由 A" /></label></td>
+    <td><label class="imds-radio"><input type="radio" name="route" value="route-1" /></label></td>
     <td><span>route-1</span></td>
     <td><span>申请路由 A</span></td>
   </tr>
 </tbody>
 ```
-
-若希望同时保留点击行选择的功能，可将模式 1 的 `is-active` 切换与单选按钮的 `checked` 设置合并为一个函数（例如 `selectRow()`），并在行的 `click` 与 input 的 `change` 两处都调用它。请显式赋值 `radio.checked = true`（点击单选按钮或其 label 也会冒泡到 `tr`，导致函数被调用两次，但只要处理是幂等的就没有问题）。没有可见标签文本的单选按钮请添加 `aria-label`（例如「ID + 名称」，以便能够唯一识别该行）。值、`aria-label` 等来自数据的属性值请使用 `setAttribute` 设置，而不要用字符串拼接的 `innerHTML`（防止 XSS）。
 
 单选按钮详情请参考 [imds-html-radio.md](imds-html-radio.md)。
 
@@ -322,10 +322,10 @@ input.addEventListener('input', function () {
 
   ```javascript
   var primary = document.querySelector('#route-select-dialog .imds-button.is-primary');
-  primary.disabled = !document.querySelector('#route-select-dialog tbody tr.is-active');
+  primary.disabled = !document.querySelector('#route-select-dialog tbody tr.is-selected');
   ```
 
-- **选中行的高亮请使用 imds 标准类 `is-active`**。不要使用 `is-selected` 等自定义类并在 `tr` 上设置 `background-color`（会被 `td` 的背景色覆盖而实际不生效，详情参见「1. 单选」）。若与复选框、单选按钮组合，也可用 `:checked` + `:has()` 选择器来强调
+- **点击行选择需自行定义 `is-selected`**。`is-selected` 不是 imds 的标准类，需要在页面侧 CSS 给出 `background-color`。若与复选框、单选按钮组合，也可用 `:checked` + `:has()` 选择器无需自定义 CSS 来强调
 - **双击立即确认** 是较强的 UX，但存在误操作风险。仅在"看到行就能直接选"的场景（如主数据选择）采用；对需要确认的选择（如权限变更），仍采用点击选择 + 按下"选择"按钮确认的两步流程
 - **大量数据对策**：仅在客户端把数千行塞进 `<tbody>` 会导致渲染变慢。切换到服务端过滤 + 分页（[imds-html-pagination.md](imds-html-pagination.md)）
 - **IM-公共主数据的选择** 不要用本模式自行构建，请使用 `jssp-im-master-usage` 技能的 `imACMSearch` 标签（参数与回调详情参见该技能 reference）

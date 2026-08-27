@@ -650,73 +650,74 @@ This approach allows secure-token-protected GET downloads to work.
   </script>
 </imart>
 
-<!-- Page-wide container (no id is added, since it is placed inside the intra-mart theme's <div id="imui-container">) -->
-<div class="imds-container">
-  <header class="imds-header">
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="fa-solid fa-cloud-arrow-up"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1 id="page-title"><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-    </div>
-  </header>
+<div id="container">
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1 id="page-title"><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+      </div>
+    </header>
 
-  <main>
-    <imart type="imSecureToken" />
+    <main>
+      <imart type="imSecureToken" />
 
-    <section class="imds-py-3 imds-px-4" aria-labelledby="upload-section-title">
-      <h2 id="upload-section-title" class="imds-mb-3">Upload</h2>
-      <div class="imds-field" for=":uploadFile:">
-        <div class="imds-field-label">
-          <label for=":uploadFile:" class="has-text-weight-bold">File</label>
-        </div>
-        <div class="imds-field-control">
-          <div class="file-upload-actions">
-            <input type="file" id=":uploadFile:" name="uploadFile" />
-            <button type="button" class="imds-button is-primary" id="upload-button">
-              <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></span>
-              <span class="imds-button-text">Upload</span>
-            </button>
+      <section class="imds-py-3 imds-px-4" aria-labelledby="upload-section-title">
+        <h2 id="upload-section-title" class="imds-mb-3">Upload</h2>
+        <div class="imds-field" for=":uploadFile:">
+          <div class="imds-field-label">
+            <label for=":uploadFile:" class="has-text-weight-bold">File</label>
+          </div>
+          <div class="imds-field-control">
+            <div class="file-upload-actions">
+              <input type="file" id=":uploadFile:" name="uploadFile" />
+              <button type="button" class="imds-button is-primary" id="upload-button">
+                <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></span>
+                <span class="imds-button-text">Upload</span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div id="upload-result" class="upload-result-card" style="display:none;" role="status" aria-live="polite">
-        <h3 class="imds-mb-2">Upload Result</h3>
-        <dl>
-          <dt>File Key (fileKey)</dt>
-          <dd id=":resultFileKey:"></dd>
-          <dt>Saved File Name</dt>
-          <dd id=":resultFileName:"></dd>
-          <dt>Original File Name</dt>
-          <dd id=":resultOriginalFileName:"></dd>
-          <dt>Size</dt>
-          <dd id=":resultSize:"></dd>
-        </dl>
-      </div>
-    </section>
+        <div id="upload-result" class="upload-result-card" style="display:none;" role="status" aria-live="polite">
+          <h3 class="imds-mb-2">Upload Result</h3>
+          <dl>
+            <dt>File Key (fileKey)</dt>
+            <dd id=":resultFileKey:"></dd>
+            <dt>Saved File Name</dt>
+            <dd id=":resultFileName:"></dd>
+            <dt>Original File Name</dt>
+            <dd id=":resultOriginalFileName:"></dd>
+            <dt>Size</dt>
+            <dd id=":resultSize:"></dd>
+          </dl>
+        </div>
+      </section>
 
-    <section class="imds-py-3 imds-px-4" aria-labelledby="download-section-title">
-      <h2 id="download-section-title" class="imds-mb-3">Download</h2>
-      <div class="imds-field" for=":downloadFileKey:">
-        <div class="imds-field-label">
-          <label for=":downloadFileKey:" class="has-text-weight-bold">File Key (fileKey)</label>
+      <section class="imds-py-3 imds-px-4" aria-labelledby="download-section-title">
+        <h2 id="download-section-title" class="imds-mb-3">Download</h2>
+        <div class="imds-field" for=":downloadFileKey:">
+          <div class="imds-field-label">
+            <label for=":downloadFileKey:" class="has-text-weight-bold">File Key (fileKey)</label>
+          </div>
+          <div class="imds-field-control">
+            <input type="text" id=":downloadFileKey:" name="downloadFileKey" class="imds-textbox" placeholder="uploads/yyyymmdd_hhmmss_xxxxxxxx/filename.ext" />
+          </div>
         </div>
-        <div class="imds-field-control">
-          <input type="text" id=":downloadFileKey:" name="downloadFileKey" class="imds-textbox" placeholder="uploads/yyyymmdd_hhmmss_xxxxxxxx/filename.ext" />
+        <div class="file-upload-actions">
+          <button type="button" class="imds-button is-primary" id="download-button">
+            <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i></span>
+            <span class="imds-button-text">Download</span>
+          </button>
         </div>
-      </div>
-      <div class="file-upload-actions">
-        <button type="button" class="imds-button is-primary" id="download-button">
-          <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i></span>
-          <span class="imds-button-text">Download</span>
-        </button>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
+  </div>
 </div>
 ```
 

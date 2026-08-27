@@ -11,13 +11,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "spec-schema_zh_CN.md",
+      "from": "spec-schema_en.md",
       "to": "spec-schema.md"
     },
     {
-      "from": "spec-schema_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "spec-schema_zh_CN.md",
       "to": "spec-schema.md"
     }
   ]

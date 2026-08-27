@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "screen-generation-checklist_zh_CN.md",
+      "from": "screen-generation-checklist_en.md",
       "to": "screen-generation-checklist.md"
     },
     {
-      "from": "screen-generation-checklist_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "screen-generation-checklist_zh_CN.md",
       "to": "screen-generation-checklist.md"
     }
   ]

@@ -399,7 +399,7 @@ build-setup-import.js 自动完成的事项：
 | 技能 | 用途 |
 |------|------|
 | **jssp-tenant-setup-generator**（本技能） | 租户环境设置资料一式（Importer 格式）的生成 |
-| base-im-workflow-generator | IM-Workflow 工作流定义 XML 的生成 |
+| jssp-im-workflow-generator | IM-Workflow 工作流定义 XML 的生成 |
 | jssp-im-logic-generator | IM-LogicDesigner 流程定义 JSON 的生成 |
 | jssp-page-generator | 画面·函数容器的生成 |
 | jssp-im-job-generator | 作业程序（批处理）本体的实现 |

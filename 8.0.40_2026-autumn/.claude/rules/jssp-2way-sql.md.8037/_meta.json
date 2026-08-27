@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "jssp-2way-sql_zh_CN.md",
+      "from": "jssp-2way-sql_en.md",
       "to": "jssp-2way-sql.md"
     },
     {
-      "from": "jssp-2way-sql_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "jssp-2way-sql_zh_CN.md",
       "to": "jssp-2way-sql.md"
     }
   ]

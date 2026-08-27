@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "simple-portlet_zh_CN.md",
+      "from": "simple-portlet_en.md",
       "to": "simple-portlet.md"
     },
     {
-      "from": "simple-portlet_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-portlet_zh_CN.md",
       "to": "simple-portlet.md"
     }
   ]

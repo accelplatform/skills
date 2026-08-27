@@ -11,13 +11,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "officecli-fill-color_zh_CN.md",
+      "from": "officecli-fill-color_en.md",
       "to": "officecli-fill-color.md"
     },
     {
-      "from": "officecli-fill-color_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "officecli-fill-color_zh_CN.md",
       "to": "officecli-fill-color.md"
     }
   ]

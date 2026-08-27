@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "copilot-instructions_zh_CN.md",
+      "from": "copilot-instructions_en.md",
       "to": "copilot-instructions.md"
     },
     {
-      "from": "copilot-instructions_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "copilot-instructions_zh_CN.md",
       "to": "copilot-instructions.md"
     }
   ]

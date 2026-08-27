@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "checklist_zh_CN.md",
+      "from": "checklist_en.md",
       "to": "checklist.md"
     },
     {
-      "from": "checklist_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "checklist_zh_CN.md",
       "to": "checklist.md"
     }
   ]

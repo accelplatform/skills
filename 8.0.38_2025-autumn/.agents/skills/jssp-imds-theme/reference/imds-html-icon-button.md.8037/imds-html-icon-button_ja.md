@@ -46,29 +46,6 @@ Button 共通の使用方法、注意事項は、Button を参照してくださ
 
 左アイコン・右アイコンはそれぞれ省略可能。以降は基本アイコンボタンからの差分のみを示す。
 
-## 組み合わせ例
-
-### Popover トリガー
-
-Popover のコンテンツを表示するためのトリガーボタンとして使用する。
-
-```html
-<button type="button" class="imds-button">
-  <span class="imds-button-text">検索対象</span>
-  <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
-</button>
-```
-
-### 省略メニュー（ellipsis）
-
-省略されたメニューの表示ボタンとして使用する。アイコンのみのボタンは、操作内容の理解を補助する目的で `title` 属性を設定する。
-
-```html
-<button type="button" class="imds-button is-outlined" title="その他の操作">
-  <span class="imds-icon"><i class="fa-solid fa-ellipsis"></i></span>
-</button>
-```
-
 ## バリエーション
 
 ### title（ツールチップ）
@@ -122,7 +99,3 @@ Popover のコンテンツを表示するためのトリガーボタンとして
 ```html
 <button type="button" class="imds-button" disabled>
 ```
-
-## 実装上の注意
-
-- アイコンのみのボタン（テキストを含まない構成）は、操作内容の理解を補助する目的で必ず `title` 属性（または `aria-label`）を設定する

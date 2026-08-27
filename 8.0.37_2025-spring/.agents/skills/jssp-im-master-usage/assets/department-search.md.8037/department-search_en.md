@@ -23,16 +23,17 @@ Implemented with a two-tab layout consisting of a keyword search tab and a tree 
     ├── callbackFromImMaster()     ... Callback function to receive selected result
     └── window.callbackFromImMaster ... Register callback function globally
 
-<div class="imds-container">
-└── main
-    └── form.imds-form
-        └── section
-            └── imds-field-container
-                └── imds-field (department name)
-                    ├── input[type="hidden"]    ... Company code (hidden field)
-                    ├── input[type="hidden"]    ... Department set code (hidden field)
-                    ├── input[type="hidden"]    ... Department code (hidden field)
-                    └── imds-textbox-control    ... Department name (with search icon, readonly)
+<div id="container">
+└── imds-container
+    └── main
+        └── form.imds-form
+            └── section
+                └── imds-field-container
+                    └── imds-field (department name)
+                        ├── input[type="hidden"]    ... Company code (hidden field)
+                        ├── input[type="hidden"]    ... Department set code (hidden field)
+                        ├── input[type="hidden"]    ... Department code (hidden field)
+                        └── imds-textbox-control    ... Department name (with search icon, readonly)
 ```
 
 ## 1. head Section (Search Dialog Configuration)
@@ -202,39 +203,41 @@ Since a department's primary key consists of three parts — company code, depar
   </script>
 </imart>
 
-<!-- Page-wide container (not given an id, since it is placed inside the intra-mart theme's imui-container) -->
-<div class="imds-container">
-  <header class="imds-header">
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p>IM-Common Master Sample</p>
-      <h1>Department Search</h1>
-    </div>
-  </header>
-  <main>
-    <form class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-        <div class="imds-field-container has-accent-color">
-          <div class="imds-field is-horizontal imds-w-15 sample-department">
-            <div class="imds-field-label"><label for=":departmentName:">Department Name</label></div>
-            <div class="imds-field-control">
-              <div class="imds-textbox-control">
-                <input type="hidden" id=":companyCode:" value="">
-                <input type="hidden" id=":departmentSetCode:" value="">
-                <input type="hidden" id=":departmentCode:" value="">
-                <input type="text" id=":departmentName:" placeholder="Select department name" class="imds-textbox" readonly value="">
-                <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+<!-- Page-wide container -->
+<div id="container">
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p>IM-Common Master Sample</p>
+        <h1>Department Search</h1>
+      </div>
+    </header>
+    <main>
+      <form class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <div class="imds-field-container has-accent-color">
+            <div class="imds-field is-horizontal imds-w-15 sample-department">
+              <div class="imds-field-label"><label for=":departmentName:">Department Name</label></div>
+              <div class="imds-field-control">
+                <div class="imds-textbox-control">
+                  <input type="hidden" id=":companyCode:" value="">
+                  <input type="hidden" id=":departmentSetCode:" value="">
+                  <input type="hidden" id=":departmentCode:" value="">
+                  <input type="text" id=":departmentName:" placeholder="Select department name" class="imds-textbox" readonly value="">
+                  <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </form>
-  </main>
+        </section>
+      </form>
+    </main>
+  </div>
 </div>
 ```
 

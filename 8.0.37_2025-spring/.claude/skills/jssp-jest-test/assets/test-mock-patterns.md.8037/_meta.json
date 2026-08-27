@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "test-mock-patterns_zh_CN.md",
+      "from": "test-mock-patterns_en.md",
       "to": "test-mock-patterns.md"
     },
     {
-      "from": "test-mock-patterns_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "test-mock-patterns_zh_CN.md",
       "to": "test-mock-patterns.md"
     }
   ]

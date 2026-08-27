@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "api-client-context_zh_CN.md",
+      "from": "api-client-context_en.md",
       "to": "api-client-context.md"
     },
     {
-      "from": "api-client-context_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-client-context_zh_CN.md",
       "to": "api-client-context.md"
     }
   ]

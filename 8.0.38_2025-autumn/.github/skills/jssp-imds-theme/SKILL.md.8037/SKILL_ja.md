@@ -1,6 +1,6 @@
 ---
 name: jssp-imds-theme
-description: intra-mart Design System（imds）に準拠したプレゼンテーションページの HTML コンポーネントを生成する。テーブル、ボタン、フォーム、ダイアログ、チェックボックス、ラジオボタン、セレクト、テキストボックス、タブ、アコーディオン、ページネーション、空状態表示、余白・グリッド等のユーティリティクラス、検索レイアウトや多言語入力欄等の複合パターン等の UI 部品を使う場面で必ず使用。imds のクラス名は記憶や推測で書かず、必ずこのスキルの reference を参照すること。HTML を書く、画面の見た目を作る、UI コンポーネントを配置する、と言及されたときに使用。
+description: intra-mart Design System（imds）に準拠したプレゼンテーションページの HTML コンポーネントを生成する。テーブル、ボタン、フォーム、ダイアログ、チェックボックス、ラジオボタン、セレクト、テキストボックス、タブ、アコーディオン、ページネーション等の UI 部品を使う場面で必ず使用。imds のクラス名は記憶や推測で書かず、必ずこのスキルの reference を参照すること。HTML を書く、画面の見た目を作る、UI コンポーネントを配置する、と言及されたときに使用。
 ---
 
 # imds 準拠 HTML コード生成スキル
@@ -13,7 +13,7 @@ intra-mart Design System に準拠するプレゼンテーションページの 
 
 HTML を生成する際は、以下の手順で作業を進める
 
-1. **ページ全体テンプレートを先に確認する**（一覧画面は `assets/imds-list-page.md`、フォーム画面は `assets/imds-form-page.md`、エクスポート画面は `assets/imds-export-screen.md`、インポート画面は `assets/imds-import-screen.md`）
+1. **ページ全体テンプレートを先に確認する**（一覧画面は `assets/imds-list-page.md`、フォーム画面は `assets/imds-form-page.md`）
    - `<header class="imds-header">` の配置位置・`<main>` との関係はここでしか説明されない
 2. ユーザの要求から使用するUIコンポーネントを特定する
 3. 該当するコンポーネントの `reference/` 配下のファイルを読み込む
@@ -38,35 +38,19 @@ HTML コンポーネントを生成する前に、必ず対応するリファレ
 |------|------------------|
 | 一覧画面（リスト + 操作ボタン） | `assets/imds-list-page.md` |
 | 入力フォーム画面（CRUD） | `assets/imds-form-page.md` |
-| エクスポート画面（ステッパーによる多段階画面） | `assets/imds-export-screen.md` |
-| インポート画面（ステッパーによる多段階画面 + 取込結果サマリ） | `assets/imds-import-screen.md` |
 
-新規画面生成時は、まずこの 4 ファイルのいずれかを読み、ページ骨格をベースにしてから個別コンポーネントの reference を参照すること。
-
-### `reference/` 配下のファイル分類（ファイル名プレフィックス）
-
-`reference/` 配下は用途別に 3 種類のファイルがある。ユーザの要求に応じて該当する分類のファイルを探すこと。
-
-| プレフィックス | 内容 | 例 |
-|---|---|---|
-| `imds-html-*` | 単体 UI コンポーネント（ボタン・テーブル・ダイアログ等） | `imds-html-button.md`, `imds-html-table.md` |
-| `imds-helper-*` | 余白・文字・背景色・境界線・幅・行クランプ・スクロールバー等のユーティリティクラス（単体では使わず、コンポーネントに組み合わせて使う） | `imds-helper-spacing.md`（`imds-p-*`/`imds-m-*`）, `imds-helper-flexbox-grid.md`（`imds-grid`・`has-cols-N`・`is-col-span-N`） |
-| `imds-common-*` | 複数コンポーネントを組み合わせた業務頻出パターン（検索レイアウト・多言語入力欄・不確定状態チェックボックス・固定ヘッダーレイアウト等） | `imds-common-search-layout.md`, `imds-common-multilingual-input.md`, `imds-common-fixed-header-layout.md` |
-
-余白・文字サイズ・グリッドレイアウト等を独自の CSS で実装せず、まず `imds-helper-*` にクラスが無いか確認すること。検索欄・多言語入力・データリスト連動等の複合 UI を実装する際は、まず `imds-common-*` に該当パターンが無いか確認すること。
+新規画面生成時は、まずこの 2 ファイルのどちらかを読み、ページ骨格をベースにしてから個別コンポーネントの reference を参照すること。
 
 ### `<header class="imds-header">` のアイコンは必須
 
 `<header class="imds-header">` の中には、`imds-header-title` だけ置くのは **不可**。
-**必ず先頭に、アイコン領域（`imds-header-icon` または `imds-header-nav`。この2つは排他で同時配置不可）か `imds-header-back-button` の少なくとも一方を** 配置する。
-`imds-header-back-button` は `imds-header-icon` / `imds-header-nav` と **併用可能**であり、アイコンの代わりではない。戻る導線が必要な画面（詳細・編集画面等）では、back-button を置いた上で **アイコン領域も削除せずそのまま維持する**のを基本とする（詳細は `reference/imds-html-header.md`「backItemExists」参照）。
-なお、`imds-header-icon` / `imds-header-back-button` / `imds-header-nav` をいずれも置かない「タイトルのみ」構成は、uiux-share 上ではそれ自体が正当なバリエーションであり「非推奨」でも「デザインが崩れる」ものでもない（`reference/imds-html-header.md` 参照）。本プロジェクトの業務画面では、画面間の見た目の一貫性を保つための**運用ルールとして**上記いずれかの配置を必須とする。
+**必ず先頭に `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` のいずれかを 1 つ** 配置する（リファレンスで排他指定）。これを省くとヘッダがテキストだけの状態になり、imds デザインに溶け込まない（画面表示で崩れて見える）。
 
 | 用途 | 配置する要素 | アイコン例 |
 |------|------------|------------|
 | 一覧・登録・編集など一般的なページ | `imds-header-icon` + Font Awesome | 用途に合うアイコン（`fa-clipboard-list` / `fa-warehouse` / `fa-box` / `fa-location-dot` / `fa-chart-column` / `fa-gear` 等） |
-| 詳細・編集など戻る導線が要る画面 | `imds-header-back-button` + `imds-header-icon`（**併用**。back-button はアイコンの代わりではない） | 用途に合うアイコン |
-| 関連画面切替メニューが要る画面 | `imds-header-nav`（Popover 併用） | （`imds-header-icon` とは排他のため代わりに使用） |
+| 詳細・編集など戻る導線が要る画面 | `imds-header-back-button` | （アイコン代わり） |
+| 関連画面切替メニューが要る画面 | `imds-header-nav`（Popover 併用） | （アイコン代わり） |
 
 ```html
 <!-- 標準パターン -->
@@ -79,24 +63,6 @@ HTML コンポーネントを生成する前に、必ず対応するリファレ
   <div class="imds-header-title">
     <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>     <!-- ★ サブタイトル(必須) -->
     <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>     <!-- ★ タイトル(必須) -->
-  </div>
-</header>
-
-<!-- 戻る導線が必要な画面（back-button + icon を併用。back-button だけにしてアイコンを消してはならない） -->
-<header class="imds-header">
-  <div class="imds-header-back-button">
-    <button type="button" class="imds-button is-ghost is-large">
-      <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-    </button>
-  </div>
-  <div class="imds-header-icon">                       <!-- ★ back-button を置いてもこれは消さない -->
-    <span class="imds-icon-wrapper is-large">
-      <span class="imds-icon is-medium"><i class="fa-solid fa-XXX"></i></span>
-    </span>
-  </div>
-  <div class="imds-header-title">
-    <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-    <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
   </div>
 </header>
 ```
@@ -115,39 +81,29 @@ HTML コンポーネントを生成する前に、必ず対応するリファレ
 
 `<header class="imds-header">` は **`<main>` の外側**、`<div class="imds-container">` の **直下** に置く必要がある。imds テーマの CSS はこの位置を前提にスタイルを当てており、`<main>` の内側に置くとレイアウトが崩れる（アイコンが消える等）。
 
-**ルートの `<div>` は 1 つに統合する（中間ラッパーを作らない）。** `jssp-presentation-page.md` の規約により、intra-mart のテーマ機能が `<div id="imui-container">` で画面内容を自動的に包むため、プレゼンテーションページのルートタグには id を付与せず `imds-container` クラスのみを付与する。`imds-container` の `<div>` を入れ子にする必要は無い。
-
 ```html
-<!-- OK: ルート div に imds-container クラスを直接付与し、header/main を imds-container の直下に並べる -->
-<div class="imds-container">
-  <header class="imds-header">...</header>   <!-- main の外側 -->
-  <main>
-    ...
-  </main>
-</div>
-
-<!-- NG: main の内側に header を置いている -->
-<div class="imds-container">
-  <main>
-    <header class="imds-header">...</header> <!-- main の内側は CSS が当たらない -->
-    ...
-  </main>
-</div>
-
-<!-- NG: imds-container の div を入れ子にしている（不要な中間ラッパー） -->
-<div>
+<!-- OK -->
+<div id="container">
   <div class="imds-container">
-    <header class="imds-header">...</header>
-    <main>...</main>
+    <header class="imds-header">...</header>   <!-- main の外側 -->
+    <main>
+      ...
+    </main>
+  </div>
+</div>
+
+<!-- NG -->
+<div id="container">
+  <div class="imds-container">
+    <main>
+      <header class="imds-header">...</header> <!-- main の内側は CSS が当たらない -->
+      ...
+    </main>
   </div>
 </div>
 ```
 
 なお、`jssp-accessibility.md` で「プレゼンテーションページに `<header>` を追加してはならない」と書かれているのは **プラットフォームのグローバル `<header>` と重複させない** という意図であり、imds の `<header class="imds-header">`（ページ内ヘッダ）はこの規則の対象外。
-
-### ヘッダ・フッタを固定表示し、コンテンツ領域のみをスクロールさせる場合
-
-一覧・フォーム・ウィザード等で「ヘッダ（および操作ボタン群のフッタ）を常に固定表示し、コンテンツ領域だけを縦スクロールさせたい」場合は、`reference/imds-common-fixed-header-layout.md` の 2 行グリッド構成（`imds-container` に `height:100vh` + `grid-template-rows`、`<main>` に縦 flex、スクロール対象の子要素に `flex:1 0 0; overflow:auto` + `imds-scrollbar`）を使用すること。単純な縦積みで十分な小規模画面では無理に適用しなくてよいが、フッタ固定・部分スクロールが要件にある画面では必ずこのパターンに従う。
 
 ### `imds-header-actions` に業務データの操作ボタンを置かない
 
@@ -182,7 +138,7 @@ HTML コンポーネントを生成する前に、必ず対応するリファレ
 |---|---|
 | ページ全体に対するメタ操作（例: 「設定」「エクスポート」「ログ出力対象設定」など、一覧そのもののデータを増減しない操作） | 「新規登録」「追加」「一括取込」など、一覧の業務データを増減・編集するアクション |
 
-検索欄を併設する場合は `assets/imds-list-page.md` の「操作エリア」パターン（`pgstyle-toolbar` 内に検索欄 + 新規作成ボタンを横並び）を踏襲する。
+検索欄を併設する場合は `assets/imds-list-page.md` の「操作エリア」パターン（`button-area` 内に検索欄 + 新規作成ボタンを横並び）を踏襲する。
 
 ### 架空クラスを使わないこと（特に `imds-page-header` 系）
 
@@ -353,10 +309,6 @@ node .github/skills/jssp-imds-theme/scripts/validate-imds.js <対象ファイル
 | Tag | `imds-tag` は `span` 要素限定 |
 | Textarea | `imds-textarea` は `textarea` 要素限定（textbox と混同しないこと） |
 | タグ種別 | `imds-select`=`select`、`imds-textbox`=`input`、`imds-textarea`=`textarea`、`imds-checkbox`/`imds-radio`=`label` ほか各コンポーネントの基本クラスのタグ種別 |
-| Header（排他クラス） | `header.imds-header` 内に `imds-header-nav` と `imds-header-icon` を同時配置していないか（`IMDS-HEADER-300`） |
-| Tag（intent クラス誤用） | `imds-tag` に `is-success`/`is-danger`/`is-warning`/`is-error` 等、tag に存在しない intent クラスが付与されていないか（`IMDS-TAG-400`） |
-| Table（0件表示の colspan） | 0件表示等の単一セル行（`<td colspan="N">`）の `N` が、同一テーブルの `<th>` 実数と一致しているか（`IMDS-TABLE-500`、warning） |
-| Divider（タグ種別） | `imds-divider` が `hr`（水平区切り）または `div`+`is-vertical`（垂直区切り）のいずれかになっているか（`IMDS-DIVIDER-500`） |
 | 未定義クラス検出 | `imds-*` プレフィックスを持つが `reference/` ・`.github/instructions/` いずれにも記載が無いクラスを `IMDS-U-001`（warning）として通知。typo / 架空クラス（例: `imds-page-header`）を発見できる |
 
 ### 検証結果の対応

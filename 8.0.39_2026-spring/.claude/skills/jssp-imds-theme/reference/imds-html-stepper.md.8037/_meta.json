@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "imds-html-stepper_zh_CN.md",
+      "from": "imds-html-stepper_en.md",
       "to": "imds-html-stepper.md"
     },
     {
-      "from": "imds-html-stepper_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imds-html-stepper_zh_CN.md",
       "to": "imds-html-stepper.md"
     }
   ]

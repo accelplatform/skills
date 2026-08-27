@@ -20,14 +20,16 @@ WCAG 2.1 レベル AA 相当を目標とする。
 intra-mart Accel Platform のグローバルヘッダ・グローバルメニュー・フッタは **プラットフォーム（テーマ）が出力する**。
 そのため、各プレゼンテーションページで `<header>` / `<nav>` / `<footer>` を **追加してはならない**（プラットフォーム提供のランドマークと二重になる）。
 
-画面のルート構造は `jssp-presentation-page.md` の規約に従い、`<main>` のみを配置する。ルートタグ（`<div>`。class は使用する UI テーマの規約に従う）には、通常画面では `id` を付与しない（intra-mart テーマが出力する `<div id="imui-container">` の内側に配置されるため）。ポートレット画面のみ例外的に `id="app-portlet-{機能ID}-container"` を付与する。
+画面のルート構造は `jssp-presentation-page.md` の規約に従い、`<main>` のみを配置する。
 
 ```html
-<div>
-  <main>
-    <h1>画面タイトル</h1>
-    <!-- メインコンテンツ -->
-  </main>
+<div id="container">
+  <div class="imds-container">
+    <main>
+      <h1>画面タイトル</h1>
+      <!-- メインコンテンツ -->
+    </main>
+  </div>
 </div>
 ```
 
@@ -375,7 +377,7 @@ document.getElementById('search-result-count').textContent =
 
 ### ページ構造
 
-- [ ] ルートが `<div><main>...</main></div>` の構造になっているか（通常画面では `id` を付与しない。ポートレット画面のみ `id="app-portlet-{機能ID}-container"` を付与しているか。class は使用する UI テーマの規約に従う）
+- [ ] ルートが `<div id="container"><div class="imds-container"><main>...</main></div></div>` の構造になっているか
 - [ ] `<main>` がページに 1 つだけ、かつ `role="main"` を併記していないか
 - [ ] 見出しが `h1` → `h2` → `h3` の順で階層を飛ばしていないか
 

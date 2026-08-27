@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "playwright-config_zh_CN.md",
+      "from": "playwright-config_en.md",
       "to": "playwright-config.md"
     },
     {
-      "from": "playwright-config_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "playwright-config_zh_CN.md",
       "to": "playwright-config.md"
     }
   ]

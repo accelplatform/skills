@@ -89,44 +89,6 @@ BannerMessage 是在页面或特定区域顶部展示页面内容相关信息的
 </div>
 ```
 
-## 组合示例
-
-### 与 Header 的组合
-
-在画面上部的 `header.imds-header` 之后紧接着放置 `imds-banner-message`，用于在页头正下方通知与整个画面相关的错误、警告等信息。
-
-```html
-<div>
-  <header class="imds-header">
-    <div class="imds-header-back-button">
-      <button type="button" class="imds-button is-ghost is-large">
-        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-      </button>
-    </div>
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="fa-solid fa-diagram-project"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p>应用程序管理</p>
-      <h1>应用程序名称 - 资源关联图</h1>
-    </div>
-    <div class="imds-header-reload-button">
-      <button type="button" class="imds-button is-ghost is-large" title="刷新页面">
-        <span class="imds-icon is-small"><i class="fa-solid fa-rotate-right"></i></span>
-      </button>
-    </div>
-  </header>
-  <div class="imds-banner-message is-error">
-    <div class="imds-message-title">
-      <span class="imds-icon"><i class="fa-solid fa-circle-xmark"></i></span>
-      <p>正在使用不存在的资源。</p>
-    </div>
-  </div>
-</div>
-```
-
 ## 实现注意事项
 
 - 根据颜色类使用适当的图标（参见上面的颜色部分）

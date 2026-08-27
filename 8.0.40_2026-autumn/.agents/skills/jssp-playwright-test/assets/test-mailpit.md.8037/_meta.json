@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "test-mailpit_zh_CN.md",
+      "from": "test-mailpit_en.md",
       "to": "test-mailpit.md"
     },
     {
-      "from": "test-mailpit_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "test-mailpit_zh_CN.md",
       "to": "test-mailpit.md"
     }
   ]

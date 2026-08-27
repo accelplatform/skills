@@ -124,47 +124,6 @@ imds-accordion-group                      # グループコンテナ（枠線・
 </div>
 ```
 
-### `is-outlined` + `imui-table`（移行注記付き）
-
-グループ内の各アコーディオンに詳細情報テーブルを持たせる場合、[accordion](imds-html-accordion.md) の「`is-outlined` + `imui-table`（詳細情報の表示・移行注記付き）」パターンをそのままグループの子要素として繰り返し配置する。`imui-table` は将来的に `imds-table` へ移行予定の暫定パターンである点に注意（詳細は accordion.md 側の注記を参照）。
-
-```html
-<div class="imds-accordion-group is-outlined">
-  <div class="imds-accordion">
-    <input type="checkbox" id="todo-replace-:r0:" />
-    <label for="todo-replace-:r0:" class="imds-accordion-title">
-      <span class="imds-accordion-title-inner">
-        <span>ワークフロー名</span>
-        <span class="imds-accordion-caption">workflow-id</span>
-      </span>
-      <span class="imds-icon is-small imds-accordion-chevron"><i class="fa-solid fa-angle-down"></i></span>
-    </label>
-    <div class="imds-accordion-content">
-      <div class="imds-px-4 imds-pt-3 imds-pb-1">
-        <table class="imui-table">
-          <tbody>
-            <tr>
-              <th colspan="2"><label>アプリケーション名</label></th>
-              <td>AccelStudioアプリケーション名</td>
-            </tr>
-            <tr>
-              <th rowspan="2" class="wd-15"><label>ワークフロー情報</label></th>
-              <th class="wd-15"><label>定義名</label></th>
-              <td>ワークフロー名 （ ID: workflow-id ）</td>
-            </tr>
-            <tr>
-              <th><label>備考</label></th>
-              <td>「ワークフロー名」のフロー定義です。</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <!-- 必要な数だけ imds-accordion を繰り返す（id は一意にすること） -->
-</div>
-```
-
 ## 実装上の注意
 
 - `id` 属性は必ず一意の値に置き換えること（`todo-replace-:r1:` 等はプレースホルダー）

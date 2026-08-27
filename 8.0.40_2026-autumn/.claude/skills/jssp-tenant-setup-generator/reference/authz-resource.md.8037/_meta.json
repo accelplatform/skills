@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "authz-resource_zh_CN.md",
+      "from": "authz-resource_en.md",
       "to": "authz-resource.md"
     },
     {
-      "from": "authz-resource_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "authz-resource_zh_CN.md",
       "to": "authz-resource.md"
     }
   ]

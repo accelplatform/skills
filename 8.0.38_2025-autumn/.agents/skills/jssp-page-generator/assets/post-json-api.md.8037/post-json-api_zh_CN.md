@@ -550,86 +550,87 @@ function init(request) {
   </script>
 </imart>
 
-<!-- 整个页面的容器（配置在 intra-mart 主题的 imui-container 内部，因此不附加 id） -->
-<div class="imds-container">
-  <header class="imds-header">
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="fa-solid fa-code"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1 id="page-title"><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-    </div>
-  </header>
-
-  <main>
-    <imart type="imSecureToken" />
-
-    <section class="imds-py-3 imds-px-4" aria-labelledby="request-section-title">
-      <h2 id="request-section-title" class="imds-mb-3">请求</h2>
-      <div class="imds-field" for=":requestBody:">
-        <div class="imds-field-label">
-          <label for=":requestBody:" class="has-text-weight-bold">JSON 请求体</label>
-        </div>
-        <div class="imds-field-control">
-          <textarea
-            id=":requestBody:"
-            name="requestBody"
-            class="imds-textarea post-json-request-body"
-            rows="10"
-            placeholder='{ "key": "value" }'></textarea>
-          <span class="imds-help-text">以 POST 方法、Content-Type: application/json 发送。</span>
-        </div>
+<div id="container">
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="fa-solid fa-code"></i></span>
+        </span>
       </div>
-      <div class="post-json-actions">
-        <button type="button" class="imds-button is-primary" id="send-button">
-          <span class="imds-icon"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></span>
-          <span class="imds-button-text">发送</span>
-        </button>
-        <button type="button" class="imds-button is-outlined" id="load-sample-button">
-          <span class="imds-button-text">加载样本</span>
-        </button>
-        <button type="button" class="imds-button is-ghost" id="clear-button">
-          <span class="imds-button-text">清除</span>
-        </button>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1 id="page-title"><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
       </div>
-    </section>
+    </header>
 
-    <section class="imds-py-3 imds-px-4" aria-labelledby="response-section-title">
-      <h2 id="response-section-title" class="imds-mb-3">响应</h2>
-      <div id="post-json-response" class="post-json-response" style="display:none;" role="status" aria-live="polite">
-        <dl class="post-json-response-meta">
-          <div>
-            <dt>HTTP 状态</dt>
-            <dd id=":responseStatus:"></dd>
-          </div>
-          <div>
-            <dt>接收类型</dt>
-            <dd id=":responseValueType:"></dd>
-          </div>
-          <div>
-            <dt>摘要</dt>
-            <dd id=":responseSummary:"></dd>
-          </div>
-        </dl>
-        <div class="imds-field" for=":responseBody:">
+    <main>
+      <imart type="imSecureToken" />
+
+      <section class="imds-py-3 imds-px-4" aria-labelledby="request-section-title">
+        <h2 id="request-section-title" class="imds-mb-3">请求</h2>
+        <div class="imds-field" for=":requestBody:">
           <div class="imds-field-label">
-            <label for=":responseBody:" class="has-text-weight-bold">响应体</label>
+            <label for=":requestBody:" class="has-text-weight-bold">JSON 请求体</label>
           </div>
           <div class="imds-field-control">
             <textarea
-              id=":responseBody:"
-              name="responseBody"
-              class="imds-textarea post-json-response-body"
-              rows="15"
-              readonly></textarea>
+              id=":requestBody:"
+              name="requestBody"
+              class="imds-textarea post-json-request-body"
+              rows="10"
+              placeholder='{ "key": "value" }'></textarea>
+            <span class="imds-help-text">以 POST 方法、Content-Type: application/json 发送。</span>
           </div>
         </div>
-      </div>
-    </section>
-  </main>
+        <div class="post-json-actions">
+          <button type="button" class="imds-button is-primary" id="send-button">
+            <span class="imds-icon"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></span>
+            <span class="imds-button-text">发送</span>
+          </button>
+          <button type="button" class="imds-button is-outlined" id="load-sample-button">
+            <span class="imds-button-text">加载样本</span>
+          </button>
+          <button type="button" class="imds-button is-ghost" id="clear-button">
+            <span class="imds-button-text">清除</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="imds-py-3 imds-px-4" aria-labelledby="response-section-title">
+        <h2 id="response-section-title" class="imds-mb-3">响应</h2>
+        <div id="post-json-response" class="post-json-response" style="display:none;" role="status" aria-live="polite">
+          <dl class="post-json-response-meta">
+            <div>
+              <dt>HTTP 状态</dt>
+              <dd id=":responseStatus:"></dd>
+            </div>
+            <div>
+              <dt>接收类型</dt>
+              <dd id=":responseValueType:"></dd>
+            </div>
+            <div>
+              <dt>摘要</dt>
+              <dd id=":responseSummary:"></dd>
+            </div>
+          </dl>
+          <div class="imds-field" for=":responseBody:">
+            <div class="imds-field-label">
+              <label for=":responseBody:" class="has-text-weight-bold">响应体</label>
+            </div>
+            <div class="imds-field-control">
+              <textarea
+                id=":responseBody:"
+                name="responseBody"
+                class="imds-textarea post-json-response-body"
+                rows="15"
+                readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 </div>
 ```
 

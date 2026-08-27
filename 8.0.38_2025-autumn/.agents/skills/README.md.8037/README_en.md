@@ -1,11 +1,8 @@
-# JSSP / Java / Low-code Asset Skill Set
+# JSSP / Low-code Asset Skill Set
 
 ## Overview
 
-This repository holds skill sets for creating the following assets on intra-mart Accel Platform.
-* Source code for screens and various plugins using JSSP (script development model)
-* Source code for various plugins (excluding screens) using Java (JavaEE development model)
-* IM-LogicDesigner / IM-Workflow assets
+A repository of skill sets for creating source code and low-code assets for intra-mart Accel Platform using JSSP (script development model).
 
 To reduce token consumption by coding agents, it is recommended to pick out only the necessary skill sets following the "Skill Reverse Lookup" below.
 
@@ -45,19 +42,15 @@ To reduce token consumption by coding agents, it is recommended to pick out only
 ### I want to build IM-Workflow assets
 
 - I want to create a workflow master definition file
-  - ⇒ `base-im-workflow-generator`
+  - ⇒ `jssp-im-workflow-generator`
     - Generates import XML including contents, route, flow, matter properties, and branch rules
     - Supports straight / branch / sync / horizontal / vertical route patterns
     - Supports sample-installed users, companies, organizations, posts, and public groups (extensions planned via MCP)
     - Supports Japanese (ja) / English (en) / Simplified Chinese (zh_CN)
-- I want to build various screens and processes that work with workflow using JSSP (script development model)
+- I want to build various screens and processes that work with workflow
   - ⇒ `jssp-im-workflow-usage` (+ `jssp-page-generator`)
     - Generates apply / approve / detail / confirm / reference screens (html + js)
     - Generates action processes, arrival processes, matter start / end processes, branch condition decisions, and various listeners (js)
-- I want to build action processes, arrival processes, matter start / end processes, branch condition decisions, and various listeners for workflow using Java (JavaEE development model)
-  - ⇒ `java-im-workflow-usage`
-    - Generates Java classes that extend/implement platform abstract classes and listener interfaces such as `ActionProcessEventListener`
-    - Screens (apply/approve/confirm) are out of scope. Screens currently use the JSSP implementation from `jssp-im-workflow-usage`
 
 ### I want to build IM-LogicDesigner assets
 
@@ -100,61 +93,6 @@ To reduce token consumption by coding agents, it is recommended to pick out only
 - I want to create a test perspective list / test spec from a specification (Excel or HTML)
   - ⇒ `test-spec-generator`
     - Generates an xlsx (using officecli) or HTML test perspective list / test spec from the specification files
-
-### I want to use intra-mart-specific features in the JavaEE development model
-
-- I want to build file operation processing in Java (JavaEE development model) using PublicStorage / SessionScopeStorage / SystemStorage
-  - ⇒ `java-im-storage-usage`
-    - Provides guidance on choosing between persistent files (`PublicStorage`), temporary files (`SessionScopeStorage`), and internal system resources (`SystemStorage`), plus resource management patterns using `try-with-resources`
-    - For the equivalent implementation in JSSP (pro-code), use `jssp-page-generator`'s `reference/api-storage.md` (SSJS Storage API)
-- I want to build unique ID numbering processing in Java (JavaEE development model) using the Identifier API
-  - ⇒ `java-im-identifier-usage`
-    - Provides guidance on choosing between `get()`, which guarantees system-wide uniqueness across a distributed environment, and `make()`, which is unique only within the application server
-    - Guides toward `get()` by default for numbering business data such as order numbers and application numbers, and `make()` for identifiers closed within a process, such as log trace IDs
-- I want to build mutual exclusion processing in Java (JavaEE development model) using the NewLock API
-  - ⇒ `java-im-lock-usage`
-    - Provides guidance on choosing between an ordinary lock (`lock()`/`tryLock()`), released with `try`/`finally`, and a request-scope lock (`lockRequestScope()`/`tryLockRequestScope()`), automatically released when the response is returned
-    - Guides toward the ordinary lock as the default for DB-based mutual exclusion across a distributed environment when the processing is self-contained within a method
-- I want to build account information retrieval/update processing in Java (JavaEE development model) using AccountInfoManager
-  - ⇒ `java-im-account-usage`
-    - Provides implementation patterns for login settings (locale, time zone, calendar, theme, first day of week, date/time formats), account lock and login failure count, account attributes, and password verification (`AccountPasswordAdapter`)
-    - Role assignment to a user (`addAccountRoleInfo`, etc.) is also covered by this skill. For role definitions themselves (registration, hierarchy, category), use `java-im-role-usage`
-- I want to build IM Common Master profile-image operations in Java (JavaEE development model) using UserProfileImageManager
-  - ⇒ `java-im-profile-usage`
-    - Provides implementation patterns for retrieving profile images (stream format / URL format, single/multiple), deleting, and registering them (data-URL format / via `Storage`)
-    - Operations on the user's own basic information (name, affiliation, etc.) and the IM-LogicDesigner logic-flow elements (under `jp.co.intra_mart.foundation.logic.element.profile`) are out of scope
-- I want to build role definition management processing in Java (JavaEE development model) using RoleInfoManager
-  - ⇒ `java-im-role-usage`
-    - Provides implementation patterns for role registration/update/deletion, sub-role hierarchy (adding/removing, retrieving all parent/sub roles), category management, and search/pagination by role ID, role name, or category
-    - Role assignment to a specific user is out of scope; use `java-im-account-usage`
-- I want to build CRUD for authorization resources/subjects/policies and permission checks in Java (JavaEE development model)
-  - ⇒ `java-im-authz-usage`
-    - Provides implementation patterns for registering/updating/deleting resources, subjects (built as conditional expressions via `Expression`), and policies with `ResourceManager`/`SubjectManager`/`PolicyManager`, and for permission checks (`authorize`) via `AuthorizationClient`
-    - Role definitions themselves and role assignment to users are out of scope; use `java-im-role-usage`/`java-im-account-usage` respectively
-- I want to build a REST API in Java (JavaEE development model) using Web API Maker
-  - ⇒ `java-im-web-api-maker-usage`
-    - Provides generation patterns for factory/service classes that implement a REST API using annotations only (`@WebAPIMaker`/`@Path`/`@GET`, etc.)
-    - Supports authentication methods (`@IMAuthentication`/`@BasicAuthentication`/`@OAuth`), authorization integration (`@Authz`), secure-token verification (`@Secured`), and response control
-    - Registration of the authorization resource itself is handled by `java-im-authz-usage`; for REST APIs in JSSP, use `jssp-page-generator`/`jssp-im-oauth-generator`
-- I want to build DB access processing in Java (JavaEE development model) using im_mirage
-  - ⇒ `java-im-mirage-usage`
-    - Provides implementation patterns for entity classes (`@Table`/`@Column`/`@PrimaryKey`), DAO classes (extending `AbstractDAO`, obtained via `DAOFactory`), 2WaySQL SQL files, and transaction management via `SessionTemplate`
-    - For DB access in JSSP, use `jssp-page-generator` (`TenantDatabase`/`SharedDatabase` API); the development models differ and the implementations are completely independent
-
-### I want to implement Java (JavaEE development model) following the design conventions
-
-- I want to check the layer structure, dependencies, naming, exception hierarchy, and factory pattern for Java implementation
-  - ⇒ `java-im-architecture`
-    - Provides the responsibilities and dependency rules of the layer structure (presentation/application/domain/infrastructure) based on Clean Architecture/DDD
-    - Includes a catalog of common anti-patterns and a full-stack implementation example spanning from DDL to the Endpoint
-    - The essential points of the convention are summarized in `.agents/requirements/java-architecture/AGENTS.md` for constant reference; this skill is the detailed version (full code templates)
-- I want to know the implementation patterns for the service layer (business logic / transaction control)
-  - ⇒ `java-im-service-layer`
-    - Provides the service interface, factory pattern, transaction boundaries via `SessionTemplate`, and exception conversion rules
-    - Includes templates for handling a single repository / multiple repositories within a single transaction
-    - The essential points of the convention are summarized in `.agents/requirements/java-service-layer/AGENTS.md` for constant reference
-
-> For general Java conventions (naming, coding style, JavaDoc, logging, entities), refer to the relevant file listed in `.agents/requirements/README.md`. The two skills above only need to be invoked when the full code templates and anti-pattern catalog that accompany the conventions are required.
 
 ### I want to build setup assets
 

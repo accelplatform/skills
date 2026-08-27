@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "sample-calendar_zh_CN.md",
+      "from": "sample-calendar_en.md",
       "to": "sample-calendar.md"
     },
     {
-      "from": "sample-calendar_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "sample-calendar_zh_CN.md",
       "to": "sample-calendar.md"
     }
   ]

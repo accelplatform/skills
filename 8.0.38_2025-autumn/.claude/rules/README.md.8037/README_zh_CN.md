@@ -24,8 +24,6 @@
 
 ## 规约文件一览（一行摘要 + 适用范围标签）
 
-### 面向 JSSP（脚本开发模型）
-
 | 文件 | 一行摘要 | 适用范围 |
 |------|---------|---------|
 | `jssp-overview.md` | 项目概述与技术栈 | 🟢 始终 |
@@ -41,18 +39,6 @@
 | `jssp-testing.md` | 单元测试（jest-on-rhino） | 🟡 编写测试时 |
 | `jssp-performance.md` | 编译器设置 / session.js | 🟡 性能调优时 |
 | `jssp-accessibility.md` | ARIA / WCAG 2.1 AA / 屏幕阅读器 | 🟠 **业务需求依赖** — 仅在规格书有明确要求时厚涂适用；无要求时保持基本（`imdsConfirm`、基础 `aria-label` 等） |
-
-### 面向 Java（JavaEE 开发模型）
-
-| 文件 | 一行摘要 | 适用范围 |
-|------|---------|---------|
-| `java-architecture.md` | 分层结构 / 依赖规则 / 异常层次 / 工厂模式 | 🟢 始终（Java 实现时） |
-| `java-service-layer.md` | 服务层（Service）实现规则 / 事务边界 / 异常转换 | 🟢 始终（`service` 包实现时） |
-| `java-entity.md` | Entity 类（Mirage ORM）设计规约 / 审计字段 | 🟡 生成 Entity 类（`entity` 包）时 |
-| `java-code-style.md` | `final` / 字符串字面量 / `equals()` / 禁止 raw type | 🟢 始终（`.java` 生成时） |
-| `java-naming.md` | 包・类・方法・变量的命名规约 | 🟢 始终 |
-| `java-javadoc.md` | 类・方法的 JavaDoc 编写规约 | 🟢 始终 |
-| `java-logging.md` | 日志级别 / 敏感信息脱敏 / 按异常类型判断日志级别 | 🟡 实现日志时 |
 
 ## 本地化
 

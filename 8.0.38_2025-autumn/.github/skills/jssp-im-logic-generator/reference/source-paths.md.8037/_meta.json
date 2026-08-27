@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "source-paths_zh_CN.md",
+      "from": "source-paths_en.md",
       "to": "source-paths.md"
     },
     {
-      "from": "source-paths_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "source-paths_zh_CN.md",
       "to": "source-paths.md"
     }
   ]

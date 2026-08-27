@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "public-group-search_zh_CN.md",
+      "from": "public-group-search_en.md",
       "to": "public-group-search.md"
     },
     {
-      "from": "public-group-search_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "public-group-search_zh_CN.md",
       "to": "public-group-search.md"
     }
   ]

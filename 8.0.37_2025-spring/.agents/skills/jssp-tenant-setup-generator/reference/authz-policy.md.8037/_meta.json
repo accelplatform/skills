@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "authz-policy_zh_CN.md",
+      "from": "authz-policy_en.md",
       "to": "authz-policy.md"
     },
     {
-      "from": "authz-policy_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "authz-policy_zh_CN.md",
       "to": "authz-policy.md"
     }
   ]

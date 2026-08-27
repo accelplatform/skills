@@ -148,34 +148,36 @@ The sections below show only the differences from the basic pattern.
 
 ### 1. Single Selection (Click to Highlight)
 
-Add the standard imds class `is-active` (see isActive in [imds-html-table.md](imds-html-table.md)) to the selected row.
-Do not use a custom class such as `is-selected` with a `tr` `background-color`. imds applies its background color at the `td` level, so a custom background on `tr` gets overridden by the `td` background and never actually shows (the class is applied but the appearance does not change). `is-active` also applies styling at the `td` level, so it does not have this override problem.
+The common approach is to add `is-selected` (a custom class) to the currently selected row.
 
 ```html
 <tbody>
   <tr data-value="route-1"><td><span>Value-1-1</span></td>...</tr>
-  <tr class="is-active" data-value="route-2"><td><span>Value-2-1</span></td>...</tr>
+  <tr class="is-selected" data-value="route-2"><td><span>Value-2-1</span></td>...</tr>
   <tr data-value="route-3"><td><span>Value-3-1</span></td>...</tr>
 </tbody>
 ```
 
+```css
+/* Define on the presentation-page side (this is not a standard imds class) */
+.imds-table tbody tr.is-selected { background-color: #e6f0ff; }
+```
+
 ```javascript
-// Toggle the selected row on click (is-active is a standard imds class, so no custom CSS is needed)
+// Toggle the selected row on click
 document.querySelectorAll('#route-select-dialog tbody tr').forEach(function (tr) {
   tr.addEventListener('click', function () {
-    document.querySelectorAll('#route-select-dialog tbody tr.is-active')
-      .forEach(function (e) { e.classList.remove('is-active'); });
-    tr.classList.add('is-active');
+    document.querySelectorAll('#route-select-dialog tbody tr.is-selected')
+      .forEach(function (e) { e.classList.remove('is-selected'); });
+    tr.classList.add('is-selected');
   });
 });
 // If you want a "double click to confirm immediately" UX, listen for dblclick as well
 ```
 
-**Accessibility note**: Conveying selection state through row background color alone is not enough for users who have difficulty perceiving color, or who operate the screen with a keyboard only — row clicking is a mouse-only interaction. On screens that require keyboard operation or screen-reader support, combine this with the radio-button pattern below and call the same selection logic from both the row's `click` and the radio's `change` so the state stays in sync.
-
 ### 2. Single Selection With a Radio Button (Explicit)
 
-When you want the selection UI to be visually explicit, or when keyboard operation / screen-reader support is required, place a radio in the first column. A radio button lets the selection state reach assistive technology (it becomes something a screen reader announces) and lets the user focus it with `Tab` and move between rows with the arrow keys.
+When you want the selection UI to be visually explicit, place a radio in the first column.
 
 ```html
 <thead>
@@ -187,14 +189,12 @@ When you want the selection UI to be visually explicit, or when keyboard operati
 </thead>
 <tbody>
   <tr>
-    <td class="has-content-only"><label class="imds-radio"><input type="radio" name="route" value="route-1" aria-label="route-1 Application Route A" /></label></td>
+    <td><label class="imds-radio"><input type="radio" name="route" value="route-1" /></label></td>
     <td><span>route-1</span></td>
     <td><span>Application Route A</span></td>
   </tr>
 </tbody>
 ```
-
-If you also want row-click selection to keep working, combine the `is-active` toggle from pattern 1 and the radio's `checked` assignment into a single function (e.g. `selectRow()`) and call it from both the row's `click` and the input's `change`. Assign `radio.checked = true` explicitly (clicking the radio or its label also bubbles up to the `tr`, so the function can be called twice, but this is safe as long as the logic is idempotent). Give a radio that has no visible label text an `aria-label` (e.g. "ID + name") so the row can be identified. Set data-derived attribute values such as the value or `aria-label` with `setAttribute` rather than string-concatenated `innerHTML` (XSS prevention).
 
 For radio details, see [imds-html-radio.md](imds-html-radio.md).
 
@@ -327,10 +327,10 @@ If you want to fix the dialog height, choose a height that fits the search box +
 
   ```javascript
   var primary = document.querySelector('#route-select-dialog .imds-button.is-primary');
-  primary.disabled = !document.querySelector('#route-select-dialog tbody tr.is-active');
+  primary.disabled = !document.querySelector('#route-select-dialog tbody tr.is-selected');
   ```
 
-- **Use the standard imds class `is-active` to highlight the selected row**. Do not use a custom class such as `is-selected` with a `tr` `background-color` (it gets overridden by the `td` background and never actually shows — see "1. Single Selection" for details). If you combine a checkbox / radio, you can also highlight using `:checked` + the `:has()` selector
+- **Row-click selection requires a custom `is-selected`**. `is-selected` is not a standard imds class, so you must set `background-color` in page-side CSS. If you combine a checkbox / radio, you can highlight using `:checked` + the `:has()` selector without custom CSS
 - **Double-click to confirm immediately** is a strong UX but risks accidental operation. Adopt it only when "the row should be selectable at a glance" (e.g., master selection); for confirmation-needed selections (e.g., permission change), keep the two-step flow of click to select + Select button to confirm
 - **Handling large data**: Stacking thousands of rows in `<tbody>` on the client side makes rendering slow. Switch to server-side filtering + pagination ([imds-html-pagination.md](imds-html-pagination.md))
 - **IM-Common Master selection** should not be built from scratch using this pattern; use the `imACMSearch` tag from the `jssp-im-master-usage` skill (see that skill's reference for parameter and callback details)

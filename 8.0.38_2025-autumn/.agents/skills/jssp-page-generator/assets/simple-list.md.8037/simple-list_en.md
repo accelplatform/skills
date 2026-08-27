@@ -387,56 +387,58 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- Page container (no id here — it sits inside the theme's own <div id="imui-container">) -->
-<div class="imds-container">
-  <!-- Header -->
-  <header class="imds-header">
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-    </div>
-  </header>
+<!-- Page container -->
+<div id="container">
+  <div class="imds-container">
+    <!-- Header -->
+    <header class="imds-header">
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+      </div>
+    </header>
 
-  <!-- Main content -->
-  <main>
-    <div class="imds-py-3">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
-        <div class="button-area imds-mb-3">
-          <div class="imds-input-group">
-            <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="Search keywords">
-            <button type="button" title="Search" class="imds-button">
-              <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
-            </button>
+    <!-- Main content -->
+    <main>
+      <div class="imds-py-3">
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
+          <div class="button-area imds-mb-3">
+            <div class="imds-input-group">
+              <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="Search keywords">
+              <button type="button" title="Search" class="imds-button">
+                <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+              </button>
+            </div>
+            <button type="button" id="create-button" class="imds-button is-primary">New</button>
           </div>
-          <button type="button" id="create-button" class="imds-button is-primary">New</button>
-        </div>
-        <div class="imds-table" id="stock-table">
-          <div class="imds-table-inner">
-            <table>
-              <thead>
-                <tr>
-                  <th class="col-edit has-text-centered"><span>Edit</span></th>
-                  <th><span>Product Code</span></th>
-                  <th><span>Product Name</span></th>
-                  <th><span>Unit Price</span></th>
-                  <th><span>Stock Quantity</span></th>
-                  <th><span>Warehouse Number</span></th>
-                  <th><span>Remarks</span></th>
-                </tr>
-              </thead>
-              <tbody id="stock-table-body"></tbody>
-            </table>
+          <div class="imds-table" id="stock-table">
+            <div class="imds-table-inner">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="col-edit has-text-centered"><span>Edit</span></th>
+                    <th><span>Product Code</span></th>
+                    <th><span>Product Name</span></th>
+                    <th><span>Unit Price</span></th>
+                    <th><span>Stock Quantity</span></th>
+                    <th><span>Warehouse Number</span></th>
+                    <th><span>Remarks</span></th>
+                  </tr>
+                </thead>
+                <tbody id="stock-table-body"></tbody>
+              </table>
+            </div>
           </div>
-        </div>
-        <div class="imds-py-3" id="pagination"></div>
-      </section>
-    </div>
-  </main>
+          <div class="imds-py-3" id="pagination"></div>
+        </section>
+      </div>
+    </main>
+  </div>
 </div>
 ```
 

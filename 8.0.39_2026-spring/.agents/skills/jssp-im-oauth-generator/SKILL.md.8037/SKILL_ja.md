@@ -21,7 +21,7 @@ description: intra-mart Accel Platform の OAuth プロバイダ機能（im_oaut
 ## 目的
 
 intra-mart Accel Platform の **OAuth プロバイダ機能** を使用して、外部クライアントアプリケーションに OAuth アクセストークン認証付きの REST-API を新規公開するためのスキル。
-**1 つの `spec.json` から `scripts/build-oauth.js` で 4 種類の資材（scope 定義・リソース URL マッピング・クライアント詳細設定・JSSP リソース実装の骨格）を一括生成** する方式を採る（`base-im-workflow-generator` と同方式）。
+**1 つの `spec.json` から `scripts/build-oauth.js` で 4 種類の資材（scope 定義・リソース URL マッピング・クライアント詳細設定・JSSP リソース実装の骨格）を一括生成** する方式を採る（`jssp-im-workflow-generator` と同方式）。
 コーディングエージェントが書くのは spec.json のみで、XML の細かい構造や JSSP の共通骨格はスクリプトが自動生成する。
 
 ## 生成対象

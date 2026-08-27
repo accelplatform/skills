@@ -23,15 +23,16 @@ IM-共通マスタの `imACMSearch` を利用した、パブリックグルー�
     ├── callbackFromImMaster()     ... 選択結果を受け取るコールバック関数
     └── window.callbackFromImMaster ... コールバック関数のグローバル登録
 
-<div class="imds-container">
-└── main
-    └── form.imds-form
-        └── section
-            └── imds-field-container
-                └── imds-field（パブリックグループ名）
-                    ├── input[type="hidden"]    ... パブリックグループセットコード（隠しフィールド）
-                    ├── input[type="hidden"]    ... パブリックグループコード（隠しフィールド）
-                    └── imds-textbox-control    ... パブリックグループ名（検索アイコン付き・readonly）
+<div id="container">
+└── imds-container
+    └── main
+        └── form.imds-form
+            └── section
+                └── imds-field-container
+                    └── imds-field（パブリックグループ名）
+                        ├── input[type="hidden"]    ... パブリックグループセットコード（隠しフィールド）
+                        ├── input[type="hidden"]    ... パブリックグループコード（隠しフィールド）
+                        └── imds-textbox-control    ... パブリックグループ名（検索アイコン付き・readonly）
 ```
 
 ## 1. head 部（検索ダイアログの設定）
@@ -197,38 +198,40 @@ IM-共通マスタの `imACMSearch` を利用した、パブリックグルー�
   </script>
 </imart>
 
-<!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-<div class="imds-container">
-  <header class="imds-header">
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p>IM-共通マスタ サンプル</p>
-      <h1>パブリックグループ検索</h1>
-    </div>
-  </header>
-  <main>
-    <form class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-        <div class="imds-field-container has-accent-color">
-          <div class="imds-field is-horizontal imds-w-15 sample-public-group">
-            <div class="imds-field-label"><label for=":publicGroupName:">パブリックグループ名</label></div>
-            <div class="imds-field-control">
-              <div class="imds-textbox-control">
-                <input type="hidden" id=":publicGroupSetCode:" value="">
-                <input type="hidden" id=":publicGroupCode:" value="">
-                <input type="text" id=":publicGroupName:" placeholder="パブリックグループ名を選択" class="imds-textbox" readonly value="">
-                <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+<!-- ページ全体のコンテナ -->
+<div id="container">
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p>IM-共通マスタ サンプル</p>
+        <h1>パブリックグループ検索</h1>
+      </div>
+    </header>
+    <main>
+      <form class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <div class="imds-field-container has-accent-color">
+            <div class="imds-field is-horizontal imds-w-15 sample-public-group">
+              <div class="imds-field-label"><label for=":publicGroupName:">パブリックグループ名</label></div>
+              <div class="imds-field-control">
+                <div class="imds-textbox-control">
+                  <input type="hidden" id=":publicGroupSetCode:" value="">
+                  <input type="hidden" id=":publicGroupCode:" value="">
+                  <input type="text" id=":publicGroupName:" placeholder="パブリックグループ名を選択" class="imds-textbox" readonly value="">
+                  <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </form>
-  </main>
+        </section>
+      </form>
+    </main>
+  </div>
 </div>
 ```
 

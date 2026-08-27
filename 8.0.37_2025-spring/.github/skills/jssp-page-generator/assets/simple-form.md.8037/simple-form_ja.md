@@ -510,104 +510,101 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-<div class="imds-container">
-  <!-- ヘッダ -->
-  <header class="imds-header">
-    <div class="imds-header-back-button">
-      <button type="button" class="imds-button is-ghost is-large">
-        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-      </button>
-    </div>
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="fa-solid fa-file"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-    </div>
-  </header>
+<!-- ページ全体のコンテナ -->
+<div id="container">
+  <div class="imds-container">
+    <!-- ヘッダ -->
+    <header class="imds-header">
+      <div class="imds-header-back-button">
+        <button type="button" class="imds-button is-ghost is-large">
+          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+        </button>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+      </div>
+    </header>
 
-  <!-- メインコンテンツ -->
-  <main>
-    <form id="main-form" class="imds-form has-background-color-gray imds-scrollbar imds-py-4 imds-px-6">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-        <h2 class="imds-heading is-bordered is-size-2 is-cyan">基本情報</h2>
-        <div class="imds-field-container has-accent-color">
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label">
-              <span class="imds-required-label-required" data-required-label="必須">ユーザコード</span>
-            </div>
-            <div class="imds-field-group-control">
-              <div class="imds-field" for=":userCode:">
-                <div class="imds-field-control">
-                  <input type="text" id=":userCode:" class="imds-textbox" name="userCode" value="" />
-                </div>
-                <span class="imds-error-text" for=":userCode:">エラーメッセージをここに表示します。</span>
+    <!-- メインコンテンツ -->
+    <main>
+      <form id="main-form" class="imds-form has-background-color-gray imds-scrollbar imds-py-4 imds-px-6">
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <h2 class="imds-heading is-bordered is-size-2 is-cyan">基本情報</h2>
+          <div class="imds-field-container has-accent-color">
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span class="imds-required-label-required" data-required-label="必須">ユーザコード</span>
               </div>
-            </div>
-          </div>
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label">
-              <span class="imds-required-label-required" data-required-label="必須">氏名</span>
-            </div>
-            <div class="imds-field-group-control">
-              <div class="imds-field-group">
-                <div class="imds-field-group-control is-horizontal">
-                  <div class="imds-field" for=":userLastName:">
-                    <div class="imds-field-label">
-                      <label for=":userLastName:">姓</label>
-                    </div>
-                    <div class="imds-field-control">
-                      <input type="text" id=":userLastName:" class="imds-textbox" name="userLastName" value="" />
-                    </div>
-                    <span class="imds-error-text" for=":userLastName:">エラーメッセージをここに表示します。</span>
+              <div class="imds-field-group-control">
+                <div class="imds-field" for=":userCode:">
+                  <div class="imds-field-control">
+                    <input type="text" id=":userCode:" class="imds-textbox" name="userCode" value="" />
                   </div>
-                  <div class="imds-field" for=":userFirstName:">
-                    <div class="imds-field-label">
-                      <label for=":userFirstName:">名</label>
+                  <span class="imds-error-text" for=":userCode:">エラーメッセージをここに表示します。</span>
+                </div>
+              </div>
+            </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span class="imds-required-label-required" data-required-label="必須">氏名</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field-group">
+                  <div class="imds-field-group-control is-horizontal">
+                    <div class="imds-field" for=":userLastName:">
+                      <div class="imds-field-label">
+                        <label for=":userLastName:">姓</label>
+                      </div>
+                      <div class="imds-field-control">
+                        <input type="text" id=":userLastName:" class="imds-textbox" name="userLastName" value="" />
+                      </div>
+                      <span class="imds-error-text" for=":userLastName:">エラーメッセージをここに表示します。</span>
                     </div>
-                    <div class="imds-field-control">
-                      <input type="text" id=":userFirstName:" class="imds-textbox" name="userFirstName" value="" />
+                    <div class="imds-field" for=":userFirstName:">
+                      <div class="imds-field-label">
+                        <label for=":userFirstName:">名</label>
+                      </div>
+                      <div class="imds-field-control">
+                        <input type="text" id=":userFirstName:" class="imds-textbox" name="userFirstName" value="" />
+                      </div>
+                      <span class="imds-error-text" for=":userFirstName:">エラーメッセージをここに表示します。</span>
                     </div>
-                    <span class="imds-error-text" for=":userFirstName:">エラーメッセージをここに表示します。</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label"><span>その他情報</span></div>
+              <div class="imds-field-group-control is-horizontal">
+                <div class="imds-field" for=":age:">
+                  <div class="imds-field-label">
+                    <label for=":age:">年齢</label>
+                  </div>
+                  <div class="imds-field-control">
+                    <select id=":age:" class="imds-select" name="age">
+                      <option value="">選択してください</option>
+                      <option value="10">10代</option>
+                      <option value="20">20代</option>
+                      <option value="30">30代</option>
+                      <option value="40">40代</option>
+                      <option value="50">50代</option>
+                      <option value="60">60代以上</option>
+                    </select>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label"><span>その他情報</span></div>
-            <div class="imds-field-group-control is-horizontal">
-              <div class="imds-field" for=":age:">
-                <div class="imds-field-label">
-                  <label for=":age:">年齢</label>
-                </div>
-                <div class="imds-field-control">
-                  <select id=":age:" class="imds-select" name="age">
-                    <option value="">選択してください</option>
-                    <option value="10">10代</option>
-                    <option value="20">20代</option>
-                    <option value="30">30代</option>
-                    <option value="40">40代</option>
-                    <option value="50">50代</option>
-                    <option value="60">60代以上</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </form>
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
-      <button type="button" id="register-button" class="imds-button is-primary" style="min-width: 8em;">登録</button>
-      <button type="button" id="temporary-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">一時保存</button>
-      <button type="button" id="delete-button" class="imds-button is-outlined is-danger" style="min-width: 8em;">削除</button>
-    </div>
-  </main>
+        </section>
+      </form>
+      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+        <button type="button" id="register-button" class="imds-button is-primary" style="min-width: 8em;">登録</button>
+        <button type="button" id="temporary-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">一時保存</button>
+        <button type="button" id="delete-button" class="imds-button is-outlined is-danger" style="min-width: 8em;">削除</button>
+      </div>
+    </main>
+  </div>
 </div>
 ```
 

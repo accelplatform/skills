@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "post-json-api_zh_CN.md",
+      "from": "post-json-api_en.md",
       "to": "post-json-api.md"
     },
     {
-      "from": "post-json-api_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "post-json-api_zh_CN.md",
       "to": "post-json-api.md"
     }
   ]

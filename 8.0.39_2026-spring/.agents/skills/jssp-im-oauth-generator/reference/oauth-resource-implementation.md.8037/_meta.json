@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "oauth-resource-implementation_zh_CN.md",
+      "from": "oauth-resource-implementation_en.md",
       "to": "oauth-resource-implementation.md"
     },
     {
-      "from": "oauth-resource-implementation_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "oauth-resource-implementation_zh_CN.md",
       "to": "oauth-resource-implementation.md"
     }
   ]

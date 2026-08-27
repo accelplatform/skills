@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "simple-crawler_zh_CN.md",
+      "from": "simple-crawler_en.md",
       "to": "simple-crawler.md"
     },
     {
-      "from": "simple-crawler_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-crawler_zh_CN.md",
       "to": "simple-crawler.md"
     }
   ]

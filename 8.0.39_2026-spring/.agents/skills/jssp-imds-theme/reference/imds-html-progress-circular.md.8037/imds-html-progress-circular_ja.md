@@ -94,39 +94,6 @@ ProgressCircular は、実行中の処理の進捗状況を、円形で視覚的
 </div>
 ```
 
-#### ステータス別アイコンマッピング
-
-`ProgressBar` とはアイコン種別が異なる（円形の縁が既に進捗を表しているため、より簡素なアイコンを使う）。
-
-| ステータス | カラークラス | アイコン |
-|-----------|-------------|---------|
-| 成功 | is-success | fa-check |
-| 警告 | is-warning | fa-triangle-exclamation |
-| 危険 | is-danger | fa-triangle-exclamation |
-| エラー | is-error | fa-xmark |
-
-```html
-<span class="imds-icon is-medium is-warning" title="タイトル属性にアイコンが何を表しているのか入力">
-  <i class="fa-solid fa-triangle-exclamation"></i>
-</span>
-<span class="imds-icon is-medium is-error" title="タイトル属性にアイコンが何を表しているのか入力">
-  <i class="fa-solid fa-xmark"></i>
-</span>
-```
-
-### サイズプリセット
-
-円のサイズは `width`/`height`（コンテナ）、`font-size`（中央テキスト）、SVG の `width`/`height`/`viewBox`、`circle` の `r`（半径）・`stroke-width`、および `stroke-dasharray`（円周）を連動させて指定する。以下は代表的なサイズプリセット。
-
-| サイズ (px) | コンテナ style | SVG width/height/viewBox | r | stroke-width | stroke-dasharray（円周） |
-|------------|----------------|---------------------------|---|--------------|--------------------------|
-| 40 | `width: 4rem; height: 4rem; font-size: 1rem` | `40` / `40` / `0 0 40 40` | 18.5 | 3 | 116.24 |
-| 80 | `width: 8rem; height: 8rem; font-size: 2rem` | `80` / `80` / `0 0 80 80` | 37 | 6 | 232.48 |
-| 120 | `width: 12rem; height: 12rem; font-size: 3rem` | `120` / `120` / `0 0 120 120` | 55.5 | 9 | 348.72 |
-| 160 | `width: 16rem; height: 16rem; font-size: 4rem` | `160` / `160` / `0 0 160 160` | 74 | 12 | 464.96 |
-
-`cx` / `cy` はいずれも SVG の `width`/`height` の半分（例: サイズ160なら `cx="80" cy="80"`）。
-
 ## 実装上の注意
 
 - サイズは `imds-progress-circular` の `style` 属性（`width`, `height`, `font-size`）で制御する

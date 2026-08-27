@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "simple-matter-archive-listener_zh_CN.md",
+      "from": "simple-matter-archive-listener_en.md",
       "to": "simple-matter-archive-listener.md"
     },
     {
-      "from": "simple-matter-archive-listener_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-matter-archive-listener_zh_CN.md",
       "to": "simple-matter-archive-listener.md"
     }
   ]

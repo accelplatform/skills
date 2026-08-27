@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "simple-approve-screen_zh_CN.md",
+      "from": "simple-approve-screen_en.md",
       "to": "simple-approve-screen.md"
     },
     {
-      "from": "simple-approve-screen_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-approve-screen_zh_CN.md",
       "to": "simple-approve-screen.md"
     }
   ]

@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "multi-config_zh_CN.md",
+      "from": "multi-config_en.md",
       "to": "multi-config.md"
     },
     {
-      "from": "multi-config_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "multi-config_zh_CN.md",
       "to": "multi-config.md"
     }
   ]

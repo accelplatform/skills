@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "company-search_zh_CN.md",
+      "from": "company-search_en.md",
       "to": "company-search.md"
     },
     {
-      "from": "company-search_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "company-search_zh_CN.md",
       "to": "company-search.md"
     }
   ]

@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "workflow-import_zh_CN.md",
+      "from": "workflow-import_en.md",
       "to": "workflow-import.md"
     },
     {
-      "from": "workflow-import_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "workflow-import_zh_CN.md",
       "to": "workflow-import.md"
     }
   ]

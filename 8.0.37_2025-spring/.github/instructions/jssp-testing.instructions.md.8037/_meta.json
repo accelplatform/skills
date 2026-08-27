@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "jssp-testing_zh_CN.instructions.md",
+      "from": "jssp-testing_en.instructions.md",
       "to": "jssp-testing.instructions.md"
     },
     {
-      "from": "jssp-testing_en.instructions.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "jssp-testing_zh_CN.instructions.md",
       "to": "jssp-testing.instructions.md"
     }
   ]

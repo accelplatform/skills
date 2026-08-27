@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "test-helpers_zh_CN.md",
+      "from": "test-helpers_en.md",
       "to": "test-helpers.md"
     },
     {
-      "from": "test-helpers_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "test-helpers_zh_CN.md",
       "to": "test-helpers.md"
     }
   ]

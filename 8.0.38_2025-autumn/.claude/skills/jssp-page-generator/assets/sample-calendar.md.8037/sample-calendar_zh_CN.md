@@ -710,59 +710,61 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- 整个页面的容器（配置在 intra-mart 主题的 imui-container 内部，因此不附加 id） -->
-<div class="imds-container">
-  <!-- 页头 -->
-  <header class="imds-header">
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1>
-        <imart type="string" value=$title escapeXml="true" escapeJs="false"></imart>
-        <span id="calendar-name" class="calendar-name-badge"></span>
-      </h1>
-    </div>
-  </header>
+<!-- 整个页面的容器 -->
+<div id="container">
+  <div class="imds-container">
+    <!-- 页头 -->
+    <header class="imds-header">
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1>
+          <imart type="string" value=$title escapeXml="true" escapeJs="false"></imart>
+          <span id="calendar-name" class="calendar-name-badge"></span>
+        </h1>
+      </div>
+    </header>
 
-  <!-- 主要内容 -->
-  <main>
-    <div class="imds-py-3">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
+    <!-- 主要内容 -->
+    <main>
+      <div class="imds-py-3">
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
 
-        <!-- 月份导航 -->
-        <div class="calendar-nav imds-mb-3">
-          <button type="button" id="btn-prev-month" class="imds-button is-ghost" title="上月">
-            <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
-          </button>
-          <span id="nav-title" class="calendar-nav-title"></span>
-          <button type="button" id="btn-next-month" class="imds-button is-ghost" title="下月">
-            <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
-          </button>
-          <button type="button" id="btn-today" class="imds-button is-outlined">本月</button>
-        </div>
-
-        <!-- 图例 -->
-        <div id="calendar-legend" class="calendar-legend imds-mb-2"></div>
-
-        <!-- 日历表格 -->
-        <div class="imds-table">
-          <div class="imds-table-inner">
-            <table id="calendar-table" class="calendar-table" aria-label="日历">
-              <thead>
-                <tr></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+          <!-- 月份导航 -->
+          <div class="calendar-nav imds-mb-3">
+            <button type="button" id="btn-prev-month" class="imds-button is-ghost" title="上月">
+              <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
+            </button>
+            <span id="nav-title" class="calendar-nav-title"></span>
+            <button type="button" id="btn-next-month" class="imds-button is-ghost" title="下月">
+              <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
+            </button>
+            <button type="button" id="btn-today" class="imds-button is-outlined">本月</button>
           </div>
-        </div>
 
-      </section>
-    </div>
-  </main>
+          <!-- 图例 -->
+          <div id="calendar-legend" class="calendar-legend imds-mb-2"></div>
+
+          <!-- 日历表格 -->
+          <div class="imds-table">
+            <div class="imds-table-inner">
+              <table id="calendar-table" class="calendar-table" aria-label="日历">
+                <thead>
+                  <tr></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+      </div>
+    </main>
+  </div>
 </div>
 ```
 

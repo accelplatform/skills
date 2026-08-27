@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "api-cookie_zh_CN.md",
+      "from": "api-cookie_en.md",
       "to": "api-cookie.md"
     },
     {
-      "from": "api-cookie_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-cookie_zh_CN.md",
       "to": "api-cookie.md"
     }
   ]

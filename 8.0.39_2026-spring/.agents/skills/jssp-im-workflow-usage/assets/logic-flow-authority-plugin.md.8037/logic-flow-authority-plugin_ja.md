@@ -155,7 +155,7 @@ node .agents/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 ## IM-Workflow ルート定義 XML での指定
 
 生成したフローの `flowId` を使って、IM-Workflow のルート定義 XML で権限プラグインを指定する。
-`base-im-workflow-generator` スキルで XML を生成する場合は、`authority-plugins.md` の「ロジックフロー指定系」セクションの XML 例を参照して spec.json に記述する。
+`jssp-im-workflow-generator` スキルで XML を生成する場合は、`authority-plugins.md` の「ロジックフロー指定系」セクションの XML 例を参照して spec.json に記述する。
 
 ```xml
 <!-- 承認ノードの権限設定例 -->

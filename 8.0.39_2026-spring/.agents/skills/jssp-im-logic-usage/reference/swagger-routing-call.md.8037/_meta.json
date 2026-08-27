@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "swagger-routing-call_zh_CN.md",
+      "from": "swagger-routing-call_en.md",
       "to": "swagger-routing-call.md"
     },
     {
-      "from": "swagger-routing-call_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "swagger-routing-call_zh_CN.md",
       "to": "swagger-routing-call.md"
     }
   ]

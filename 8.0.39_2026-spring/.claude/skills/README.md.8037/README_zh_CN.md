@@ -1,11 +1,8 @@
-# JSSP / Java / 低代码资源的技能集
+# JSSP / 低代码资源的技能集
 
 ## 概要
 
-本代码库收录了用于在 intra-mart Accel Platform 上创建以下资源的技能集。
-* 使用 JSSP（脚本开发模型）的画面・各种插件的源代码
-* 使用 Java（JavaEE 开发模型）的各种插件（不含画面）的源代码
-* IM-LogicDesigner / IM-Workflow 相关资源
+收录用于通过 intra-mart Accel Platform 的 JSSP（脚本开发模型）创建源代码以及低代码资源的技能集的代码库。
 
 为降低编码代理（Coding Agent）的 Token 消耗，建议根据下方的"技能反查"，仅取出所需的技能集进行使用。
 
@@ -45,19 +42,15 @@
 ### 想要创建 IM-Workflow 资源
 
 - 想要创建工作流的主定义文件
-  - ⇒ `base-im-workflow-generator`
+  - ⇒ `jssp-im-workflow-generator`
     - 生成包含内容、路由、流程、案件属性、分支规则的导入用 XML
     - 支持直线・分支・同步・横向・纵向的路由模式
     - 支持示例安装时的用户・公司・组织・职位・公共组 ※扩展计划通过 MCP 支持
     - 支持日语（ja）・英语（en）・简体中文（zh_CN）
-- 想要用 JSSP（脚本开发模型）创建与工作流联动的各种画面・处理
+- 想要创建与工作流联动的各种画面・处理
   - ⇒ `jssp-im-workflow-usage`（+ `jssp-page-generator`）
     - 生成申请/审批/详情/确认/参照画面（html + js）
     - 生成执行处理・到达处理・案件开始/结束处理・分支条件判断・各种监听器（js）
-- 想要用 Java（JavaEE 开发模型）创建工作流的动作处理・到达处理・案件开始/结束处理・分支条件判断・各种监听器
-  - ⇒ `java-im-workflow-usage`
-    - 生成继承/实现 `ActionProcessEventListener` 等平台抽象类・监听器接口的 Java 类
-    - 画面（申请/审批/确认）不在范围内。画面目前使用 `jssp-im-workflow-usage` 的 JSSP 实现
 
 ### 想要创建 IM-LogicDesigner 资源
 
@@ -100,61 +93,6 @@
 - 想根据规格书创建测试观点一览表・测试项目书（Excel 或 HTML）
   - ⇒ `test-spec-generator`
     - 根据规格书文件，生成 xlsx（使用 officecli）或 HTML 格式的测试观点一览表・测试项目书
-
-### 想在 JavaEE 开发模型中使用 intra-mart 专有功能
-
-- 想用 Java（JavaEE 开发模型）通过 PublicStorage / SessionScopeStorage / SystemStorage 实现文件操作处理
-  - ⇒ `java-im-storage-usage`
-    - 提供永久文件（`PublicStorage`）・临时文件（`SessionScopeStorage`）・系统内部资源（`SystemStorage`）的使用区分，以及基于 `try-with-resources` 的资源管理模式
-    - JSSP（专业代码）中的等效实现请使用 `jssp-page-generator` 的 `reference/api-storage.md`（SSJS 版 Storage API）
-- 想用 Java（JavaEE 开发模型）通过 Identifier API 实现唯一 ID 编号处理
-  - ⇒ `java-im-identifier-usage`
-    - 提供在分布式环境中保证系统整体唯一性的 `get()`，与仅在应用服务器内唯一的 `make()` 的使用区分
-    - 单据号・申请编号等业务数据编号默认引导使用 `get()`，日志跟踪 ID 等进程内闭环标识符则使用 `make()`
-- 想用 Java（JavaEE 开发模型）通过 NewLock API 实现互斥控制处理
-  - ⇒ `java-im-lock-usage`
-    - 提供通过 `try`/`finally` 释放的普通锁（`lock()`/`tryLock()`），与在响应返回时自动释放的请求作用域锁（`lockRequestScope()`/`tryLockRequestScope()`）的使用区分
-    - 对于在方法内闭环完成的处理，默认引导使用普通锁实现分布式环境下基于数据库的互斥控制
-- 想用 Java（JavaEE 开发模型）通过 AccountInfoManager 实现账户信息的获取・更新处理
-  - ⇒ `java-im-account-usage`
-    - 提供登录设置（区域设置・时区・日历・主题・每周起始日・日期时间格式）、账户锁定・登录失败次数、账户属性、密码核对（`AccountPasswordAdapter`）的实现模式
-    - 用户的角色分配（`addAccountRoleInfo` 等）也属于本技能范围。角色定义本身（新建・层级・分类）请使用 `java-im-role-usage`
-- 想用 Java（JavaEE 开发模型）通过 UserProfileImageManager 实现 IM-共通主数据的头像图片操作
-  - ⇒ `java-im-profile-usage`
-    - 提供头像图片的获取（Stream 格式・URL 格式，单个/多个）、删除、注册（数据 URL 格式／通过 `Storage`）的实现模式
-    - 不包含用户基本信息（姓名・所属等）本身的操作，以及 IM-LogicDesigner 的逻辑流元素（`jp.co.intra_mart.foundation.logic.element.profile` 下）
-- 想用 Java（JavaEE 开发模型）通过 RoleInfoManager 实现角色定义的管理处理
-  - ⇒ `java-im-role-usage`
-    - 提供角色的新建・更新・删除，子角色层级（添加・删除・获取全部父/子角色），分类管理，以及按角色ID/角色名/分类进行检索・分页的实现模式
-    - 不包含向特定用户分配角色的场景，该场景请使用 `java-im-account-usage`
-- 想用 Java（JavaEE 开发模型）实现认可（Authorization）资源・主体・策略的 CRUD 与权限确认处理
-  - ⇒ `java-im-authz-usage`
-    - 提供通过 `ResourceManager`/`SubjectManager`/`PolicyManager` 对资源・主体（通过 Expression 构建条件表达式）・策略进行登录/更新/删除，以及通过 `AuthorizationClient` 进行权限确认（authorize）的实现模式
-    - 不包含角色定义本身・向用户分配角色的场景，分别请使用 `java-im-role-usage`/`java-im-account-usage`
-- 想用 Java（JavaEE 开发模型）通过 Web API Maker 创建 REST API
-  - ⇒ `java-im-web-api-maker-usage`
-    - 提供仅通过注解（`@WebAPIMaker`/`@Path`/`@GET` 等）实现 REST API 的工厂・服务类生成模式
-    - 支持认证方式（`@IMAuthentication`/`@BasicAuthentication`/`@OAuth`）、认可联动（`@Authz`）、安全令牌验证（`@Secured`）、响应控制
-    - 认可资源本身的注册请使用 `java-im-authz-usage`；JSSP 中的 REST API 请使用 `jssp-page-generator`/`jssp-im-oauth-generator`
-- 想用 Java（JavaEE 开发模型）通过 im_mirage 构建 DB 访问处理
-  - ⇒ `java-im-mirage-usage`
-    - 提供实体类（`@Table`/`@Column`/`@PrimaryKey`）、DAO 类（继承 `AbstractDAO`・通过 `DAOFactory` 获取）、2WaySQL 的 SQL 文件、通过 `SessionTemplate` 进行事务管理的实现模式
-    - JSSP 中的 DB 访问请使用 `jssp-page-generator`（`TenantDatabase`/`SharedDatabase` API）。两者开发模型不同，实现完全独立
-
-### 想按照设计规约在 Java（JavaEE 开发模型）中实现
-
-- 想确认 Java 实现的分层结构・依赖关系・命名・异常层次・工厂模式
-  - ⇒ `java-im-architecture`
-    - 提供基于 Clean Architecture/DDD 的分层结构（表现层/应用层/领域层/基础设施层）的职责・依赖规则
-    - 包含常见反模式集、从 DDL 到 Endpoint 贯穿全层的实现示例
-    - 规约要点汇总在 `.claude/rules/java-architecture.md` 中以便随时参考；本技能是其详细版（完整代码模板）
-- 想了解服务层（业务逻辑・事务控制）的实现模式
-  - ⇒ `java-im-service-layer`
-    - 提供服务接口、工厂模式、基于 `SessionTemplate` 的事务边界、异常转换规则
-    - 包含单个仓储／多个仓储在单一事务中处理的模板
-    - 规约要点汇总在 `.claude/rules/java-service-layer.md` 中以便随时参考
-
-> Java 的通用规约（命名・编码风格・JavaDoc・日志・实体）请参考 `.claude/rules/README.md` 列表中的对应文件。上述2个技能仅在需要规约附带的完整代码模板・反模式集时调用即可。
 
 ### 想要创建设置资源
 

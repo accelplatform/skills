@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "simple-action-process_zh_CN.md",
+      "from": "simple-action-process_en.md",
       "to": "simple-action-process.md"
     },
     {
-      "from": "simple-action-process_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-action-process_zh_CN.md",
       "to": "simple-action-process.md"
     }
   ]

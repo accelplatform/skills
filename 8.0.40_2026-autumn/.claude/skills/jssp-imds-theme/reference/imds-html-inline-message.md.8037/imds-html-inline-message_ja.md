@@ -80,14 +80,6 @@ Message 共通の使用方法、注意事項は、Documentation を参照して�
 <div class="imds-inline-message is-large">    <!-- 大 -->
 ```
 
-### アイコン無し（No Icon）
-
-アイコンが不要な場合や外観を簡素化したい場合、`imds-icon` を省略して `<p>` のみを配置する。
-
-```html
-<div class="imds-inline-message"><p>スケジュールの表示セットをドラッグ＆ドロップで並び替えます。</p></div>
-```
-
 ## 実装上の注意
 
 - InlineMessage は `imds-message-title` / `imds-message-content` を使用せず、アイコンとテキストを直接配置するシンプルな構造

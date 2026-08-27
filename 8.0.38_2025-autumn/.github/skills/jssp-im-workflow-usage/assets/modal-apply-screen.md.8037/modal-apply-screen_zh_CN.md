@@ -420,66 +420,68 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- 页面整体容器（因会被放置在 intra-mart 主题的 imui-container 内部，所以不附加 id） -->
-<div class="imds-container">
-  <header class="imds-header">
-    <div class="imds-header-back-button">
-      <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="返回">
-        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
-      </button>
-    </div>
-    <div class="imds-header-icon">
-      <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-      </span>
-    </div>
-    <div class="imds-header-title">
-      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-    </div>
-  </header>
-  <main>
-    <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-      <!-- TODO: 在此实现区块和字段 -->
-      <!-- 以下为示例结构（字段实现示例） -->
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-        <h2 class="imds-heading is-bordered is-size-2 is-cyan">{区块标题}</h2>
-        <div class="imds-field-container has-accent-color">
-          <!-- 必填字段示例 -->
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label">
-              <span class="imds-required-label-required" data-required-label="必填">{字段标签}</span>
-            </div>
-            <div class="imds-field-group-control">
-              <div class="imds-field" for=":field1:">
-                <div class="imds-field-control">
-                  <input type="text" id=":field1:" class="imds-textbox" value="" />
-                </div>
-                <span class="imds-error-text" for=":field1:" style="display:none;"></span>
+<!-- 页面整体容器 -->
+<div id="container">
+  <div class="imds-container">
+    <header class="imds-header">
+      <div class="imds-header-back-button">
+        <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="返回">
+          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
+        </button>
+      </div>
+      <div class="imds-header-icon">
+        <span class="imds-icon-wrapper is-large">
+          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        </span>
+      </div>
+      <div class="imds-header-title">
+        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+      </div>
+    </header>
+    <main>
+      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+        <!-- TODO: 在此实现区块和字段 -->
+        <!-- 以下为示例结构（字段实现示例） -->
+        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+          <h2 class="imds-heading is-bordered is-size-2 is-cyan">{区块标题}</h2>
+          <div class="imds-field-container has-accent-color">
+            <!-- 必填字段示例 -->
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span class="imds-required-label-required" data-required-label="必填">{字段标签}</span>
               </div>
-            </div>
-          </div>
-          <!-- 可选字段示例 -->
-          <div class="imds-field-group is-horizontal imds-w-15">
-            <div class="imds-field-group-label">
-              <span>{字段标签}</span>
-            </div>
-            <div class="imds-field-group-control">
-              <div class="imds-field">
-                <div class="imds-field-control">
-                  <input type="text" id=":field2:" class="imds-textbox" value="" />
+              <div class="imds-field-group-control">
+                <div class="imds-field" for=":field1:">
+                  <div class="imds-field-control">
+                    <input type="text" id=":field1:" class="imds-textbox" value="" />
+                  </div>
+                  <span class="imds-error-text" for=":field1:" style="display:none;"></span>
                 </div>
               </div>
             </div>
+            <!-- 可选字段示例 -->
+            <div class="imds-field-group is-horizontal imds-w-15">
+              <div class="imds-field-group-label">
+                <span>{字段标签}</span>
+              </div>
+              <div class="imds-field-group-control">
+                <div class="imds-field">
+                  <div class="imds-field-control">
+                    <input type="text" id=":field2:" class="imds-textbox" value="" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
-      <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">申请</button>
-      <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">暂存</button>
-    </div>
-  </main>
+        </section>
+      </div>
+      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+        <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">申请</button>
+        <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">暂存</button>
+      </div>
+    </main>
+  </div>
 </div>
 ```
 

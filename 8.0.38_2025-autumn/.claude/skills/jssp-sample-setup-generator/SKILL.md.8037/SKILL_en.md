@@ -294,7 +294,7 @@ After generation, verify against the self-check list in [reference/checklist.md]
 |--------|------|
 | **jssp-sample-setup-generator** (this skill) | Generates a full set of sample data setup materials (Importer format) |
 | jssp-tenant-setup-generator | Generates a full set of tenant setup materials (builds the prerequisites that modules need to run) |
-| base-im-workflow-generator | Generates IM-Workflow workflow definition XML |
+| jssp-im-workflow-generator | Generates IM-Workflow workflow definition XML |
 | jssp-im-logic-generator | Generates IM-LogicDesigner flow definition JSON |
 | jssp-page-generator | Generates screens and function containers |
 | jssp-im-job-generator | Implements the body of job programs (batch processing) |

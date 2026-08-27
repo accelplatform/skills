@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "api-im-workflow-modal-process_zh_CN.md",
+      "from": "api-im-workflow-modal-process_en.md",
       "to": "api-im-workflow-modal-process.md"
     },
     {
-      "from": "api-im-workflow-modal-process_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "api-im-workflow-modal-process_zh_CN.md",
       "to": "api-im-workflow-modal-process.md"
     }
   ]

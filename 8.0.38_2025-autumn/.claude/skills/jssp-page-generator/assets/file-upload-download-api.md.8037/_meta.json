@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "file-upload-download-api_zh_CN.md",
+      "from": "file-upload-download-api_en.md",
       "to": "file-upload-download-api.md"
     },
     {
-      "from": "file-upload-download-api_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "file-upload-download-api_zh_CN.md",
       "to": "file-upload-download-api.md"
     }
   ]

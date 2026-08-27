@@ -11,7 +11,7 @@ user-invocable: true
 
 ## 约束
 
-- 工作流主数据定义（内容、路由、流程的导入 XML）不在对象范围之内，那是 `base-im-workflow-generator` 的职责。
+- 工作流主数据定义（内容、路由、流程的导入 XML）不在对象范围之内，那是 `jssp-im-workflow-generator` 的职责。
 - 若 DDL/SQL 代理已先行生成，参照其表名、列名及 SQL 模板路径进行实现。
 - 申请画面、审批画面原则上不进行 DB 操作（仅通过 `workflowOpenPage` 提交）。
 

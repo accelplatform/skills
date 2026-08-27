@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "imart-tag-message_zh_CN.md",
+      "from": "imart-tag-message_en.md",
       "to": "imart-tag-message.md"
     },
     {
-      "from": "imart-tag-message_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imart-tag-message_zh_CN.md",
       "to": "imart-tag-message.md"
     }
   ]

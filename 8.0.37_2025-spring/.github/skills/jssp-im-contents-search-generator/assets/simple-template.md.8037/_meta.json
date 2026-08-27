@@ -14,13 +14,16 @@
     },
     {
       "condition": {
-        "locale": "zh_CN"
+        "locale": "en"
       },
-      "from": "simple-template_zh_CN.md",
+      "from": "simple-template_en.md",
       "to": "simple-template.md"
     },
     {
-      "from": "simple-template_en.md",
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "simple-template_zh_CN.md",
       "to": "simple-template.md"
     }
   ]

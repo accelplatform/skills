@@ -399,7 +399,7 @@ In both cases, **never touch existing config-N.xml files** — always add a new 
 | Skill | Purpose |
 |-------|---------|
 | **jssp-tenant-setup-generator** (this skill) | Generates a full set of tenant setup materials (Importer format) |
-| base-im-workflow-generator | Generates IM-Workflow workflow definition XML |
+| jssp-im-workflow-generator | Generates IM-Workflow workflow definition XML |
 | jssp-im-logic-generator | Generates IM-LogicDesigner flow definition JSON |
 | jssp-page-generator | Generates screens and function containers |
 | jssp-im-job-generator | Implements the body of job programs (batch processing) |
