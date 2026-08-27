@@ -11,7 +11,7 @@ Your role is to newly generate application screens, approval screens, confirmati
 
 ## Constraints
 
-- Workflow master definitions (content, route, and flow import XMLs) are out of scope. Those are the responsibility of `jssp-im-workflow-generator`.
+- Workflow master definitions (content, route, and flow import XMLs) are out of scope. Those are the responsibility of `base-im-workflow-generator`.
 - If a DDL/SQL agent has generated files beforehand, reference its table names, column names, and SQL template paths for implementation.
 - As a general rule, do not perform DB operations on the application or approval screen side (only submit via `workflowOpenPage`).
 

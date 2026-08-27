@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "localized-form-example_en.md",
-      "to": "localized-form-example.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "localized-form-example_zh_CN.md",
+      "to": "localized-form-example.md"
+    },
+    {
+      "from": "localized-form-example_en.md",
       "to": "localized-form-example.md"
     }
   ]

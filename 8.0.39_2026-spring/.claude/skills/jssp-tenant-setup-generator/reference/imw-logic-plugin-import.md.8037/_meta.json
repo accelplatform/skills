@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "imw-logic-plugin-import_en.md",
-      "to": "imw-logic-plugin-import.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "imw-logic-plugin-import_zh_CN.md",
+      "to": "imw-logic-plugin-import.md"
+    },
+    {
+      "from": "imw-logic-plugin-import_en.md",
       "to": "imw-logic-plugin-import.md"
     }
   ]

@@ -54,13 +54,14 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 ### `<header class="imds-header">` 中的图标必填
 
 `<header class="imds-header">` 中**不允许**仅放置 `imds-header-title`。
-**必须在开头放置 `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` 中的一个**（参考文件中规定为互斥）。省略此项会导致 header 仅显示文本，与 imds 设计风格不符（页面显示效果会破坏）。
+**必须在开头放置图标区域（`imds-header-icon` 或 `imds-header-nav`，两者互斥，不可同时放置）或 `imds-header-back-button` 中的至少一个**。
+`imds-header-back-button` **可以与** `imds-header-icon` / `imds-header-nav` **并用**，并非图标的替代。需要返回引导的页面（详情/编辑画面等），基本做法是在放置 back-button 的同时**保留图标区域**，而不是删除它（详见 `reference/imds-html-header.md` 的 "backItemExists"）。
 
 | 用途 | 放置的元素 | 图标示例 |
 |------|------------|------------|
 | 列表/登记/编辑等常规页面 | `imds-header-icon` + Font Awesome | 符合用途的图标（`fa-clipboard-list` / `fa-warehouse` / `fa-box` / `fa-location-dot` / `fa-chart-column` / `fa-gear` 等） |
-| 详情/编辑等需要返回引导的页面 | `imds-header-back-button` | （作为图标替代） |
-| 需要相关页面切换菜单的页面 | `imds-header-nav`（与 Popover 配合） | （作为图标替代） |
+| 详情/编辑等需要返回引导的页面 | `imds-header-back-button` + `imds-header-icon`（**并用**。back-button 并非图标的替代） | 符合用途的图标 |
+| 需要相关页面切换菜单的页面 | `imds-header-nav`（与 Popover 配合） | （因与 `imds-header-icon` 互斥而改用此项） |
 
 ```html
 <!-- 标准模式 -->
@@ -73,6 +74,24 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
   <div class="imds-header-title">
     <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>     <!-- ★ 副标题（必填） -->
     <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>     <!-- ★ 标题（必填） -->
+  </div>
+</header>
+
+<!-- 需要返回引导的页面（并用 back-button + 图标。不要因为放置了 back-button 就删除图标） -->
+<header class="imds-header">
+  <div class="imds-header-back-button">
+    <button type="button" class="imds-button is-ghost is-large">
+      <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+    </button>
+  </div>
+  <div class="imds-header-icon">                       <!-- ★ 即使有 back-button 也要保留 -->
+    <span class="imds-icon-wrapper is-large">
+      <span class="imds-icon is-medium"><i class="fa-solid fa-XXX"></i></span>
+    </span>
+  </div>
+  <div class="imds-header-title">
+    <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+    <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
   </div>
 </header>
 ```
@@ -91,24 +110,30 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 
 `<header class="imds-header">` 必须放置在 **`<main>` 外部**，并位于 `<div class="imds-container">` 的**直接下方**。imds 主题的 CSS 以此位置为前提应用样式，放在 `<main>` 内部会导致布局错乱（图标消失等）。
 
+**根 `<div>` 必须整合为一个（不要制造中间包装层）。** 根据 `jssp-presentation-page.md` 的规约，intra-mart 的主题功能会自动用 `<div id="imui-container">` 包裹页面内容，因此展示页面的根标签**不应附加 id**，只需附加 `imds-container` 类即可。无需再嵌套一层 `imds-container` 的 `<div>`。
+
 ```html
-<!-- OK -->
-<div id="container">
-  <div class="imds-container">
-    <header class="imds-header">...</header>   <!-- 在 main 外部 -->
-    <main>
-      ...
-    </main>
-  </div>
+<!-- OK：直接在根 div 上附加 imds-container 类，将 header/main 并列放在 imds-container 的直接下方 -->
+<div class="imds-container">
+  <header class="imds-header">...</header>   <!-- 在 main 外部 -->
+  <main>
+    ...
+  </main>
 </div>
 
-<!-- NG -->
-<div id="container">
+<!-- NG：将 header 放在 main 内部 -->
+<div class="imds-container">
+  <main>
+    <header class="imds-header">...</header> <!-- 在 main 内部时 CSS 不生效 -->
+    ...
+  </main>
+</div>
+
+<!-- NG：嵌套了 imds-container 的 div（多余的中间包装层） -->
+<div>
   <div class="imds-container">
-    <main>
-      <header class="imds-header">...</header> <!-- 在 main 内部时 CSS 不生效 -->
-      ...
-    </main>
+    <header class="imds-header">...</header>
+    <main>...</main>
   </div>
 </div>
 ```
@@ -148,7 +173,7 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 |---|---|
 | 面向整个页面的元操作（例：「设置」「导出」「日志输出对象设置」等不会增减列表本身数据的操作） | 「新建」「添加」「批量导入」等增减、编辑列表业务数据的操作 |
 
-如果同时配置搜索栏，请遵循 `assets/imds-list-page.md` 的「操作区域」模式（在 `button-area` 中将搜索栏 + 新建按钮横向排列）。
+如果同时配置搜索栏，请遵循 `assets/imds-list-page.md` 的「操作区域」模式（在 `pgstyle-toolbar` 中将搜索栏 + 新建按钮横向排列）。
 
 ### 不要使用虚构类（特别是 `imds-page-header` 系列）
 

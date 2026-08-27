@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "el-expressions_en.md",
-      "to": "el-expressions.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "el-expressions_zh_CN.md",
+      "to": "el-expressions.md"
+    },
+    {
+      "from": "el-expressions_en.md",
       "to": "el-expressions.md"
     }
   ]

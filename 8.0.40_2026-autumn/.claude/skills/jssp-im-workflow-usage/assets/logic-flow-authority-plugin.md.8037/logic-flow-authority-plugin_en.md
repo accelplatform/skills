@@ -155,7 +155,7 @@ Confirm that `PASS (0 warning(s))` is output.
 ## Specifying in the IM-Workflow Route Definition XML
 
 Use the `flowId` of the generated flow to specify the authority plugin in the IM-Workflow route definition XML.
-When generating the XML with the `jssp-im-workflow-generator` skill, refer to the "Logic Flow Specification" section in `authority-plugins.md` and write the spec.json accordingly.
+When generating the XML with the `base-im-workflow-generator` skill, refer to the "Logic Flow Specification" section in `authority-plugins.md` and write the spec.json accordingly.
 
 ```xml
 <!-- Example: authority configuration for an approval node -->

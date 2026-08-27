@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "imds-html-field_en.md",
-      "to": "imds-html-field.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "imds-html-field_zh_CN.md",
+      "to": "imds-html-field.md"
+    },
+    {
+      "from": "imds-html-field_en.md",
       "to": "imds-html-field.md"
     }
   ]

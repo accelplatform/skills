@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "ddl-type-mapping_en.md",
-      "to": "ddl-type-mapping.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "ddl-type-mapping_zh_CN.md",
+      "to": "ddl-type-mapping.md"
+    },
+    {
+      "from": "ddl-type-mapping_en.md",
       "to": "ddl-type-mapping.md"
     }
   ]

@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-calendar-info-manager_en.md",
-      "to": "api-calendar-info-manager.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-calendar-info-manager_zh_CN.md",
+      "to": "api-calendar-info-manager.md"
+    },
+    {
+      "from": "api-calendar-info-manager_en.md",
       "to": "api-calendar-info-manager.md"
     }
   ]

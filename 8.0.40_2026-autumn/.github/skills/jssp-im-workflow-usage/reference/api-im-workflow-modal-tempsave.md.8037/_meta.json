@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-im-workflow-modal-tempsave_en.md",
-      "to": "api-im-workflow-modal-tempsave.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-im-workflow-modal-tempsave_zh_CN.md",
+      "to": "api-im-workflow-modal-tempsave.md"
+    },
+    {
+      "from": "api-im-workflow-modal-tempsave_en.md",
       "to": "api-im-workflow-modal-tempsave.md"
     }
   ]

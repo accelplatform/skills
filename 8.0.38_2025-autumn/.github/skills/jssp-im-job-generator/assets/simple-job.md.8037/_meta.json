@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "simple-job_en.md",
-      "to": "simple-job.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "simple-job_zh_CN.md",
+      "to": "simple-job.md"
+    },
+    {
+      "from": "simple-job_en.md",
       "to": "simple-job.md"
     }
   ]

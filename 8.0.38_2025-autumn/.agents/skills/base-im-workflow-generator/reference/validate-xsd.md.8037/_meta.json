@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "validate-xsd_ja.md",
+      "to": "validate-xsd.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "validate-xsd_zh_CN.md",
+      "to": "validate-xsd.md"
+    },
+    {
+      "from": "validate-xsd_en.md",
+      "to": "validate-xsd.md"
+    }
+  ]
+}

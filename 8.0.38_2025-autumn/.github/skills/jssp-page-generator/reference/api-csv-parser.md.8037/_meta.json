@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-csv-parser_en.md",
-      "to": "api-csv-parser.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-csv-parser_zh_CN.md",
+      "to": "api-csv-parser.md"
+    },
+    {
+      "from": "api-csv-parser_en.md",
       "to": "api-csv-parser.md"
     }
   ]

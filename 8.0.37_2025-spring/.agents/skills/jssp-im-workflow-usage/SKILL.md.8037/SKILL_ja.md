@@ -83,7 +83,7 @@ intra-mart Accel Platform の IM-Workflow 連携プログラムを新規に生�
 - `reference/api-im-workflow-modal-confirm.md` - 処理モーダル API（`imWorkflow.modal.showConfirm()`）リファレンス
 - `reference/api-user-actv-matter-property-value.md` - 案件プロパティ値 API リファレンス
 - `reference/screen-generation-checklist.md` - 画面生成時のセルフチェックリスト
-- `.agents/skills/jssp-im-workflow-generator/reference/node-types.md` - ノード種別・権限プラグイン一覧（関連スキル）
+- `.agents/skills/base-im-workflow-generator/reference/node-types.md` - ノード種別・権限プラグイン一覧（関連スキル）
 
 ## 申請画面の方式選択
 
@@ -346,18 +346,18 @@ WARN [JSSP-JS-022] xxx.js:NN  null を渡す可能性
 
 ## 他スキルとの境界・整合性責務
 
-本スキルが生成するファイル配置は、`jssp-im-workflow-generator` が生成する XML 内の `<scriptPath>`（または spec.json の `screens`）と**完全に一致させる必要がある**。責務分担は以下のとおり:
+本スキルが生成するファイル配置は、`base-im-workflow-generator` が生成する XML 内の `<scriptPath>`（または spec.json の `screens`）と**完全に一致させる必要がある**。責務分担は以下のとおり:
 
 | 責務 | 担当スキル |
 |------|-----------|
-| spec.json の `screens` で画面パスを決定 | `jssp-im-workflow-generator` |
-| XML 内の `<scriptPath>` 出力 | `jssp-im-workflow-generator` |
+| spec.json の `screens` で画面パスを決定 | `base-im-workflow-generator` |
+| XML 内の `<scriptPath>` 出力 | `base-im-workflow-generator` |
 | `.js` / `.html` ファイルを実体として配置 | **本スキル（usage）** |
 | パス整合の検証 | `scripts/validate-workflow-code.js` の `WF-XML-001` |
 
 ### pageType と本スキルの慣例ディレクトリの対応表
 
-`jssp-im-workflow-generator` のデフォルトは本スキルの慣例ディレクトリ名に揃えてあるため、**新規プロジェクトでは spec.json の `screens` を省略してよい**。
+`base-im-workflow-generator` のデフォルトは本スキルの慣例ディレクトリ名に揃えてあるため、**新規プロジェクトでは spec.json の `screens` を省略してよい**。
 
 | pageType | キー | 本スキルの配置先 | 用途 |
 |---|---|---|---|
@@ -374,8 +374,8 @@ WARN [JSSP-JS-022] xxx.js:NN  null を渡す可能性
 
 ### 生成順序の推奨
 
-1. `jssp-im-workflow-generator` で spec.json を作り、XML を生成（先に画面パスが決まる）
+1. `base-im-workflow-generator` で spec.json を作り、XML を生成（先に画面パスが決まる）
 2. 本スキルで XML が参照する各画面ファイルを生成
 3. `validate-workflow-code.js` で `WF-XML-001` が出ないか確認（出る場合は意図的か未生成か区別）
 
-詳細な対応表・共用パターンは `jssp-im-workflow-generator` スキルの SKILL.md「他スキルとの境界・整合性責務」セクション参照。
+詳細な対応表・共用パターンは `base-im-workflow-generator` スキルの SKILL.md「他スキルとの境界・整合性責務」セクション参照。

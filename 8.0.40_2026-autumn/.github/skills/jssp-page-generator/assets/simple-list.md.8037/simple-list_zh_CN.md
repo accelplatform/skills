@@ -387,58 +387,56 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- 页面整体容器 -->
-<div id="container">
-  <div class="imds-container">
-    <!-- 头部 -->
-    <header class="imds-header">
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-      </div>
-    </header>
+<!-- 页面整体容器（会被放置在 intra-mart 主题的 imui-container 内部，因此不附加 id） -->
+<div class="imds-container">
+  <!-- 头部 -->
+  <header class="imds-header">
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+  </header>
 
-    <!-- 主要内容 -->
-    <main>
-      <div class="imds-py-3">
-        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
-          <div class="button-area imds-mb-3">
-            <div class="imds-input-group">
-              <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="搜索关键词">
-              <button type="button" title="搜索" class="imds-button">
-                <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
-              </button>
-            </div>
-            <button type="button" id="create-button" class="imds-button is-primary">新建</button>
+  <!-- 主要内容 -->
+  <main>
+    <div class="imds-py-3">
+      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
+        <div class="button-area imds-mb-3">
+          <div class="imds-input-group">
+            <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="搜索关键词">
+            <button type="button" title="搜索" class="imds-button">
+              <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+            </button>
           </div>
-          <div class="imds-table" id="stock-table">
-            <div class="imds-table-inner">
-              <table>
-                <thead>
-                  <tr>
-                    <th class="col-edit has-text-centered"><span>编辑</span></th>
-                    <th><span>商品代码</span></th>
-                    <th><span>商品名称</span></th>
-                    <th><span>单价</span></th>
-                    <th><span>库存数量</span></th>
-                    <th><span>仓库编号</span></th>
-                    <th><span>备注</span></th>
-                  </tr>
-                </thead>
-                <tbody id="stock-table-body"></tbody>
-              </table>
-            </div>
+          <button type="button" id="create-button" class="imds-button is-primary">新建</button>
+        </div>
+        <div class="imds-table" id="stock-table">
+          <div class="imds-table-inner">
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-edit has-text-centered"><span>编辑</span></th>
+                  <th><span>商品代码</span></th>
+                  <th><span>商品名称</span></th>
+                  <th><span>单价</span></th>
+                  <th><span>库存数量</span></th>
+                  <th><span>仓库编号</span></th>
+                  <th><span>备注</span></th>
+                </tr>
+              </thead>
+              <tbody id="stock-table-body"></tbody>
+            </table>
           </div>
-          <div class="imds-py-3" id="pagination"></div>
-        </section>
-      </div>
-    </main>
-  </div>
+        </div>
+        <div class="imds-py-3" id="pagination"></div>
+      </section>
+    </div>
+  </main>
 </div>
 ```
 

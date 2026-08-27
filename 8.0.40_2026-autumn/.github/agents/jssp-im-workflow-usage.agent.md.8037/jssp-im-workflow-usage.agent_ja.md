@@ -11,7 +11,7 @@ user-invocable: true
 
 ## 制約
 
-- ワークフローのマスタ定義（コンテンツ・ルート・フローのインポート XML）は対象外。それは `jssp-im-workflow-generator` の担当。
+- ワークフローのマスタ定義（コンテンツ・ルート・フローのインポート XML）は対象外。それは `base-im-workflow-generator` の担当。
 - DDL/SQL エージェントが先行して生成した場合は、そのテーブル名・カラム名・SQL テンプレートパスを参照して実装する。
 - 申請画面・承認画面側では原則 DB 操作を行わない（`workflowOpenPage` で送信するだけ）。
 

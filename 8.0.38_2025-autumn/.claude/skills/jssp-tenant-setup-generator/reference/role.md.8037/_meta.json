@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "role_en.md",
-      "to": "role.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "role_zh_CN.md",
+      "to": "role.md"
+    },
+    {
+      "from": "role_en.md",
       "to": "role.md"
     }
   ]

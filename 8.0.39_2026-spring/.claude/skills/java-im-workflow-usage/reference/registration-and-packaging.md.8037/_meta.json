@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "registration-and-packaging_ja.md",
+      "to": "registration-and-packaging.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "registration-and-packaging_zh_CN.md",
+      "to": "registration-and-packaging.md"
+    },
+    {
+      "from": "registration-and-packaging_en.md",
+      "to": "registration-and-packaging.md"
+    }
+  ]
+}

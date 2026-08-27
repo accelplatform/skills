@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "portlet-import_en.md",
-      "to": "portlet-import.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "portlet-import_zh_CN.md",
+      "to": "portlet-import.md"
+    },
+    {
+      "from": "portlet-import_en.md",
       "to": "portlet-import.md"
     }
   ]

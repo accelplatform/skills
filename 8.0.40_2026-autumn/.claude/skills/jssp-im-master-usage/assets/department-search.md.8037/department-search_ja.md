@@ -23,17 +23,16 @@ IM-共通マスタの `imACMSearch` を利用した、組織検索ダイアロ�
     ├── callbackFromImMaster()     ... 選択結果を受け取るコールバック関数
     └── window.callbackFromImMaster ... コールバック関数のグローバル登録
 
-<div id="container">
-└── imds-container
-    └── main
-        └── form.imds-form
-            └── section
-                └── imds-field-container
-                    └── imds-field（組織名）
-                        ├── input[type="hidden"]    ... 会社コード（隠しフィールド）
-                        ├── input[type="hidden"]    ... 組織セットコード（隠しフィールド）
-                        ├── input[type="hidden"]    ... 組織コード（隠しフィールド）
-                        └── imds-textbox-control    ... 組織名（検索アイコン付き・readonly）
+<div class="imds-container">
+└── main
+    └── form.imds-form
+        └── section
+            └── imds-field-container
+                └── imds-field（組織名）
+                    ├── input[type="hidden"]    ... 会社コード（隠しフィールド）
+                    ├── input[type="hidden"]    ... 組織セットコード（隠しフィールド）
+                    ├── input[type="hidden"]    ... 組織コード（隠しフィールド）
+                    └── imds-textbox-control    ... 組織名（検索アイコン付き・readonly）
 ```
 
 ## 1. head 部（検索ダイアログの設定）
@@ -203,41 +202,39 @@ IM-共通マスタの `imACMSearch` を利用した、組織検索ダイアロ�
   </script>
 </imart>
 
-<!-- ページ全体のコンテナ -->
-<div id="container">
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p>IM-共通マスタ サンプル</p>
-        <h1>組織検索</h1>
-      </div>
-    </header>
-    <main>
-      <form class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
-        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
-          <div class="imds-field-container has-accent-color">
-            <div class="imds-field is-horizontal imds-w-15 sample-department">
-              <div class="imds-field-label"><label for=":departmentName:">組織名</label></div>
-              <div class="imds-field-control">
-                <div class="imds-textbox-control">
-                  <input type="hidden" id=":companyCode:" value="">
-                  <input type="hidden" id=":departmentSetCode:" value="">
-                  <input type="hidden" id=":departmentCode:" value="">
-                  <input type="text" id=":departmentName:" placeholder="組織名を選択" class="imds-textbox" readonly value="">
-                  <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
-                </div>
+<!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
+<div class="imds-container">
+  <header class="imds-header">
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p>IM-共通マスタ サンプル</p>
+      <h1>組織検索</h1>
+    </div>
+  </header>
+  <main>
+    <form class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
+        <div class="imds-field-container has-accent-color">
+          <div class="imds-field is-horizontal imds-w-15 sample-department">
+            <div class="imds-field-label"><label for=":departmentName:">組織名</label></div>
+            <div class="imds-field-control">
+              <div class="imds-textbox-control">
+                <input type="hidden" id=":companyCode:" value="">
+                <input type="hidden" id=":departmentSetCode:" value="">
+                <input type="hidden" id=":departmentCode:" value="">
+                <input type="text" id=":departmentName:" placeholder="組織名を選択" class="imds-textbox" readonly value="">
+                <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
               </div>
             </div>
           </div>
-        </section>
-      </form>
-    </main>
-  </div>
+        </div>
+      </section>
+    </form>
+  </main>
 </div>
 ```
 

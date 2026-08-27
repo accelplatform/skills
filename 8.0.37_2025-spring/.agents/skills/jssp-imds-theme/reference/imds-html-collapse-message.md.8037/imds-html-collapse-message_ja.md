@@ -92,6 +92,26 @@ Message 共通の使用方法、注意事項は、Documentation を参照して�
 <div class="imds-collapse-message is-large">    <!-- 大 -->
 ```
 
+### アイコン無し（No Icon）
+
+アイコンが不要な場合や外観を簡素化したい場合、`imds-message-title` 内の `span.imds-icon` を省略し `<p>` のみを配置する。
+
+```html
+<div class="imds-collapse-message">
+  <input type="checkbox" id="todo-replace-:r1:" />
+  <label for="todo-replace-:r1:">
+    <div class="imds-message-title"><p>通知する機能や方法について設定します。</p></div>
+    <span class="imds-icon imds-collapse-message-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+  </label>
+  <div class="imds-message-content">
+    <ul>
+      <li>メッセージ通知設定では、各機能の通知を受信するメディアを設定します。</li>
+      <li>一般通知設定では、一般の通知を受信するメールアドレスを設定します。</li>
+    </ul>
+  </div>
+</div>
+```
+
 ## 実装上の注意
 
 - 開閉は `input[type="checkbox"]` と `label` の連携で CSS のみで制御される（JavaScript 不要）

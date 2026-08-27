@@ -1,0 +1,87 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": "8.0.40"
+  },
+  "rename": [
+    {
+      "condition": {
+        "module": "im_activiti"
+      },
+      "from": "package_im_activiti.json",
+      "to": "package.json"
+    },
+    {
+      "from": "package.json",
+      "to": "package.json"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "regex",
+      "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
+      "replacement": "{{$artifactId}}",
+      "condition": {
+        "accelplatformVersion": "8.0.40"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
+      "replacement": "{{$projectVersion}}",
+      "condition": {
+        "accelplatformVersion": "8.0.40"
+      }
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_DESCRIPTION\\}\\}",
+      "replacement": "{{$description}}",
+      "condition": {
+        "accelplatformVersion": "8.0.40"
+      }
+    }
+  ],
+  "messages": [
+    {
+      "condition": {
+        "and": [
+          {
+            "module": "im_activiti"
+          }, {
+            "locale": "ja"
+          }
+        ]
+      },
+      "level": "warn",
+      "text": "IM-BPMを活用したスキルは開発中のものであり、近い将来内容が変更される可能性があります。"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "module": "im_activiti"
+          }, {
+            "locale": "en"
+          }
+        ]
+      },
+      "level": "warn",
+      "text": "Skills leveraging IM-BPM are under development and may change in the near future."
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "module": "im_activiti"
+          }, {
+            "locale": "zh_CN"
+          }
+        ]
+      },
+      "level": "warn",
+      "text": "利用IM-BPM的技能正在开发中，可能会在不久的将来发生变化。"
+    }
+  ]
+}

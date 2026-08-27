@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "database-sql_en.md",
-      "to": "database-sql.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "database-sql_zh_CN.md",
+      "to": "database-sql.md"
+    },
+    {
+      "from": "database-sql_en.md",
       "to": "database-sql.md"
     }
   ]

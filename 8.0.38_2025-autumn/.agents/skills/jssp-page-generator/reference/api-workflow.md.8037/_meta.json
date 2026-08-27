@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-workflow_en.md",
-      "to": "api-workflow.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-workflow_zh_CN.md",
+      "to": "api-workflow.md"
+    },
+    {
+      "from": "api-workflow_en.md",
       "to": "api-workflow.md"
     }
   ]

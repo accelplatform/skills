@@ -44,13 +44,14 @@ When generating a new screen, first read one of these two files, use the page sk
 ### Icons in `<header class="imds-header">` Are Required
 
 Inside `<header class="imds-header">`, placing only `imds-header-title` is **not allowed**.
-**Always place exactly one of `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` at the beginning** (specified as exclusive in the reference). Omitting this makes the header appear as text only, and it does not blend into the imds design (it looks broken on screen).
+**Always place at least one of the icon area (`imds-header-icon` or `imds-header-nav` — these two are mutually exclusive and must not be placed together) or `imds-header-back-button` at the beginning.**
+`imds-header-back-button` **can be combined** with `imds-header-icon` / `imds-header-nav` — it is not a replacement for the icon. On screens that need "back" navigation (detail/edit screens, etc.), the default is to place the back-button **while keeping the icon area** rather than removing it (see "backItemExists" in `reference/imds-html-header.md` for details).
 
 | Purpose | Element to place | Icon examples |
 |------|------------|------------|
 | General page (list, register, edit) | `imds-header-icon` + Font Awesome | Icon matching the purpose (`fa-clipboard-list` / `fa-warehouse` / `fa-box` / `fa-location-dot` / `fa-chart-column` / `fa-gear`, etc.) |
-| Detail/edit screens that need a "back" navigation | `imds-header-back-button` | (acts as icon replacement) |
-| Screens that need a related-screen-switching menu | `imds-header-nav` (combined with Popover) | (acts as icon replacement) |
+| Detail/edit screens that need a "back" navigation | `imds-header-back-button` + `imds-header-icon` (**combined**; the back-button is not a substitute for the icon) | Icon matching the purpose |
+| Screens that need a related-screen-switching menu | `imds-header-nav` (combined with Popover) | (used instead, since it is exclusive with `imds-header-icon`) |
 
 ```html
 <!-- Standard pattern -->
@@ -63,6 +64,24 @@ Inside `<header class="imds-header">`, placing only `imds-header-title` is **not
   <div class="imds-header-title">
     <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>     <!-- * Subtitle (required) -->
     <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>     <!-- * Title (required) -->
+  </div>
+</header>
+
+<!-- Screens that need "back" navigation (combine back-button + icon; do not drop the icon just because a back-button is present) -->
+<header class="imds-header">
+  <div class="imds-header-back-button">
+    <button type="button" class="imds-button is-ghost is-large">
+      <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+    </button>
+  </div>
+  <div class="imds-header-icon">                       <!-- * Keep this even when a back-button is present -->
+    <span class="imds-icon-wrapper is-large">
+      <span class="imds-icon is-medium"><i class="fa-solid fa-XXX"></i></span>
+    </span>
+  </div>
+  <div class="imds-header-title">
+    <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+    <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
   </div>
 </header>
 ```
@@ -81,24 +100,30 @@ Do not write the screen name directly in `<h1>` alone (it fails to meet the imds
 
 `<header class="imds-header">` must be placed **outside `<main>`**, **directly under** `<div class="imds-container">`. The imds theme CSS assumes this position when applying styles, so placing it inside `<main>` breaks the layout (icons disappear, etc.).
 
+**Consolidate the root into a single `<div>` — do not add an extra wrapper.** Per the `jssp-presentation-page.md` convention, the platform's theme feature automatically wraps the screen content in `<div id="imui-container">`, so the presentation page's root tag must carry only the `imds-container` class, with no `id`. There is no need to nest another `<div>` around the one that carries `imds-container`.
+
 ```html
-<!-- OK -->
-<div id="container">
-  <div class="imds-container">
-    <header class="imds-header">...</header>   <!-- Outside main -->
-    <main>
-      ...
-    </main>
-  </div>
+<!-- OK: give the root div the imds-container class directly, with header/main as its direct children -->
+<div class="imds-container">
+  <header class="imds-header">...</header>   <!-- Outside main -->
+  <main>
+    ...
+  </main>
 </div>
 
-<!-- NG -->
-<div id="container">
+<!-- NG: header placed inside main -->
+<div class="imds-container">
+  <main>
+    <header class="imds-header">...</header> <!-- CSS does not apply inside main -->
+    ...
+  </main>
+</div>
+
+<!-- NG: the imds-container div is nested inside another div (unnecessary intermediate wrapper) -->
+<div>
   <div class="imds-container">
-    <main>
-      <header class="imds-header">...</header> <!-- CSS does not apply inside main -->
-      ...
-    </main>
+    <header class="imds-header">...</header>
+    <main>...</main>
   </div>
 </div>
 ```
@@ -138,7 +163,7 @@ The header is primarily for showing the page title — it is not a place to line
 |---|---|
 | Page-wide meta operations (e.g. "Settings", "Export", "Configure logging targets" — operations that do not add/remove the list's own data) | "New", "Add", "Bulk Import" — actions that add, remove, or edit the list's business data |
 
-When pairing with a search field, follow the "operation area" pattern in `assets/imds-list-page.md` (search field + new-creation button laid out horizontally inside `button-area`).
+When pairing with a search field, follow the "operation area" pattern in `assets/imds-list-page.md` (search field + new-creation button laid out horizontally inside `pgstyle-toolbar`).
 
 ### Do Not Use Imaginary Classes (Especially `imds-page-header` Family)
 

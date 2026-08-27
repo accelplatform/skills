@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "imds-html-progress-bar_en.md",
-      "to": "imds-html-progress-bar.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "imds-html-progress-bar_zh_CN.md",
+      "to": "imds-html-progress-bar.md"
+    },
+    {
+      "from": "imds-html-progress-bar_en.md",
       "to": "imds-html-progress-bar.md"
     }
   ]

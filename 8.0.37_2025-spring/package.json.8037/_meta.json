@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "type": "file",
   "conditions": {
-    "accelplatformVersion": ">=8.0.37"
+    "accelplatformVersion": "8.0.37"
   },
   "rename": [
     {
@@ -50,7 +50,7 @@
           {
             "module": "im_activiti"
           }, {
-            "locale": "ja" 
+            "locale": "ja"
           }
         ]
       },
@@ -63,7 +63,7 @@
           {
             "module": "im_activiti"
           }, {
-            "locale": "en" 
+            "locale": "en"
           }
         ]
       },
@@ -76,7 +76,7 @@
           {
             "module": "im_activiti"
           }, {
-            "locale": "zh_CN" 
+            "locale": "zh_CN"
           }
         ]
       },

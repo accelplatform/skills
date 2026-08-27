@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "jssp-logging_en.md",
-      "to": "jssp-logging.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "jssp-logging_zh_CN.md",
+      "to": "jssp-logging.md"
+    },
+    {
+      "from": "jssp-logging_en.md",
       "to": "jssp-logging.md"
     }
   ]

@@ -101,13 +101,11 @@ description: "プレゼンテーションページの実装方針"
   </script>
 </imart>
 
-<!-- 整个页面的容器 -->
-<div id="container">
-  <div class="imds-container">
-    <main>
-      <!-- 主要内容 -->
-    </main>
-  </div>
+<!-- 整个页面的容器（因位于 intra-mart 主题输出的 <div id="imui-container"> 内部，画面侧不附加 id；class 遵循所使用 UI 主题的规约） -->
+<div>
+  <main>
+    <!-- 主要内容 -->
+  </main>
 </div>
 ```
 
@@ -119,8 +117,13 @@ description: "プレゼンテーションページの実装方針"
 - 所需的 JavaScript 库，在 `<imart type="head">` 标签内使用 `<script>` 标签添加
   - 但是，尽量不引入库，能用 vanilla JavaScript 实现的情况下使用 vanilla 实现
   - 编写能在 Microsoft Edge、Chrome、Safari 上运行的代码
-- 根标签使用 `<div>` 标签，并为 id 属性赋值 `container`
+- 根标签使用 `<div>`，**画面侧不附加 `id` 属性**
+  - 由于 intra-mart 的主题功能会始终自动将展示页面的内容放置在 `<div id="imui-container">` 内部，若画面侧再叠加附加 `id="container"`，会形成无谓的双重包装（`<div id="imui-container"><div id="container">...</div></div>`），因此不附加
+  - 根标签的 `class` 遵循项目所采用的 UI 主题的规约（本页面是不依赖特定 UI 主题的基本规约，因此此处不规定具体的类名）。**使用 imds 主题时**，请遵循 `.github/skills/jssp-imds-theme` 的规约附加 `class="imds-container"`。不使用 UI 主题时，则无需 class
   - 所有需要的标签都在根标签下实现
+  - **例外**：仅限可能作为 Portlet（部件）在同一门户画面中多重配置的画面，才在根标签上附加 `id="app-portlet-{功能ID}-container"`（详见 `.github/skills/jssp-page-generator/assets/simple-portlet.md`）
+- 需要通过 DOM 操作定位根元素时（例如指定 React.js / Vue.js 的挂载目标、限定直接 DOM 操作的作用范围等），普通画面使用 `document.getElementById('imui-container')`
+  - **注意**：intra-mart 的部分门户配置中，Portlet 不通过 iframe 隔离。由于同一页面内可能同时存在其他画面的 DOM，请勿对整个页面无限制地执行 `document.querySelectorAll()` 等操作，务必将 DOM 操作限定在本画面的根元素（`imui-container` 或 Portlet 的 `app-portlet-{功能ID}-container`）之下
 - `<imart>` 标签的 value 属性不得用双引号括起来
 - 页面加载时的初始化处理使用 `DOMContentLoaded` 事件
 
@@ -270,7 +273,9 @@ let value = '<imart type="string" value=$imwSystemMatterId escapeXml="false" esc
 
 ### 注意：元素 id 的冲突
 
-通过 IIFE 可以避免 `$data` 的冲突，但 `id="xxx-table"` 等元素 id 仍然是每个画面固定不变的。如果门户以将多个实例直接并排放置在同一 DOM 中的方式嵌入（而非用 iframe 隔离），id 重复可能导致 `document.getElementById()` 只返回第一个实例的元素。请根据门户的嵌入方式（是否用 iframe 隔离）酌情考虑将 id 按实例唯一化。
+通过 IIFE 可以避免 `$data` 的冲突，但 `id="xxx-table"` 等元素 id 仍然是每个画面固定不变的。如果门户以将多个实例直接并排放置在同一 DOM 中的方式嵌入（不通过 iframe 隔离的方式），id 重复可能导致 `document.getElementById()` 只返回第一个实例的元素。
+
+在根标签上附加 `id="app-portlet-{功能ID}-container"`（如前所述），对于**不同** Portlet 配置在同一页面时的 DOM 作用范围隔离是有效的，但**同一 Portlet 在同一页面中多重配置**的情形，由于两个实例渲染自同一份 HTML 源代码，`{功能ID}` 也会相同，仅靠此方式无法解决 id 重复问题。若业务上允许同一 Portlet 多重配置，请在接受此限制的前提下运作，或另行考虑按实例进行唯一化的方案（例如附加由门户侧传递的实例标识符）。
 
 ## maxlength 属性的使用方针
 
@@ -291,7 +296,8 @@ let value = '<imart type="string" value=$imwSystemMatterId escapeXml="false" esc
 | **按钮**（`-button` 后缀） | **`xxx-button`**（不含冒号） | `id="apply-button"` | 含连字符，不会污染全局命名空间，也不通过 `.value` 等访问。 |
 | **对话框**（`-dialog` 后缀） | **`xxx-dialog`**（不含冒号） | `id="user-select-dialog"` | 同上。 |
 | **表单**（`-form` 后缀） | **`xxx-form`**（不含冒号） | `id="main-form"` | 同上。 |
-| **根容器及其他结构元素** | 不含冒号 | `id="container"` | 同上。 |
+| **普通画面的根容器** | 不附加 id | `<div>`（无 id；class 遵循所使用的 UI 主题） | intra-mart 主题会自动将画面内容包裹在 `<div id="imui-container">` 中，因此画面侧不得再叠加附加 id。 |
+| **Portlet 画面的根容器** | **`app-portlet-{功能ID}-container`**（不含冒号） | `id="app-portlet-imds_demo-container"` | 当同一门户画面中配置了多个不同的 Portlet 时，用于按画面区分 DOM 操作的作用范围。**{功能ID}** 使用画面的文件夹名（功能名）。但无法解决同一 Portlet 在同一页面中多重配置时的 id 重复问题（参见后述"注意：元素 id 的冲突"）。 |
 
 ### 标签 span 的使用区分（常时必填 vs 条件必填）
 

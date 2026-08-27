@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "java-entity_ja.md",
+      "to": "java-entity.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "java-entity_zh_CN.md",
+      "to": "java-entity.md"
+    },
+    {
+      "from": "java-entity_en.md",
+      "to": "java-entity.md"
+    }
+  ]
+}

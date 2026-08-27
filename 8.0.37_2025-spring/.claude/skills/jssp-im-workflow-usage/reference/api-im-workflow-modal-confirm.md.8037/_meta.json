@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-im-workflow-modal-confirm_en.md",
-      "to": "api-im-workflow-modal-confirm.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-im-workflow-modal-confirm_zh_CN.md",
+      "to": "api-im-workflow-modal-confirm.md"
+    },
+    {
+      "from": "api-im-workflow-modal-confirm_en.md",
       "to": "api-im-workflow-modal-confirm.md"
     }
   ]

@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "simple-authority-exec-event-listener_en.md",
-      "to": "simple-authority-exec-event-listener.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "simple-authority-exec-event-listener_zh_CN.md",
+      "to": "simple-authority-exec-event-listener.md"
+    },
+    {
+      "from": "simple-authority-exec-event-listener_en.md",
       "to": "simple-authority-exec-event-listener.md"
     }
   ]

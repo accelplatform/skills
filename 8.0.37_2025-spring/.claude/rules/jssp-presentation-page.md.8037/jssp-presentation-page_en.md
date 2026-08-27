@@ -101,13 +101,11 @@ paths:
   </script>
 </imart>
 
-<!-- Full-page container -->
-<div id="container">
-  <div class="imds-container">
-    <main>
-      <!-- Main content -->
-    </main>
-  </div>
+<!-- Full-page container (no id is added, since it is placed inside the intra-mart theme's <div id="imui-container">; class follows the conventions of the UI theme in use) -->
+<div>
+  <main>
+    <!-- Main content -->
+  </main>
 </div>
 ```
 
@@ -119,8 +117,13 @@ paths:
 - Required JavaScript libraries should be added inside the `<imart type="head">` tag using `<script>` tags
   - However, avoid adopting libraries as much as possible; implement in vanilla JavaScript when feasible
   - Write code that works in Microsoft Edge, Chrome, and Safari
-- Use a `<div>` tag as the root tag and assign the `container` id attribute to it
+- Use `<div>` as the root tag, and **do not assign an `id` attribute to it on the screen side**
+  - intra-mart's theme functionality always places the presentation page's content inside `<div id="imui-container">` automatically. If the screen also assigns `id="container"`, it produces a wasteful double wrapper (`<div id="imui-container"><div id="container">...</div></div>`), so do not assign one
+  - The root tag's `class` follows the conventions of whichever UI theme the project adopts (this page is a base convention independent of any specific UI theme, so it does not prescribe a concrete class name here). **When using the imds theme**, assign `class="imds-container"` per the conventions in `.claude/skills/jssp-imds-theme`. If no UI theme is used, no class is needed at all
   - Implement all required tags under the root tag
+  - **Exception**: Only for screens that may be placed multiple times as portlets (components) on the same portal screen, assign `id="app-portlet-{feature-ID}-container"` to the root tag (see `.claude/skills/jssp-page-generator/assets/simple-portlet.md` for details)
+- When you need to identify the root element for DOM manipulation (e.g., specifying a mount target for React.js / Vue.js, or scoping direct DOM manipulation), use `document.getElementById('imui-container')` for normal screens
+  - **Note**: In some intra-mart portal configurations, portlets are not isolated via iframes. Since the DOM of other screens may coexist on the same page, do not perform unrestricted `document.querySelectorAll()` etc. across the entire page — always scope DOM manipulation to your own screen's root element (`imui-container`, or the portlet's `app-portlet-{feature-ID}-container`)
 - The value attribute of `<imart>` tags must not be enclosed in double quotes
 - Use the `DOMContentLoaded` event for initialization processing at page load
 
@@ -270,7 +273,9 @@ Defining `const $data = <imart>...</imart>;` as-is in an independent `<script>` 
 
 ### Note: Element id Collisions
 
-While the IIFE resolves the `$data` collision, element ids such as `id="xxx-table"` remain fixed per screen. If the portal embeds multiple instances directly into the same DOM (rather than isolating them in iframes), duplicate ids can cause `document.getElementById()` to return only the element of the first instance. Consider making ids unique per instance as needed, based on how the portal embeds the portlet (whether instances are isolated in iframes).
+While the IIFE resolves the `$data` collision, element ids such as `id="xxx-table"` remain fixed per screen. If the portal embeds multiple instances directly into the same DOM (a method that does not isolate them in iframes), duplicate ids can cause `document.getElementById()` to return only the element of the first instance.
+
+Assigning `id="app-portlet-{feature-ID}-container"` to the root tag (described above) is effective for isolating DOM scope when **different** portlets are placed on the same page, but it does not by itself resolve id duplication when **the same portlet is placed multiple times** on the same page, since both instances render from the same HTML source and therefore share the same `{feature-ID}`. If your operation allows the same portlet to be placed multiple times, either accept this constraint, or consider a separate per-instance uniquification scheme (e.g., assigning an instance identifier passed from the portal side).
 
 ## Policy on Using the maxlength Attribute
 
@@ -291,7 +296,8 @@ Different element kinds use different naming patterns for the `id` attribute. Th
 | **Buttons** (`-button` suffix) | **`xxx-button`** (no colons) | `id="apply-button"` | Contains a hyphen so it cannot pollute the global namespace, and it is not accessed via `.value` etc. |
 | **Dialogs** (`-dialog` suffix) | **`xxx-dialog`** (no colons) | `id="user-select-dialog"` | Same as above. |
 | **Forms** (`-form` suffix) | **`xxx-form`** (no colons) | `id="main-form"` | Same as above. |
-| **Root containers and other structural elements** | No colons | `id="container"` | Same as above. |
+| **Root container of a normal screen** | No id assigned | `<div>` (no id; class follows the UI theme in use) | The intra-mart theme automatically wraps the screen's content in `<div id="imui-container">`, so the screen must not stack an additional id on top of it. |
+| **Root container of a portlet screen** | **`app-portlet-{feature-ID}-container`** (no colons) | `id="app-portlet-imds_demo-container"` | Lets DOM manipulation be scoped per screen when multiple different portlets are placed on the same portal screen. **{feature-ID}** is the screen's folder name (feature name). This does not, however, resolve id duplication when the same portlet is placed multiple times on the same page (see "Note: Element id Collisions" below). |
 
 ### How to Distinguish Label Spans (Always-Required vs. Conditionally-Required)
 

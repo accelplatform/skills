@@ -11,7 +11,7 @@ FieldGroup は、複数の Field をグループ化するための部品です�
 
 - 抽出元URL: https://document.intra-mart.jp/design/?path=/docs/components-field-fieldgroup--documentation
 - 基本クラス: imds-field-group
-- 個別のフィールドの詳細は [field](field.md) を参照
+- 個別のフィールドの詳細は [imds-html-field.md](imds-html-field.md) を参照
 
 ## 全体構造
 
@@ -53,6 +53,7 @@ imds-field-group                          # グループ全体（is-vertical / i
 | imds-help-text | span 要素 | ヘルプテキスト | オプション |
 | imds-error-text | span 要素 | エラーメッセージ | オプション |
 | imds-validation-error | imds-field | バリデーションエラー状態（個別 Field に付与） | オプション |
+| imds-field-container | 外側 div | FieldGroup を縦に並べるコンテナ（第1階層は必須） | 必須（第1階層配置時） |
 
 ## HTML スニペット
 
@@ -152,6 +153,38 @@ imds-field-group                          # グループ全体（is-vertical / i
 </div>
 ```
 
+### field-container でラップする
+
+FieldGroup をフォームの第1階層に配置する場合は、Field と同様に `imds-field-container` でラップする。`imds-field-container` の詳細（`has-divider` / `has-accent-color` / 768px 未満の自動縦積み）は [imds-html-field.md](imds-html-field.md) の「Field Container」節を参照。
+
+```html
+<form class="imds-form">
+  <div class="imds-field-container">
+    <div class="imds-field-group is-horizontal imds-w-15">
+      <div class="imds-field-group-label"><span>住所</span></div>
+      <div class="imds-field-group-control">
+        <div class="imds-field">
+          <div class="imds-field-label">
+            <label class="imds-required-label-required-asterisk" for=":r8:">都道府県</label>
+          </div>
+          <div class="imds-field-control">
+            <input type="text" id=":r8:" class="imds-textbox" value="" />
+          </div>
+        </div>
+        <div class="imds-field">
+          <div class="imds-field-label">
+            <label class="imds-required-label-required-asterisk" for=":r9:">市区町村</label>
+          </div>
+          <div class="imds-field-control">
+            <input type="text" id=":r9:" class="imds-textbox" value="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+```
+
 ## 実装上の注意
 
 - グループ内の各 Field で `id` が重複しないよう一意の値を付与すること（`:r1:` 等はプレースホルダー）
@@ -160,4 +193,7 @@ imds-field-group                          # グループ全体（is-vertical / i
 - `imds-field-group-control is-horizontal` 内に複数の `imds-field` を配置する場合、`imds-field-label` の有無はグループ内で統一すること。ラベルありとなしが混在するとレイアウトが崩れる
   - 全フィールドにラベルを付ける場合は、`imds-field-group-label` にはグループ全体の見出しを設定する
   - ラベルなしで統一する場合は、`imds-field-group-label` に代表的な項目名を設定する
-- Field の詳細な使い方は [field](field.md) を参照
+- **1つの入力用コンポーネントのみを格納する原則**: FieldGroup の中身は Field（各 Field は単一の入力用コンポーネントのみを格納）で構成する。FieldGroup 自体を入れ子にはしない
+- **field-container 必須原則**: フォームで第1階層に FieldGroup を配置する場合は、Field と同様に必ず `imds-field-container` でラップする
+- `imds-field-container` 直下の FieldGroup は、ビューポート幅 768px 以下で `is-horizontal` の指定があってもラベルとコントロールが自動的に縦積みになる。第二階層以降や単体使用時は対象外
+- Field の詳細な使い方は [imds-html-field.md](imds-html-field.md) を参照

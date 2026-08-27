@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "jssp-file-structure_en.instructions.md",
-      "to": "jssp-file-structure.instructions.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "jssp-file-structure_zh_CN.instructions.md",
+      "to": "jssp-file-structure.instructions.md"
+    },
+    {
+      "from": "jssp-file-structure_en.instructions.md",
       "to": "jssp-file-structure.instructions.md"
     }
   ]

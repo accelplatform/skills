@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "secure-token-check_en.md",
-      "to": "secure-token-check.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "secure-token-check_zh_CN.md",
+      "to": "secure-token-check.md"
+    },
+    {
+      "from": "secure-token-check_en.md",
       "to": "secure-token-check.md"
     }
   ]

@@ -191,15 +191,21 @@ Actions that add, remove, or edit the list's business data — such as "New", "A
 
 - **The contents of `imds-header-title` must be a two-tier structure of "`<p>Subtitle</p>` + `<h1>Title</h1>`"** (only in the "No Subtitle" variation may `<p>` be omitted). Writing the screen name directly inside `<h1>` alone is incorrect. Following the basic reference snippet, place the application/module name in the upper `<p>` (e.g., "In-house Equipment Rental System", "Equipment Master") and the screen name in the lower `<h1>` (e.g., "Storage Location Management", "Approval List"). Both should be output from the `$subTitle` / `$title` bindings of the function container via `<imart type="string" value=$subTitle ...>` (do not write them directly in HTML).
 
-- **Place `<header class="imds-header">` outside `<main>`.** The imds theme CSS assumes a `<header>` placed directly under `<div class="imds-container">` when applying styles (icon position, margins, etc.). Placing it inside `<main>` breaks the layout, causing issues such as the `imds-header-icon` icon not being displayed.
+- **Place `<header class="imds-header">` outside `<main>`.** The imds theme CSS assumes a `<header>` placed directly under `<div class="imds-container">` when applying styles (icon position, margins, etc.). Placing it inside `<main>` breaks the layout, causing issues such as the `imds-header-icon` icon not being displayed. **Consolidate the root into a single `<div>` and do not nest another `imds-container` `<div>` inside it as an intermediate wrapper** (per the `jssp-presentation-page.md` convention, intra-mart's theme feature already wraps the screen content in `<div id="imui-container">`, so the root tag itself must not carry an `id` — attach only the `imds-container` class).
   ```html
   <!-- OK -->
-  <div id="container">
+  <div class="imds-container">
+    <header class="imds-header">...</header>   <!-- Outside main -->
+    <main>
+      ...
+    </main>
+  </div>
+
+  <!-- NG (intermediate wrapper: nests an imds-container div inside another div) -->
+  <div>
     <div class="imds-container">
-      <header class="imds-header">...</header>   <!-- Outside main -->
-      <main>
-        ...
-      </main>
+      <header class="imds-header">...</header>
+      <main>...</main>
     </div>
   </div>
   ```

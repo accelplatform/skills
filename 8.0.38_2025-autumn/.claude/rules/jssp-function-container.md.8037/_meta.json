@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "jssp-function-container_en.md",
-      "to": "jssp-function-container.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "jssp-function-container_zh_CN.md",
+      "to": "jssp-function-container.md"
+    },
+    {
+      "from": "jssp-function-container_en.md",
       "to": "jssp-function-container.md"
     }
   ]

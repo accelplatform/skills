@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-time-zone_en.md",
-      "to": "api-time-zone.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-time-zone_zh_CN.md",
+      "to": "api-time-zone.md"
+    },
+    {
+      "from": "api-time-zone_en.md",
       "to": "api-time-zone.md"
     }
   ]

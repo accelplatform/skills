@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "imart-tag-string_en.md",
-      "to": "imart-tag-string.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "imart-tag-string_zh_CN.md",
+      "to": "imart-tag-string.md"
+    },
+    {
+      "from": "imart-tag-string_en.md",
       "to": "imart-tag-string.md"
     }
   ]

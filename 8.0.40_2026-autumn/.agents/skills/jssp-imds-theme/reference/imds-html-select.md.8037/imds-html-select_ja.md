@@ -18,6 +18,7 @@ Select は選択肢から 1 つの項目を選択する際に使用する部品�
 | is-normal | imds-select | 標準サイズ | オプション |
 | is-medium | imds-select | 中サイズ | オプション |
 | is-large | imds-select | 大サイズ | オプション |
+| is-static | imds-select | 参照専用の静的表示状態（`disabled` と併用） | オプション |
 
 ## HTML スニペット
 
@@ -63,6 +64,26 @@ Select は選択肢から 1 つの項目を選択する際に使用する部品�
 <select class="imds-select" multiple>
 ```
 
+### is-static（参照専用の静的表示）
+
+値の編集はできないが、参照専用として表示する状態。HTML 仕様上 `<select>` には `readonly` 属性が存在しないため、`is-static` クラスと `disabled` 属性を併用して参照専用の見た目を実現する（Textbox / Textarea が `readonly` を使うのとは異なる点に注意）。
+
+```html
+<!-- 単一選択 -->
+<select class="imds-select is-static" disabled>
+  <option>Select-1</option>
+  <option>Select-2</option>
+  <option>Select-3</option>
+</select>
+
+<!-- 複数選択 -->
+<select multiple class="imds-select is-static" disabled>
+  <option>Select-1</option>
+  <option>Select-2</option>
+  <option>Select-3</option>
+</select>
+```
+
 ## アクセシビリティ対応
 
 - 初期値は、ユーザによる変更が行われなかった際に利用されるため、最も選択される項目や推奨する項目を指定する
@@ -73,3 +94,4 @@ Select は選択肢から 1 つの項目を選択する際に使用する部品�
 - `disabled` は `select` 要素に付与する（個別の `option` にも付与可能）
 - `multiple` 使用時はリスト表示になり、複数項目を選択できる
 - 入力フォームで使用する場合は Field（`imds-field`）でラップする
+- 参照専用表示（`is-static`）は `disabled` 属性とセットで使用する。`<select>` に `readonly` は指定できない

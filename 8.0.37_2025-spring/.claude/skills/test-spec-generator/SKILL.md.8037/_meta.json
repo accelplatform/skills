@@ -11,16 +11,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "SKILL_en.md",
-      "to": "SKILL.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "SKILL_zh_CN.md",
+      "to": "SKILL.md"
+    },
+    {
+      "from": "SKILL_en.md",
       "to": "SKILL.md"
     }
   ]

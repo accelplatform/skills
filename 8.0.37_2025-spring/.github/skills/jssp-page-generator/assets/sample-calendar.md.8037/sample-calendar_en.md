@@ -715,61 +715,59 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- Full-page container -->
-<div id="container">
-  <div class="imds-container">
-    <!-- Header -->
-    <header class="imds-header">
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1>
-          <imart type="string" value=$title escapeXml="true" escapeJs="false"></imart>
-          <span id="calendar-name" class="calendar-name-badge"></span>
-        </h1>
-      </div>
-    </header>
+<!-- Full-page container (no id is added, since it is placed inside the intra-mart theme's <div id="imui-container">) -->
+<div class="imds-container">
+  <!-- Header -->
+  <header class="imds-header">
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1>
+        <imart type="string" value=$title escapeXml="true" escapeJs="false"></imart>
+        <span id="calendar-name" class="calendar-name-badge"></span>
+      </h1>
+    </div>
+  </header>
 
-    <!-- Main content -->
-    <main>
-      <div class="imds-py-3">
-        <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
+  <!-- Main content -->
+  <main>
+    <div class="imds-py-3">
+      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
 
-          <!-- Month navigation -->
-          <div class="calendar-nav imds-mb-3">
-            <button type="button" id="btn-prev-month" class="imds-button is-ghost" title="Previous Month">
-              <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
-            </button>
-            <span id="nav-title" class="calendar-nav-title"></span>
-            <button type="button" id="btn-next-month" class="imds-button is-ghost" title="Next Month">
-              <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
-            </button>
-            <button type="button" id="btn-today" class="imds-button is-outlined">This Month</button>
+        <!-- Month navigation -->
+        <div class="calendar-nav imds-mb-3">
+          <button type="button" id="btn-prev-month" class="imds-button is-ghost" title="Previous Month">
+            <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
+          </button>
+          <span id="nav-title" class="calendar-nav-title"></span>
+          <button type="button" id="btn-next-month" class="imds-button is-ghost" title="Next Month">
+            <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
+          </button>
+          <button type="button" id="btn-today" class="imds-button is-outlined">This Month</button>
+        </div>
+
+        <!-- Legend -->
+        <div id="calendar-legend" class="calendar-legend imds-mb-2"></div>
+
+        <!-- Calendar grid -->
+        <div class="imds-table">
+          <div class="imds-table-inner">
+            <table id="calendar-table" class="calendar-table" aria-label="Calendar">
+              <thead>
+                <tr></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
           </div>
+        </div>
 
-          <!-- Legend -->
-          <div id="calendar-legend" class="calendar-legend imds-mb-2"></div>
-
-          <!-- Calendar grid -->
-          <div class="imds-table">
-            <div class="imds-table-inner">
-              <table id="calendar-table" class="calendar-table" aria-label="Calendar">
-                <thead>
-                  <tr></tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-
-        </section>
-      </div>
-    </main>
-  </div>
+      </section>
+    </div>
+  </main>
 </div>
 ```
 

@@ -11,16 +11,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "officecli-cheatsheet_en.md",
-      "to": "officecli-cheatsheet.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "officecli-cheatsheet_zh_CN.md",
+      "to": "officecli-cheatsheet.md"
+    },
+    {
+      "from": "officecli-cheatsheet_en.md",
       "to": "officecli-cheatsheet.md"
     }
   ]

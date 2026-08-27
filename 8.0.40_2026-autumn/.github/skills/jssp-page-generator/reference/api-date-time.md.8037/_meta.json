@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-date-time_en.md",
-      "to": "api-date-time.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-date-time_zh_CN.md",
+      "to": "api-date-time.md"
+    },
+    {
+      "from": "api-date-time_en.md",
       "to": "api-date-time.md"
     }
   ]

@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "modal-approve-screen_en.md",
-      "to": "modal-approve-screen.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "modal-approve-screen_zh_CN.md",
+      "to": "modal-approve-screen.md"
+    },
+    {
+      "from": "modal-approve-screen_en.md",
       "to": "modal-approve-screen.md"
     }
   ]

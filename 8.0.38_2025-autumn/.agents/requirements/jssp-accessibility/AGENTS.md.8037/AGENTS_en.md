@@ -20,16 +20,14 @@ The target is WCAG 2.1 Level AA compliance.
 The global header, global menu, and footer of intra-mart Accel Platform are **output by the platform (theme)**.
 Therefore, **do not add** `<header>` / `<nav>` / `<footer>` to individual presentation pages (they would duplicate the platform-provided landmarks).
 
-The root structure of each screen follows the conventions in `jssp-presentation-page.md` and places only `<main>`.
+The root structure of each screen follows the conventions in `jssp-presentation-page.md` and places only `<main>`. The root tag (`<div>`; class follows the UI theme in use) is not given an `id` on normal screens (since it is placed inside `<div id="imui-container">` output by the intra-mart theme). Only portlet screens are the exception and are given `id="app-portlet-{feature-ID}-container"`.
 
 ```html
-<div id="container">
-  <div class="imds-container">
-    <main>
-      <h1>Screen Title</h1>
-      <!-- Main content -->
-    </main>
-  </div>
+<div>
+  <main>
+    <h1>Screen Title</h1>
+    <!-- Main content -->
+  </main>
 </div>
 ```
 
@@ -377,7 +375,7 @@ When generating components, refer to the corresponding reference and ensure all 
 
 ### Page Structure
 
-- [ ] The root has the structure `<div id="container"><div class="imds-container"><main>...</main></div></div>`
+- [ ] The root has the structure `<div><main>...</main></div>` (no `id` on normal screens; only portlet screens are given `id="app-portlet-{feature-ID}-container"`; class follows the UI theme in use)
 - [ ] There is exactly one `<main>` per page and `role="main"` is not added alongside it
 - [ ] Headings follow the order `h1` → `h2` → `h3` without skipping levels
 

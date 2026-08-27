@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "post-generation-verification_en.md",
-      "to": "post-generation-verification.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "post-generation-verification_zh_CN.md",
+      "to": "post-generation-verification.md"
+    },
+    {
+      "from": "post-generation-verification_en.md",
       "to": "post-generation-verification.md"
     }
   ]

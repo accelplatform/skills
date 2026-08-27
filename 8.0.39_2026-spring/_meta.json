@@ -8,66 +8,27 @@
     {
       "type": "regex",
       "pattern": "\\{\\{GROUP_ID\\}\\}",
-      "replacement": "{{$group}}",
-      "condition": {
-        "accelplatformVersion": "8.0.39"
-      }
+      "replacement": "{{$group}}"
     },
     {
       "type": "regex",
       "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
-      "replacement": "{{$artifactId}}",
-      "condition": {
-        "accelplatformVersion": "8.0.39"
-      }
+      "replacement": "{{$artifactId}}"
     },
     {
       "type": "regex",
       "pattern": "\\{\\{PROJECT_NAME\\}\\}",
-      "replacement": "{{$name}}",
-      "condition": {
-        "accelplatformVersion": "8.0.39"
-      }
+      "replacement": "{{$name}}"
     },
     {
       "type": "regex",
       "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
-      "replacement": "{{$projectVersion}}",
-      "condition": {
-        "accelplatformVersion": "8.0.39"
-      }
+      "replacement": "{{$projectVersion}}"
     },
     {
       "type": "regex",
       "pattern": "\\{\\{PROJECT_DESCRIPTION\\}\\}",
-      "replacement": "{{$description}}",
-      "condition": {
-        "accelplatformVersion": "8.0.39"
-      }
-    },
-    {
-      "type": "regex",
-      "pattern": "\\{\\{XML-VALIDATOR-MAVEN-PLUGIN-VERSION\\}\\}",
-      "replacement": "1.1.0",
-      "condition": {
-        "accelplatformVersion": "8.0.39"
-      }
-    },
-    {
-      "type": "regex",
-      "pattern": "\\{\\{JAVA-FORMATTER-MAVEN-PLUGIN-VERSION\\}\\}",
-      "replacement": "1.1.0",
-      "condition": {
-        "accelplatformVersion": "8.0.39"
-      }
-    },
-    {
-      "type": "regex",
-      "pattern": "\\{\\{JS-JEST-MAVEN-PLUGIN-VERSION\\}\\}",
-      "replacement": "1.0.0",
-      "condition": {
-        "accelplatformVersion": "8.0.39"
-      }
+      "replacement": "{{$description}}"
     }
   ]
 }

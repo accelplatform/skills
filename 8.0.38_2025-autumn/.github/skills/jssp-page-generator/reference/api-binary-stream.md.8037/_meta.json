@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-binary-stream_en.md",
-      "to": "api-binary-stream.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-binary-stream_zh_CN.md",
+      "to": "api-binary-stream.md"
+    },
+    {
+      "from": "api-binary-stream_en.md",
       "to": "api-binary-stream.md"
     }
   ]

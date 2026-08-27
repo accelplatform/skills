@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "jssp-performance_en.md",
-      "to": "jssp-performance.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "jssp-performance_zh_CN.md",
+      "to": "jssp-performance.md"
+    },
+    {
+      "from": "jssp-performance_en.md",
       "to": "jssp-performance.md"
     }
   ]

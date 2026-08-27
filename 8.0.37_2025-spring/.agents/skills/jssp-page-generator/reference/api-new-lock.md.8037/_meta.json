@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-new-lock_en.md",
-      "to": "api-new-lock.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-new-lock_zh_CN.md",
+      "to": "api-new-lock.md"
+    },
+    {
+      "from": "api-new-lock_en.md",
       "to": "api-new-lock.md"
     }
   ]

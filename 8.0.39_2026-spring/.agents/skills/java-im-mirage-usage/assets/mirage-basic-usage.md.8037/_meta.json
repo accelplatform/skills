@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "mirage-basic-usage_ja.md",
+      "to": "mirage-basic-usage.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "mirage-basic-usage_zh_CN.md",
+      "to": "mirage-basic-usage.md"
+    },
+    {
+      "from": "mirage-basic-usage_en.md",
+      "to": "mirage-basic-usage.md"
+    }
+  ]
+}

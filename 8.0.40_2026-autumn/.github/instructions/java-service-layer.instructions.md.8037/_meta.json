@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "java-service-layer_ja.instructions.md",
+      "to": "java-service-layer.instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "java-service-layer_zh_CN.instructions.md",
+      "to": "java-service-layer.instructions.md"
+    },
+    {
+      "from": "java-service-layer_en.instructions.md",
+      "to": "java-service-layer.instructions.md"
+    }
+  ]
+}

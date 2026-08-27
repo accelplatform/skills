@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "imds-common-data-list-with-input_ja.md",
+      "to": "imds-common-data-list-with-input.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "imds-common-data-list-with-input_zh_CN.md",
+      "to": "imds-common-data-list-with-input.md"
+    },
+    {
+      "from": "imds-common-data-list-with-input_en.md",
+      "to": "imds-common-data-list-with-input.md"
+    }
+  ]
+}

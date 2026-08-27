@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "api-shared-resource_en.md",
-      "to": "api-shared-resource.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "api-shared-resource_zh_CN.md",
+      "to": "api-shared-resource.md"
+    },
+    {
+      "from": "api-shared-resource_en.md",
       "to": "api-shared-resource.md"
     }
   ]

@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": "8.0.40"
+  },
+  "rename": [
+    {
+      "condition": {
+        "and": [
+          {
+            "packageManager": "pnpm"
+          },
+          {
+            "module": "im_activiti"
+          }
+        ]
+      },
+      "from": "pnpm-lock_im_activiti.yaml",
+      "to": "pnpm-lock.yaml"
+    },
+    {
+      "condition": {
+        "packageManager": "pnpm"
+      },
+      "from": "pnpm-lock.yaml",
+      "to": "pnpm-lock.yaml"
+    }
+  ]
+}

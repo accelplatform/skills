@@ -14,16 +14,13 @@
     },
     {
       "condition": {
-        "locale": "en"
-      },
-      "from": "chart-patterns_en.md",
-      "to": "chart-patterns.md"
-    },
-    {
-      "condition": {
         "locale": "zh_CN"
       },
       "from": "chart-patterns_zh_CN.md",
+      "to": "chart-patterns.md"
+    },
+    {
+      "from": "chart-patterns_en.md",
       "to": "chart-patterns.md"
     }
   ]

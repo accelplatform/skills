@@ -14,7 +14,7 @@ Toggle は、オン/オフの状態を切り替える際に使用する部品で
 |----------|--------|------|----------------|
 | imds-toggle-switch | label 要素 | トグルスイッチコンテナ | 必須 |
 | imds-toggle-switch-appearance | span 要素 | スイッチ外観 | 必須 |
-| imds-toggle-switch-text | span 要素 | ラベルテキスト | 必須 |
+| imds-toggle-switch-text | span 要素 | ラベルテキスト | オプション（ラベルを省略する場合は付与しない） |
 | is-x-small | imds-toggle-switch | 極小サイズ | オプション |
 | is-small | imds-toggle-switch | 小サイズ | オプション |
 | is-normal | imds-toggle-switch | 標準サイズ | オプション |
@@ -67,6 +67,21 @@ Toggle は、オン/オフの状態を切り替える際に使用する部品で
 <input type="checkbox" checked />
 ```
 
+### ラベル省略（Label Not Exists）
+
+近接する UI から意味が自明な場合など、ラベルを省略する場合は `imds-toggle-switch-text` を付与しない。これは実DOM上も正当なバリエーションであり、常に必須というわけではない。
+
+```html
+<label class="imds-toggle-switch">
+  <input type="checkbox" />
+  <span class="imds-toggle-switch-appearance">
+    <span class="imds-icon"><i class="fa-solid fa-check"></i></span>
+  </span>
+</label>
+```
+
+ラベルを省略する場合でも、スクリーンリーダー利用者がトグルの意味を判別できるよう `aria-label` 等での補完を検討する。
+
 ## アクセシビリティ対応
 
 ### ラベル
@@ -83,8 +98,8 @@ Toggle は、オン/オフの状態を切り替える際に使用する部品で
 
 ## 実装上の注意
 
-- トグルスイッチは `label > input[type="checkbox"] + span.imds-toggle-switch-appearance + span.imds-toggle-switch-text` の構造で記述する
+- トグルスイッチは `label > input[type="checkbox"] + span.imds-toggle-switch-appearance (+ span.imds-toggle-switch-text)` の構造で記述する。`imds-toggle-switch-text` はラベルを表示する場合にのみ付与し、必須ではない
 - `imds-toggle-switch-appearance` 内にチェックアイコン（`fa-solid fa-check`）を含める
 - オン/オフの状態は `input` の `checked` 属性で制御する
 - `disabled` と `checked` は組み合わせ可能（オン状態で無効化など）
-- ラベルテキストはスイッチの状態によって変化させない
+- ラベルテキストを表示する場合、スイッチの状態によって変化させない

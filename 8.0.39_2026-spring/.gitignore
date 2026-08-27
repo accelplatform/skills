@@ -267,6 +267,7 @@ typings/
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+!.vscode/extensions.json.*/
 !.vscode/mcp.json.*/
 !*.code-workspace
 
@@ -428,3 +429,7 @@ Backups.backupdb
 .MobileBackups.trash
 MobileBackups.trash
 tmbootpicker.efi
+
+# generated accel cli 
+.accel/credentials.json
+.accel/mcp-state.json
