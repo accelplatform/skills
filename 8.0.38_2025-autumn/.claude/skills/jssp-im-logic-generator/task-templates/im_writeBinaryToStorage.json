@@ -1,0 +1,190 @@
+{
+  "kind": "task",
+  "keyId": "im_writeBinaryToStorage",
+  "flowElementSample": {
+    "executeId": "im_writeBinaryToStorage1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_writeBinaryToStorage",
+      "version": null
+    },
+    "label": "ストレージ出力（バイナリ）",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 280,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 370,
+      "y": 1770
+    },
+    "id": "4588129a-e2d7-4117-a9c3-26ec022ebb2a",
+    "z": 109,
+    "attrs": {
+      "rect.body": {
+        "width": 280,
+        "fill": "#0096a6"
+      },
+      "rect.icon": {
+        "fill": "#0096a6"
+      },
+      "rect.title": {
+        "width": 230,
+        "fill": "#00bbd3"
+      },
+      "rect.label": {
+        "width": 230,
+        "fill": "#25c5d9"
+      },
+      "text.title": {
+        "text": "im_writeBinaryToStorage1"
+      },
+      "text.label": {
+        "text": "ストレージ出力（バイナリ）"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_writeBinaryToStorage"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_storage_WriteBinaryInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "binary",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_storage_WriteBinaryInfo",
+          "properties": [
+            {
+              "typeId": "binary",
+              "name": "binary",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "storage",
+              "name": "storage",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_writeBinaryToStorage1",
+    "label": "ストレージ出力（バイナリ）",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

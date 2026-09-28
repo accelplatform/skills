@@ -1,0 +1,224 @@
+{
+  "kind": "task",
+  "keyId": "im_createQRCode",
+  "flowElementSample": {
+    "executeId": "im_createQRCode1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_createQRCode",
+      "version": null
+    },
+    "label": "QRコード生成",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "errorCorrection": "M"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 410,
+      "y": 980
+    },
+    "id": "e966f759-543b-45fe-bb10-df5c92d526af",
+    "z": 90,
+    "attrs": {
+      "text.title": {
+        "text": "im_createQRCode1"
+      },
+      "text.label": {
+        "text": "QRコード生成"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_createQRCode"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "errorCorrection",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "defaultValue": "M",
+        "type": "pulldown",
+        "label": "誤り訂正レベル",
+        "options": [
+          {
+            "name": "L",
+            "label": "L",
+            "value": "L"
+          },
+          {
+            "name": "M",
+            "label": "M",
+            "value": "M"
+          },
+          {
+            "name": "Q",
+            "label": "Q",
+            "value": "Q"
+          },
+          {
+            "name": "H",
+            "label": "H",
+            "value": "H"
+          }
+        ]
+      },
+      {
+        "propertyName": "version",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "バージョン",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_barcode_CreateQRCodeTaskInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_barcode_CreateQRCodeTaskInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "contents",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "height",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "width",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "binary",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "binary",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "errorCorrection": "M",
+    "version": null
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_createQRCode1",
+    "label": "QRコード生成",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

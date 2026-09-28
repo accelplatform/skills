@@ -1,0 +1,21 @@
+{
+  "kind": "sequence",
+  "linkSample": {
+    "type": "link",
+    "source": {
+      "id": "3fced49e-eec8-4f27-ae78-6fa4a3efbc99",
+      "port": "out"
+    },
+    "target": {
+      "id": "c5575b26-a08d-466a-a9a9-d084596fe0fb",
+      "port": "in"
+    },
+    "id": "31f14e71-66eb-48b7-a173-13ab8584919d",
+    "z": 92,
+    "attrs": {
+      ".link-tools>.link-tool>.tool-remove": {
+        "display": ""
+      }
+    }
+  }
+}

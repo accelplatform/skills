@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "user-manager-api-reference_ja.md",
+      "to": "user-manager-api-reference.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "user-manager-api-reference_zh_CN.md",
+      "to": "user-manager-api-reference.md"
+    },
+    {
+      "from": "user-manager-api-reference_en.md",
+      "to": "user-manager-api-reference.md"
+    }
+  ]
+}

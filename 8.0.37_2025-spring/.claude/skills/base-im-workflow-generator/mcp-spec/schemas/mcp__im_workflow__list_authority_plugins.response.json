@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "list_authority_plugins Response",
+  "description": "利用可能な権限プラグインの一覧。標準 + ユーザ拡張を含む。",
+  "type": "object",
+  "required": ["authorityPlugins"],
+  "properties": {
+    "authorityPlugins": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/authorityPluginSummary"
+      }
+    }
+  },
+  "$defs": {
+    "authorityPluginSummary": {
+      "type": "object",
+      "required": ["suffix", "label", "category", "description"],
+      "properties": {
+        "suffix": {
+          "type": "string",
+          "description": "プラグインサフィックス。pluginId の末尾に付与される",
+          "examples": ["role", "apply_user_department_and_post", "custom_hire_date_filter"]
+        },
+        "label": {
+          "type": "string",
+          "description": "プラグインの表示名",
+          "examples": ["ロール直接指定", "申請者の所属組織＋役職", "入社日フィルタ"]
+        },
+        "category": {
+          "type": "string",
+          "description": "プラグインのカテゴリ",
+          "enum": ["direct", "combination", "dynamic", "custom"],
+          "examples": ["direct"]
+        },
+        "description": {
+          "type": "string",
+          "description": "プラグインの機能説明とパラメータのヒントを含む。コーディングエージェントが選択・実装判断する材料",
+          "examples": ["ロールIDを直接指定して処理対象者を決定する。parameterにはロールIDを指定する。"]
+        },
+        "targetType": {
+          "type": "string",
+          "description": "targetType の値。空文字の場合は動的指定系",
+          "examples": ["role", "departmentAndPost", ""]
+        },
+        "pluginId": {
+          "type": "string",
+          "description": "完全な pluginId。extensionPointId と suffix を組み合わせた値。カスタムプラグインでは独自のフォーマットになる場合がある",
+          "examples": [
+            "jp.co.intra_mart.workflow.plugin.authority.node.approve.role",
+            "jp.co.example.workflow.plugin.authority.hire_date_filter"
+          ]
+        }
+      }
+    }
+  }
+}

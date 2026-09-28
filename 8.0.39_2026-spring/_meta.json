@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "type": "directory",
+  "conditions": {
+    "accelplatformVersion": "8.0.39"
+  }
+}

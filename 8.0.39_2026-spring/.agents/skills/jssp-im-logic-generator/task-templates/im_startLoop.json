@@ -1,0 +1,368 @@
+{
+  "kind": "task",
+  "keyId": "im_startLoop",
+  "flowElementSample": {
+    "executeId": "im_startLoop1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_startLoop",
+      "version": null
+    },
+    "label": "繰り返し開始",
+    "comment": "",
+    "properties": {
+      "condition": "${$account_context.userCd=='tenant'}",
+      "loopItem": "$account_context/roleIds",
+      "endPoint": "im_endLoop1"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.LoopStartModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 200
+    },
+    "id": "b137353a-d472-4d9d-bbcd-ad9684ba42d7",
+    "z": 408,
+    "attrs": {
+      "text.title": {
+        "text": "im_startLoop1"
+      },
+      "text.label": {
+        "text": "繰り返し開始"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_startLoop"
+    },
+    "pairElementKey": {
+      "type": "application",
+      "id": "im_endLoop"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "clearVariables",
+        "enable": true,
+        "required": false,
+        "array": true,
+        "label": "初期化する変数名",
+        "options": []
+      },
+      {
+        "propertyName": "condition",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "繰り返し条件",
+        "options": []
+      },
+      {
+        "propertyName": "endPoint",
+        "enable": false,
+        "required": false,
+        "array": false,
+        "label": "endPoint",
+        "options": []
+      },
+      {
+        "propertyName": "loopCount",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "繰り返し回数",
+        "options": []
+      },
+      {
+        "propertyName": "loopItem",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "繰り返し対象",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": null,
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "$im-logic-additional-taskitem",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "timezone",
+          "properties": []
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "locale",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_system_logic_flow_context_DateTimeFormatsWrapper",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "dateInput",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "dateSimple",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "dateStandard",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "timeInput",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "timeStandard",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "timeTimestamp",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_system_logic_flow_context_AccountContextWrapper",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "applicationLicenses",
+              "listingType": "list",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "authenticated",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "calendarId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_system_logic_flow_context_DateTimeFormatsWrapper",
+              "name": "dateTimeFormats",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "encoding",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "firstDayOfWeek",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "homeUrl",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "locale",
+              "name": "locale",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "loginTime",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "item",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "tenantId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "themeId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "timezone",
+              "name": "timeZone",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "userCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "userType",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "$im-logic-additional-taskitem",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "item",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "name": "index",
+              "typeId": "integer",
+              "listingType": "none",
+              "basic": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "clearVariables": null,
+    "condition": "${$account_context.userCd=='tenant'}",
+    "loopCount": "",
+    "loopItem": "$account_context/roleIds"
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_startLoop1",
+    "label": "繰り返し開始",
+    "inNum": 1,
+    "outNum": 1,
+    "pairElementId": "177269d5-96b3-49df-9c2c-bf22dc4ee984"
+  }
+}

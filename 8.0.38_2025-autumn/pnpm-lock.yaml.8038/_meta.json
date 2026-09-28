@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": "8.0.38"
+  },
+  "rename": [
+    {
+      "condition": {
+        "packageManager": "pnpm"
+      },
+      "from": "pnpm-lock.yaml",
+      "to": "pnpm-lock.yaml"
+    }
+  ]
+}

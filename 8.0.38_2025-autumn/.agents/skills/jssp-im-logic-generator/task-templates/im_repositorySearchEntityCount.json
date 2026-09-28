@@ -1,0 +1,189 @@
+{
+  "kind": "task",
+  "keyId": "im_repositorySearchEntityCount",
+  "flowElementSample": {
+    "executeId": "im_repositorySearchEntityCount1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_repositorySearchEntityCount",
+      "version": null
+    },
+    "label": "エンティティデータ件数の取得",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "entityId": "imprtl_portlet_info_tables_imprtl_portlet_info"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 280,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 10,
+      "y": 230
+    },
+    "id": "6fea0580-a466-4bfa-a416-44cc3d424427",
+    "z": 5,
+    "attrs": {
+      "rect.body": {
+        "width": 280,
+        "fill": "#424242"
+      },
+      "rect.icon": {
+        "fill": "#424242"
+      },
+      "rect.title": {
+        "width": 230,
+        "fill": "#757575"
+      },
+      "rect.label": {
+        "width": 230,
+        "fill": "#9e9e9e"
+      },
+      "text.title": {
+        "text": "im_repositorySearchEntityCount1"
+      },
+      "text.label": {
+        "text": "エンティティデータ件数の取得"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_repositorySearchEntityCount"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "entityId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "エンティティID",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_repository_SearchEntityCountTaskResult",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_repository_SearchEntityCountTaskResult",
+          "properties": [
+            {
+              "typeId": "integer",
+              "name": "count",
+              "listingType": "none",
+              "basic": true,
+              "required": false
+            }
+          ]
+        },
+        {
+          "id": "integer",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "entityId": "imprtl_portlet_info_tables_imprtl_portlet_info"
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_repositorySearchEntityCount1",
+    "label": "エンティティデータ件数の取得",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

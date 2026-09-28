@@ -1,0 +1,514 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-excel-output",
+  "definitionType": "excel_out",
+  "flowElementSample": {
+    "executeId": "sample-excel-output",
+    "alias": "sample_excel_output",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-excel-output",
+      "version": null
+    },
+    "label": "サンプル Excel 出力定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-excel-output",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "excel_out",
+        "definitionName": "Sample Excel Output",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_excelOutput",
+          "iconId": null,
+          "elementProperties": {
+            "selectSheetType": "NAME",
+            "setFormulaRecalculation": false,
+            "cells": [
+              {
+                "sheet": "Sheet1",
+                "address": "A1",
+                "paramName": "param1",
+                "dataType": "NUMERIC"
+              }
+            ],
+            "tables": [
+              {
+                "sheet": "Sheet1",
+                "arrParamName": "records1",
+                "startCol": "A",
+                "endCol": "B",
+                "cols": [
+                  {
+                    "name": "A",
+                    "paramName": "columnA",
+                    "dataType": "NUMERIC",
+                    "disuse": false
+                  },
+                  {
+                    "name": "B",
+                    "paramName": "columnB",
+                    "dataType": "NUMERIC",
+                    "disuse": false
+                  }
+                ],
+                "startRow": "1",
+                "outputEndCondition": "ALL_DATA_WRITEN"
+              }
+            ]
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "storage",
+                    "name": "outputFile",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "storage",
+                    "name": "inputFile",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "timezone",
+                    "name": "targetTimezone",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "password",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "double",
+                    "name": "param1",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "im_logic_object_1",
+                    "name": "records1",
+                    "description": null,
+                    "listingType": "list",
+                    "basic": false,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "im_logic_object_1",
+                "properties": [
+                  {
+                    "typeId": "double",
+                    "name": "columnA",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "double",
+                    "name": "columnB",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              },
+              {
+                "id": "double",
+                "properties": []
+              },
+              {
+                "id": "timezone",
+                "properties": []
+              },
+              {
+                "id": "storage",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプル Excel 出力定義",
+          "en": "Sample Excel Output",
+          "zh_CN": "示例 Excel 输出定义"
+        }
+      },
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 90,
+      "y": 470
+    },
+    "id": "a9d4c550-5e6f-4a7b-9c8d-0e1f2a3b4c45",
+    "z": 11,
+    "attrs": {
+      "text.title": {
+        "text": "sample_excel_output"
+      },
+      "text.label": {
+        "text": "サンプル Excel 出力定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-excel-output"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "storage",
+              "name": "outputFile",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "storage",
+              "name": "inputFile",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "timezone",
+              "name": "targetTimezone",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "password",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "double",
+              "name": "param1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "im_logic_object_1",
+              "name": "records1",
+              "listingType": "list",
+              "required": false,
+              "basic": false
+            }
+          ]
+        },
+        {
+          "id": "im_logic_object_1",
+          "properties": [
+            {
+              "typeId": "double",
+              "name": "columnA",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "double",
+              "name": "columnB",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "double",
+          "properties": []
+        },
+        {
+          "id": "timezone",
+          "properties": []
+        },
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": []
+        }
+      ]
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-excel-output",
+      "version": 1,
+      "definitionType": "excel_out",
+      "definitionName": "Sample Excel Output",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_excelOutput",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "outputFile",
+                  "typeId": "storage",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "inputFile",
+                  "typeId": "storage",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "targetTimezone",
+                  "typeId": "timezone",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "password",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "param1",
+                  "typeId": "double",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "records1",
+                  "typeId": "im_logic_object_1",
+                  "listingType": "list",
+                  "basic": false
+                }
+              ]
+            },
+            {
+              "id": "im_logic_object_1",
+              "properties": [
+                {
+                  "name": "columnA",
+                  "typeId": "double",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "columnB",
+                  "typeId": "double",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            },
+            {
+              "id": "double",
+              "properties": []
+            },
+            {
+              "id": "timezone",
+              "properties": []
+            },
+            {
+              "id": "storage",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "selectSheetType": "NAME",
+          "setFormulaRecalculation": false,
+          "cells": [
+            {
+              "sheet": "Sheet1",
+              "address": "A1",
+              "paramName": "param1",
+              "dataType": "NUMERIC"
+            }
+          ],
+          "tables": [
+            {
+              "sheet": "Sheet1",
+              "arrParamName": "records1",
+              "startCol": "A",
+              "endCol": "B",
+              "cols": [
+                {
+                  "name": "A",
+                  "paramName": "columnA",
+                  "dataType": "NUMERIC",
+                  "disuse": false
+                },
+                {
+                  "name": "B",
+                  "paramName": "columnB",
+                  "dataType": "NUMERIC",
+                  "disuse": false
+                }
+              ],
+              "startRow": "1",
+              "outputEndCondition": "ALL_DATA_WRITEN"
+            }
+          ]
+        }
+      },
+      "localize": {
+        "ja": "サンプル Excel 出力定義",
+        "en": "Sample Excel Output",
+        "zh_CN": "示例 Excel 输出定义"
+      }
+    },
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_excel_output",
+    "label": "サンプル Excel 出力定義",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

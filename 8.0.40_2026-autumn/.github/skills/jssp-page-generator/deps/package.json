@@ -1,0 +1,9 @@
+{
+  "name": "jssp-page-generator-deps",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.3"
+  }
+}

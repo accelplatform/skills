@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "im_workflow": {
+      "type": "http",
+      "url": "{{$endpoint}}/copilot/mcp/development/im_workflow",
+      "headers": {
+        "Authorization": "Bearer {{$apiKey}}"
+      }
+    }
+  }
+}

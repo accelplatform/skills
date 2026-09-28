@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "identifier-api-reference_ja.md",
+      "to": "identifier-api-reference.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "identifier-api-reference_zh_CN.md",
+      "to": "identifier-api-reference.md"
+    },
+    {
+      "from": "identifier-api-reference_en.md",
+      "to": "identifier-api-reference.md"
+    }
+  ]
+}

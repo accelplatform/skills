@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.40"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "rag-basic-usage_ja.md",
+      "to": "rag-basic-usage.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "rag-basic-usage_zh_CN.md",
+      "to": "rag-basic-usage.md"
+    },
+    {
+      "from": "rag-basic-usage_en.md",
+      "to": "rag-basic-usage.md"
+    }
+  ]
+}

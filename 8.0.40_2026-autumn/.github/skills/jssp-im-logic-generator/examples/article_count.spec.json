@@ -1,0 +1,53 @@
+{
+  "featureName": "item-count",
+  "flowCategories": [
+    {
+      "categoryId": "sample_category",
+      "categoryName": "Sample",
+      "sortNumber": 0,
+      "localizes": {
+        "ja": { "locale": "ja", "categoryName": "サンプル" },
+        "en": { "locale": "en", "categoryName": "Sample" }
+      },
+      "parentId": null,
+      "displayName": "サンプル"
+    }
+  ],
+  "flows": [
+    {
+      "flowId": "sample_item_count",
+      "flowName": "データ件数取得サンプル",
+      "categoryId": "sample_category",
+      "outputDataDefinition": {
+        "entrypoint": { "typeId": "root", "basic": false, "required": false, "listingType": "none" },
+        "typeDefinitions": [
+          { "id": "root", "properties": [
+            { "typeId": "integer", "name": "itemCount", "listingType": "none", "required": false, "basic": true }
+          ]},
+          { "id": "integer", "properties": [] }
+        ]
+      },
+      "tasks": [
+        { "type": "im_start" },
+        {
+          "type": "im_repositorySearchEntityCount",
+          "label": "エンティティデータ件数の取得",
+          "properties": { "entityId": "sample_tables_sample_item" }
+        },
+        {
+          "type": "im_end",
+          "mappingRules": [
+            {
+              "target": "$output/itemCount",
+              "source": { "type": "value", "name": null, "path": "im_repositorySearchEntityCount1/count", "arguments": null }
+            }
+          ]
+        }
+      ],
+      "edges": [
+        { "from": "im_start", "to": "im_repositorySearchEntityCount1" },
+        { "from": "im_repositorySearchEntityCount1", "to": "im_end1" }
+      ]
+    }
+  ]
+}

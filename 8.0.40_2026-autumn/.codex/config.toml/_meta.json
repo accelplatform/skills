@@ -1,0 +1,83 @@
+{
+  "version": "1.0.0",
+  "type": "mcp",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "files": [
+    {
+      "file": "00-base.toml"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "feature": "mcp"
+          },
+          {
+            "module": "im_logic"
+          }
+        ]
+      },
+      "file": "10-im-logic.toml"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "feature": "mcp"
+          },
+          {
+            "module": "im_workflow"
+          }
+        ]
+      },
+      "file": "20-im-workflow.toml"
+    },
+    {
+      "condition": {
+        "feature": "mcp"
+      },
+      "file": "30-staging.toml"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "feature": "mcp"
+          },
+          {
+            "accelplatformVersion": "8.0.37"
+          }
+        ]
+      },
+      "file": "90-dev-knowledge-8.0.37.toml"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "feature": "mcp"
+          },
+          {
+            "accelplatformVersion": "8.0.38"
+          }
+        ]
+      },
+      "file": "90-dev-knowledge-8.0.38.toml"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "feature": "mcp"
+          },
+          {
+            "accelplatformVersion": "8.0.39"
+          }
+        ]
+      },
+      "file": "90-dev-knowledge-8.0.39.toml"
+    }
+  ]
+}

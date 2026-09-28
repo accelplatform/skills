@@ -1,0 +1,54 @@
+{
+  "name": "intra-mart Accel Platform Development Environment",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": true,
+  "postCreateCommand": "npx playwright install chromium",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "none",
+      "installMaven": "true",
+      "installGradle": "false"
+    },
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "bierner.markdown-mermaid",
+        "dbaeumer.vscode-eslint",
+        "ms-playwright.playwright",
+        "redhat.vscode-xml",
+        "typescriptteam.native-preview",
+        "vitest.explorer"
+      ],
+      "settings": {
+        "files.watcherExclude": {
+          "**/.git/objects/**": true,
+          "**/.git/subtree-cache/**": true,
+          "**/.gradle/**": true,
+          "**/.m2/**": true,
+          "**/.next/**": true,
+          "**/dist/**": true,
+          "**/build/**": true,
+          "**/node_modules/**": true,
+          "**/target/**": true,
+          "**/out/**": true
+        },
+        "search.exclude": {
+          "**/dist": true,
+          "**/build": true,
+          "**/node_modules": true,
+          "**/target": true,
+          "**/out": true
+        },
+        "files.exclude": {
+          "**/.git": true
+        }
+      }
+    }
+  }
+}

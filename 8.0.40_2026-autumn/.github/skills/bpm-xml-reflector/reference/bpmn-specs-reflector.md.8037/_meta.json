@@ -1,0 +1,57 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "module": "im_activiti"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "bpmn-specs-reflector_ja.md",
+      "to": "bpmn-specs-reflector.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "bpmn-specs-reflector_en.md",
+      "to": "bpmn-specs-reflector.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "bpmn-specs-reflector_zh_CN.md",
+      "to": "bpmn-specs-reflector.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "text",
+      "target": "{{RUNTIME}}",
+      "values": [
+        {
+          "condition": {
+            "packageManager": "bun"
+          },
+          "value": "bun"
+        },
+        {
+          "condition": {
+            "accelplatformVersion": ">=8.0.37"
+          },
+          "value": "node"
+        }
+      ]
+    }
+  ]
+}

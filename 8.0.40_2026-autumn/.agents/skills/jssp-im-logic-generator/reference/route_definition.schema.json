@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IM-LogicDesigner Route Definition",
+  "description": "IM-LogicDesigner のロジックフローを URL アクセスにより実行するためのルーティング定義。REST API エンドポイントとフローの紐づけを行う。",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/routeEntry"
+  },
+  "$defs": {
+    "routeEntry": {
+      "type": "object",
+      "required": [
+        "route",
+        "method",
+        "flowId",
+        "version",
+        "authentication",
+        "authzUri",
+        "secured",
+        "responseType",
+        "responseHeader"
+      ],
+      "properties": {
+        "route": {
+          "type": "string",
+          "description": "REST API のルートパス。{モジュール}/{名前空間}/{操作} 形式。実際のエンドポイントは /api/logic/ の配下になる",
+          "pattern": "^[a-zA-Z0-9_/]+$",
+          "examples": [
+            "im_bloommaker/standard_template/get_user",
+            "im_bloommaker/standard_template/get_user_count"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "description": "HTTP メソッド",
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+          ]
+        },
+        "flowId": {
+          "type": "string",
+          "description": "実行するロジックフローの flowId。route のスラッシュをアンダースコアに置換した値が慣例",
+          "examples": [
+            "im_bloommaker_standard_template_get_user"
+          ]
+        },
+        "version": {
+          "type": "integer",
+          "description": "フローのバージョン。-1 を指定すると最新バージョンを自動選択",
+          "default": -1
+        },
+        "authentication": {
+          "type": "string",
+          "description": "認証方式",
+          "enum": [
+            "IMAuthentication",
+            "Basic",
+            "OAuth"
+          ],
+          "default": "IMAuthentication"
+        },
+        "authenticationParam": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "認証パラメータ。authentication が OAuth の場合に必須。それ以外は null",
+          "enum": [
+            "core",
+            "im-copilot",
+            "im-workflow-rest",
+            "immaster",
+            "journal",
+            "menu",
+            null
+          ],
+          "default": null
+        },
+        "authzUri": {
+          "type": "string",
+          "description": "認可URI。im-logic-rest:// スキームで route と同じパスを指定する",
+          "pattern": "^im-logic-rest://.+$",
+          "examples": [
+            "im-logic-rest://im_bloommaker/standard_template/get_user"
+          ]
+        },
+        "secured": {
+          "type": "boolean",
+          "description": "セキュアトークンの使用有無。true の場合リクエストにセキュアトークンが必要",
+          "default": false
+        },
+        "responseType": {
+          "type": "string",
+          "description": "レスポンス形式。値に応じてフローの outputDataDefinition に定義すべきプロパティが異なる。詳細は routing-response.md 参照",
+          "enum": [
+            "imJsonResponse",
+            "imTextResponse",
+            "imHtmlResponse",
+            "imXmlResponse",
+            "imJsonStringResponse",
+            "imAnyContentTypeResponse",
+            "imFileDownload",
+            "imInlineFile",
+            "imFileBinary"
+          ],
+          "default": "imJsonResponse"
+        },
+        "responseHeader": {
+          "type": "object",
+          "description": "レスポンスに追加するカスタム HTTP ヘッダー。不要な場合は空オブジェクト {}",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "contexts-basic-usage_ja.md",
+      "to": "contexts-basic-usage.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "contexts-basic-usage_zh_CN.md",
+      "to": "contexts-basic-usage.md"
+    },
+    {
+      "from": "contexts-basic-usage_en.md",
+      "to": "contexts-basic-usage.md"
+    }
+  ]
+}
