@@ -112,7 +112,7 @@ public class XxxEndpointFactory {
 | `mapperParams` | Parameters passed to the mapper class (`AuthzMapperParam[]`) | `{}` (empty array) |
 
 - Can be applied to either a class or a method. Applying it to a class applies it collectively to all methods within it
-- Behavior on failure: unauthenticated → `401`, authenticated but lacking permission → `403`
+- Behavior on failure: unauthenticated → `401`, authenticated but lacking permission → `403`. **However, when combined with `@IMAuthentication` (session authentication), an unauthenticated request is stopped as `404` before it ever reaches this check, so `401` effectively never occurs.** A `403` for an authenticated user comes back wrapped (see "Request/Response Format")
 - The resource specified in `uri` must be pre-registered on the IM-Authz side (see `ResourceManager` in `java-im-authz-usage`). Simply attaching this annotation alone has no effect
 
 ## Response Control Annotations
@@ -121,7 +121,7 @@ public class XxxEndpointFactory {
 |------|------|------|
 | `@Response(code=...)` | Exception class | Specifies the HTTP status code to use when that exception is thrown |
 | `@ReturnValue` | A method (getter) of the exception class | Includes the exception's supplementary information in the response body |
-| `@PreventWritingResponse` | Method | Suppresses automatic response writing by Web API Maker, allowing manual control by receiving `HttpServletResponse` as an argument |
+| `@PreventWritingResponse` | Method | Suppresses automatic response writing by Web API Maker, allowing manual control by receiving `HttpServletResponse` as an argument. **The method's return value is always ignored** |
 
 ## Types Allowed for Arguments and Return Values
 
@@ -158,6 +158,8 @@ Behavior for the three-level setting `keep`/`once`/`never`.
 | `415` | Invalid `Content-Type` |
 | `500` | Server error |
 
+Whether the response body for a given code takes the wrapper structure (`error`/`data`) is not determined by the code value alone. See "When the Wrapper Is Applied and When It Isn't" under "Request/Response Format".
+
 ## Referencing the API Specification
 
 The specification of a created API can be retrieved in JSON format (Swagger-compatible) at the following URL.
@@ -171,5 +173,95 @@ http://<HOST>:<PORT>/<CONTEXT_PATH>/api-docs/${api-category}
 ## Request/Response Format
 
 - The request format is specified via the `Content-Type` header (`application/json` or `application/xml`)
-- The response is returned in the MIME type specified by the `Accept` header. The format is guaranteed only on success; the format on error is not guaranteed
+- The response is returned in the MIME type specified by the `Accept` header (`application/json` or `application/xml`)
 - `null` properties in the response are not output
+
+### Response Body Wrapper Structure
+
+**The Endpoint method's return value does not become the response body as-is; it is always wrapped in an object that has `error` / `data`.** If the client (screen or external system) reads properties directly without unwrapping this envelope, it ends up "unable to receive data" even though the API itself works correctly.
+
+On success (`Accept: application/json`):
+
+```json
+{
+  "error": false,
+  "data": {
+    "id": 1,
+    "name": "Dog",
+    "sold": false,
+    "attribute": {
+      "breed": "golden"
+    }
+  }
+}
+```
+
+On exception (when Web API Maker catches an exception thrown by the Endpoint method):
+
+```json
+{
+  "error": true,
+  "errorMessage": "[E.IWP.WEBAPIMAKER.CONVERTER.10001] Failed to convert from the JSON string. json:434343"
+}
+```
+
+When `@ReturnValue` is placed on getters of the exception class, those return values are stored under `data`:
+
+```json
+{
+  "error": true,
+  "errorMessage": "An exception occurred.",
+  "data": {
+    "optionalMessage": "No information exists for the id that was entered.",
+    "parameterValue": 111111
+  }
+}
+```
+
+| Property | Type | Content |
+|------|------|------|
+| `error` | boolean | Whether an exception occurred. `false` on success, `true` on exception |
+| `data` | object | On success, the Endpoint method's return value. On exception, the values of getters annotated with `@ReturnValue` (not output when there is no `@ReturnValue`) |
+| `errorMessage` | string | The exception message, output only on exception. Not output on success |
+
+- When the return value is a `List`/array, `data` becomes a JSON array. The outer wrapper structure is the same regardless of the return type
+- **A method annotated with `@PreventWritingResponse` does not get this wrapper.** The method's return value is always ignored, and the implementer writes the body themselves onto the `HttpServletResponse` received as an argument (`sendRedirect()` / `getWriter()` / `getOutputStream()`, etc.)
+- A business exception annotated with `@Response(code=...)` is still returned in this wrapper structure even with an HTTP status code other than `200`
+- After implementing, check the actual response with the Swagger UI (`/api-docs/${api-category}`) or `curl` and reconcile it with the client-side parsing logic
+
+### When the Wrapper Is Applied and When It Isn't
+
+Whether the wrapper structure (`error`/`data`) is applied is determined neither by the HTTP status code value nor by whether `@Response` is present. It is determined by **whether the request reached the Endpoint method — i.e., went through reflection's `Method#invoke`**. `Method#invoke` always wraps any exception thrown by the invoked method in an `InvocationTargetException`, and Web API Maker always converts that into a wrapped response. Conversely, a response or exception that occurs before the Endpoint method is reached (authentication checks, various `ActionFilter`s, etc.) is not wrapped unless that specific code explicitly invokes the wrapping logic.
+
+**Wrapped** (JSON/XML with `error`/`data`):
+
+| Case | Notes |
+|------|------|
+| On success (`200`) | |
+| An exception thrown by the Endpoint method itself (`@Response` or not) | Not only a business exception annotated with `@Response(code=...)`, but also **a plain exception with no `@Response` annotation is always wrapped** (without `@Response` the status is simply `500`). Example: `{"error":true,"errorMessage":"..."}` |
+| `@Required` not specified (`400`) | Example: `{"error":true,"errorMessage":"Parameter 'name' is required."}` |
+| `@Secured` token not specified (`403`) | Example: `{"error":true,"errorMessage":"[E.IWP.WEBAPIMAKER.CORE.10011] ..."}` |
+| `@Authz` authorization denied for an authenticated user (`403`) | Example: `{"error":true,"errorMessage":"[E.IWP.WEBAPIMAKER.CORE.10002] ..."}` |
+| `405` (method mismatch) / `415` (invalid `Content-Type`) | Same `ClientErrorException` hierarchy and code path as `400` |
+
+**Not wrapped** (HTML or plain text):
+
+| Case | Notes |
+|------|------|
+| Unauthenticated access (`@IMAuthentication` only, no `@Authz`) | `404`, `Content-Type: text/html`, intra-mart's standard generic error page. Note: **this comes back as `404`, not `401`.** The authentication check itself happens upstream of Web API Maker's action/filter layer, and the request never reaches the Endpoint method |
+| Unauthenticated access to an endpoint with `@Authz` | Also `404`. The "unauthenticated → 401" branch documented for `@Authz` effectively never fires with `@IMAuthentication` (session authentication), because the request is already stopped as `404` before reaching the `@Authz` check |
+| An exception that occurs inside an `ActionFilter` and is not explicitly caught by that filter (e.g. a `ResourceNotFoundException` thrown by IM-Authz during the `@Authz` authorization decision — `WebApiAuthzActionFilter` only catches `AnnotationValueException`, so this one passes through) | `500`, `Content-Type: text/html`, intra-mart's standard generic error page, "HTTP 500: Servlet Exception". An exception that occurs outside the Endpoint method (i.e., not via `Method#invoke`) is not wrapped unless that specific code path explicitly wraps it |
+| The URL itself is not registered (package not registered, wrong `@Path`, etc.) | `404`, `Content-Type: text/html`. This action is never reached at all |
+| An invalid/unresolvable `Accept` header (`406`) | `RestResponseUtil.setErrorResponseByPlainText` explicitly fixes the format to plain text |
+
+**Out of scope**: the response format when authentication fails under `@BasicAuthentication`/`@OAuth`. These use a different authentication mechanism and code path than `@IMAuthentication` (session authentication), so the above does not necessarily apply
+
+### Client-Side Evaluation Order
+
+1. Check the HTTP status code
+2. Try to parse the body (a business exception annotated with `@Response(code=...)` is returned in the wrapper structure even with a status other than `200`, so do not stop at the status code alone)
+3. Only when the body parses and `error` is `false`, use `data` as business data
+4. When `error` is `true`, treat `errorMessage` (and the `@ReturnValue` values inside `data`) as the error information
+5. When parsing fails, or the `error` property is absent (including the "cases where the wrapper is not guaranteed" in the table above), treat it as an unexpected error
+
+For a client-side implementation example, see "Pattern 7: Response Control" in `assets/web-api-maker-basic-usage.md`.

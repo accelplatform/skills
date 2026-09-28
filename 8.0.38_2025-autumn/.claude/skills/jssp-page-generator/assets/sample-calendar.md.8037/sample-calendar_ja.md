@@ -836,8 +836,7 @@ let result = manager.getDayInfoSummariesOnTerm(calendarId, gridStart, gridEnd);
 ### 4. URL は `<base>` タグ基準の相対パスを使う
 
 `<imart type="head">` によって `<base href="http://host/imart/">` タグが注入される。
-クエリパラメータのみ（例: `?year=2026&month=4`）の URL は `<base>` 基準で解釈されるため、
-意図しないホーム画面への遷移が発生する。
+クエリパラメータのみ（例: `?year=2026&month=4`）の URL は `<base>` 基準で解釈されるため、意図しないホーム画面への遷移が発生する。
 
 ```javascript
 // NG: クエリのみ → "<base>" 基準で imart/?year=2026&month=4 になる

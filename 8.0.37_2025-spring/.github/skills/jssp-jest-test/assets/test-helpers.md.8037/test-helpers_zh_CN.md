@@ -50,8 +50,7 @@ describe('main', function() {
 
 ## 使用 load() 加载外部文件
 
-无法通过 sourcePathMapping 自动解析的文件（如公共工具类等），
-需使用 `load()` 显式加载。
+无法通过 sourcePathMapping 自动解析的文件（如公共工具类等），需使用 `load()` 显式加载。
 
 ```javascript
 // 在测试文件顶部加载公共处理

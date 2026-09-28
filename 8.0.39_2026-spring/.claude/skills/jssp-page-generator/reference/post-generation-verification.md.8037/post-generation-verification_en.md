@@ -252,8 +252,7 @@ load('/room/common/datetime_util');
 ### 3-7. Transaction.begin Return Value Check (Required)
 
 `Transaction.begin(callback)` **does not re-throw exceptions and returns a `DatabaseResult`**.
-Exceptions `throw`n inside the callback trigger automatic rollback, but do not propagate to the caller,
-so ignoring the return value means failures go undetected, resulting in "HTTP 200 success but nothing was inserted into the DB".
+Exceptions `throw`n inside the callback trigger automatic rollback, but do not propagate to the caller, so ignoring the return value means failures go undetected, resulting in "HTTP 200 success but nothing was inserted into the DB".
 
 #### Required Pattern
 

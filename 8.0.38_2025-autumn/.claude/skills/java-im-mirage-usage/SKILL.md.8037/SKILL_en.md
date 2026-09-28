@@ -1,6 +1,6 @@
 ---
 name: java-im-mirage-usage
-description: intra-mart 固有の DB アクセス基盤である im_mirage（`jp.co.intra_mart.mirage.*`、Mirage-SQL の intra-mart 内製版）を Java（JavaEE 開発モデル）で使用するためのスキルセット。エンティティクラス（`@Table`/`@Column`/`@PrimaryKey`）、DAOクラス（`AbstractDAO` 継承・`DAOFactory` によるインスタンス取得）、2WaySQL の SQLファイル（`/*IF*/`/`/*BEGIN*/`/`/*param*/`/`/*FOR*/`）、`SqlManager` によるクエリ実行（`getResultList`/`getSingleResult`/`executeUpdate`/エンティティCRUD）、`SessionTemplate`/`SessionCallback` によるトランザクション管理、DB方言別 SQL ファイル（`_oracle.sql`/`_sqlserver.sql` 等）の実装パターンを提供する。Java で im_mirage を使いたい、Java で AbstractDAO / DAOFactory / SqlManager を使いたい、JavaEE 開発モデルで DB アクセス処理を実装したい、Mirage の DAO・エンティティを作りたい、Java 側で 2WaySQL の SQL ファイルを書きたい、と言及されたときに使用。JSSP（スクリプト開発モデル）で DB アクセスを行う場合は `jssp-page-generator`（`TenantDatabase`/`SharedDatabase` API・`jssp-2way-sql.md` 規約）を使うこと。両者は開発モデルが異なり実装は完全に独立している。
+description: A skillset for using im_mirage (`jp.co.intra_mart.mirage.*`, intra-mart's in-house edition of Mirage-SQL), the intra-mart-specific DB access foundation, in Java (JavaEE development model). Provides implementation patterns for entity classes (`@Table`/`@Column`/`@PrimaryKey`), DAO classes (extending `AbstractDAO`, obtaining instances via `DAOFactory`), 2WaySQL SQL files (`/*IF*/`/`/*BEGIN*/`/`/*param*/`/`/*FOR*/`), query execution via `SqlManager` (`getResultList`/`getSingleResult`/`executeUpdate`/entity CRUD), transaction management via `SessionTemplate`/`SessionCallback`, and DB-dialect-specific SQL files (`_oracle.sql`/`_sqlserver.sql`, etc.). Use when the user mentions wanting to use im_mirage in Java, use AbstractDAO / DAOFactory / SqlManager in Java, implement DB access processing in the JavaEE development model, create Mirage DAOs and entities, or write 2WaySQL SQL files on the Java side. When performing DB access in JSSP (script development model), use `jssp-page-generator` (the `TenantDatabase`/`SharedDatabase` API and the `jssp-2way-sql.md` conventions) instead. The two use different development models and their implementations are completely independent.
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -89,7 +89,8 @@ For the classes, annotations, and signatures under the `jp.co.intra_mart.mirage.
 Key points:
 - **The SQL-file-based methods of `SqlManager` (`getResultList`/`getSingleResult`/`getCount`/`executeUpdate`/`iterate`) execute 2WaySQL templates.** By contrast, the `xxxBySql` family of methods (e.g. `getResultListBySql`) execute **plain SQL strings** with `?` placeholders — **not** 2WaySQL. Do not confuse the two
 - **SQL files automatically resolve DB-dialect-specific files.** For `select_xxx.sql`, if `select_xxx_oracle.sql` (Oracle) / `select_xxx_postgre.sql` (PostgreSQL) / `select_xxx_sqlserver.sql` (SQLServer) exist, they take priority; otherwise it falls back to the original file. Add dialect-specific files only when there is an actual dialect difference (you do not need to prepare one for every dialect)
-- **The `/*FOR item : list*/.../*END*/` loop syntax is usable in im_mirage.** It is not supported in JSSP (script development model) 2WaySQL, so be careful when reusing JSSP-side implementations
+- **The `/*FOR item in list*/.../*END*/` loop syntax is usable in im_mirage and LogicDesigner.** It is not supported in JSSP (script development model) 2WaySQL, so be careful when reusing JSSP-side implementations. The delimiter is `in` or `IN`, with a half-width space on each side
+- **Use `IN /*param*/('dummy')` (a parenthesized bind) to generate IN clauses dynamically.** A `List`/array expands into `(?, ?, ?)` with as many placeholders as there are elements. For `null` or an empty list, the entire bind portion is omitted from the output, so wrap it in `/*IF list != null && list.size() > 0*/`
 
 ## Generation Targets and Templates
 
@@ -98,7 +99,7 @@ Key points:
 | Entity class | `assets/mirage-basic-usage.md` | Implementation of `@Table`/`@Column`/`@PrimaryKey`, audit fields |
 | DAO class (basic CRUD) | `assets/mirage-basic-usage.md` | Extending `AbstractDAO`, obtaining an instance via `DAOFactory` |
 | DAO class (custom queries) | `assets/mirage-basic-usage.md` | SQL file path constants, calls to `sqlManager.getResultList`/`getSingleResult`, etc. |
-| 2WaySQL SQL file | `assets/mirage-basic-usage.md` | `/*IF*/`/`/*BEGIN*/`/`/*param*/`/`/*FOR*/` syntax, dialect-specific files |
+| 2WaySQL SQL file | `assets/mirage-basic-usage.md` | `/*IF*/`/`/*BEGIN*/`/`/*param*/`/`IN /*param*/('dummy')`/`/*FOR ... in ...*/` syntax, dialect-specific files |
 | Transaction management | `assets/mirage-basic-usage.md` | Implementation pattern for `SessionTemplate.execute(SessionCallback)` |
 | Repository layer (recommended pattern) | `assets/mirage-basic-usage.md` | Encapsulating DAO calls behind a Repository interface + Standard implementation class, and a factory class via `ServiceLoaderUtil` |
 | Service layer | `assets/mirage-basic-usage.md` | Unifying a registration process spanning multiple Repositories into a single transaction, a thin wrapper around a single Repository, and a factory class via `ServiceLoaderUtil` |
@@ -124,7 +125,7 @@ If the user simply says "I want to build DB access processing" without specifyin
 1. Interview the user for requirements (target table/column composition, tenant DB vs. shared DB, the types of queries needed)
 2. Design and implement the entity class following `.claude/rules/java-entity.md` (`@Table`/`@Column`/`@PrimaryKey`, the 4 audit fields)
 3. Refer to `assets/mirage-basic-usage.md` to implement the DAO class (extend `AbstractDAO<EntityType>`. If custom queries are needed, add SQL file path constants and calling methods. Always refer to `reference/mirage-api-reference.md` for method signatures — do not write them from memory or guesswork)
-4. If there are custom queries, create the 2WaySQL SQL file (add dialect-specific files only when there is an actual DB dialect difference)
+4. If there are custom queries, create the 2WaySQL SQL file (add dialect-specific files only when there is an actual DB dialect difference). After creating it, run `scripts/validate-mirage-sql-comments.js` to check for accidentally embedded comments (see "Post-Generation Verification")
 5. Implement the Repository as a set of three — interface + Standard implementation class + factory class (using `ServiceLoaderUtil.loadTopPriority`) — and wrap the DAO calls in a transaction boundary via `SessionTemplate.execute(SessionCallback)`
 6. If there is processing that spans multiple Repositories, likewise create the Service as a set of three — interface + Standard implementation class + factory class — and, within the Service's own `SessionTemplate.execute` transaction boundary, call each Repository (obtained via `XxxRepositoryFactory.getInstance()`) (if it completes with a single Repository method call, `SessionTemplate` is unnecessary on the Service side — a thin wrapper relying on the Repository-side boundary is sufficient)
 7. Confirm compliance with `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md`
@@ -132,32 +133,45 @@ If the user simply says "I want to build DB access processing" without specifyin
 ## Notes
 
 - **Do not instantiate a DAO directly with `new`.** Use `DAOFactory.getTenantDatabaseDAO(...)`/`getSharedDatabaseDAO(...)`. Directly `new`-ing it leaves the `sqlManager` field unset, resulting in a `NullPointerException`
-- **Do not manually set the audit fields (`createUserCd`/`createDate`/`recordUserCd`/`recordDate`).** `AbstractDAO#insert`/`update` sets them automatically, and manual setting can cause unintended overwrites
+- **Do not manually set the audit fields (`createUserCd`/`createDate`/`recordUserCd`/`recordDate`).** `AbstractDAO#insert`/`update` sets them automatically, and manual setting can cause unintended overwrites. Note, however, that `update` sets only the `record`-related fields and updates every column except the primary key, so **on update, start from the existing Entity retrieved with `find()` and apply only the changes** (passing a newly assembled Entity erases the audit trail from record creation)
 - **Do not confuse `SqlManager`'s SQL-file-based methods with the `xxxBySql` family of methods.** The former uses 2WaySQL templates (specified by file path), while the latter uses plain SQL strings (`?` placeholders) — parameter handling also differs
 - **Execute DB update processing within the transaction boundary of `SessionTemplate.execute(SessionCallback)`.** Executing it outside the boundary may result in an auto-commit granularity that is not what was intended
-- **The `/*FOR*/` syntax is exclusive to im_mirage.** JSSP-side 2WaySQL files cannot be reused as-is (see `jssp-2way-sql.md`)
+- **The `/*FOR*/` syntax is usable in im_mirage and LogicDesigner, and is not supported in JSSP (script development model).** JSSP-side 2WaySQL files cannot be reused as-is (see `jssp-2way-sql.md`)
+- **Passing an entity that is missing even one of the 4 audit fields to `AbstractDAO#insert`/`update` causes a `NullPointerException`.** This is not merely a convention-level requirement — it is a hard requirement of the implementation (see `EntityHelper` in `reference/mirage-api-reference.md`)
+- **`getSingleResult`/`find` do not guarantee that the result is unique.** With 0 rows they return `null` instead of throwing an exception, and with 2 or more rows they return the first row, again without throwing. Always `null`-check the return value, and for queries that require uniqueness, guarantee it with a primary key / unique constraint or verify the row count with `getResultList`
+- **A concrete DAO must either extend `AbstractDAO<EntityType>` directly, or go through an intermediate class that passes the type variable straight through (`CommonDAO<T> extends AbstractDAO<T>`).** `AbstractDAO#find` resolves the entity type solely from the first actual type argument of `getClass().getGenericSuperclass()`. Inserting an intermediate class that fixes the type argument, or extending a concrete DAO further, makes the resolution result `null` and causes a `NullPointerException`; if the first type argument is not the entity type, the table name is incorrect. `insert`/`update`/`delete` and SQL-file-based custom queries do not use this resolution, so the problem surfaces only when `find()` is called
+- **Do not write `SELECT COUNT(*)` or `ORDER BY` in a SQL file passed to `getCount`.** `getCount` wraps the SQL it is given entirely in a `SELECT COUNT(*) FROM (...)` subquery, so writing `SELECT COUNT(*)` yourself always returns `1` without throwing an exception. Pass a SELECT of the same shape as the one used for list retrieval
 - **Create dialect-specific SQL files only when there is an actual difference.** Mechanically duplicating files for every dialect reduces maintainability. If the base file can handle all dialects, leave it as is
 - **Place SQL files under `src/main/resources`, not `src/main/java`, using the same package path as the DAO class.** Placing them in `src/main/java` excludes them from the runtime classpath, causing a `resource: xxx.sql is not found.` error. Note that in the platform's standard-feature source tree, `.java` and `.sql` files appearing to coexist in the same directory reflects the pre-build repository layout, which differs from the placement location under the Maven standard layout (an easy place to miss in implementation)
 
 ## Post-Generation Verification
 
-A dedicated verification script equivalent to the JSSP edition (`validate-jssp-code.js`) is not yet in place at this time. Confirm the following manually.
+Whenever a 2WaySQL SQL file (`.sql`) is newly created or edited, run the following to detect accidentally embedded comments (`--` comments, or `/*` / `?` inside a block comment) and fix them until there are 0 errors.
+
+```bash
+node .claude/skills/java-im-mirage-usage/scripts/validate-mirage-sql-comments.js src/main/resources/{package-path}/
+```
+
+For everything else (`.java` files such as entity classes, DAO classes, Repository, Service, etc.), rather than an automated validation script, confirm the following manually.
 
 1. Whether the entity class complies with `.claude/rules/java-entity.md` (public fields, no-argument constructor, `GenerationType.APPLICATION`, the 4 audit fields)
 2. Whether the DAO class extends `AbstractDAO<EntityType>`, and that it does not independently declare a `sqlManager` field (already provided on the `BaseDAO` side)
 3. Whether the DAO is obtained via `DAOFactory.getTenantDatabaseDAO`/`getSharedDatabaseDAO` (and not via `new XxxDAO()`)
 4. Whether the DAO is invoked via a Repository class (when used from a REST API, whether the Endpoint/Service class calls the DAO directly — the order should be `Endpoint → Service → Repository → DAO`)
 5. Whether the audit fields are being manually set on the DAO-calling side
-6. Whether the SQL-file-based methods (`getResultList`, etc.) and the `xxxBySql` family of methods are used appropriately
-7. Whether update processing is within the transaction boundary of `SessionTemplate.execute(SessionCallback)`
-8. Whether SQL files are placed under `src/main/resources` (using the same package path as the DAO class) (and not under `src/main/java`)
-9. Whether processing spanning multiple Repositories is executed together within the Service's own `SessionTemplate.execute` transaction boundary (and not committed in separate transactions per Repository)
-10. Whether a Service method that completes with a single Repository method call avoids an unnecessary redundant layering of `SessionTemplate.execute` (whether it passes through on the Service side when the Repository-side boundary is sufficient)
-11. Whether the Endpoint (Web API Maker) class avoids calling `SessionTemplate`/`DAOFactory` directly and always goes through the Service
-12. Whether the Repository and Service are structured as a set of three — interface + Standard implementation class + factory class — and whether callers obtain the instance via `XxxFactory.getInstance()` rather than instantiating directly with `new StandardXxx()`
-13. Whether the factory class implementation uses `loadTopPriority` (which returns a single instance) rather than `ServiceLoaderUtil.loadPriority` (which returns a `Collection`)
-14. Whether it complies with `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md`
-15. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project separately has a Java-oriented code review/security check skill, use that instead
+6. Whether update processing is based on the existing Entity retrieved with `find()` (and does not pass a newly `new`-ed Entity to `update`)
+7. Whether the SQL-file-based methods (`getResultList`, etc.) and the `xxxBySql` family of methods are used appropriately
+8. Whether update processing is within the transaction boundary of `SessionTemplate.execute(SessionCallback)`
+9. Whether SQL files are placed under `src/main/resources` (using the same package path as the DAO class) (and not under `src/main/java`)
+10. Whether the SQL file passed to `getCount` is a SELECT of the same shape as the one used for list retrieval (and does not contain `SELECT COUNT(*)` or `ORDER BY`)
+11. Whether dynamic IN clause generation uses `IN /*param*/('dummy')`, and whether `/*IF list != null && list.size() > 0*/` guards both `null` and an empty list
+12. Whether processing spanning multiple Repositories is executed together within the Service's own `SessionTemplate.execute` transaction boundary (and not committed in separate transactions per Repository)
+13. Whether a Service method that completes with a single Repository method call avoids an unnecessary redundant layering of `SessionTemplate.execute` (whether it passes through on the Service side when the Repository-side boundary is sufficient)
+14. Whether the Endpoint (Web API Maker) class avoids calling `SessionTemplate`/`DAOFactory` directly and always goes through the Service
+15. Whether the Repository and Service are structured as a set of three — interface + Standard implementation class + factory class — and whether callers obtain the instance via `XxxFactory.getInstance()` rather than instantiating directly with `new StandardXxx()`
+16. Whether the factory class implementation uses `loadTopPriority` (which returns a single instance) rather than `ServiceLoaderUtil.loadPriority` (which returns a `Collection`)
+17. Whether it complies with `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md`
+18. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project separately has a Java-oriented code review/security check skill, use that instead
 
 ## Boundaries with Other Skills
 

@@ -1,7 +1,6 @@
 # Account API 基本利用パターン（Java 版）
 
-`AccountInfoManager` / `AccountInfo` / `AccountRoleInfo` / `AccountPasswordAdapter` のシグネチャ・内部動作は
-`reference/account-api-reference.md` を参照。ここでは典型的な呼び出しパターンを示す。
+`AccountInfoManager` / `AccountInfo` / `AccountRoleInfo` / `AccountPasswordAdapter` のシグネチャ・内部動作は `reference/account-api-reference.md` を参照。ここでは典型的な呼び出しパターンを示す。
 
 **ロール定義自体（新規登録・階層・カテゴリ）の操作はこのスキルの対象外である。** ここで扱うのは「ユーザにロールを割り当てる」処理のみで、ロール定義の作成・変更は `java-im-role-usage` を使用すること。
 

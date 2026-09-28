@@ -2,8 +2,7 @@
 
 After running build-sample-setup-import.js, verify the following items.
 
-For the Multilingual Files, Reference Integrity, Job Scheduler, and Menu Group sections, see
-`.claude/skills/jssp-tenant-setup-generator/reference/checklist.md` (apply the substitutions listed under "Substitutions to apply when reading those references" in SKILL.md).
+For the Multilingual Files, Reference Integrity, Job Scheduler, and Menu Group sections, see `.claude/skills/jssp-tenant-setup-generator/reference/checklist.md` (apply the substitutions listed under "Substitutions to apply when reading those references" in SKILL.md).
 
 The items below are specific to Sample Data Setup.
 

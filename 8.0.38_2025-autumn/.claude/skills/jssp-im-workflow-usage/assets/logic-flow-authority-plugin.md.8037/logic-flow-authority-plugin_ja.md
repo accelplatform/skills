@@ -166,7 +166,7 @@ node .claude/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 <targetCode type="string">{"flowId" : "<フローID>", "version" : null, "versionDecide" : false}</targetCode>
 ```
 
-**使用可能な拡張ポイント（実機確認済み）**
+**使用可能な拡張ポイント**
 
 | ノード種別 | 拡張ポイント |
 |----------|------------|
@@ -178,13 +178,11 @@ node .claude/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 
 ## テナント環境セットアップへの組み込み
 
-IM-LogicDesigner フローの ZIP インポートだけでなく、IM-Workflow へのプラグイン登録も
-テナント環境セットアップに組み込むことができる。
+IM-LogicDesigner フローの ZIP インポートだけでなく、IM-Workflow へのプラグイン登録もテナント環境セットアップに組み込むことができる。
 
 ### ⚠️ 実行順序（必須）
 
-`WorkflowLogicFlowManager.createLogicFlow`（プラグイン登録）は IM-LogicDesigner にフローが
-存在している状態でないと失敗する。**必ず以下の順序で実行すること。**
+`WorkflowLogicFlowManager.createLogicFlow`（プラグイン登録）は IM-LogicDesigner にフローが存在している状態でないと失敗する。**必ず以下の順序で実行すること。**
 
 ```
 1. <key>_logic_import.js    ← IM-LogicDesigner フロー ZIP をインポート（先にフローを作成）

@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.40"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "assistant-integration-api-reference_ja.md",
+      "to": "assistant-integration-api-reference.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "assistant-integration-api-reference_zh_CN.md",
+      "to": "assistant-integration-api-reference.md"
+    },
+    {
+      "from": "assistant-integration-api-reference_en.md",
+      "to": "assistant-integration-api-reference.md"
+    }
+  ]
+}

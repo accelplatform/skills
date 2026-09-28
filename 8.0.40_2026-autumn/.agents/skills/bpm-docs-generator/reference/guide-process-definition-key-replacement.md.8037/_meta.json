@@ -37,19 +37,10 @@
   "replacements": [
     {
       "type": "text",
-      "target": "{{RUNTIME}}",
+      "target": "{{ENSURE_CMD}}",
       "values": [
         {
-          "condition": {
-            "packageManager": "bun"
-          },
-          "value": "bun"
-        },
-        {
-          "condition": {
-            "accelplatformVersion": ">=8.0.37"
-          },
-          "value": "node"
+          "value": "{{$ensureCommand}}"
         }
       ]
     }

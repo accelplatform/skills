@@ -59,6 +59,11 @@
 }
 ```
 
+## constants 的 typeId
+
+`typeId` 原则上应使用 `"string"`。IM-LogicDesigner 的画面上没有指定常量类型的项目，从画面创建的常量都会被作为 string 类型处理。若以 boolean/integer 等非 string 类型生成常量，已确认会导致映射目标任务（如 `im_immGetDepartmentByUser`）报错终止。
+即使想将 true/false 等布尔值或代码值作为常量使用，也应保持 typeId 为 `"string"`，只将值本身设为 `"true"` 等字符串。
+
 ## 类型定义（input/output/variables 通用）
 
 ```jsonc

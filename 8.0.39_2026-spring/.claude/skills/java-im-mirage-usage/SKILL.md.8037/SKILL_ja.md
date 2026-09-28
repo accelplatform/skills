@@ -89,7 +89,8 @@ Repository・Service のインスタンスは `new StandardXxx()` で直接生�
 主なポイント:
 - **`SqlManager` の SQLファイル系メソッド（`getResultList`/`getSingleResult`/`getCount`/`executeUpdate`/`iterate`）は 2WaySQL テンプレートを実行する。** 一方 `xxxBySql` 系メソッド（`getResultListBySql` 等）は **2WaySQL ではない**素の SQL 文字列 + `?` プレースホルダを実行する。両者を混同しない
 - **SQLファイルは DB方言別ファイルが自動解決される。** `select_xxx.sql` に対して `select_xxx_oracle.sql`（Oracle）/`select_xxx_postgre.sql`（PostgreSQL）/`select_xxx_sqlserver.sql`（SQLServer）が存在すればそちらが優先され、無ければ元のファイルにフォールバックする。方言差分がある場合のみ方言別ファイルを追加すればよい（全方言分を必ず用意する必要はない）
-- **`/*FOR item : list*/.../*END*/` ループ構文は im_mirage では使用できる。** JSSP（スクリプト開発モデル）の 2WaySQL では非対応のため、JSSP 側の実装を流用する際は注意する
+- **`/*FOR item in list*/.../*END*/` ループ構文は im_mirage と LogicDesigner で使用できる。** JSSP（スクリプト開発モデル）の 2WaySQL では非対応のため、JSSP 側の実装を流用する際は注意する。区切り子は前後を半角スペースで挟んだ `in` または `IN`
+- **IN句の動的生成には `IN /*param*/('dummy')`（括弧付きバインド）を使う。** `List`/配列が要素数ぶんの `(?, ?, ?)` へ展開される。`null`・空リストではバインド部分ごと出力されないため、`/*IF list != null && list.size() > 0*/` で囲む
 
 ## 生成対象とテンプレート
 
@@ -98,7 +99,7 @@ Repository・Service のインスタンスは `new StandardXxx()` で直接生�
 | エンティティクラス | `assets/mirage-basic-usage.md` | `@Table`/`@Column`/`@PrimaryKey` の実装、監査項目 |
 | DAOクラス（基本CRUD） | `assets/mirage-basic-usage.md` | `AbstractDAO` 継承、`DAOFactory` によるインスタンス取得 |
 | DAOクラス（独自クエリ） | `assets/mirage-basic-usage.md` | SQLファイルパス定数、`sqlManager.getResultList`/`getSingleResult` 等の呼び出し |
-| 2WaySQL の SQLファイル | `assets/mirage-basic-usage.md` | `/*IF*/`/`/*BEGIN*/`/`/*param*/`/`/*FOR*/` 構文、DB方言別ファイル |
+| 2WaySQL の SQLファイル | `assets/mirage-basic-usage.md` | `/*IF*/`/`/*BEGIN*/`/`/*param*/`/`IN /*param*/('dummy')`/`/*FOR ... in ...*/` 構文、DB方言別ファイル |
 | トランザクション管理 | `assets/mirage-basic-usage.md` | `SessionTemplate.execute(SessionCallback)` の実装パターン |
 | Repository層（推奨パターン） | `assets/mirage-basic-usage.md` | Repository インタフェース + Standard実装クラスによる DAO 呼び出しのカプセル化、`ServiceLoaderUtil` によるファクトリクラス |
 | Service層 | `assets/mirage-basic-usage.md` | 複数 Repository を横断する登録処理の同一トランザクション化、単一 Repository の薄いラッパー、`ServiceLoaderUtil` によるファクトリクラス |
@@ -124,7 +125,7 @@ Repository・Service のインスタンスは `new StandardXxx()` で直接生�
 1. ユーザの要件をヒアリング（対象テーブル・カラム構成、テナントDB/シェアードDBのどちらか、必要なクエリの種類）
 2. `.claude/rules/java-entity.md` に従ってエンティティクラスを設計・実装（`@Table`/`@Column`/`@PrimaryKey`、監査項目4フィールド）
 3. `assets/mirage-basic-usage.md` を参照して DAOクラスを実装（`AbstractDAO<エンティティ型>` を継承。独自クエリが必要な場合は SQLファイルパス定数と呼び出しメソッドを追加。メソッドのシグネチャは `reference/mirage-api-reference.md` を必ず参照し、記憶や推測で書かない）
-4. 独自クエリがある場合、2WaySQL の SQLファイルを作成する（DB方言差分がある場合のみ方言別ファイルを追加）
+4. 独自クエリがある場合、2WaySQL の SQLファイルを作成する（DB方言差分がある場合のみ方言別ファイルを追加）。作成後は `scripts/validate-mirage-sql-comments.js` を実行し、コメントの誤混入がないか検証する（「生成後の確認」参照）
 5. Repository を「インタフェース + Standard実装クラス + ファクトリクラス（`ServiceLoaderUtil.loadTopPriority` 使用）」の3点構成で実装し、DAO 呼び出しを `SessionTemplate.execute(SessionCallback)` によるトランザクション境界でラップする
 6. 複数の Repository を横断する処理がある場合、Service を同様に「インタフェース + Standard実装クラス + ファクトリクラス」の3点構成で作成し、Service 自身の `SessionTemplate.execute` トランザクション境界内で各 Repository（`XxxRepositoryFactory.getInstance()` で取得）を呼び出す（単一 Repository のメソッド呼び出しだけで完結する場合、Service 側に `SessionTemplate` は不要。Repository 側の境界だけで十分な薄いラッパーとする）
 7. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
@@ -132,32 +133,45 @@ Repository・Service のインスタンスは `new StandardXxx()` で直接生�
 ## 注意事項
 
 - **DAO インスタンスを `new` で直接生成しない。** `DAOFactory.getTenantDatabaseDAO(...)`/`getSharedDatabaseDAO(...)` を使う。直接 `new` すると `sqlManager` フィールドが未設定のまま `NullPointerException` になる
-- **監査項目（`createUserCd`/`createDate`/`recordUserCd`/`recordDate`）を手動で設定しない。** `AbstractDAO#insert`/`update` が自動設定するため、手動設定すると意図しない上書きが発生する可能性がある
+- **監査項目（`createUserCd`/`createDate`/`recordUserCd`/`recordDate`）を手動で設定しない。** `AbstractDAO#insert`/`update` が自動設定するため、手動設定すると意図しない上書きが発生する可能性がある。ただし `update` が設定するのは `record` 系のみ、かつ主キー以外の全カラムを更新するため、**更新時は `find()` で取得した既存 Entity をベースに変更点だけを反映すること**（新規に組み立てた Entity を渡すと登録時の監査証跡が消える）
 - **`SqlManager` の SQLファイル系メソッドと `xxxBySql` 系メソッドを混同しない。** 前者は 2WaySQL テンプレート（ファイルパス指定）、後者は素の SQL 文字列（`?` プレースホルダ）で、パラメータの扱いも異なる
 - **DB更新処理は `SessionTemplate.execute(SessionCallback)` のトランザクション境界内で実行する。** 境界外で実行すると自動コミットの単位が意図した粒度にならない場合がある
-- **`/*FOR*/` 構文は im_mirage 専用。** JSSP 側の 2WaySQL ファイルをそのまま流用できない（`jssp-2way-sql.md` 参照）
+- **`/*FOR*/` 構文は im_mirage と LogicDesigner で使用でき、JSSP（スクリプト開発モデル）では非対応。** JSSP 側の 2WaySQL ファイルをそのまま流用できない（`jssp-2way-sql.md` 参照）
+- **監査項目4フィールドを1つでも欠いたエンティティを `AbstractDAO#insert`/`update` に渡すと `NullPointerException` になる。** 規約上の要求であるだけでなく、実装上の強制要件である（`reference/mirage-api-reference.md` の `EntityHelper` 参照）
+- **`getSingleResult`/`find` は件数の一意性を保証しない。** 0件では例外ではなく `null` を返し、2件以上でも例外にならず先頭1行を返す。戻り値は必ず `null` チェックし、一意性が必要なクエリでは主キー／一意制約で担保するか `getResultList` で件数を検証する
+- **具象 DAO は `AbstractDAO<エンティティ型>` を直接継承するか、型変数をそのまま渡す中間クラス（`CommonDAO<T> extends AbstractDAO<T>`）を経由する。** `AbstractDAO#find` はエンティティ型を `getClass().getGenericSuperclass()` の第1実型引数からのみ解決するため、型引数を固定した中間クラスを挟む／具象 DAO をさらに継承すると解決結果が `null` になり `NullPointerException`、第1型引数がエンティティ型以外だとテーブル名不正になる。`insert`/`update`/`delete` と SQLファイル系の独自クエリはこの解決を使わないため、`find()` を呼んだときにだけ顕在化する
+- **`getCount` に渡す SQLファイルには `SELECT COUNT(*)` と `ORDER BY` を書かない。** `getCount` は渡された SQL を `SELECT COUNT(*) FROM (...)` のサブクエリへ丸ごと包むため、`SELECT COUNT(*)` を書くと例外を出さずに常に `1` を返す。リスト取得と同じ形の SELECT を渡す
 - **DB方言別 SQLファイルは差分がある場合のみ作成する。** 全方言分を機械的に複製すると保守性が下がる。ベースファイルで全方言に対応できるならそのままでよい
 - **SQLファイルは `src/main/java` ではなく `src/main/resources` 配下に、DAOクラスと同じパッケージパスで配置する。** `src/main/java` に置くと実行時クラスパスに含まれず `resource: xxx.sql is not found.` エラーになる。プラットフォーム標準機能のソースツリーで `.java` と `.sql` が同じディレクトリに同居して見えるのは、ビルド前のリポジトリ構成であり、Maven 標準レイアウトの配置先とは異なる点に注意（実装漏れが起きやすい箇所）
 
 ## 生成後の確認
 
-JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当）は現時点で未整備。以下を手動で確認する。
+2WaySQL の SQLファイル（`.sql`）を新規生成・編集した場合は、以下を実行してコメントの誤混入（`--` コメント・ブロックコメント内の `/*` や `?`）を検出し、エラーが 0 件になるまで修正すること。
+
+```bash
+node .claude/skills/java-im-mirage-usage/scripts/validate-mirage-sql-comments.js src/main/resources/{パッケージパス}/
+```
+
+上記以外（エンティティクラス・DAOクラス・Repository・Service 等の `.java` ファイル）は、自動検証スクリプトではなく、以下の項目を手動で確認する。
 
 1. エンティティクラスが `.claude/rules/java-entity.md` に準拠しているか（publicフィールド・引数なしコンストラクタ・`GenerationType.APPLICATION`・監査項目4フィールド）
 2. DAOクラスが `AbstractDAO<エンティティ型>` を継承しているか、`sqlManager` フィールドを独自に宣言していないか（`BaseDAO` 側で既に提供されている）
 3. DAO の取得が `DAOFactory.getTenantDatabaseDAO`/`getSharedDatabaseDAO` 経由になっているか（`new XxxDAO()` になっていないか）
 4. DAO が Repository クラス経由で呼び出されているか（REST API から利用する場合、Endpoint/Service クラスが DAO を直接呼び出していないか。`Endpoint → Service → Repository → DAO` の順）
 5. 監査項目を DAO 呼び出し側で手動設定していないか
-6. SQLファイル系メソッド（`getResultList` 等）と `xxxBySql` 系メソッドの使い分けが適切か
-7. 更新系処理が `SessionTemplate.execute(SessionCallback)` のトランザクション境界内にあるか
-8. SQLファイルが `src/main/resources` 配下（DAOクラスと同じパッケージパス）に配置されているか（`src/main/java` に置いていないか）
-9. 複数の Repository を横断する処理が、Service 自身の `SessionTemplate.execute` トランザクション境界内でまとめて実行されているか（Repository ごとに別々のトランザクションでコミットされていないか）
-10. 単一の Repository メソッド呼び出しだけで完結する Service メソッドで、不要な `SessionTemplate.execute` の重ね張りをしていないか（Repository 側の境界で十分な場合は Service 側では素通しでよい）
-11. Endpoint（Web API Maker）クラスが `SessionTemplate`/`DAOFactory` を直接呼び出さず、必ず Service 経由になっているか
-12. Repository・Service が「インタフェース + Standard実装クラス + ファクトリクラス」の3点構成になっているか、呼び出し側が `new StandardXxx()` で直接生成せず `XxxFactory.getInstance()` を使っているか
-13. ファクトリクラスの実装が `ServiceLoaderUtil.loadPriority`（`Collection` を返す）ではなく `loadTopPriority`（単一インスタンスを返す）を使っているか
-14. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
-15. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
+6. 更新処理が `find()` で取得した既存 Entity をベースにしているか（新規に `new` した Entity を `update` に渡していないか）
+7. SQLファイル系メソッド（`getResultList` 等）と `xxxBySql` 系メソッドの使い分けが適切か
+8. 更新系処理が `SessionTemplate.execute(SessionCallback)` のトランザクション境界内にあるか
+9. SQLファイルが `src/main/resources` 配下（DAOクラスと同じパッケージパス）に配置されているか（`src/main/java` に置いていないか）
+10. `getCount` に渡す SQLファイルが、リスト取得と同じ形の SELECT になっているか（`SELECT COUNT(*)` や `ORDER BY` を書いていないか）
+11. IN句の動的生成が `IN /*param*/('dummy')` になっているか、`/*IF list != null && list.size() > 0*/` で `null` と空リストの両方をガードしているか
+12. 複数の Repository を横断する処理が、Service 自身の `SessionTemplate.execute` トランザクション境界内でまとめて実行されているか（Repository ごとに別々のトランザクションでコミットされていないか）
+13. 単一の Repository メソッド呼び出しだけで完結する Service メソッドで、不要な `SessionTemplate.execute` の重ね張りをしていないか（Repository 側の境界で十分な場合は Service 側では素通しでよい）
+14. Endpoint（Web API Maker）クラスが `SessionTemplate`/`DAOFactory` を直接呼び出さず、必ず Service 経由になっているか
+15. Repository・Service が「インタフェース + Standard実装クラス + ファクトリクラス」の3点構成になっているか、呼び出し側が `new StandardXxx()` で直接生成せず `XxxFactory.getInstance()` を使っているか
+16. ファクトリクラスの実装が `ServiceLoaderUtil.loadPriority`（`Collection` を返す）ではなく `loadTopPriority`（単一インスタンスを返す）を使っているか
+17. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+18. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界
 

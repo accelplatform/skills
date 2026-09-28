@@ -2,8 +2,7 @@
 
 ## 概要
 
-multipart/form-data でアップロードされたファイルをパブリックストレージに保存し、保存先キー（ファイルパス）を返却するアップロード API と、
-そのキーを指定してファイルをバイナリで返却するダウンロード API、および両 API の動作確認用画面のテンプレート。
+multipart/form-data でアップロードされたファイルをパブリックストレージに保存し、保存先キー（ファイルパス）を返却するアップロード API と、そのキーを指定してファイルをバイナリで返却するダウンロード API、および両 API の動作確認用画面のテンプレート。
 
 - アップロード API: `POST /sample_api/api/upload_file`（multipart/form-data、`X-Intramart-Secure-Token` 必須）
 - ダウンロード API: `GET /sample_api/api/download_file?fileKey=...`（`X-Intramart-Secure-Token` 必須）
@@ -760,10 +759,7 @@ function init(request) {
 
 ### 元ファイル名の保持
 
-`uploads/{ユニークディレクトリ}/{safeFileName}` のように **ディレクトリ側でユニーク性を担保**することで、
-ファイル名はサニタイズ済みの元ファイル名を保持できる。
-ダウンロード時に `Content-Disposition: attachment; filename="..."` で元ファイル名を返せるため、
-ユーザにとって自然なダウンロード体験になる。
+`uploads/{ユニークディレクトリ}/{safeFileName}` のように **ディレクトリ側でユニーク性を担保**することで、ファイル名はサニタイズ済みの元ファイル名を保持できる。ダウンロード時に `Content-Disposition: attachment; filename="..."` で元ファイル名を返せるため、ユーザにとって自然なダウンロード体験になる。
 
 ### ダウンロードのエラー応答
 
@@ -774,15 +770,13 @@ function init(request) {
 ### サイズ上限
 
 `uploadedFile.getLength()` で **事前にサイズ上限を弾く**こと。
-Content-Length が信用できない環境では、本来はストリーム転送中の累積バイト数も監視すべきだが、
-標準の `transferTo` には途中打ち切り機構がないため、必要であれば自前でチャンク読み込みを実装する。
+Content-Length が信用できない環境では、本来はストリーム転送中の累積バイト数も監視すべきだが、標準の `transferTo` には途中打ち切り機構がないため、必要であれば自前でチャンク読み込みを実装する。
 通常のケースでは事前チェックで十分。
 
 ### セキュアトークン
 
 GET であってもファイル取得は機密データ操作とみなし、`X-Intramart-Secure-Token` を要求する。
-ブラウザの `<a href>` 直リンクは使えなくなるため、画面側は `fetch` でレスポンスを Blob として受け取り、
-`URL.createObjectURL` 経由でダウンロードさせる。
+ブラウザの `<a href>` 直リンクは使えなくなるため、画面側は `fetch` でレスポンスを Blob として受け取り、`URL.createObjectURL` 経由でダウンロードさせる。
 
 ## 関連
 

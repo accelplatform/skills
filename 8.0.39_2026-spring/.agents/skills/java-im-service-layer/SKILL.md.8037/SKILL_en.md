@@ -40,20 +40,31 @@ public class Standard{ServiceName}Service implements {ServiceName}Service {
 
     @Override
     public {ResultType} process{BusinessOperation}({InputType} input) throws {ServiceName}ServiceException {
-        try {
-            validateInput(input);
-            return SessionTemplate.execute(s -> {
-                {DomainModel} entity = {entityName}Repository.findBy{BusinessKey}(input.get{BusinessKey}());
-                if (entity == null) {
-                    throw new {ServiceName}ServiceException("エンティティが見つかりません: {BusinessKey}=" + input.get{BusinessKey}());
-                }
-                {DomainModel} processedEntity = applyBusinessRules(entity, input);
+        validateInput(input);
+        // The E in SessionCallback<T, E> can only be inferred as a single checked exception
+        // type, so any checked exception raised inside the lambda is converted to
+        // {ServiceName}ServiceException right where it occurs (immediately after each
+        // repository call). This keeps the checked exception propagating out of the lambda
+        // to a single type ({ServiceName}ServiceException), so SessionTemplate.execute() no
+        // longer needs to be wrapped in a try/catch.
+        return SessionTemplate.execute(s -> {
+            final {DomainModel} entity;
+            try {
+                entity = {entityName}Repository.findBy{BusinessKey}(input.get{BusinessKey}());
+            } catch (RepositoryException e) {
+                throw new {ServiceName}ServiceException("Search failed: " + e.getMessage(), e);
+            }
+            if (entity == null) {
+                throw new {ServiceName}ServiceException("Entity not found: {BusinessKey}=" + input.get{BusinessKey}());
+            }
+            {DomainModel} processedEntity = applyBusinessRules(entity, input);
+            try {
                 {entityName}Repository.save(processedEntity);
-                return buildResult(processedEntity);
-            });
-        } catch (RepositoryException e) {
-            throw new {ServiceName}ServiceException("処理に失敗しました: " + e.getMessage(), e);
-        }
+            } catch (RepositoryException e) {
+                throw new {ServiceName}ServiceException("Save failed: " + e.getMessage(), e);
+            }
+            return buildResult(processedEntity);
+        });
     }
 }
 ```
@@ -127,7 +138,7 @@ public {ResultType} process{BusinessOperation}({InputType} input) throws {Servic
             return buildResult(processed);
         });
     } catch (RepositoryException e) {
-        throw new {ServiceName}ServiceException("処理に失敗しました: " + e.getMessage(), e);
+        throw new {ServiceName}ServiceException("Processing failed: " + e.getMessage(), e);
     }
 }
 
@@ -139,7 +150,7 @@ public void save({DomainModel} model) throws RepositoryException {
         final {EntityName}DAO dao = DAOFactory.getTenantDatabaseDAO({EntityName}DAO.class);
         dao.insert(entity);
     } catch (SQLRuntimeException e) {
-        throw new RepositoryException("{EntityName}の保存に失敗しました", e);
+        throw new RepositoryException("Failed to save {EntityName}", e);
     }
 }
 ```
@@ -160,7 +171,7 @@ public void save({DomainModel} model) throws RepositoryException {
             return null;
         });
     } catch (SQLRuntimeException e) {
-        throw new RepositoryException("{EntityName}の保存に失敗しました", e);
+        throw new RepositoryException("Failed to save {EntityName}", e);
     }
 }
 ```
@@ -175,14 +186,14 @@ Validation is performed before the transaction starts (outside `SessionTemplate.
 ```java
 private void validateInput({InputType} input) throws {ServiceName}ServiceException {
     if (input == null) {
-        throw new {ServiceName}ServiceException("入力が null です");
+        throw new {ServiceName}ServiceException("Input must not be null");
     }
     if (input.get{BusinessKey}() == null || input.get{BusinessKey}().isEmpty()) {
-        throw new {ServiceName}ServiceException("{BusinessKey} は必須です");
+        throw new {ServiceName}ServiceException("{BusinessKey} is required");
     }
     // Business-specific validation
     if (input.getAmount() != null && input.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-        throw new {ServiceName}ServiceException("金額は0以上である必要があります: " + input.getAmount());
+        throw new {ServiceName}ServiceException("Amount must be zero or greater: " + input.getAmount());
     }
 }
 ```
@@ -198,7 +209,7 @@ private {DomainModel} applyBusinessRules({DomainModel} entity, {InputType} input
     // Validate state
     if (!entity.isEditable()) {
         throw new {ServiceName}ServiceException(
-                "編集不可の状態です: " + entity.getStatus());
+                "Not in an editable state: " + entity.getStatus());
     }
     // Update the domain model
     entity.updateFrom(input);
@@ -231,7 +242,7 @@ public class {ServiceName}RuntimeException extends RuntimeException {
 ### Exception Conversion Rules
 - **RepositoryException** → wrap in `{ServiceName}ServiceException` (preserving the cause)
 - **RuntimeException (unexpected)** → let it propagate as-is (do not catch)
-- Write exception messages in Japanese, including the variable values needed for troubleshooting
+- Write exception messages in the language matching this document (English here), including the variable values needed for troubleshooting
 
 ## Key Requirements
 

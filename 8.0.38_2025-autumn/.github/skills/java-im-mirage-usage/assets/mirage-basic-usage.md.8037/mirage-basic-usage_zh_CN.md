@@ -32,10 +32,10 @@ import jp.co.intra_mart.mirage.annotation.PrimaryKey.GenerationType;
 import jp.co.intra_mart.mirage.annotation.Table;
 
 /**
- * 订单信息实体。<br>
- * 表名 {@code foo_order} 中的 {@code foo_} 是本文档全篇使用的占位企业名前缀
+ * 订单信息实体类。<br>
+ * 表名 {@code foo_order} 中的 {@code foo_} 是本文档通篇使用的占位企业名前缀
  * （与包名 {@code jp.co.example.foo} 相同），并非表示领域含义的词语，因此
- * 在类名中予以省略（参见本模式末尾"类名与表名的对应关系"）。
+ * 从类名中省略（参见本模式末尾的"类名与表名的对应关系"）。
  */
 @Table(name = "foo_order")
 public class OrderEntity {
@@ -123,8 +123,8 @@ public class OrderDAO extends AbstractDAO<OrderEntity> {
     /** 按状态获取订单列表的 SQL */
     private static final String SELECT_ORDERS_BY_STATUS = "select_orders_by_status.sql";
 
-    /** 获取订单件数的 SQL */
-    private static final String SELECT_ORDER_COUNT = "select_order_count.sql";
+    /** 按状态获取订单件数的 SQL（从列表获取 SQL 中去掉 ORDER BY 的同形 SELECT） */
+    private static final String SELECT_ORDERS_BY_STATUS_COUNT = "select_orders_by_status_count.sql";
 
     /**
      * 按指定状态获取订单列表。
@@ -145,7 +145,7 @@ public class OrderDAO extends AbstractDAO<OrderEntity> {
     public int countByStatus(final String status) {
         final OrderEntity param = new OrderEntity();
         param.status = status;
-        return super.sqlManager.getCount(SQL_PATH.concat(SELECT_ORDER_COUNT), param);
+        return super.sqlManager.getCount(SQL_PATH.concat(SELECT_ORDERS_BY_STATUS_COUNT), param);
     }
 }
 ```
@@ -170,13 +170,50 @@ ORDER BY
   order_id
 ```
 
+用于获取件数的 `select_orders_by_status_count.sql`（仅有无 `ORDER BY` 的区别）：
+
+```sql
+SELECT
+  order_id,
+  customer_name,
+  amount,
+  status
+FROM
+  foo_order
+/*BEGIN*/
+WHERE
+  /*IF status != null*/
+  status = /*status*/'dummy'
+  /*END*/
+/*END*/
+```
+
+- **传给 `getCount` 的 SQL 文件中不得书写 `SELECT COUNT(*)`。** `getCount` 会将传入的 SQL 整体包裹为 `SELECT COUNT(*) FROM (<传入的 SQL>)` 这样的子查询，因此若书写了 `SELECT COUNT(*)`，就会变成 `SELECT COUNT(*) FROM (SELECT COUNT(*) ...)`，**不抛出异常而始终返回 `1`**。应传入与列表获取相同形式的 SELECT
+- **传给 `getCount` 的 SQL 文件中不得书写 `ORDER BY`。** 由于它会进入子查询内部，在 SQLServer 中会导致语法错误。应如上所示，拆分为列表获取用与件数获取用两个文件
+- **不要在 SQL 文件中书写 `--` 注释。** 2WaySQL 的解析器不会区分 `--` 行注释的内容，而是扫描整个文件来检测模板语法。因此，如果在说明性注释中写入了 `/*IF*/` 等语法记号、实际的绑定名或 `?` 字面量，即使它只是注释，也会被误判为真正的模板指令，从而产生与注释内容看似无关的运行时错误（`UnsupportedOperationException: not supported`、"列索引超出范围"等）。SQL 文件的目的与验证要点应写在调用方（DAO 方法）的 JavaDoc 中，而不是写在 SQL 文件里；SQL 文件中只应放置实际执行的 SQL 正文（详细内容与具体示例参见 `.github/instructions/jssp-2way-sql.instructions.md`）
 - **SQL 文件应放置在 `src/main/resources` 下，而不是 `src/main/java` 下。** 需要在 `src/main/resources` 下重现与 DAO 类相同的包路径（`sqlPath` 常量的相对路径）。如果只放在 `src/main/java` 下，构建后的运行时类路径不会包含该文件，会导致 `resource: xxx.sql is not found.` 错误（`.java` 与 `.sql` 看似同处于同一目录下的平台标准功能源代码树，是构建前的仓库结构，与 Maven 标准布局的 `src/main/resources` 是不同的东西）
 - 参数可以传递实体，或任意的 JavaBean、`Map<String, Object>`。需要使 SQL 内的占位符名称（`/*status*/` 等）与属性名/键名一致
 - 2WaySQL 的基本语法（`/*IF*/`/`/*BEGIN*/`/`/*param*/'dummy'`）与 JSSP 侧（`.github/instructions/jssp-2way-sql.instructions.md`）通用。哑值的作用、LIKE 检索时的转义方针也可以采用相同的思路
+### 注意：不要在 `/*BEGIN*/` 块内嵌套 `/*IF*/`
 
-## 模式4：`/*FOR*/` 循环语法（im_mirage 专用）
+解析器本身支持 `/*IF*/` 的嵌套，但在 `/*BEGIN*/` 块内部嵌套时，内侧 `/*IF*/` 开头的 `AND`/`OR` 会成为前置符去除的对象；当外侧 `/*IF*/` 是该块内最先成立的条件时，这个前置符会被错误地去除（因为 `IfNode` 要等处理完子节点后才会设置「已输出」标志）。结果会变成 `WHERE a = ? b = ?` 这样不正确的 SQL。若先行的兄弟条件已经成立，则能正确输出，因此是否出错取决于参数的组合。外侧 IF 是该块内最先成立的条件时会出现 `PSQLException`，而先行的兄弟条件先成立时则能正常工作。
 
-JSSP 的脚本开发模型不支持，但 im_mirage 中可用于 IN 子句的动态生成等场景。
+多个条件不要嵌套，应并列为兄弟关系，依赖关系用条件表达式来表示。
+
+```sql
+/*IF status != null*/
+status = /*status*/'dummy'
+/*END*/
+/*IF status != null && categoryCd != null*/
+AND category_cd = /*categoryCd*/'dummy'
+/*END*/
+```
+
+（内侧块不以 `AND`/`OR`/`,` 开头的嵌套——例如用于切换运算符或值片段的用途——不受此问题影响，可以使用。）
+
+## 模式4：IN 子句的动态生成（`IN /*param*/('dummy')`）
+
+将 `List` 或数组展开到 IN 子句时，使用在 `/*param*/` 之后紧跟 `('dummy')` 的**带括号的绑定**。运行时会按元素个数展开为 `(?, ?, ?)`。**不要用 `/*FOR*/` 拼装 IN 子句。**
 
 ```sql
 SELECT
@@ -184,21 +221,102 @@ SELECT
   customer_name
 FROM
   foo_order
+/*BEGIN*/
 WHERE
-  order_id IN (
-    /*FOR orderId : orderIds*/
-    /*orderId*/'dummy'
-    /*IF orderId_has_next*/, /*END*/
-    /*END*/
-  )
+  /*IF orderIds != null && orderIds.size() > 0*/
+  AND order_id IN /*orderIds*/('dummy')
+  /*END*/
+/*END*/
 ```
 
 ```java
 public List<OrderEntity> findByIds(final List<String> orderIds) {
-    final java.util.Map<String, Object> param = new java.util.HashMap<String, Object>();
-    param.put("orderIds", orderIds);
-    return super.sqlManager.getResultList(OrderEntity.class, SQL_PATH.concat("select_orders_by_ids.sql"), param);
+    final OrderIdsCondition condition = new OrderIdsCondition(orderIds);
+    return super.sqlManager.getResultList(OrderEntity.class, SQL_PATH.concat("select_orders_by_ids.sql"), condition);
 }
+
+/**
+ * 用于 IN 句动态生成的检索条件（public 字段的 JavaBean）。
+ */
+public class OrderIdsCondition {
+    public List<String> orderIds;
+    public OrderIdsCondition(final List<String> orderIds) {
+        this.orderIds = orderIds;
+    }
+}
+```
+
+- **必须同时守护 `null` 与空列表。** `IN /*param*/('dummy')` 无论为 `null` 还是空列表，绑定部分都会连同一起不被输出，因此没有守护时 `IN` 会裸露残留，导致 SQL 损坏。仅有 `/*IF orderIds != null*/` 会放过空列表，从而生成 `WHERE order_id IN ` 这样损坏的 SQL
+- OGNL 对 `&&` 进行短路求值，因此即使 `orderIds` 为 `null`，`size()` 也不会被求值，不会引发 `NullPointerException`。`size() != 0` 与 `size() > 0` 使用哪种都可以
+- 在 JSSP 侧，`/*IF*/` 的表达式为 JavaScript，因此应写作 `/*IF orderIds != null && orderIds.length > 0*/`
+
+### 【重要】该守卫可能使空列表的结果从「0 条」变为「全部记录」
+
+如上所述，当 IN 子句守卫是 `/*BEGIN*/` 内唯一的条件时，若 `orderIds` 为 `null` 或空列表，`/*IF*/` 内部的内容会消失，导致 `/*BEGIN*/` 块变空，从而**整个 `WHERE` 子句都会被删除**（这符合 `/*BEGIN*/` 的基本行为：内部内容全部消失时，`WHERE` 等也会自动删除）。
+其结果是虽不会产生 SQL 错误，但返回的并非预期的「无匹配对象（0 条）」，而是**不加筛选的全部记录**。
+
+若业务意图是「调用方传入空列表时，结果也应为空」，则**不能仅依赖 SQL 侧的守卫**，还应在调用方（Repository / Service 层）增加应用层守卫：判断 `null`／空列表后直接返回空列表，而不执行该 SQL。尤其是在授权／权限过滤场景（例如将可访问的 ID 列表传入 `IN` 子句）中使用该结构时，这是防止空列表意外导致全部数据泄露的必要对策。
+
+### `/*FOR*/` 循环语法
+
+在 im_mirage 与 LogicDesigner 中可用，JSSP（脚本开发模型）不支持。**分隔符为前后各夹一个半角空格的 `in` 或 `IN`。**
+
+```sql
+SELECT
+  ticket_id
+FROM
+  foo_ticket
+/*BEGIN*/
+WHERE
+/*FOR ticketId in ticketIdList*/
+OR ticket_id = /*ticketId*/'dummy'
+/*END*/
+/*END*/
+```
+
+- **当主体以 `AND`/`OR`/`,` 开头时，需用 `/*BEGIN*/` 包围。** 开头的前置符仅在「所包围的块尚为空时」才会被去除，因此没有 `/*BEGIN*/` 时第 1 条的 `OR` 会残留，生成 `WHERE OR ticket_id = ?` 这样损坏的 SQL
+- **块内可引用的只有绑定到循环变量名（`ticketId`）上的单个元素。** IN 子句的动态生成请使用本模式开头的 `IN /*param*/('dummy')`
+
+### 【重要】不要期望 UPDATE 语句的 SET 子句中 `/*BEGIN*/` 会去除逗号
+
+若试图用 `/*BEGIN*/` 包裹 UPDATE 语句的 SET 子句，期待其去除各项前置的逗号，其行为不稳定，因为**结果取决于逗号在文件中的位置**。
+
+- 若将逗号放在与 `/*IF*/` 标记**同一行的行首**，解析器能正确将其识别为前置符并予以删除
+- 若将逗号**换行后置于缩进的另一行**，解析器无法将其识别为前置符，导致开头残留裸露的逗号，形成不合法的 SQL 并引发语法错误（`PSQLException` 等，错误消息示例：`ERROR: syntax error at or near ","`）
+
+此外，`/*BEGIN*/` 在其内部所有条件均为假时，会将整个 SET 子句（连同 `SET` 关键字）一并删除，因此在没有任何待更新列的情况下，也会产生不合法的 SQL（没有 `SET` 的 `UPDATE`）。
+
+由于**逗号前置符的删除依赖格式、容易失效，且与 `/*BEGIN*/`「全部条件为假时整块消失」的特性也存在冲突**，因此不应采用依赖 `/*BEGIN*/` 去除 SET 子句逗号的写法。
+
+导致语法错误的示例（逗号换行置于缩进行）：
+
+```sql
+UPDATE foo_order
+/*BEGIN*/
+SET
+  /*IF status != null*/
+  , status = /*status*/'dummy'
+  /*END*/
+  /*IF memo != null*/
+  , memo = /*memo*/'dummy'
+  /*END*/
+/*END*/
+WHERE order_id = /*orderId*/'dummy'
+```
+
+正确示例（在 SET 子句开头始终放置一个无害的自我赋值，不依赖 `/*BEGIN*/`，让后续项目始终带逗号连接。该方式不依赖逗号的位置，也不存在 SET 子句整体消失的风险）：
+
+```sql
+UPDATE foo_order
+SET
+  order_id = /*orderId*/'dummy'
+  /*IF status != null*/
+  , status = /*status*/'dummy'
+  /*END*/
+  /*IF memo != null*/
+  , memo = /*memo*/'dummy'
+  /*END*/
+WHERE order_id = /*orderId*/'dummy'
 ```
 
 ## 模式5：按数据库方言区分的 SQL 文件
@@ -231,6 +349,7 @@ import jp.co.example.foo.entity.OrderEntity;
  */
 public interface OrderRepository {
     void register(OrderEntity order);
+    void updateStatus(String orderId, String status);
     List<OrderEntity> findByStatus(String status);
 }
 ```
@@ -260,6 +379,25 @@ public class StandardOrderRepository implements OrderRepository {
             public Void execute(final Session session) {
                 final OrderDAO dao = DAOFactory.getTenantDatabaseDAO(OrderDAO.class);
                 dao.insert(order);   // createUserCd/createDate 会自动设置
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void updateStatus(final String orderId, final String status) {
+        SessionTemplate.execute(new SessionCallback<Void, RuntimeException>() {
+            @Override
+            public Void execute(final Session session) {
+                final OrderDAO dao = DAOFactory.getTenantDatabaseDAO(OrderDAO.class);
+
+                // update 会更新主键以外的全部列，因此必须先用 find() 读取，再仅反映变更点
+                final OrderEntity order = dao.find(orderId);
+                if (order == null) {
+                    return null;   // 也可根据需求抛出异常
+                }
+                order.status = status;
+                dao.update(order);
                 return null;
             }
         });
@@ -422,11 +560,11 @@ public class StandardOrderService implements OrderService {
     private final OrderItemRepository orderItemRepository = OrderItemRepositoryFactory.getInstance();
 
     /**
-     * 在同一事务中登记订单头信息与订单明细。<br>
-     * 由于是跨越 {@link OrderRepository}（foo_order 表）与 {@link OrderItemRepository}（foo_order_item 表）
+     * 将订单头信息与订单明细信息在同一事务中登记。<br>
+     * 由于这是横跨 {@link OrderRepository}（foo_order 表）与 {@link OrderItemRepository}（foo_order_item 表）
      * 这两个 Repository 的操作，因此由 Service 自身通过 {@code SessionTemplate.execute}
-     * 划定事务边界，Repository 侧的 {@code SessionTemplate.execute}（嵌套调用）
-     * 会汇入此边界。
+     * 划定事务边界，Repository 侧的 {@code SessionTemplate.execute}（嵌套调用）会汇入
+     * 该边界。
      *
      * @param order 订单头信息
      * @param items 订单明细列表
@@ -446,10 +584,10 @@ public class StandardOrderService implements OrderService {
     }
 
     /**
-     * 仅调用单个 Repository 方法时，Service 作为薄包装。<br>
-     * 此时 Repository 侧（{@code StandardOrderRepository#findByStatus}）已经
-     * 通过 {@code SessionTemplate.execute} 划定了边界，因此 Service 侧无需
-     * 重复划定事务边界。
+     * 仅调用单个 Repository 方法的情况下，Service 只是一层薄包装。<br>
+     * 此时由于 Repository 侧（{@code StandardOrderRepository#findByStatus}）已经
+     * 通过 {@code SessionTemplate.execute} 划定了边界，因此 Service 侧无需重复
+     * 划定事务边界。
      *
      * @param status 检索对象的状态
      * @return 订单列表

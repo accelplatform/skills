@@ -1167,7 +1167,7 @@ function buildDdlSql(spec, dialect) {
     lines.push('-- ' + t.name + (t.comment ? ': ' + t.comment : ''));
     lines.push('-- CREATE TABLE ' + t.name + ' (');
     lines.push('--     -- カラム定義をここに記述');
-    lines.push('-- );');
+    lines.push('-- )');
     lines.push('');
   }
   return lines.join('\n');
@@ -1267,7 +1267,7 @@ function buildDmlSql(spec, dialect) {
   lines.push('');
   for (const t of (spec.database || {}).tables || []) {
     lines.push('-- ' + t.name + ' への初期データがあればここに記述');
-    lines.push('-- INSERT INTO ' + t.name + ' (...) VALUES (...);');
+    lines.push('-- INSERT INTO ' + t.name + ' (...) VALUES (...)');
     lines.push('');
   }
   lines.push(...buildPortletDmlLines(spec));

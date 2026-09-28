@@ -197,9 +197,10 @@ For complete exception class definitions and layer-specific handling examples, s
   - Rationale: to allow implementation swapping via `ServiceLoaderUtil` and mock injection during testing
 - For the complete service factory template, see the "Factory Pattern" section of `references/implementation-templates.md`
 - For DAO factory usage, see the `java-im-mirage-usage` skill
+  - The `SQL_PATH` constant passed to `sqlManager` must be a classpath-relative path. Adding a leading slash, or any prefix other than the DAO class's own package path, causes `resource: ... is not found.` — do not add them (see that skill for details)
 
 ### Configuration File Patterns
-- **SQL file**: `/META-INF/sql/{package_path}/{ClassName}/{methodName}.sql`
+- **SQL file**: `/src/main/resources/{package_path}/{ClassName}/{methodName}.sql`
 - **Configuration file**: `/src/main/conf/{feature}/{config_name}-config.xml`
 - **Import configuration**: `/src/main/conf/products/import/basic/{feature}/{config_name}.xml`
 - **DDL file**: `/src/main/storage/system/products/import/basic/{feature}/{feature}-ddl.sql`

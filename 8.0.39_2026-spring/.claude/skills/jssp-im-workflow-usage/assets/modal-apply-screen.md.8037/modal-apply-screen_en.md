@@ -3,8 +3,7 @@
 ## Overview
 
 Template for the IM-Workflow application screen program (modal method).
-Uses the `imWorkflow.modal.showApply()` / `imWorkflow.modal.showTemporarySave()` APIs to
-perform application and temporary save through the IM-Workflow standard modal UI.
+Uses the `imWorkflow.modal.showApply()` / `imWorkflow.modal.showTemporarySave()` APIs to perform application and temporary save through the IM-Workflow standard modal UI.
 
 Application and temporary save are provided on the same JSSP screen (the same as `simple-apply-screen.md`).
 `showApply()` and `showTemporarySave()` are assigned to separate buttons on the same form.

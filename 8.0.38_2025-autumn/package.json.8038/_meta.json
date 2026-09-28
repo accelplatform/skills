@@ -4,43 +4,21 @@
   "conditions": {
     "accelplatformVersion": "8.0.38"
   },
-  "rename": [
-    {
-      "condition": {
-        "module": "im_activiti"
-      },
-      "from": "package_im_activiti.json",
-      "to": "package.json"
-    },
-    {
-      "from": "package.json",
-      "to": "package.json"
-    }
-  ],
   "replacements": [
     {
       "type": "regex",
       "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
-      "replacement": "{{$artifactId}}",
-      "condition": {
-        "accelplatformVersion": "8.0.38"
-      }
+      "replacement": "{{$artifactId}}"
     },
     {
       "type": "regex",
       "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
-      "replacement": "{{$projectVersion}}",
-      "condition": {
-        "accelplatformVersion": "8.0.38"
-      }
+      "replacement": "{{$projectVersion}}"
     },
     {
       "type": "regex",
       "pattern": "\\{\\{PROJECT_DESCRIPTION\\}\\}",
-      "replacement": "{{$description}}",
-      "condition": {
-        "accelplatformVersion": "8.0.38"
-      }
+      "replacement": "{{$description}}"
     }
   ],
   "messages": [
@@ -49,7 +27,8 @@
         "and": [
           {
             "module": "im_activiti"
-          }, {
+          },
+          {
             "locale": "ja"
           }
         ]
@@ -62,7 +41,8 @@
         "and": [
           {
             "module": "im_activiti"
-          }, {
+          },
+          {
             "locale": "en"
           }
         ]
@@ -75,7 +55,8 @@
         "and": [
           {
             "module": "im_activiti"
-          }, {
+          },
+          {
             "locale": "zh_CN"
           }
         ]

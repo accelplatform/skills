@@ -91,8 +91,7 @@ build 脚本将输出分为以下 2 处。
 
 `<artifactId>` 可与 `<key>` 不同（如 `<key>="equip"`、`<artifactId>="equipment-lending-system"`）。内部引用路径（`<*-file>`）使用 `<key>`，**仅 Importer 设置 XML 的目录名和文件名（`import-<artifactId>-config-<N>.xml`）** 使用 `<artifactId>`。
 
-config-1.xml 中的 `<role-file>`、`<authz-*-file>`、`<create-file>`、`<insert-file>` 以
-相对 `src/main/storage/system` 的路径书写（如 `products/import/basic/<key>/<version>/<key>-role.xml`）。
+config-1.xml 中的 `<role-file>`、`<authz-*-file>`、`<create-file>`、`<insert-file>` 以相对 `src/main/storage/system` 的路径书写（如 `products/import/basic/<key>/<version>/<key>-role.xml`）。
 `<extends-import-class>` 以相对 `src/main/jssp/src` 的路径书写（如 `<key>/initialize/<version>/<key>_import.js`）。
 
 ## DDL / 示例 DML 放置位置的意义

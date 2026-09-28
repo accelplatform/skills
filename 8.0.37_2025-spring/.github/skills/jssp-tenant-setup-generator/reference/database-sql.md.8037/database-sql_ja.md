@@ -90,10 +90,10 @@ CREATE TABLE の本体（カラム定義・制約）はユーザが手作業で�
 --     tenant_id     VARCHAR(64)  NOT NULL,
 --     ...
 --     PRIMARY KEY (content_id)
--- );
+-- )
 ```
 
-各 DB 方言に応じた型・構文を、対応するファイルにそれぞれ記述する。型マッピングは `.github/skills/jssp-page-generator/reference/ddl-type-mapping.md` を参照。
+各 DB 方言に応じた型・構文を、対応するファイルにそれぞれ記述する。型マッピング・命名規約・監査証跡カラムは `.github/instructions/database-ddl.instructions.md` を参照。
 
 ### `<key>_sample-dml.sql` のスケルトン例（一本化、推奨）
 
@@ -106,7 +106,7 @@ CREATE TABLE の本体（カラム定義・制約）はユーザが手作業で�
 -- =============================================================================
 
 -- imbm_content への初期データがあればここに記述
--- INSERT INTO imbm_content (...) VALUES (...);
+-- INSERT INTO imbm_content (...) VALUES (...)
 ```
 
 **INSERT 文は標準 SQL の範囲で書く** ことを原則とし、1 ファイルに一本化する。日付・タイムスタンプ等の方言固有リテラル（Oracle の `TO_DATE`、SQL Server の `CONVERT` 等）は避け、`'2026-01-01'` のような文字列リテラル + 暗黙変換に頼るか、`CURRENT_TIMESTAMP` 等の共通関数を使う。
@@ -146,6 +146,8 @@ INSERT 文を標準 SQL の範囲で書ける場合は `dmlPerDialect: false`（
 
 ## 注意
 
+- **SQL のコメント内にセミコロン（`;`）を書かない**。Importer はファイル全体を `;\s*\n?` で機械的に分割して 1 文ずつ実行するため、コメント内の `;`（例: `-- );`）でも文が分断され、断片が単独の SQL として実行されてインポートに失敗する。1 文でも失敗するとそのファイルの残り全文が実行されない（`validate-ddl.js` が検出する）
+- **SQL 文の終端にはセミコロン `;` を記述する**（スケルトンのコメントは `;` を含められないため、実装時に付け忘れないこと）
 - DDL は **冪等性** を意識する（同じテナントへ 2 回流すとエラーになる）
 - DML はマスタ系の初期データに限定する。**業務トランザクションのデータは入れない**
 - 文字コードは UTF-8（BOM なし）

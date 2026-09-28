@@ -245,8 +245,7 @@ load('/room/common/datetime_util');
 ### 3-7. Transaction.begin 的返回值检查（必须）
 
 `Transaction.begin(callback)` 规格**不会重新抛出异常，而是返回 `DatabaseResult`**。
-回调内 `throw` 的异常会自动回滚，但不会传播到调用方，
-因此忽略返回值会导致失败无法检测，出现"HTTP 200 成功但 DB 中没有任何数据"的情况。
+回调内 `throw` 的异常会自动回滚，但不会传播到调用方，因此忽略返回值会导致失败无法检测，出现"HTTP 200 成功但 DB 中没有任何数据"的情况。
 
 #### 必须模式
 

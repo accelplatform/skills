@@ -197,9 +197,10 @@ src/main/java/{package}/
   - 理由：便于通过 `ServiceLoaderUtil` 替换实现，以及在测试时注入 mock
 - 完整的服务工厂模板请参考 `references/implementation-templates.md` 的"工厂模式"部分
 - DAO 工厂的使用方法请参考 `java-im-mirage-usage` 技能
+  - 传递给 `sqlManager` 的 `SQL_PATH` 常量必须是相对于类路径的路径。若加上开头的斜杠，或加上 DAO 类自身包路径以外的其他前缀，会导致 `resource: ... is not found.`，因此不要添加（详情请参考该技能）
 
 ### 配置文件模式
-- **SQL 文件**: `/META-INF/sql/{package_path}/{ClassName}/{methodName}.sql`
+- **SQL 文件**: `/src/main/resources/{package_path}/{ClassName}/{methodName}.sql`
 - **配置文件**: `/src/main/conf/{feature}/{config_name}-config.xml`
 - **导入配置**: `/src/main/conf/products/import/basic/{feature}/{config_name}.xml`
 - **DDL 文件**: `/src/main/storage/system/products/import/basic/{feature}/{feature}-ddl.sql`

@@ -207,7 +207,10 @@ DDL 生成時の詳細ルールは本ファイル末尾の「DDL 生成ルール
 ステップ 6 で DDL を生成する際は以下のルールに従うこと。
 
 - テーブル名・カラム名は生成したファンクションコンテナの SQL と一致させること
-- **カラムの型は `reference/ddl-type-mapping.md` の型マッピング表に従うこと**（記憶や推測で型名を書かない）
+- **テーブル名・カラム名の命名規約（小文字スネークケース・予約語大文字等）は `.github/instructions/database-ddl.instructions.md` の「テーブル・カラム命名規約」に従うこと**
+- **カラムの型は `.github/instructions/database-ddl.instructions.md` の型マッピング表に従うこと**（記憶や推測で型名を書かない）
+- **監査証跡カラム（`create_user_cd` / `create_date` / `record_user_cd` / `record_date`）を必ず含めること**（詳細は `.github/instructions/database-ddl.instructions.md` の「監査証跡カラム（必須）」参照）
+- 主キー・インデックスの設計は `.github/instructions/database-ddl.instructions.md` の「主キー設計」「インデックス命名規則」に従うこと
 - DDL は DB 製品ごとにファイルを分けること（型名・デフォルト値の構文が異なるため）
 - サンプル DML は標準 SQL の INSERT 文で記述し、3製品共通で使用できるようにすること
 - マスタテーブルにはサンプルレコードを 3〜5 件程度 INSERT すること

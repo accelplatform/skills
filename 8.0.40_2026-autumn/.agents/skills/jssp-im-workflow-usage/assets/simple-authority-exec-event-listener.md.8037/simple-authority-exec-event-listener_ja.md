@@ -290,7 +290,7 @@ function resolveTargetUserList(workflowParam, matterParam, sort) {
 - **処理対象者プラグイン（IM-LogicDesigner 連携）**: [assets/logic-flow-authority-plugin.md](assets/logic-flow-authority-plugin.md)
   - SSJS を書かずにロジックフローで処理対象者を決定する方式
   - IM-Workflow ルート定義で `.logic_flow_user` サフィックスを使用
-  - 承認ノード・確認ノード・参照者設定に対応（実機確認済み）
+  - 承認ノード・確認ノード・参照者設定に対応
 
 ### 方式の選択指針
 

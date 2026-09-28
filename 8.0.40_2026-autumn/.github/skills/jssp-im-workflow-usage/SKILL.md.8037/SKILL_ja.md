@@ -164,7 +164,7 @@ intra-mart Accel Platform の IM-Workflow 連携プログラムを新規に生�
 DML で方言依存構文（PostgreSQL の `ON CONFLICT`、Oracle の `MERGE` 等）を使う場合のみ、`{機能名}_sample-dml_postgre.sql` 等の 3 方言別ファイルにする。
 
 - テーブル名・カラム名はアクション処理の SQL と一致させること
-- **カラムの型は `.github/skills/jssp-page-generator/reference/ddl-type-mapping.md` の型マッピング表に従うこと**（記憶や推測で型名を書かない）
+- **テーブル名・カラム名の命名規約・型・監査証跡カラムは `.github/instructions/database-ddl.instructions.md` に従うこと**（記憶や推測で型名を書かない）
 - DDL は DB 製品ごとにファイルを分けること（型名・デフォルト値の構文が異なるため）
 - サンプル DML は標準 SQL の INSERT 文で記述し、3製品共通で使用できるようにすること
 - マスタテーブル（取引先マスタ等）にはサンプルレコードを 3〜5 件程度 INSERT すること

@@ -14,7 +14,7 @@
 <parameter type="string">jp.co.intra_mart.sample.leave.workflow.action.LeaveActionProcess</parameter>
 ```
 
-XML 生成本身由 `base-im-workflow-generator` 负责。本技能仅生成 Java 源代码实体。与 JSSP 版 `pluginId`（`{exPointId}.pluginScriptExecutor`）对应的 Java 侧 `pluginId` 为 **`{exPointId}.pluginJavaExecutor`**（已通过实机实际注册为 Java 类执行并导出的 XML 确认；已确认的处理共 8 种：动作处理・案件开始/结束处理・分支条件・案件删除（未完成/已完成/历史）・案件归档处理）。详情及未确认的扩展点列表请参阅 `.github/skills/base-im-workflow-generator/reference/java-class-registration.md`。到达处理・合并条件・处理对象者插件推测遵循相同的命名规则，但尚未确认，使用前请在实机上确认一次。
+XML 生成本身由 `base-im-workflow-generator` 负责。本技能仅生成 Java 源代码实体。与 JSSP 版 `pluginId`（`{exPointId}.pluginScriptExecutor`）对应的 Java 侧 `pluginId` 为 **`{exPointId}.pluginJavaExecutor`**。该规则已在全部扩展点确认：动作处理・案件开始/结束处理・分支条件・结合条件・到达处理・案件删除（未完成/已完成/历史）・案件归档处理。`exPointId`/`pluginId` 的完整取值列表及注册方法详情请参阅 `.github/skills/base-im-workflow-generator/reference/java-class-registration.md`。**唯一的例外是处理对象者插件**，它使用不同的框架（基于 `plugin.xml` 的插件注册，参见同一文件中的"处理对象者插件（自定义实现）的注册"）——`.pluginJavaExecutor` 规则不适用于它。
 
 ## 运行时类路径的配置
 

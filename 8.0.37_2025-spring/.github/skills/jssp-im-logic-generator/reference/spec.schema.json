@@ -453,11 +453,9 @@
         },
         "typeId": {
           "type": "string",
-          "description": "値の型ID",
+          "description": "値の型ID。原則 \"string\" を使うこと。IM-LogicDesigner の画面上には定数の型を指定する項目がなく、画面から作成した定数はすべて string 型として扱われるため、boolean/integer 等を指定するとマッピング先タスクでエラー終了することがある。ブール値やコード値も value 側を \"true\" 等の文字列にして typeId は \"string\" のままにすること。",
           "examples": [
-            "string",
-            "integer",
-            "boolean"
+            "string"
           ]
         },
         "description": {

@@ -343,6 +343,22 @@ node .agents/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 ]
 ```
 
+### im_startLoop（繰り返し開始タスク）の `clearVariables` の注意
+
+`clearVariables`（「初期化する変数名」）は **周回のたびに指定変数をクリアする** プロパティ。
+
+- **ループ内で使い捨てる一時変数**（1周回ごとにリセットしてよい変数）だけを対象にすること
+- **ループをまたいで結果を蓄積する変数**（`im_array_push` 等で要素を積み上げていく配列など）を対象にしてはならない。毎周回クリアされてしまい、ループ完了時に最後の周回分しか残らない（＝実質何も残らない）不具合になる
+- 「未初期化（null/undefined）の変数を配列操作関数に渡すとエラーになるのでは」という懸念で初期化対象に加えるケースがあるが、配列操作関数（`im_array_push` 等、[reference/mapping-functions.md](reference/mapping-functions.md) 参照）は未初期化の変数を渡してもエラーにならない。**蓄積用の配列変数を `clearVariables` に含める必要はない**
+
+```jsonc
+// NG: 蓄積用の配列変数をクリア対象にすると、ループ完了後に空になる
+"properties": { "clearVariables": ["resultList"] }  // resultList に im_array_push で積み上げている場合はNG
+
+// OK: ループ内でしか使わない一時変数のみクリア対象にする
+"properties": { "clearVariables": ["tmpItem"] }
+```
+
 ### im_logger（ログ出力タスク）
 
 ユーザ定義ではないが、よくループ内処理で使われる通常タスク。
@@ -360,6 +376,15 @@ node .agents/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 ```
 
 `properties.level`: `"DEBUG"` / `"INFO"` / `"WARN"` / `"ERROR"`
+
+**注意: 変数への値代入に流用しない**
+
+`im_logger` の入出力スキーマは `string` 固定（ログ出力専用）であり、変数への値代入用途ではない。
+変数に値を設定したい場合は必ず `im_variableOperation`（変数操作タスク）を使うこと。
+
+- `im_logger` 等、本来の入出力スキーマと異なる用途にタスクを流用してマッピングルールを追加すると、IM-LogicDesigner 編集画面のマッピングパネル用データが不正な構造で保存され、フロー編集画面を開いて保存するだけで 500 エラーになることがある
+- この種の不具合は、該当タスクを画面上で削除して保存しても解消しないことがある（エディタが不正な内部状態を保持したまま再シリアライズするため）
+- 発生してしまった場合は、該当フロー定義を作り直し、一度削除してから再インポートするのが確実
 
 ## 複数フローを 1 ファイルにまとめる場合
 

@@ -166,7 +166,7 @@ When generating the XML with the `base-im-workflow-generator` skill, refer to th
 <targetCode type="string">{"flowId" : "<flow ID>", "version" : null, "versionDecide" : false}</targetCode>
 ```
 
-**Available extension points (verified on real systems)**
+**Available extension points**
 
 | Node type | Extension point |
 |-----------|----------------|
@@ -210,8 +210,7 @@ In addition to importing the IM-LogicDesigner flow ZIP, you can also incorporate
 | `<key>_workflow_import.js` | `jssp-tenant-setup-generator` (`workflowImport` section) | Imports the WF definition XML via `DataImportExecutor` |
 | `<key>_import.js` | Create manually (use the template in `reference/imw-logic-plugin-import.md`) | Registers the plugin via `WorkflowLogicFlowManager` |
 
-For the plugin registration JS template and implementation details, see
-`.agents/skills/jssp-tenant-setup-generator/reference/imw-logic-plugin-import.md`.
+For the plugin registration JS template and implementation details, see `.agents/skills/jssp-tenant-setup-generator/reference/imw-logic-plugin-import.md`.
 
 ---
 

@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.40"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "copilot-agent-basic-usage_ja.md",
+      "to": "copilot-agent-basic-usage.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "copilot-agent-basic-usage_zh_CN.md",
+      "to": "copilot-agent-basic-usage.md"
+    },
+    {
+      "from": "copilot-agent-basic-usage_en.md",
+      "to": "copilot-agent-basic-usage.md"
+    }
+  ]
+}

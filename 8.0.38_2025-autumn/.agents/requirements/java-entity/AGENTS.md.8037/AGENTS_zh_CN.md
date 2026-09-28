@@ -32,7 +32,7 @@ public Timestamp recordDate;
 
 - `createUserCd`, `createDate`：记录创建时的审计追踪
 - `recordUserCd`, `recordDate`：记录更新时的审计追踪
-- 使用 AbstractDAO 的基本方法（insert/update）时，这些字段会自动设置。禁止手动设置
+- 使用 AbstractDAO 的基本方法（insert/update）时，这些字段会自动设置。禁止手动设置（但 `update` 自动设置的仅为 `recordUserCd`/`recordDate`）
 
 ## 字段类型
 
@@ -70,3 +70,7 @@ public Timestamp recordDate;
 | 转换 | 在仓储层相互转换 | 在仓储层相互转换 |
 
 实体是 DB 结构的映射，不应承载业务逻辑。业务逻辑应在领域模型中实现。
+
+## 相关
+
+- `.agents/requirements/database-ddl/AGENTS.md` - 表・列命名规约、DDL 类型映射、审计追踪列的 DB 侧定义（DDL 本身作为 JSSP 侧资材创建，但该规约不依赖开发模型，通用适用）

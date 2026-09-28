@@ -812,6 +812,56 @@ const COMMON_FUNCTION_RULES = {
   ]
 };
 
+/**
+ * 2WaySQL の SQL ファイルから -- 行コメント / ブロックコメントを抽出する。
+ * 文字列リテラル（'...'、'' はエスケープ）の中身は走査対象から除外する。
+ * 戻り値の各要素: { type: 'line'|'block', line: 0-indexed 開始行, body: コメント本文 }
+ */
+function scanSqlComments(content) {
+  let comments = [];
+  let inString = false;
+  let line = 0;
+
+  for (let i = 0; i < content.length; i++) {
+    let c = content[i];
+    let next = content[i + 1];
+
+    if (c === '\n') { line++; continue; }
+
+    if (inString) {
+      if (c === "'") {
+        if (next === "'") { i++; continue; } // '' は文字列内のエスケープ
+        inString = false;
+      }
+      continue;
+    }
+    if (c === "'") { inString = true; continue; }
+
+    // -- 行コメント
+    if (c === '-' && next === '-') {
+      let end = content.indexOf('\n', i);
+      if (end === -1) end = content.length;
+      comments.push({ type: 'line', line: line, body: content.substring(i + 2, end) });
+      i = end - 1;
+      continue;
+    }
+
+    // /* */ ブロックコメント
+    if (c === '/' && next === '*') {
+      let end = content.indexOf('*/', i + 2);
+      let hasClose = end !== -1;
+      let bodyEnd = hasClose ? end : content.length;
+      comments.push({ type: 'block', line: line, body: content.substring(i + 2, bodyEnd) });
+      let consumedEnd = hasClose ? end + 2 : content.length;
+      line += (content.substring(i, consumedEnd).match(/\n/g) || []).length;
+      i = consumedEnd - 1;
+      continue;
+    }
+  }
+
+  return comments;
+}
+
 const COMMON_SQL_FUNCTION_RULES = [
   {
     id: 'JSSP-SQL-001',
@@ -865,6 +915,38 @@ const COMMON_SQL_FUNCTION_RULES = [
         }
       }
 
+      return findings;
+    }
+  },
+  {
+    id: 'JSSP-SQL-002',
+    description: '-- 行コメントの使用（2WaySQL ファイルでは全面禁止）',
+    message: '2WaySQL の SQL ファイルには -- コメントを書かないでください。2WaySQL パーサはコメントの中身を区別せずファイル全体を走査してテンプレート構文（/*IF*/ 等）や ? を検出するため、説明用の -- コメントの中にバインド名（例: /*orderId*/）や記号 ? をそのまま書くと本物のテンプレート指示と誤認識され、コメントとは無関係に見える実行時エラー（"IF" is not defined. 等）になります。ファイルの説明は呼び出し元のファンクションコンテナ側の JSDoc に書いてください',
+    severity: 'error',
+    check: function(content) {
+      let findings = [];
+      let comments = scanSqlComments(content);
+      for (let comment of comments) {
+        if (comment.type === 'line') {
+          findings.push({ line: comment.line });
+        }
+      }
+      return findings;
+    }
+  },
+  {
+    id: 'JSSP-SQL-003',
+    description: 'ブロックコメント本文に /* または ? が含まれている（誤クローズ・誤認識のリスク）',
+    message: '/* */ コメントの本文に /* や ? が含まれています。/*IF*/ /*BEGIN*/ /*paramName*/ 等の正規のテンプレート構文はこのような文字を含まないため、コメントの入れ子（最初の */ で早期にコメントが閉じ、残りが SQL 本文やテンプレート構文として実行される）や ? のバインド誤認識を引き起こす可能性があります。説明文はコメントに書かず、呼び出し元のファンクションコンテナ側の JSDoc に書いてください',
+    severity: 'error',
+    check: function(content) {
+      let findings = [];
+      let comments = scanSqlComments(content);
+      for (let comment of comments) {
+        if (comment.type === 'block' && (comment.body.indexOf('/*') !== -1 || comment.body.indexOf('?') !== -1)) {
+          findings.push({ line: comment.line });
+        }
+      }
       return findings;
     }
   }

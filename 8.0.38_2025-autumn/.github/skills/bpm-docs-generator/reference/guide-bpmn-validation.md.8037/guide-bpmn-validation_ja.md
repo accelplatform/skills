@@ -3,7 +3,7 @@
 BPMNファイル読み込み直後に実施する「BPMN 構文・参照整合性検証」の具体手順と記載ルールを定義する。
 
 ## 目的
-BPMN 2.0 XML の記法不備・参照切れ・図形情報との対応ずれを早期に検出し、仕様書作成（step.3）への進行可否を判断する。
+BPMN 2.0 XML の記法不備・参照切れ・図形情報との対応ずれを早期に検出し、仕様書作成（step.4）への進行可否を判断する。
 
 ## 実行手順（必須）
 
@@ -11,12 +11,18 @@ BPMN 2.0 XML の記法不備・参照切れ・図形情報との対応ずれを�
 
 ```sh
 # 基本
-{{RUNTIME}} .github/skills/bpm-docs-generator/scripts/validate-bpmn.js <diagram.bpmn>
+{{ENSURE_CMD}} .github/skills/bpm-docs-generator/scripts/validate-bpmn.js <diagram.bpmn> --rules .github/skills/bpm-docs-generator/scripts/rules-validate-default.json
 # 追加ルール指定時
-{{RUNTIME}} .github/skills/bpm-docs-generator/scripts/validate-bpmn.js <diagram.bpmn> --rules <rules.json>
+{{ENSURE_CMD}} .github/skills/bpm-docs-generator/scripts/validate-bpmn.js <diagram.bpmn> --rules <rules.json>
 ```
 
 **終了コード:** 0 = 成功（warning のみまたはなし）／ 1 = 失敗（error あり）
+
+**`--rules <rules.json>` の使いどころ:**
+- 標準の構文・参照整合性チェックに加え、`activiti:type` ごとに必須項目や書式が異なる `ServiceTask`（メールタスク・ワークフロー起動タスク等）のフィールド検証など、業務固有のルールを追加検証したい場合に指定する。
+- `doc/rules-validate.json` が存在する場合は、それを優先して使用する。存在しない場合は `scripts/rules-validate-default.json` を使用する。新たな検証観点を追加する場合は、`.github/skills/bpm-docs-generator/reference/guide-bpmn-validation-rules.md` の仕様に厳密に従って `doc/rules-validate.json` を作成・更新すること。
+- `rules.json` に基づく検証結果も validate-bpmn.js の直接出力であるため、本ガイドの ERROR/WARN 記載ルールと同様に扱う（`[input(<id>)]` の文脈情報を保持したまま整理する）。
+
 
 **実行順序（BPMNファイル読み込み直後に必ず実施）:**
 1. validate-bpmn.js を実行する。
@@ -38,7 +44,7 @@ BPMN 2.0 XML の記法不備・参照切れ・図形情報との対応ずれを�
      - 実装やテストフェーズでの影響可能性も検討する。
      - 「無視できる」と判断した場合でも、理由を明記する。
 3. 検証結果を to-be-discussed.md へ反映する。
-4. step.3 への進行可否を判断する。
+4. step.4 への進行可否を判断する。
 
 **注意事項**
 - validate-bpmn.js に未実装の観点は、BPMN 構文・参照整合性検証結果には記載しない。
@@ -110,6 +116,7 @@ BPMN 2.0 XML の記法不備・参照切れ・図形情報との対応ずれを�
   - 実BPMNの問題（重要度「低」）: 個別起票せず、サマリの件数にのみ含める。
   - 検証ツール誤検出: 個別起票しない。サマリの「ツール実装限界による誤検出」件数にのみ計上する。
 - **禁止事項:** validate-bpmn.js に存在しない独自チェック結果を、VAL-ERR / VAL-WARN  として起票しない。
+  - ただし iGrafx固有要素の互換性チェック（`.github/skills/bpm-docs-generator/reference/guide-specification.md` 「参照BPMNがiGrafx製である場合に必須」参照）は validate-bpmn.js 由来ではないため、`IGX-<連番>` を付与し、VAL系IDとは独立した別カテゴリとして1章に記載してよい。
 
 
 ## to-be-discussed.md への記載テンプレート
@@ -132,6 +139,7 @@ BPMN 2.0 XML の記法不備・参照切れ・図形情報との対応ずれを�
   3. <原因候補3>の可能性がある。
 - **影響**: <仕様化・実装・運用への影響を観点別に記載>
 - **対応方針**: <具体的な修正手順または改善案>
+- **訂正案**: `spec-to-bpmn-fixes.json` 参照（reflectStatus: <ready|pending-confirmation|not-applicable>）
 ```
 
 #### 対応方針について
@@ -139,6 +147,100 @@ BPMN 2.0 XML の記法不備・参照切れ・図形情報との対応ずれを�
   - ✅ **即座に修正可能**: 修正手順を明記
   - ❓ **要件確認が必要**: 確認質問を明記
   - ⏭️ **インポート後の対応**: インポート時点での対応を明記、保留理由を説明
+
+#### 訂正案（機械可読）について
+- 訂正案の機械可読データは `to-be-discussed.md` 本文には埋め込まず、同じ `<BPMプロセス名>-prompt/` 配下の **`spec-to-bpmn-fixes.json`** に出力すること。
+  - `to-be-discussed.md` 本文には、上記テンプレートの「訂正案」行（`spec-to-bpmn-fixes.json` 参照 + 現在の `reflectStatus`）のみを記載する。
+  - 個別起票するエラー（重要度「高」または「中」）には必ず対応するエントリを `spec-to-bpmn-fixes.json` に追加すること。重要度「低」・検証ツール誤検出には追加しない。
+  - `to-be-discussed.md` と `spec-to-bpmn-fixes.json` は同じ生成タイミングで同時に出力し、`fixId` の対応漏れ・ズレが生じないようにする。
+- `spec-to-bpmn-fixes.json` は `.github/skills/bpm-xml-reflector`のスクリプトが機械的に読み書きし、BPMN への反映可否・反映内容・反映結果を管理するためのファイルである。`to-be-discussed.md` 本文向けの「ID単独特定禁止」ルールはこのファイルには適用せず、`elementId`（BPMNの実ID）の記載を必須とする。
+- **`spec-to-bpmn-fixes.json` は本節のエラー訂正案専用のファイルではない。** ロールID・タスク色・オプショナル・プロセス変数・シグナル・メッセージ・プロセス定義キー置換・コールアクティビティ呼び出し先置換など、仕様書に記載された業務要件反映も同じファイルに同じ形式で出力する（詳細: `.github/skills/bpm-docs-generator/reference/guide-specification.md`、`.github/skills/bpm-docs-generator/reference/guide-process-definition-key-replacement.md`）。BPMN への反映は本ファイルを唯一の入力として `.github/skills/bpm-xml-reflector/reference/bpmn-specs-reflector.md` の `reflectFixes()` が機械的に行う。
+
+##### `spec-to-bpmn-fixes.json` の形式
+
+- 形式: JSON 配列。1反映単位（1エラーID、または1つの業務要件反映事項）につき1エントリとする。
+- 出力先: `doc/<BPMプロセス名>-prompt/spec-to-bpmn-fixes.json`
+- エントリ構造:
+```json
+[
+  {
+    "fixId": "<下記命名規則に従うID>",
+    "reflectStatus": "ready | pending-confirmation | not-applicable",
+    "operation": "<下表の統制語彙から選択。自動反映手段が無い場合は manual>",
+    "targets": [
+      { "elementId": "<対象要素の実ID>", "elementType": "<BPMN要素型（例: bpmn:ServiceTask）>" }
+    ],
+    "params": {},
+    "requiresApproval": true,
+    "reflectedDate": "未反映"
+  }
+]
+```
+
+- `fixId` の命名規則:
+  - `validate-bpmn.js` のエラー訂正案: 検証ツールが出力するエラーID（連番）をそのまま使う。
+  - 業務要件反映（validate-bpmn.js のエラーに紐づかないエントリ）: `<カテゴリ接頭辞>-<連番3桁以上>` とする。カテゴリ接頭辞は以下を用いる。
+
+    | カテゴリ接頭辞 | 対象 operation |
+    |---|---|
+    | `ROLE-` | `set-role-starter-groups` / `set-lane-candidate-groups` / `set-usertask-candidate-groups` |
+    | `COLOR-` | `set-task-color` |
+    | `VAR-` | `add-data-object` |
+    | `SIG-` | `add-signal` |
+    | `MSG-` | `add-message` |
+    | `PID-` | `replace-process-id` |
+    | `CALLEE-` | `replace-callee-process` |
+
+- `reflectStatus` は「対応方針」の区分と必ず対応させること。値の意味と反映可否は以下の通り。
+
+  | 対応方針 | reflectStatus | 反映可否 |
+  |---|---|---|
+  | ✅ 即座に修正可能 | `ready` | 現時点で反映対象（破壊的操作は別途ユーザー承認必須） |
+  | ❓ 要件確認が必要 | `pending-confirmation` | 反映不可。要件確認の回答が確定した時点で `ready` に更新する |
+  | ⏭️ インポート後の対応 | `not-applicable` | 現時点では反映対象外（自動反映しない） |
+
+  業務要件反映（ロールID・シグナル・メッセージ等）についても同様に対応させる。特に、シグナル・メッセージの ID が仕様書上未定義の場合はエントリ自体を作成しないこと（`pending-confirmation` として空の `params.id` を書き出すのではなく、確定してから追加する）。
+
+- `operation` は以下の統制語彙から選択する。対応する反映処理が存在しない場合は必ず `manual` とし、`requiresApproval` は `true` のままとする（`params` は省略可）。
+
+  | operation | 説明 | 主な `params` |
+  |---|---|---|
+  | `set-attribute` | 既存要素への属性追加・更新 | `attrName`, `attrValue` |
+  | `set-eventdef-ref` | イベント定義への `messageRef`/`signalRef`/`errorRef` 設定 | `refType`, `refId` |
+  | `set-service-task-field` | サービスタスクの `activiti:field` 値設定（`flowId`/`version`/`to`/`text` 等） | `fieldName`, `fieldValue` |
+  | `set-timer-definition` | `timerEventDefinition` の周期・日時・期間（`timeCycle`/`timeDate`/`timeDuration`）および `activiti:businessCalendarName` の設定 | `timeCycle` / `timeDate` / `timeDuration`（いずれか）, `businessCalendarName`（任意） |
+  | `set-condition-expression` | 分岐フローへの条件式追加 | `expression` |
+  | `set-role-starter-groups` | プロセスへのロールID（`candidateStarterGroups`）設定 | `roleId` |
+  | `set-lane-candidate-groups` | レーンへのロールID（`candidateGroups`）設定 | `roleId` |
+  | `set-usertask-candidate-groups` | ユーザタスクへのロールID・オプショナル設定 | `roleId`, `isOptional`（任意） |
+  | `set-task-color` | タスクへの背景色設定 | `taskType` |
+  | `add-data-object` | プロセス変数（`dataObject`）の新規追加（`targets.elementId` は対象 process の id。同じファイル内に当該 process の `replace-process-id` がある場合は置換後の値 `toId` を指定すること。置換前の値を指定すると無言でスキップされる） | `variables: [{ id, name, type }]` |
+  | `add-signal` | シグナル定義の新規追加（仕様書で ID 未定義の場合はエントリを作らない） | `id`, `name` |
+  | `add-message` | メッセージ定義の新規追加（仕様書で ID 未定義の場合はエントリを作らない） | `id`, `name` |
+  | `replace-process-id` | プロセス定義キー（process id）置換。`fromId` で対象を特定し `toId` を反映する | `fromId`, `toId`, `allowFromIdExists`（任意） |
+  | `replace-callee-process` | コールアクティビティの呼び出し先プロセス置換 | `fromId`, `toId` |
+  | `convert-event-type` | イベント種別変換（例: 中間キャッチイベント→開始イベント） | `fromTag`, `toTag` |
+  | `delete-element` | 不要要素の削除（モデル要素と図形情報を同時に削除） | - |
+  | `manual` | 自動反映手段が無い（人手対応が必要） | - |
+
+- `requiresApproval` は既定値 `true` とする。`delete-element` / `convert-event-type` / `replace-process-id` / `replace-callee-process` など破壊的操作は常に `true` とし、`false` への変更は認めない。
+- `reflectedDate` は反映実施日（`YYYY-MM-DD`）または `未反映` を記載し、`.github/skills/bpm-xml-reflector/SKILL.md` による反映後にのみ更新する。`reflectStatus` 自体は判定根拠を残すため反映後も変更しない。`to-be-discussed.md` 側の「訂正案」行の `reflectStatus` 表示も同時に同期する。
+
+##### 設計上の制約（validate-bpmn.js の完全クリアは対象外）
+
+`.github/skills/bpm-xml-reflector/reference/bpmn-specs-reflector.md` の `reflectFixes()` が自動反映するのは、上表の統制語彙に対応する属性・フィールド値・要素の追加/更新に限られる。以下に該当するエラーは `reflectStatus: ready` を付与しても自動反映されない（`operation: manual` として人手対応・別ステップ対応に委ねる）。
+
+| 該当エラー | 理由 |
+|---|---|
+| 開始/終了イベント欠落、重複ID、SequenceFlow の source/target 不正、サブプロセス境界超え、ゲートウェイの出力フロー欠如 | 要素の追加・削除・再結線が必要（`add-element`/`add-sequence-flow` 等の operation が未定義） |
+| DI整合性エラー（不明な `bpmnElement` 参照、waypoint 不足） | 図形要素の追加・削除が必要（`delete-element` は operation 語彙にはあるが `reflectFixes()` は未実装） |
+| Message/Signal 未解決参照のうち、参照先定義自体が仕様書上も未確定のケース | `add-signal`/`add-message` は ID 確定後にのみ `spec-to-bpmn-fixes.json` へ追加されるため、未確定の間は反映されない |
+
+そのため、`spec-to-bpmn-fixes.json` の全エントリが `reflectStatus: ready` になったとしても、上記に該当するエラーが1件でも残っていれば `.github/skills/bpm-docs-generator/scripts/validate-bpmn.js` は FAIL のままとなる。これは意図した設計であり、機械的に安全反映できる範囲のみを自動化するという `reflectFixes()` の目的に沿ったものである。`.github/skills/bpm-docs-generator/scripts/validate-bpmn.js` を PASS させるには、上記該当エラーを人手で修正する必要がある。
+
+#### 個別起票の並び順について
+- 個別起票するエラー（重要度「高」または「中」）は、重要度「高」→「中」の順にまとめて記載する。同一重要度内では validate-bpmn.js の出力順（エラーID の連番順）を維持する。
+- セクションを重要度で分割する場合は、見出しに重要度を明記する（例: `### 重要度: 高` / `### 重要度: 中`）。分割しない場合も、記載順序は重要度優先とする。
 
 ### 検証結果の出力先
 検証結果は、`to-be-discussed.md` の 1. BPMN 構文・参照整合性検証結果 に下記を出力。
@@ -161,6 +263,23 @@ BPMN 2.0 XML の記法不備・参照切れ・図形情報との対応ずれを�
   - 重要度「高」または「中」の「実BPMNの問題」のみ個別起票する
   - 重要度「低」の項目および「ツール誤検出」は個別起票しない（サマリ件数にのみ計上）
   - ここに記載する VAL 系項目は validate-bpmn.js の直接出力に限定する
+
+- **iGrafx固有要素の互換性チェック**
+  - 対象BPMNがiGrafx製である場合のみ記載する。iGrafx製でない場合は本サブセクションを「該当なし」とする。
+  - `.github/skills/bpm-docs-generator/reference/guide-specification.md` 「参照BPMNがiGrafx製である場合に必須」のNG要素判定表に基づき、コピー元BPMN（変換前の元ファイル）を判定対象として検出する。
+  - エラーIDは `IGX-<連番>` を用いる（VAL系とは独立した採番）。全件、重要度は「高」固定とする（IM-BPM非サポートによりインポート失敗の可能性が高いため）。
+  - テンプレート（原因候補・訂正案は省略する。対応方針は固定文言、改善案はNG要素判定表の「対処案」列を記載する）:
+    ```md
+    #### <IGXエラーID>. <NG要素判定表の要素名>: <対象要素名>
+
+    - **対象要素**: <要素名>（<要素種類> / <レーン名> / <前後要素名など>）
+    - **重要度**: 高
+    - **問題内容**: <NG要素判定表の判定条件を平易に記載>
+    - **影響**: IM-BPMインポート時にサポートされない、またはプロセス実行に悪影響を与える可能性がある旨を記載
+    - **対応方針**: ⏭️ iGrafx上でBPMNを修正のうえ再取り込み。
+    - **改善案**: <NG要素判定表の対処案列を平易に記載>
+    ```
+  - `spec-to-bpmn-fixes.json` への出力は行わない（iGrafx側での修正・再取り込みを前提とするため、`.github/skills/bpm-xml-reflector/SKILL.md` による自動反映の対象外とする）。
 
 **`to-be-discussed.md`への反映ルール:**
 - ERROR 行: 必ず要検討事項へ反映。ただし重要度「低」（ツール誤検出を含む）は件数のみをサマリに記載し、個別起票しない。

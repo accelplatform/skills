@@ -34,7 +34,7 @@ Decision criteria:
 | `.claude/rules/java-code-style.md` | 🟢 **Required reading** — `final` local variables, string literals, etc. |
 | `.claude/rules/java-javadoc.md` | 🟢 **Required reading** — class/method JavaDoc |
 
-No dedicated Java convention defining an `IOException` wrapping policy exists under `.claude/rules` (as of 2026). For exception handling when using `get()`, follow the pattern in `assets/identifier-basic-usage.md`.
+No dedicated Java convention defining an `IOException` wrapping policy exists under `.claude/rules`. For exception handling when using `get()`, follow the pattern in `assets/identifier-basic-usage.md`.
 
 `jssp-*` conventions are out of scope for this skill (they do not apply to Java files).
 
@@ -83,7 +83,7 @@ If there is no explicit mention of "in Java" / "in the JavaEE development model,
 
 ## Post-Generation Checks
 
-A dedicated verification script equivalent to the JSSP version (`validate-jssp-code.js`) is not yet in place. Confirm the following manually.
+Rather than an automated validation script (such as the JSSP version's `validate-jssp-code.js`), verify the following manually.
 
 1. Whether the choice between `get()` / `make()` matches the required uniqueness scope (distributed environment or single process)
 2. Whether `IOException` is being swallowed anywhere `get()` is used

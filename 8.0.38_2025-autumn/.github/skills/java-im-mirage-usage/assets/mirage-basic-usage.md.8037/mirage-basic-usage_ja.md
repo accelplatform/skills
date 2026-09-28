@@ -123,8 +123,8 @@ public class OrderDAO extends AbstractDAO<OrderEntity> {
     /** ステータス別発注一覧取得SQL */
     private static final String SELECT_ORDERS_BY_STATUS = "select_orders_by_status.sql";
 
-    /** 発注件数取得SQL */
-    private static final String SELECT_ORDER_COUNT = "select_order_count.sql";
+    /** ステータス別発注件数取得SQL（一覧取得SQLから ORDER BY を除いた同形の SELECT） */
+    private static final String SELECT_ORDERS_BY_STATUS_COUNT = "select_orders_by_status_count.sql";
 
     /**
      * ステータスを指定して発注一覧を取得します。
@@ -145,7 +145,7 @@ public class OrderDAO extends AbstractDAO<OrderEntity> {
     public int countByStatus(final String status) {
         final OrderEntity param = new OrderEntity();
         param.status = status;
-        return super.sqlManager.getCount(SQL_PATH.concat(SELECT_ORDER_COUNT), param);
+        return super.sqlManager.getCount(SQL_PATH.concat(SELECT_ORDERS_BY_STATUS_COUNT), param);
     }
 }
 ```
@@ -170,13 +170,50 @@ ORDER BY
   order_id
 ```
 
+件数取得用の `select_orders_by_status_count.sql`（`ORDER BY` の有無だけが異なる）:
+
+```sql
+SELECT
+  order_id,
+  customer_name,
+  amount,
+  status
+FROM
+  foo_order
+/*BEGIN*/
+WHERE
+  /*IF status != null*/
+  status = /*status*/'dummy'
+  /*END*/
+/*END*/
+```
+
+- **`getCount` に渡す SQLファイルには `SELECT COUNT(*)` を書いてはいけない。** `getCount` は渡された SQL を `SELECT COUNT(*) FROM (<渡した SQL>)` のようにサブクエリへ丸ごと包むため、`SELECT COUNT(*)` を書くと `SELECT COUNT(*) FROM (SELECT COUNT(*) ...)` となり、**例外を出さずに常に `1` を返す**。リスト取得と同じ形の SELECT を渡すこと
+- **`getCount` に渡す SQLファイルには `ORDER BY` を書いてはいけない。** サブクエリの内側に入るため、SQLServer では構文エラーになる。上記のようにリスト取得用と件数取得用の2本立てにする
+- **SQLファイルに `--` コメントを書かない。** 2WaySQL のパーサは `--` 行コメントの中身を区別せず、ファイル全体を走査してテンプレート構文を検出する。そのため説明用コメントの中に `/*IF*/` 等の構文表記・実際のバインド名・`?` をリテラルに書くと、コメントであるにもかかわらず本物のテンプレート指示だと誤認識され、コメントの中身とは無関係に見える実行時エラー（`UnsupportedOperationException: not supported`、`列インデックスは範囲外です` 等）の原因になる。（詳細・具体例は `.github/instructions/jssp-2way-sql.instructions.md` 参照）
 - **SQLファイルは `src/main/java` ではなく `src/main/resources` 配下に置く。** DAOクラスと同じパッケージパス（`sqlPath` 定数の相対パス）を `src/main/resources` 配下に再現する。`src/main/java` にだけ置くとビルド後の実行時クラスパスに含まれず、`resource: xxx.sql is not found.` エラーになる（`.java` と `.sql` が同じディレクトリに同居しているように見えるプラットフォーム標準機能のソースツリーは、ビルド前のリポジトリ構成であり、Maven 標準レイアウトの `src/main/resources` とは別物）
 - パラメータはエンティティ、または任意の JavaBean・`Map<String, Object>` を渡せる。SQL内のプレースホルダ名（`/*status*/` 等）とプロパティ名/キー名を一致させる
 - 2WaySQL の基本構文（`/*IF*/`/`/*BEGIN*/`/`/*param*/'dummy'`）は JSSP 側（`.github/instructions/jssp-2way-sql.instructions.md`）と共通。ダミー値の役割・LIKE検索時のエスケープ方針も同様の考え方が適用できる
+### 注意: `/*BEGIN*/` ブロック内で `/*IF*/` を入れ子にしない
 
-## パターン4: `/*FOR*/` ループ構文（im_mirage 専用）
+パーサは `/*IF*/` の入れ子自体をサポートしているが、`/*BEGIN*/` ブロックの内側で入れ子にすると、内側 `/*IF*/` の先頭の `AND`/`OR` が前置子除去の対象になり、外側 `/*IF*/` がそのブロックで最初に成立した条件だったときに削除されてしまう（`IfNode` は子を処理し終えてから「出力済み」フラグを立てるため）。結果 `WHERE a = ? b = ?` のような不正な SQL になる。先行する兄弟条件が成立していると正しく出力されるため、パラメータの組合せ次第で通ったり落ちたりする。外側 IF がブロック内で最初に成立するケースでは `PSQLException` になり、先行する兄弟条件が成立するケースでは正常動作する。
 
-JSSP のスクリプト開発モデルでは非対応だが、im_mirage では IN句の動的生成等に使用できる。
+複数条件は入れ子にせず、兄弟として並べ、依存関係は条件式で表現すること。
+
+```sql
+/*IF status != null*/
+status = /*status*/'dummy'
+/*END*/
+/*IF status != null && categoryCd != null*/
+AND category_cd = /*categoryCd*/'dummy'
+/*END*/
+```
+
+（内側ブロックが `AND`/`OR`/`,` で始まらない入れ子 — 演算子や値の断片を切り替える用途など — はこの問題の対象外で、使用して差し支えない。）
+
+## パターン4: IN句の動的生成（`IN /*param*/('dummy')`）
+
+`List` や配列を IN句へ展開する場合は、`/*param*/` の直後に `('dummy')` を置く**括弧付きバインド**を使う。実行時に要素数ぶんの `(?, ?, ?)` へ展開される。**`/*FOR*/` で IN句を組み立てない。**
 
 ```sql
 SELECT
@@ -184,21 +221,103 @@ SELECT
   customer_name
 FROM
   foo_order
+/*BEGIN*/
 WHERE
-  order_id IN (
-    /*FOR orderId : orderIds*/
-    /*orderId*/'dummy'
-    /*IF orderId_has_next*/, /*END*/
-    /*END*/
-  )
+  /*IF orderIds != null && orderIds.size() > 0*/
+  AND order_id IN /*orderIds*/('dummy')
+  /*END*/
+/*END*/
 ```
 
 ```java
 public List<OrderEntity> findByIds(final List<String> orderIds) {
-    final java.util.Map<String, Object> param = new java.util.HashMap<String, Object>();
-    param.put("orderIds", orderIds);
-    return super.sqlManager.getResultList(OrderEntity.class, SQL_PATH.concat("select_orders_by_ids.sql"), param);
+    final OrderIdsCondition condition = new OrderIdsCondition(orderIds);
+    return super.sqlManager.getResultList(OrderEntity.class, SQL_PATH.concat("select_orders_by_ids.sql"), condition);
 }
+
+/**
+ * IN句の動的生成で使用する検索条件（public フィールドの JavaBean）。
+ */
+public class OrderIdsCondition {
+    public List<String> orderIds;
+    public OrderIdsCondition(final List<String> orderIds) {
+        this.orderIds = orderIds;
+    }
+}
+```
+
+- **`null` と空リストの両方をガードする。** `IN /*param*/('dummy')` は `null` でも空リストでもバインド部分ごと出力されないため、ガードが無いと `IN` が裸で残り SQL が壊れる。`/*IF orderIds != null*/` だけでは空リストを通してしまい、`WHERE order_id IN ` という壊れた SQL になる
+- OGNL は `&&` を短絡評価するため、`orderIds` が `null` でも `size()` は評価されず `NullPointerException` にならない。`size() != 0` と `size() > 0` はどちらでもよい
+- JSSP 側では `/*IF*/` の式が JavaScript になるため `/*IF orderIds != null && orderIds.length > 0*/` と書く
+
+### 【重要】ガードにより空リストが「0 件」ではなく「全件」になる場合がある
+
+上記のように IN 句ガードが `/*BEGIN*/` 内の唯一の条件である場合、`orderIds` が `null`・空リストだと `/*IF*/` の中身が消え、`/*BEGIN*/` ブロックが空になるため **`WHERE` 句ごと除去**される（`/*BEGIN*/` は中身が全部消えると `WHERE` 等も自動的に消える、という基本挙動どおり）。
+その結果、SQL エラーにはならないものの、意図した「対象なし（0 件）」ではなく **絞り込み無しの全件** が返る。
+
+「呼び出し元が空リストを渡した場合は結果も空にしたい」という意図がある場合は、**SQL 側のガードだけに頼らず、呼び出し元（Repository / Service 層）で空リスト・null を判定し、SQL を実行せずに空リストを返す**などのアプリケーション側のガードを追加すること。特に、認可・権限フィルタ（例: アクセス可能な ID 一覧を `IN` 句に渡す用途）でこの構成を使う場合、空リストが全件公開に化ける事故を防ぐため必須の対策である。
+
+### `/*FOR*/` ループ構文
+
+im_mirage と LogicDesigner で使用でき、JSSP（スクリプト開発モデル）では非対応。**区切り子は前後を半角スペースで挟んだ `in` または `IN`。**
+
+```sql
+SELECT
+  ticket_id
+FROM
+  foo_ticket
+/*BEGIN*/
+WHERE
+/*FOR ticketId in ticketIdList*/
+OR ticket_id = /*ticketId*/'dummy'
+/*END*/
+/*END*/
+```
+
+- **ボディの先頭を `AND`/`OR`/`,` で始める場合は `/*BEGIN*/` で囲む。** 先頭の前置子は「囲まれたブロックがまだ空のとき」にだけ除去されるため、`/*BEGIN*/` が無いと1件目の `OR` が残り、`WHERE OR ticket_id = ?` という壊れた SQL になる
+- **ブロック内で参照できるのは、ループ変数名（`ticketId`）に束ねられた要素1つだけ。** IN句の動的生成には本パターン冒頭の `IN /*param*/('dummy')` を使う
+
+### 【重要】UPDATE 文の SET 句で `/*BEGIN*/` にカンマ除去を期待しない
+
+UPDATE 文の SET 句を `/*BEGIN*/` で囲み、各項目の前置カンマを `/*BEGIN*/` に除去させる書き方は、
+**カンマの位置がフォーマットによって挙動が変わる**ため不安定である。
+
+- `/*IF*/` マーカーと**同じ行の先頭**にカンマを置いた場合は、パーサがカンマを前置子として認識し正しく除去できる
+- カンマを**改行してインデントした別の行**に置いた場合は、パーサがカンマを前置子として認識できず、先頭に裸のカンマが残った不正な SQL になり構文エラー（`PSQLException` 等。エラーメッセージ例: `ERROR: ","またはその近辺で構文エラー`）になる
+
+さらに、`/*BEGIN*/` は中身の条件がすべて偽になった場合、SET 句全体（`SET` キーワードごと）を除去してしまうため、更新対象カラムが1つも無いケースで不正な SQL（`SET` の無い `UPDATE`）になる問題も残る。
+
+このように **カンマの前置子除去はフォーマット依存で壊れやすく、`/*BEGIN*/` の「全条件偽で丸ごと消える」性質とも相性が悪い**ため、`/*BEGIN*/` に SET 句のカンマ除去を任せる書き方はそもそも採用しないこと。
+
+構文エラーになる例（カンマを改行してインデントした行に配置）:
+
+```sql
+UPDATE foo_order
+/*BEGIN*/
+SET
+  /*IF status != null*/
+  , status = /*status*/'dummy'
+  /*END*/
+  /*IF memo != null*/
+  , memo = /*memo*/'dummy'
+  /*END*/
+/*END*/
+WHERE order_id = /*orderId*/'dummy'
+```
+
+正しい例（SET 句の先頭に無害な自己代入を常に置き、`/*BEGIN*/` に頼らず後続の項目を常にカンマ付きで連結する。カンマの位置に依存せず、SET 句が丸ごと消える心配もない）:
+
+```sql
+UPDATE foo_order
+SET
+  order_id = /*orderId*/'dummy'
+  /*IF status != null*/
+  , status = /*status*/'dummy'
+  /*END*/
+  /*IF memo != null*/
+  , memo = /*memo*/'dummy'
+  /*END*/
+WHERE order_id = /*orderId*/'dummy'
 ```
 
 ## パターン5: DB方言別 SQLファイル
@@ -231,6 +350,7 @@ import jp.co.example.foo.entity.OrderEntity;
  */
 public interface OrderRepository {
     void register(OrderEntity order);
+    void updateStatus(String orderId, String status);
     List<OrderEntity> findByStatus(String status);
 }
 ```
@@ -260,6 +380,25 @@ public class StandardOrderRepository implements OrderRepository {
             public Void execute(final Session session) {
                 final OrderDAO dao = DAOFactory.getTenantDatabaseDAO(OrderDAO.class);
                 dao.insert(order);   // createUserCd/createDate が自動設定される
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void updateStatus(final String orderId, final String status) {
+        SessionTemplate.execute(new SessionCallback<Void, RuntimeException>() {
+            @Override
+            public Void execute(final Session session) {
+                final OrderDAO dao = DAOFactory.getTenantDatabaseDAO(OrderDAO.class);
+
+                // update は主キー以外の全カラムを更新するため、必ず find() で読み込んでから変更点だけを反映する
+                final OrderEntity order = dao.find(orderId);
+                if (order == null) {
+                    return null;   // 要件に応じて例外送出でもよい
+                }
+                order.status = status;
+                dao.update(order);
                 return null;
             }
         });

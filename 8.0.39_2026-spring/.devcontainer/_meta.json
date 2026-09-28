@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "type": "folder",
+  "conditions": {
+    "$comment": ".devcontainer は配置対象外とするため、必ず不一致になる条件を設定",
+    "accelplatformVersion": "<8.0.0"
+  }
+}

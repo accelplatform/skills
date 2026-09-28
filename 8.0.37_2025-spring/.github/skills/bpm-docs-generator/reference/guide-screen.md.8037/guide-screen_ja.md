@@ -15,8 +15,8 @@
     - ボタンなどのアクション処理
 
 ## 参考スキル
-- `jssp-imds-theme`: imds 準拠 HTML コード生成
-- `jssp-page-generator`: JSSP コード生成支援
+- `.github/skills/jssp-imds-theme/SKILL.md`: imds 準拠 HTML コード生成
+- `.github/skills/jssp-page-generator/SKILL.md`: JSSP コード生成支援
 
 ## 注意事項
 - **原則として画面定義には、一覧画面（業務データを検索し、結果を一覧表示する画面）は作成しない、登録・編集・詳細画面のみを作成する。（ただし明確な指示があった場合は一覧画面の作成も許可する）**

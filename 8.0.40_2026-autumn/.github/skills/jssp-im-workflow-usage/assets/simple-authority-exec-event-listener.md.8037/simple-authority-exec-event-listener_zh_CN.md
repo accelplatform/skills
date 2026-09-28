@@ -290,7 +290,7 @@ function resolveTargetUserList(workflowParam, matterParam, sort) {
 - **处理对象者插件（IM-LogicDesigner 集成）**：[assets/logic-flow-authority-plugin.md](assets/logic-flow-authority-plugin.md)
   - 通过逻辑流程决定处理对象者，无需编写 SSJS 代码
   - 在 IM-Workflow 路由定义中使用 `.logic_flow_user` 后缀
-  - 支持审批节点、确认节点、参照者设置（已通过实机验证）
+  - 支持审批节点、确认节点、参照者设置
 
 ### 方式选择指南
 

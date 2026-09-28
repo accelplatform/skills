@@ -35,7 +35,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのア
 | `.claude/rules/java-code-style.md` | 🟢 **必読** — `final` ローカル変数、文字列リテラル等 |
 | `.claude/rules/java-javadoc.md` | 🟢 **必読** — クラス/メソッド JavaDoc |
 
-`.claude/rules` 配下には例外処理を定めた Java 向け専用規約は存在しない（2026年時点）。`NewLock` の例外はすべて非チェック例外（後述）であり、業務例外へのラップ方針は `assets/lock-basic-usage.md` のパターンに従う。
+`.claude/rules` 配下には例外処理を定めた Java 向け専用規約は存在しない。`NewLock` の例外はすべて非チェック例外（後述）であり、業務例外へのラップ方針は `assets/lock-basic-usage.md` のパターンに従う。
 
 `jssp-*` の規約はこのスキルの対象外（Java ファイルには適用しない）。
 
@@ -87,7 +87,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのア
 
 ## 生成後の確認
 
-JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当）は現時点で未整備。以下を手動で確認する。
+自動検証スクリプト（JSSP 版の `validate-jssp-code.js` 相当）ではなく、以下の項目を手動で確認する。
 
 1. 通常ロックを使った箇所で `lock()`/`tryLock()` 後から `unlock()` までが `try`/`finally` で確実に囲まれているか
 2. リクエストスコープロックとの選択が、ロックの保持スコープ（単一メソッド内か、複数箇所にまたがるか）に合っているか

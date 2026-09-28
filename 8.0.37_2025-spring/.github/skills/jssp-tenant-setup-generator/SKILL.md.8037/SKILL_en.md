@@ -92,8 +92,7 @@ When `<N> >= 2`, a `-<N>` suffix is appended to the base file name of each XML /
 
 `<artifactId>` may differ from `<key>` (e.g. `<key>="equip"`, `<artifactId>="equipment-lending-system"`). Internal reference paths (`<*-file>`) use `<key>`, and **only the Importer config XML directory name and file name (`import-<artifactId>-config-<N>.xml`)** use `<artifactId>`.
 
-The `<role-file>`, `<authz-*-file>`, `<create-file>`, and `<insert-file>` entries in config-1.xml are written
-as paths relative to `src/main/storage/system` (e.g. `products/import/basic/<key>/<version>/<key>-role.xml`).
+The `<role-file>`, `<authz-*-file>`, `<create-file>`, and `<insert-file>` entries in config-1.xml are written as paths relative to `src/main/storage/system` (e.g. `products/import/basic/<key>/<version>/<key>-role.xml`).
 `<extends-import-class>` is written as a path relative to `src/main/jssp/src` (e.g. `<key>/initialize/<version>/<key>_import.js`).
 
 ## Why DDL and Sample DML Belong Here

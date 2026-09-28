@@ -1,6 +1,6 @@
 ---
 name: java-im-profile-usage
-description: intra-mart 固有のユーザプロファイル画像管理 API（`jp.co.intra_mart.foundation.master.user.UserProfileImageManager`、IM-共通マスタ / im_master-main モジュール）を Java（JavaEE 開発モデル）で使用するためのスキルセット。プロファイル画像の取得（Stream形式・URL形式、単数/複数）、削除、登録（データURL形式／Storage経由）の実装パターンを提供する。Java でユーザのプロファイル画像を取得/登録/削除したい、Java で UserProfileImageManager を使いたい、JavaEE 開発モデルで IM-共通マスタのプロファイル画像を扱いたい、と言及されたときに使用。ユーザ基本情報（氏名・所属・分類区分等）そのものの操作は対象外（本 API はプロファイル画像専用）。IM-LogicDesigner のロジックフロー要素（`jp.co.intra_mart.foundation.logic.element.profile` 配下）は対象外。JSSP（スクリプト開発モデル）向けの同等 API は 2026年時点で提供されていない。
+description: intra-mart 固有のユーザプロファイル画像管理 API（`jp.co.intra_mart.foundation.master.user.UserProfileImageManager`、IM-共通マスタ / im_master-main モジュール）を Java（JavaEE 開発モデル）で使用するためのスキルセット。プロファイル画像の取得（Stream形式・URL形式、単数/複数）、削除、登録（データURL形式／Storage経由）の実装パターンを提供する。Java でユーザのプロファイル画像を取得/登録/削除したい、Java で UserProfileImageManager を使いたい、JavaEE 開発モデルで IM-共通マスタのプロファイル画像を扱いたい、と言及されたときに使用。ユーザ基本情報（氏名・所属・分類区分等）そのものの操作は対象外（本 API はプロファイル画像専用）。氏名・ユーザ分類は `jp.co.intra_mart.foundation.master.user.UserManager`、所属は `jp.co.intra_mart.foundation.master.company.CompanyManager` を使うこと。IM-LogicDesigner のロジックフロー要素（`jp.co.intra_mart.foundation.logic.element.profile` 配下）は対象外。JSSP（スクリプト開発モデル）向けの同等 API は提供されていない。
 ---
 
 # intra-mart User Profile Image Manager API（Java 版）利用支援スキル
@@ -16,12 +16,12 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのユ
 | 機能 | 本スキルの対象か |
 |------|-----------------|
 | ユーザの**プロファイル画像**（アバター画像）の取得・登録・削除（`UserProfileImageManager`） | **対象（本スキル）** |
-| ユーザ**基本情報**（氏名・所属・分類区分等）そのものの登録・更新・検索 | **対象外**。2026年時点で Java 向けの同等 API（SSJS 版 `IMMUserManager` に相当するもの）は本調査では確認できていない。該当の依頼があれば、ユーザに実装方針を確認すること |
+| ユーザ**基本情報**（氏名・所属・分類区分等）そのものの登録・更新・検索 | **対象外**（本 API はプロファイル画像専用）。氏名・ユーザ分類は `jp.co.intra_mart.foundation.master.user.UserManager`、所属（会社・組織・会社役職）は `jp.co.intra_mart.foundation.master.company.CompanyManager` を使う（いずれも IM-共通マスタ / `im_master-main` モジュール）。本スキルは実装パターンを持たないため、メソッドのシグネチャは API リファレンスで確認すること（記憶や推測で書かない） |
 | IM-LogicDesigner のロジックフロー要素（`jp.co.intra_mart.foundation.logic.element.profile` 配下の `GetProfileTask` / `UpdateProfileTask` / `RegisterProfileTask` / `RemoveProfileTask` 等） | **対象外**。ロジックフロー用の内部実装クラスであり、汎用 Java API として直接呼び出す想定のものではない |
 
 依頼内容がプロファイル画像以外（ユーザ基本情報の CRUD 等）を指している場合は、本スキルの対象外である旨をユーザに伝えること。
 
-**このスキルが扱うのは Java ソースファイル（`.java`）のみ。** JSSP（`.js`）での同等実装は、2026年時点で対応する SSJS 版 API が存在しないため、ユーザに実装方針を確認すること。
+**このスキルが扱うのは Java ソースファイル（`.java`）のみ。** JSSP（`.js`）での同等実装は、対応する SSJS 版 API が存在しないため、ユーザに実装方針を確認すること。
 
 ## 参照すべき規約
 
@@ -31,7 +31,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのユ
 | `.agents/requirements/java-code-style/AGENTS.md` | 🟢 **必読** — `final` ローカル変数、`try-with-resources`、文字列リテラル等 |
 | `.agents/requirements/java-javadoc/AGENTS.md` | 🟢 **必読** — クラス/メソッド JavaDoc |
 
-`.agents/requirements` 配下には例外処理を定めた Java 向け専用規約は存在しない（2026年時点）。`UserProfileImageManager` の例外（`BizApiException`、チェック例外）は、業務例外へのラップ方針を `assets/profile-basic-usage.md` のパターンに従う。
+`.agents/requirements` 配下には例外処理を定めた Java 向け専用規約は存在しない。`UserProfileImageManager` の例外（`BizApiException`、チェック例外）は、業務例外へのラップ方針を `assets/profile-basic-usage.md` のパターンに従う。
 
 `jssp-*` の規約はこのスキルの対象外（Java ファイルには適用しない）。
 
@@ -65,7 +65,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのユ
 
 「Java で」「JavaEE 開発モデルで」等の明示がない場合は、プロジェクトの既存実装がどちらのモデルかをユーザに確認する。
 
-また、依頼が**ユーザ基本情報**（氏名・所属等）の CRUD や、**IM-LogicDesigner のロジックフロー**に関するものであれば、本スキルの対象外である旨を伝える（前者は対応スキル未整備、後者は意図的に対象外としている）。
+また、依頼が**ユーザ基本情報**（氏名・所属等）の CRUD や、**IM-LogicDesigner のロジックフロー**に関するものであれば、本スキルの対象外である旨を伝える（前者は `UserManager` / `CompanyManager` を使う、後者は意図的に対象外としている）。
 
 ## 実装手順
 
@@ -87,7 +87,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのユ
 
 ## 生成後の確認
 
-JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当）は現時点で未整備。以下を手動で確認する。
+自動検証スクリプト（JSSP 版の `validate-jssp-code.js` 相当）ではなく、以下の項目を手動で確認する。
 
 1. `UserProfileImageManagerFactory.getFactory().getService()` 経由で実装を取得しているか（直接 `new` していないか）
 2. 複数取得系（`getUserProfileImagesStream()`/`getUserProfileImagesURL()`）の呼び出しで、結果に含まれないユーザコードがある前提のハンドリングになっているか
@@ -102,8 +102,8 @@ JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当
 | 責務 | 担当スキル |
 |------|-----------|
 | **Java（JavaEE 開発モデル）でのユーザプロファイル画像の取得・登録・削除** | **本スキル** |
-| ユーザ基本情報（氏名・所属・分類区分等）の CRUD | 対応する Java 向けスキル未整備（2026年時点）。ユーザに実装方針を確認 |
+| ユーザ基本情報（氏名・所属・分類区分等）の CRUD・検索 | 専用スキル未整備。IM-共通マスタの `UserManager`（氏名・ユーザ分類）/ `CompanyManager`（会社・組織・会社役職）を直接使用する |
 | ユーザへのロール割当・アカウント属性・ログイン設定 | `java-im-account-usage` |
 | IM-LogicDesigner のロジックフロー要素・トリガ | 本スキルの対象外。ロジックフロー自体の生成は `jssp-im-logic-generator` を参照 |
 | Java でのファイル操作（`PublicStorage`/`SessionScopeStorage`/`SystemStorage`） | `java-im-storage-usage` |
-| SSJS（JSSP）でのプロファイル画像操作 | 2026年時点で対応する SSJS API 未確認。ユーザに実装方針を確認 |
+| SSJS（JSSP）でのプロファイル画像操作 | `d.ts/` 配下に対応する SSJS API の定義は無い（Java 版のみ提供） |

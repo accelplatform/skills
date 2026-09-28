@@ -135,7 +135,7 @@ div.imds-container.pgstyle-layout-container    ... ルート div（intra-mart �
           name="sample-proprietor"
           value="sample-proprietor-1"
           checked="" />
-        <span>NTTデータイントラマート</span>
+        <span>イントラマート</span>
       </label>
       <label class="imds-radio">
         <input

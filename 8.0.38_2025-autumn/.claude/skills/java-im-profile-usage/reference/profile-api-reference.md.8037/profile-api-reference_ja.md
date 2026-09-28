@@ -78,7 +78,7 @@ public interface UserProfileImageManager {
 }
 ```
 
-- 引数・戻り値の詳細な null 許容/例外条件は、実装（`UserProfileImageManagerImpl`）依存の部分がありインタフェースの JavaDoc からは判別できない箇所がある。境界値の挙動（存在しない `imageSizeType` を指定した場合等）は実装確認または実機検証を推奨する
+- `imageSizeType` を空文字または未指定にした場合、実装（`UserProfileImageManagerImpl`）はデフォルト値 `"original"`（`UserConstant.IMAGE_SIZE_TYPE_ORIGINAL`）を使用する
 
 ## `UserProfileImageManagerFactory` クラス
 

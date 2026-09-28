@@ -1,7 +1,6 @@
 # User Profile Image API Basic Usage Patterns (Java Version)
 
-For the signatures and internal behavior of `UserProfileImageManager` / `UserImage` / `UserImageFileInfo`, see
-`reference/profile-api-reference.md`. Here we show typical call patterns.
+For the signatures and internal behavior of `UserProfileImageManager` / `UserImage` / `UserImageFileInfo`, see `reference/profile-api-reference.md`. Here we show typical call patterns.
 
 **Operating on basic user information (name, affiliation, etc.) and the IM-LogicDesigner logic flow elements are out of scope for this skill.** The only thing covered here is retrieving, registering, and deleting a "user's profile image."
 

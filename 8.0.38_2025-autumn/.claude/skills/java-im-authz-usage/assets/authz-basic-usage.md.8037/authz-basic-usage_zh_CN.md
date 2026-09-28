@@ -24,8 +24,8 @@ import jp.co.example.foo.exception.ResourceRegistrationException;
  */
 public class AuthzResourceRegistrationService {
 
-    /** 本应用程序的资源类型ID */
-    private static final String RESOURCE_TYPE_ID = "service://myapp/orders";
+    /** 资源URI 的前缀（开头的 "flat-crud" 即为资源类型ID） */
+    private static final String RESOURCE_URI_PREFIX = "flat-crud://myapp/orders/";
 
     /**
      * 将订单数据注册为资源。
@@ -34,8 +34,7 @@ public class AuthzResourceRegistrationService {
      * @throws ResourceRegistrationException 注册失败时抛出
      */
     public void registerOrderResource(final String orderId, final String displayName) throws ResourceRegistrationException {
-        // 资源URI采用 "RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT" 格式
-        final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
+        final String resourceUri = RESOURCE_URI_PREFIX + orderId;   // 例：flat-crud://myapp/orders/ORD001
         final I18nValue<String> name = new I18nValue<String>(Locale.JAPANESE, displayName);
 
         // Manager 实例不应跨租户重复使用，每次都应从 Factory 重新获取
@@ -50,7 +49,7 @@ public class AuthzResourceRegistrationService {
 }
 ```
 
-- 资源URI采用 `RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` 格式。为避免与其他应用程序冲突，应以应用程序名、组件名划分层级来设计
+- 资源URI采用 `RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` 格式（可使用的资源类型参见 `reference/authz-api-reference.md` 的「标准资源类型与动作」）。为避免与其他应用程序冲突，应用程序名、组件名所划分的层级应在资源类型ID之后的路径部分中表现
 - `I18nValue<String>` 是 `HashMap<Locale, String>` 的子类。如需持有多个区域设置的显示名称，可额外调用 `put(locale, value)`
 - `Manager` 实例不应缓存在字段中，每次调用都应从 `Factory` 重新获取（因为该设计会导致在切换租户时重复使用实例会使部分 API 失败）
 
@@ -110,8 +109,54 @@ public class AuthzSubjectRegistrationService {
 }
 ```
 
-- `Subject` 的具体实现（部门、公共组、角色等）不在本技能范围内（由 `im_master_subjecttypes` 等扩展模块提供）。应设计为从调用方接收 `Subject` 实例
+- `Subject` 实例通过 `SubjectManager#registerAsSubject(subjectTypeId, keys)` 编号（参见下一节）
 - 如果只是想为「所有用户」「未认证用户」设置策略，无需新注册主体组，直接使用内置组 `SubjectManager#getAuthenticatedUsers()` / `getGuestSubjectGroup()`（参见模式3）
+
+### 将角色等作为主体
+
+`Subject` 通过 `registerAsSubject`，根据主体类型ID与键值进行编号。以下是「向属于某角色的用户授予权限」时的实现。
+
+```java
+package jp.co.example.foo.service;
+
+import java.util.Locale;
+
+import jp.co.intra_mart.foundation.authz.model.I18nValue;
+import jp.co.intra_mart.foundation.authz.model.subjects.Subject;
+import jp.co.intra_mart.foundation.authz.model.subjects.SubjectGroup;
+import jp.co.intra_mart.foundation.authz.services.admin.SubjectExpression;
+import jp.co.intra_mart.foundation.authz.services.admin.SubjectManager;
+import jp.co.intra_mart.foundation.authz.services.admin.SubjectManagerFactory;
+import jp.co.intra_mart.foundation.authz.subjecttype.im_master.ImRole;
+import jp.co.intra_mart.foundation.authz.util.expression.Expression;
+
+/**
+ * 提供以角色为条件的主体组注册处理。
+ */
+public class RoleSubjectRegistrationService {
+
+    /**
+     * 注册表示属于指定角色的用户群的主体组。
+     * @param roleId 角色ID
+     * @param displayName 主体组的显示名称
+     * @return 已注册的主体组（若已存在则返回既有的主体组）
+     */
+    public SubjectGroup registerRoleSubjectGroup(final String roleId, final String displayName) {
+        final SubjectManager subjectManager = SubjectManagerFactory.getInstance().getSubjectManager();
+
+        // 根据主体类型ID与键值（角色为 1 个角色ID）对主体进行编号
+        final Subject subject = subjectManager.registerAsSubject(ImRole.B_M_ROLE, roleId);
+
+        // Subject 无法单独注册，因此先转换为 Expression，再以 SubjectGroup 的形式注册
+        final Expression expression = SubjectExpression.S(subject);
+        final I18nValue<String> name = new I18nValue<String>(Locale.JAPANESE, displayName);
+        return subjectManager.registerSubjectGroup(expression, name);
+    }
+}
+```
+
+- 键值的个数・含义因主体类型而异。ID 一览参见 `reference/authz-api-reference.md` 的「标准主体类型」
+- `registerSubjectGroup` 在已存在时会返回既有实例，因此无需事先通过 `getSubjectGroupByExpression` 确认是否存在
 
 ## 模式3：设置策略（登记许可・禁止）
 
@@ -137,8 +182,8 @@ public class AuthzPolicyConfigurationService {
     /**
      * 对所有已认证用户，许可指定的资源组和动作。
      * @param resourceGroup 目标资源组（通过 ResourceManager#registerAsResource 等已获取的资源组）
-     * @param resourceTypeId 资源类型ID
-     * @param action 动作（例如："view"）
+     * @param resourceTypeId 资源类型ID（例如："flat-crud"）
+     * @param action 动作（资源类型所定义的值。flat-crud 则为 "c"/"r"/"u"/"d"）
      * @return 已登记的策略
      */
     public Policy permitForAllAuthenticatedUsers(final ResourceGroup resourceGroup, final String resourceTypeId, final String action) {
@@ -175,17 +220,23 @@ import jp.co.example.foo.exception.ForbiddenOperationException;
  */
 public class OrderAuthorizationService {
 
-    /** 本应用程序的资源类型ID */
-    private static final String RESOURCE_TYPE_ID = "service://myapp/orders";
+    /** 资源URI 的前缀（开头的 "flat-crud" 即为资源类型ID）。必须与登记处理使用相同的常量 */
+    private static final String RESOURCE_URI_PREFIX = "flat-crud://myapp/orders/";
+
+    /** 参照动作（flat-crud 的 "r"） */
+    public static final String ACTION_READ = "r";
+
+    /** 更新动作（flat-crud 的 "u"） */
+    public static final String ACTION_UPDATE = "u";
 
     /**
      * 确认账户上下文中的用户是否被许可对指定的订单数据执行操作。
      * @param orderId 订单ID
-     * @param action 动作（例如："view", "approve"）
+     * @param action 动作（{@link #ACTION_READ} / {@link #ACTION_UPDATE}）
      * @throws ForbiddenOperationException 权限未被许可时抛出
      */
     public void assertPermitted(final String orderId, final String action) throws ForbiddenOperationException {
-        final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
+        final String resourceUri = buildResourceUri(orderId);
 
         final AuthorizationClient client = AuthorizationClientFactory.getInstance().getAuthorizationClient();
         final AuthorizeResult result = client.authorize(resourceUri, action);
@@ -205,15 +256,19 @@ public class OrderAuthorizationService {
      * @return 已被许可时返回 true
      */
     public boolean isPermittedFor(final String userCd, final String orderId, final String action) {
-        final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
         final AuthorizationClient client = AuthorizationClientFactory.getInstance().getAuthorizationClient();
-        return AuthorizeResult.Permit.equals(client.authorize(resourceUri, action, userCd));
+        return AuthorizeResult.Permit.equals(client.authorize(buildResourceUri(orderId), action, userCd));
+    }
+
+    /** 组装资源URI（在登记处理与确认处理之间共用）。 */
+    private static String buildResourceUri(final String orderId) {
+        return RESOURCE_URI_PREFIX + orderId;
     }
 }
 ```
 
 - 省略参数时，会自动以账户上下文（当前登录用户）进行判断。在批处理等场景中如需明确指定用户，请使用传递 `userCd` 的重载
-- `resourceURI` 必须与模式1中登记的值完全一致。组装字符串的地方（如 `RESOURCE_TYPE_ID + ":" + orderId`）在登记处理和确认处理中应使用相同的逻辑（推荐提取为常量或公共方法）
+- `resourceURI` 必须与模式1中登记的值完全一致。组装字符串的地方在登记处理和确认处理中应使用相同的逻辑（如上面的 `buildResourceUri` 那样提取为常量或公共方法）
 
 ## 模式5：参照与删除实效策略
 
@@ -293,7 +348,13 @@ public class BadService {
 final Policy declared = policyManager.getDeclaredPolicy(resourceGroupId, subjectGroupId, resourceTypeId, action);
 policyManager.removePolicy(declared); // declared 为 null 时，会导致依赖实现的异常或无意义的调用
 
+// NG: 混淆资源类型ID与资源URI
+// 第一个 ":" 之前的部分（= "service"）会被解析为资源类型ID。
+// service 专用于 URL 单位的认可，动作仅有 execute，因此 view/approve 等会引发 NoSuchActionException
+private static final String RESOURCE_TYPE_ID = "service://myapp/orders";
+final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
+
 // NG: 在登记处理和确认处理中重复资源URI的组装逻辑，导致写法不一致
-// 登记侧: "service://myapp/orders:" + orderId
-// 确认侧: "service://myapp/orders/" + orderId  ← 分隔符不同导致不一致，结果始终相当于 NOT_APPLICABLE
+// 登记侧: "flat-crud://myapp/orders/" + orderId
+// 确认侧: "flat-crud://myapp/orders:" + orderId  ← 分隔符不同导致不一致，权限将始终无法授予
 ```

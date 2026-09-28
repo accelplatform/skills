@@ -166,7 +166,7 @@ node .agents/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 <targetCode type="string">{"flowId" : "<流程ID>", "version" : null, "versionDecide" : false}</targetCode>
 ```
 
-**可用的扩展点（已在实机确认）**
+**可用的扩展点**
 
 | 节点类型 | 扩展点 |
 |---------|-------|

@@ -76,7 +76,8 @@ For the list of annotations, attributes, and signatures under the `jp.co.intra_m
 Key points:
 - **All classes, interfaces, and models must be `public`, and models must have a no-argument constructor.** Only members with both a getter and setter become subject to input/output
 - **Return values and arguments can use basic types, arrays, `List`/`Set`, `byte[]` (binary), `InputStream`, etc.** The response format is automatically converted according to the MIME type in the `Accept` header (JSON/XML). `null` properties are not output
-- **The response format on error is not guaranteed.** Only on success is the format returned per the `Accept` header
+- **The response body is not the Endpoint method's return value itself; it is wrapped in an object that has `error` / `data`.** On success it is `{"error": false, "data": <return value>}`, and on exception `{"error": true, "errorMessage": "...", "data": <@ReturnValue values>}`. **If the client reads it without unwrapping this envelope, the screen cannot receive the data even though the API itself is correct** (for details and an implementation example, see "Response Body Wrapper Structure" in `reference/web-api-maker-api-reference.md` and Pattern 7 in `assets/web-api-maker-basic-usage.md`)
+- **Whether the wrapper is applied depends on whether the request reached the Endpoint method (i.e., went through reflection's `Method#invoke`) — not on the status code value or whether `@Response` is present.** Any exception thrown by the Endpoint method itself is always wrapped, `@Response` or not (without it, the status is simply `500`). `400` (`@Required`), `403` (`@Authz`/`@Secured`), `405`, and `415` are also wrapped. On the other hand, **an unauthenticated request (with `@IMAuthentication`) comes back as `404`, not `401`, and is not wrapped** (it never reaches the Endpoint method). `406` (invalid `Accept`) and a `500` from an exception that occurs outside the Endpoint method (e.g., in an `ActionFilter`) and is not explicitly handled there are likewise not wrapped (for details, see "When the Wrapper Is Applied and When It Isn't" in `reference/web-api-maker-api-reference.md`)
 - The spec of a created API can be viewed in JSON format (Swagger compatible) at `http://<HOST>:<PORT>/<CONTEXT_PATH>/api-docs/${api-category}`
 
 ## Choosing an Authentication Method
@@ -99,7 +100,8 @@ The behavior of session management (`keep`/`once`/`never`) differs by authentica
 | OAuth authentication API | `assets/web-api-maker-basic-usage.md` | Implementation of `@OAuth(scope=...)`, the full set of 3 configuration files |
 | IM-Authz integration (authorization check) | `assets/web-api-maker-basic-usage.md` | Implementation of `@Authz(uri=..., action=...)`, integration points with `java-im-authz-usage` |
 | Secure token verification | `assets/web-api-maker-basic-usage.md` | Implementation pattern for `@Secured` |
-| Response control | `assets/web-api-maker-basic-usage.md` | Exception → status code (`@Response`), manual response (`@PreventWritingResponse`), supplementary info on the exception side (`@ReturnValue`) |
+| Response control | `assets/web-api-maker-basic-usage.md` | Response body wrapper structure (`error`/`data`), exception → status code (`@Response`), manual response (`@PreventWritingResponse`), supplementary info on the exception side (`@ReturnValue`) |
+| Receiving the response on the client (screen) side | `assets/web-api-maker-basic-usage.md` | A `fetch` implementation that unwraps the envelope and extracts `data`, specifying the `Accept` header, attaching the `X-Intramart-Secure-Token` header, the order of error checks |
 
 ### Reference
 
@@ -125,7 +127,8 @@ For requests to "newly register an authorization (Authz) resource/policy for a R
 4. Register the Endpoint class's package name under `META-INF/im_web_api_maker/packages` (**the most common implementation oversight**)
 5. If an authorization check is needed, attach `@Authz(uri=..., action=...)` and confirm whether the corresponding authorization resource is already registered on the IM-Authz side (if not registered, confirm with the user whether to implement the registration process using `java-im-authz-usage`)
 6. If OAuth authentication is needed, confirm whether the Web API Maker OAuth Authentication Module is installed, then attach `@OAuth(scope=...)` and prepare all 3 of `oauth-client-scopes-config`/`oauth-client-resources-config`/`oauth-client-details-config`
-7. Verify compliance with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+7. **When you also implement the client that calls the API (a JSSP presentation page, an external system, etc.), always include logic that unwraps the response's `error` / `data` envelope** (`assets/web-api-maker-basic-usage.md`, Pattern 7-4). When the client is implemented by someone else or by another skill, explicitly hand over the response structure (JSON samples for success and for exceptions) to the user
+8. Verify compliance with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
 
 ## Notes
 
@@ -134,13 +137,14 @@ For requests to "newly register an authorization (Authz) resource/policy for a R
 - **Do not write DB access (`DAOFactory`/`SqlManager`, etc.) directly in the Endpoint class.** Always call the Repository/DAO (the responsibility of `java-im-mirage-usage`) via a Service class. Calling the Repository/DAO directly from the Endpoint causes the Service layer to become a mere formality, losing the reusability and testability of the business logic
 - **`@OAuth` does not function with only the base module.** Inform the user that the additional installation of the Web API Maker OAuth Authentication Module is a prerequisite
 - **The authorization resource specified in `@Authz`'s `uri` must be registered in advance on the IM-Authz side.** Simply attaching `@Authz` on the Web API Maker side does not make it functional; it only works together with registration on the `ResourceManager`/`PolicyManager` side via `java-im-authz-usage` (or via tenant setup import materials)
-- **Secure token verification via `@Secured` and the authentication annotations (`@IMAuthentication`, etc.) are separate concerns.** The secure token is a CSRF countermeasure, while the authentication annotation determines "who is accessing"; do not conflate them in scenarios where both are needed (e.g., a state-changing API called from a browser)
-- **The response format (JSON/XML) on error is not guaranteed.** Design the client-side implementation to separate the response parsing process for success and failure
+- **Secure token verification via `@Secured` and the authentication annotations (`@IMAuthentication`, etc.) are separate concerns.** The secure token is a CSRF countermeasure, while the authentication annotation determines "who is accessing"; do not conflate them in scenarios where both are needed (e.g., a state-changing API called from a browser). **The request header name is fixed as `X-Intramart-Secure-Token`** (per the `Secured` annotation's javadoc and the `WebApiSecureTokenActionFilter` implementation). When calling from a JSSP screen, the token obtained via the existing `<meta name="im_secure_token">` pattern (`.agents/requirements/jssp-presentation-page/AGENTS.md`) can be reused as-is; there is no need to invent a new way to obtain it
+- **The response body is always wrapped in the `error` / `data` envelope.** The Endpoint method's return value goes under `data`. Reading it on the client without unwrapping yields `undefined`, producing the bug "the API is fine but no data shows on the screen" (the most frequent client-side oversight)
+- **Any exception thrown by the Endpoint method itself is always wrapped, `@Response` or not.** `400` (`@Required`), `403` (`@Authz`/`@Secured`), `405`, and `415` are also wrapped. An unauthenticated request, however, comes back as `404` rather than `401` under `@IMAuthentication`, and is not wrapped. `406` (invalid `Accept`) and a `500` from an exception that occurs outside the Endpoint method (e.g., in an `ActionFilter`) and is not explicitly handled there are also not wrapped. A business exception annotated with `@Response(code=...)` is wrapped even with a status other than `200`, so the client should follow an evaluation order that "tries to parse the body even when the status code is not `200`" (for details, see "When the Wrapper Is Applied and When It Isn't" in `reference/web-api-maker-api-reference.md`)
 - **Detailed CRUD APIs for `Effect` (IM-Authz) or authorization decisions are out of scope for this skill.** This skill covers only up to the usage of `@Authz`; do not write implementation code for resource registration or policy configuration (direct the user to `java-im-authz-usage`)
 
 ## Post-Generation Verification
 
-A dedicated verification script equivalent to the JSSP version (`validate-jssp-code.js`) is not yet in place at this time. Verify the following manually.
+Rather than an automated validation script (such as the JSSP version's `validate-jssp-code.js`), verify the following manually.
 
 1. Whether the Endpoint class's package name is registered under `META-INF/im_web_api_maker/packages`
 2. Whether the Endpoint class, model classes, and related interfaces are all `public`, and whether model classes have a no-argument constructor
@@ -148,12 +152,13 @@ A dedicated verification script equivalent to the JSSP version (`validate-jssp-c
 4. If `@OAuth` is used, whether the prerequisite installation of the Web API Maker OAuth Authentication Module is satisfied and whether the `scope` attribute is specified
 5. If `@Authz` is used, whether `uri`/`action` matches the registered content on the IM-Authz side (cross-check with the implementation on the `java-im-authz-usage` side)
 6. Whether the `@Path` value and HTTP method annotation match the requirements gathered, and whether the path parameter (`{xxx}`) matches `@Variable(name=...)`
-7. Whether the necessity of `@Secured` has been considered for state-changing endpoints (POST/PUT/DELETE)
+7. Whether the necessity of `@Secured` has been considered for state-changing endpoints (POST/PUT/DELETE), and if attached, whether the client sends the token in the `X-Intramart-Secure-Token` header
 8. **Whether the class names follow the naming convention/layer structure of `Endpoint` (Web API Maker class) / `EndpointFactory` (factory) / `Service` (business logic) / `Repository` (DB access abstraction).** Whether DB access or business logic is not written directly in the Endpoint class (whether delegation flows in the order `Endpoint → Service → Repository → DAO`)
 9. Whether the Endpoint class avoids directly instantiating a concrete Service class (such as `new StandardXxxService()`) and instead obtains it via `XxxServiceFactory.getInstance()` (a factory based on `ServiceLoaderUtil.loadTopPriority`)
 10. If the Endpoint has been split into an interface, whether the class-level annotations (such as `@IMAuthentication`), `@Path`/`@GET`, and argument annotations are declared on the interface rather than the implementation class, and whether the **return type** of the factory class's `@ProvideService` method **is the interface** (if it remains the implementation class type, the annotations are not recognized and the endpoint is not registered)
-11. Whether it complies with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
-12. `jssp-code-review` / `jssp-security-check` are JSSP-specific and are not applied to the output of this skill. If a separate code review/security check skill for Java exists in the project, use that instead
+11. **Whether the client-side (screen / external system) implementation unwraps the response's `error` / `data` envelope before using the business data.** Whether it reads the response without unwrapping, as in `fetch(url).then(function (res) { return res.json(); }).then(function (order) { order.xxx; })` (the correct form is `body.data.xxx`). Whether `Accept: application/json` is specified. Whether cases where the wrapper is not applied (unauthenticated `404`, `406`, an unrecognized `500`, etc.) are handled as unexpected errors when the body cannot be parsed. When the client is not implemented by this skill, whether the response structure for success and for exceptions was handed over to the user
+12. Whether it complies with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+13. `jssp-code-review` / `jssp-security-check` are JSSP-specific and are not applied to the output of this skill. If a separate code review/security check skill for Java exists in the project, use that instead
 
 ## Boundaries with Other Skills
 

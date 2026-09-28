@@ -2,7 +2,7 @@
 /**
  * DDL 型マッピング検証スクリプト
  *
- * 生成した DDL ファイルが ddl-type-mapping.md の推奨型に従っているかを検証する。
+ * 生成した DDL ファイルが .claude/rules/database-ddl.md の推奨型に従っているかを検証する。
  * ファイル名のサフィックス（_postgre / _oracle / _sqlserver）で DB 製品を判定し、
  * CREATE TABLE 文内のカラム型が推奨型と一致しているかチェックする。
  *
@@ -321,6 +321,161 @@ function validateDdlFile(filePath) {
 }
 
 // ========================================
+// コメント内セミコロン検証（DDL / DML 共通）
+//
+// Importer（SQLFileImporter）は SQL ファイルの中身を正規表現 ";\s*\n?" で機械的に
+// 分割してから 1 文ずつ実行する。SQL 構文を解釈しないため、コメント内のセミコロンでも
+// 文が分断され、断片やコメントだけの塊が単独の SQL として実行されて失敗する。
+// しかも 1 文でも失敗すると、そのファイルの残り全文が実行されない。
+// ========================================
+function validateSqlComments(filePath) {
+  let findings = [];
+  let content = fs.readFileSync(filePath, 'utf-8');
+  let message = 'SQL のコメント内にセミコロン（;）が含まれています。Importer はファイル全体を ";\\s*\\n?" で'
+    + '機械的に分割して 1 文ずつ実行するため、コメント内のセミコロンでも文が分断され、断片が単独の SQL として'
+    + '実行されてインポートに失敗します（1 文でも失敗するとそのファイルの残り全文が実行されません）。'
+    + 'コメントからセミコロンを削除してください';
+  let inString = false;
+  let line = 1;
+
+  for (let i = 0; i < content.length; i++) {
+    let c = content[i];
+    let next = content[i + 1];
+
+    if (c === '\n') { line++; continue; }
+
+    if (inString) {
+      if (c === "'") {
+        if (next === "'") { i++; continue; } // '' は文字列内のエスケープ
+        inString = false;
+      }
+      continue;
+    }
+    if (c === "'") { inString = true; continue; }
+
+    // -- 行コメント
+    if (c === '-' && next === '-') {
+      let end = content.indexOf('\n', i);
+      if (end === -1) end = content.length;
+      let comment = content.substring(i, end);
+      if (comment.indexOf(';') !== -1) {
+        findings.push({
+          file: filePath, line: line, severity: 'error',
+          message: '[COMMENT] ' + message,
+          matchedText: comment.trim().substring(0, 80)
+        });
+      }
+      i = end - 1;
+      continue;
+    }
+
+    // /* */ ブロックコメント
+    if (c === '/' && next === '*') {
+      let end = content.indexOf('*/', i + 2);
+      let body = (end === -1) ? content.substring(i) : content.substring(i, end + 2);
+      if (body.indexOf(';') !== -1) {
+        findings.push({
+          file: filePath, line: line, severity: 'error',
+          message: '[COMMENT] ' + message,
+          matchedText: body.split('\n')[0].trim().substring(0, 80)
+        });
+      }
+      line += (body.match(/\n/g) || []).length;
+      i += body.length - 1;
+      continue;
+    }
+  }
+
+  return findings;
+}
+
+// ========================================
+// 文末セミコロン欠落検証（DDL / DML 共通）
+//
+// Importer の分割単位（チャンク）は 1 文としてそのまま実行されるため、文と文の間の
+// セミコロンが抜けていると複数の文が 1 文として実行され構文エラーになる。
+// （最後の文のセミコロン抜けはチャンクが分かれないだけで害は無いため検出しない）
+// コメント内のセミコロンは分割位置を変えてしまうので、コメントを除去してから分割する。
+// ========================================
+const STATEMENT_HEAD_PATTERN = /^[ \t]*(CREATE|ALTER|DROP|INSERT|UPDATE|DELETE|MERGE|TRUNCATE|GRANT|REVOKE|COMMENT)\b/gim;
+
+// コメントを空白に置き換える（行番号を保つため改行はそのまま残す）
+function stripSqlComments(content) {
+  let out = '';
+  let inString = false;
+  for (let i = 0; i < content.length; i++) {
+    let c = content[i];
+    let next = content[i + 1];
+    if (inString) {
+      out += c;
+      if (c === "'") {
+        if (next === "'") { out += next; i++; continue; }
+        inString = false;
+      }
+      continue;
+    }
+    if (c === "'") { inString = true; out += c; continue; }
+    if ((c === '-' && next === '-') || (c === '/' && next === '*')) {
+      let stop;
+      if (c === '-') {
+        stop = content.indexOf('\n', i);
+        if (stop === -1) stop = content.length;
+      } else {
+        let end = content.indexOf('*/', i + 2);
+        stop = (end === -1) ? content.length : end + 2;
+      }
+      for (let k = i; k < stop; k++) out += (content[k] === '\n') ? '\n' : ' ';
+      i = stop - 1;
+      continue;
+    }
+    out += c;
+  }
+  return out;
+}
+
+function validateStatementTerminators(filePath) {
+  let findings = [];
+  let content = fs.readFileSync(filePath, 'utf-8');
+  let stripped = stripSqlComments(content);
+  let lines = content.split('\n');
+
+  // Importer と同じ分割
+  let chunks = [];
+  let re = /;\s*\n?/g;
+  let last = 0;
+  let m;
+  while ((m = re.exec(stripped)) !== null) {
+    chunks.push({ text: stripped.substring(last, m.index), start: last });
+    last = re.lastIndex;
+  }
+  chunks.push({ text: stripped.substring(last), start: last });
+
+  for (let chunk of chunks) {
+    let heads = [];
+    let head;
+    STATEMENT_HEAD_PATTERN.lastIndex = 0;
+    while ((head = STATEMENT_HEAD_PATTERN.exec(chunk.text)) !== null) {
+      heads.push(head.index);
+    }
+    // 1 チャンクに文頭が 2 個以上 = 直前の文の終端セミコロンが抜けている
+    if (heads.length < 2) continue;
+    let lineNumber = content.substring(0, chunk.start + heads[1]).split('\n').length;
+    findings.push({
+      file: filePath,
+      line: lineNumber,
+      severity: 'error',
+      message: '[TERMINATOR] 直前の SQL 文の終端にセミコロン（;）が付いていない可能性があります。'
+        + 'Importer はファイル全体を ";\\s*\\n?" で分割して 1 文ずつ実行するため、区切りが無いと複数の文が'
+        + '1 文として実行され構文エラーになります（1 文でも失敗するとそのファイルの残り全文が実行されません）。'
+        + '各 SQL 文の終端にセミコロンを付けてください',
+      matchedText: (lines[lineNumber - 1] || '').trim().substring(0, 80)
+    });
+  }
+
+  return findings;
+}
+
+// ========================================
 // ファイル収集・実行
 // ========================================
 function collectSqlFiles(targetPath) {
@@ -357,6 +512,16 @@ function run(targetPath) {
   }
   for (let file of dmlFiles) {
     allFindings.push(...validateDmlFile(file));
+  }
+  // コメント内セミコロンは DDL / DML 共通。両リストに含まれるファイル
+  // （例: xxx-dml_postgre.sql）を二重に報告しないよう重複を除いて検査する。
+  let commentTargets = ddlFiles.slice();
+  for (let file of dmlFiles) {
+    if (commentTargets.indexOf(file) === -1) commentTargets.push(file);
+  }
+  for (let file of commentTargets) {
+    allFindings.push(...validateSqlComments(file));
+    allFindings.push(...validateStatementTerminators(file));
   }
 
   let errors = allFindings.filter(f => f.severity === 'error');

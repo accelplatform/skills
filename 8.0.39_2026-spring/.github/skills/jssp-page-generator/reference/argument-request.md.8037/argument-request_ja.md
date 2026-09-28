@@ -174,5 +174,4 @@ function init(request) {
 }
 ```
 
-ファイルアップロード/ダウンロード REST-API の完成形は
-`assets/file-upload-download-api.md` を参照。
+ファイルアップロード/ダウンロード REST-API の完成形は `assets/file-upload-download-api.md` を参照。

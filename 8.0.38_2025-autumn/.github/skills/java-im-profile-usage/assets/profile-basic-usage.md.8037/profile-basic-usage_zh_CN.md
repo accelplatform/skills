@@ -1,7 +1,6 @@
 # User Profile Image API 基本使用模式（Java 版）
 
-关于 `UserProfileImageManager` / `UserImage` / `UserImageFileInfo` 的签名与内部行为，请参考
-`reference/profile-api-reference.md`。这里展示典型的调用模式。
+关于 `UserProfileImageManager` / `UserImage` / `UserImageFileInfo` 的签名与内部行为，请参考 `reference/profile-api-reference.md`。这里展示典型的调用模式。
 
 **用户基本信息（姓名・所属等）的操作，以及 IM-LogicDesigner 的逻辑流程要素不在本技能范围内。** 这里仅涉及"用户头像图片"的获取・注册・删除。
 

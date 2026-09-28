@@ -59,6 +59,10 @@ Each element of `flowDefinitions` is a **string-escaped flow definition JSON**.
 }
 ```
 
+## `typeId` for constants
+
+`typeId` should always be `"string"`. The IM-LogicDesigner screen has no field to choose a constant's type, so every constant created from the UI is stored as type string. Generating a constant with a non-string typeId (boolean/integer, etc.) has been observed to make the mapping-destination task (e.g. `im_immGetDepartmentByUser`) fail with an error. Even for boolean values or code values, keep typeId as `"string"` and put the value itself as a string (e.g. `"true"`).
+
 ## Type Definition (Common for input/output/variables)
 
 ```jsonc

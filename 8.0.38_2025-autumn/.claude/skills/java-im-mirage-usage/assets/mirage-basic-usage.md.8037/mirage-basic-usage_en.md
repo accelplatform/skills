@@ -118,18 +118,18 @@ import jp.co.example.foo.entity.OrderEntity;
  */
 public class OrderDAO extends AbstractDAO<OrderEntity> {
 
-    /** SQL file path (relative to the classpath root) */
+    /** SQL file path (classpath-relative) */
     private static final String SQL_PATH = "jp/co/example/foo/dao/";
 
     /** SQL for retrieving the order list by status */
     private static final String SELECT_ORDERS_BY_STATUS = "select_orders_by_status.sql";
 
-    /** SQL for retrieving the order count */
-    private static final String SELECT_ORDER_COUNT = "select_order_count.sql";
+    /** SQL for retrieving the order count by status (a SELECT of the same shape as the list-retrieval SQL, minus ORDER BY) */
+    private static final String SELECT_ORDERS_BY_STATUS_COUNT = "select_orders_by_status_count.sql";
 
     /**
-     * Retrieves the order list for the specified status.
-     * @param status the status to search for (all records if null)
+     * Retrieves the order list for the given status.
+     * @param status the status to search for (all records when null)
      * @return the order list
      */
     public List<OrderEntity> findByStatus(final String status) {
@@ -146,7 +146,7 @@ public class OrderDAO extends AbstractDAO<OrderEntity> {
     public int countByStatus(final String status) {
         final OrderEntity param = new OrderEntity();
         param.status = status;
-        return super.sqlManager.getCount(SQL_PATH.concat(SELECT_ORDER_COUNT), param);
+        return super.sqlManager.getCount(SQL_PATH.concat(SELECT_ORDERS_BY_STATUS_COUNT), param);
     }
 }
 ```
@@ -171,13 +171,50 @@ ORDER BY
   order_id
 ```
 
+`select_orders_by_status_count.sql` for retrieving the count (it differs only in whether `ORDER BY` is present):
+
+```sql
+SELECT
+  order_id,
+  customer_name,
+  amount,
+  status
+FROM
+  foo_order
+/*BEGIN*/
+WHERE
+  /*IF status != null*/
+  status = /*status*/'dummy'
+  /*END*/
+/*END*/
+```
+
+- **Never write `SELECT COUNT(*)` in a SQL file passed to `getCount`.** `getCount` wraps the SQL it is given entirely in a subquery, as in `SELECT COUNT(*) FROM (<the SQL you passed>)`. Writing `SELECT COUNT(*)` yourself therefore produces `SELECT COUNT(*) FROM (SELECT COUNT(*) ...)`, which **always returns `1` without throwing an exception**. Pass a SELECT of the same shape as the one used for list retrieval
+- **Never write `ORDER BY` in a SQL file passed to `getCount`.** It ends up inside the subquery, which is a syntax error on SQLServer. Split the SQL into two files — one for list retrieval and one for the count — as shown above
+- **Do not write `--` comments in a SQL file.** The 2WaySQL parser does not distinguish the contents of a `--` line comment from the rest — it scans the whole file to detect template syntax. As a result, if a template-syntax notation (`/*IF*/`, etc.), an actual bind name, or a `?` literal appears inside an explanatory comment, it is misrecognized as a real template directive even though it is only a comment, causing a runtime error that appears unrelated to the comment's content (`UnsupportedOperationException: not supported`, `Column index out of range`, etc.). Put the purpose of the SQL file and its verification notes in the caller's JavaDoc (the DAO method), not in the SQL file itself — the SQL file should contain only the SQL body that actually executes (for details and concrete examples, see `.claude/rules/jssp-2way-sql.md`)
 - **Place SQL files under `src/main/resources`, not `src/main/java`.** Reproduce the same package path as the DAO class (the relative path of the `sqlPath` constant) under `src/main/resources`. If it is placed only under `src/main/java`, it will not be included in the runtime classpath after the build, resulting in a `resource: xxx.sql is not found.` error (the source tree of the platform-standard feature, where `.java` and `.sql` appear to sit side by side in the same directory, is the pre-build repository layout, which is different from the Maven-standard `src/main/resources` layout)
 - Parameters can be passed as an entity, or as any JavaBean or `Map<String, Object>`. Match the placeholder names in the SQL (such as `/*status*/`) with the property/key names
 - The basic 2WaySQL syntax (`/*IF*/`/`/*BEGIN*/`/`/*param*/'dummy'`) is common with the JSSP side (`.claude/rules/jssp-2way-sql.md`). The role of dummy values and the escaping approach for LIKE searches follow the same thinking as well
+### Note: Do Not Nest `/*IF*/` Inside a `/*BEGIN*/` Block
 
-## Pattern 4: `/*FOR*/` Loop Syntax (im_mirage-Specific)
+The parser does support nesting `/*IF*/` itself, but nesting it inside a `/*BEGIN*/` block causes the leading `AND`/`OR` of the inner `/*IF*/` to become a target for prefix removal, and it gets stripped when the outer `/*IF*/` was the first condition to succeed in that block (because `IfNode` only sets its "already output" flag after finishing processing its children). The result is malformed SQL such as `WHERE a = ? b = ?`. If a preceding sibling condition has already succeeded, it renders correctly — so whether this passes or fails depends on the combination of parameters. It produces a `PSQLException` when the outer IF is the first condition to succeed in the block, and works correctly when a preceding sibling condition succeeds first.
 
-Not supported in the JSSP script development model, but usable in im_mirage for dynamically generating IN clauses, etc.
+Do not nest multiple conditions; place them as siblings instead, and express the dependency through the condition expression.
+
+```sql
+/*IF status != null*/
+status = /*status*/'dummy'
+/*END*/
+/*IF status != null && categoryCd != null*/
+AND category_cd = /*categoryCd*/'dummy'
+/*END*/
+```
+
+(Nesting where the inner block does not start with `AND`/`OR`/`,` — such as switching an operator or a value fragment — is not affected by this issue and may be used.)
+
+## Pattern 4: Dynamic Generation of IN Clauses (`IN /*param*/('dummy')`)
+
+To expand a `List` or an array into an IN clause, use a **parenthesized bind** — place `('dummy')` immediately after `/*param*/`. At runtime it expands into `(?, ?, ?)` with as many placeholders as there are elements. **Do not assemble IN clauses with `/*FOR*/`.**
 
 ```sql
 SELECT
@@ -185,21 +222,102 @@ SELECT
   customer_name
 FROM
   foo_order
+/*BEGIN*/
 WHERE
-  order_id IN (
-    /*FOR orderId : orderIds*/
-    /*orderId*/'dummy'
-    /*IF orderId_has_next*/, /*END*/
-    /*END*/
-  )
+  /*IF orderIds != null && orderIds.size() > 0*/
+  AND order_id IN /*orderIds*/('dummy')
+  /*END*/
+/*END*/
 ```
 
 ```java
 public List<OrderEntity> findByIds(final List<String> orderIds) {
-    final java.util.Map<String, Object> param = new java.util.HashMap<String, Object>();
-    param.put("orderIds", orderIds);
-    return super.sqlManager.getResultList(OrderEntity.class, SQL_PATH.concat("select_orders_by_ids.sql"), param);
+    final OrderIdsCondition condition = new OrderIdsCondition(orderIds);
+    return super.sqlManager.getResultList(OrderEntity.class, SQL_PATH.concat("select_orders_by_ids.sql"), condition);
 }
+
+/**
+ * Search condition used for dynamic IN-clause generation (a JavaBean with a public field).
+ */
+public class OrderIdsCondition {
+    public List<String> orderIds;
+    public OrderIdsCondition(final List<String> orderIds) {
+        this.orderIds = orderIds;
+    }
+}
+```
+
+- **Guard against both `null` and an empty list.** `IN /*param*/('dummy')` omits the entire bind portion from the output for both `null` and an empty list, so without a guard a bare `IN` remains and the SQL breaks. `/*IF orderIds != null*/` alone lets an empty list through, producing the broken SQL `WHERE order_id IN `
+- OGNL evaluates `&&` in a short-circuit manner, so `size()` is not evaluated even when `orderIds` is `null` — no `NullPointerException` occurs. Either `size() != 0` or `size() > 0` is fine
+- On the JSSP side, the `/*IF*/` expression is JavaScript, so write it as `/*IF orderIds != null && orderIds.length > 0*/`
+
+### [Important] The guard can turn an empty list into "all rows" instead of "zero rows"
+
+As shown above, when the IN-clause guard is the only condition inside `/*BEGIN*/`, a `null` or empty `orderIds` causes the contents of `/*IF*/` to vanish, leaving the `/*BEGIN*/` block empty, so **the entire `WHERE` clause is removed** (this follows `/*BEGIN*/`'s basic behavior: `WHERE` etc. are automatically removed once all the content inside is gone).
+As a result, while no SQL error occurs, the query returns **all rows with no filtering** rather than the intended "no matches (zero rows)".
+
+If the intent is "when the caller passes an empty list, the result should also be empty," **do not rely on the SQL-side guard alone** — add an application-side guard (in the Repository/Service layer) where the caller checks for `null`/an empty list and returns an empty list without executing the SQL. This is a mandatory countermeasure especially when this pattern is used for authorization/permission filtering (e.g. passing a list of accessible IDs into an `IN` clause), to prevent an empty list from accidentally exposing all records.
+
+### `/*FOR*/` Loop Syntax
+
+Usable in im_mirage and LogicDesigner; not supported in JSSP (script development model). **The delimiter is `in` or `IN`, with a half-width space on each side.**
+
+```sql
+SELECT
+  ticket_id
+FROM
+  foo_ticket
+/*BEGIN*/
+WHERE
+/*FOR ticketId in ticketIdList*/
+OR ticket_id = /*ticketId*/'dummy'
+/*END*/
+/*END*/
+```
+
+- **When the body begins with `AND`/`OR`/`,`, enclose it in `/*BEGIN*/`.** A leading operator is removed only "while the enclosing block is still empty," so without `/*BEGIN*/` the `OR` of the first element remains, producing the broken SQL `WHERE OR ticket_id = ?`
+- **Within the block, the only thing you can reference is the single element bound to the loop variable name (`ticketId`).** To generate IN clauses dynamically, use `IN /*param*/('dummy')` as described at the beginning of this pattern
+
+### [Important] Do Not Expect `/*BEGIN*/` to Remove the Comma in an UPDATE Statement's SET Clause
+
+Wrapping the SET clause of an UPDATE statement with `/*BEGIN*/` so that it removes the leading comma of each item behaves inconsistently, because **the outcome depends on where the comma is placed in the file**.
+
+- When the comma is placed at the **start of the same line** as the `/*IF*/` marker, the parser correctly recognizes it as a prefix and removes it
+- When the comma is placed on a **separate, indented line after a line break**, the parser fails to recognize it as a prefix, leaving a bare leading comma behind and producing invalid SQL that causes a syntax error (`PSQLException`, etc. — example error message: `ERROR: syntax error at or near ","`)
+
+In addition, `/*BEGIN*/` removes the entire SET clause (including the `SET` keyword itself) when every condition inside it evaluates to false, which produces invalid SQL (an `UPDATE` with no `SET`) when there are no columns to update.
+
+Because **comma-prefix removal is fragile and format-dependent, and also conflicts with `/*BEGIN*/`'s "the whole block vanishes when every condition is false" behavior**, do not rely on `/*BEGIN*/` to remove the comma in a SET clause at all.
+
+Example that results in a syntax error (comma placed on a separate, indented line):
+
+```sql
+UPDATE foo_order
+/*BEGIN*/
+SET
+  /*IF status != null*/
+  , status = /*status*/'dummy'
+  /*END*/
+  /*IF memo != null*/
+  , memo = /*memo*/'dummy'
+  /*END*/
+/*END*/
+WHERE order_id = /*orderId*/'dummy'
+```
+
+Correct example (always place a harmless self-assignment at the head of the SET clause, and always chain the subsequent items with a leading comma without relying on `/*BEGIN*/`. This approach is independent of comma placement, and there is no risk of the SET clause vanishing entirely):
+
+```sql
+UPDATE foo_order
+SET
+  order_id = /*orderId*/'dummy'
+  /*IF status != null*/
+  , status = /*status*/'dummy'
+  /*END*/
+  /*IF memo != null*/
+  , memo = /*memo*/'dummy'
+  /*END*/
+WHERE order_id = /*orderId*/'dummy'
 ```
 
 ## Pattern 5: DB-Dialect-Specific SQL Files
@@ -232,6 +350,7 @@ import jp.co.example.foo.entity.OrderEntity;
  */
 public interface OrderRepository {
     void register(OrderEntity order);
+    void updateStatus(String orderId, String status);
     List<OrderEntity> findByStatus(String status);
 }
 ```
@@ -261,6 +380,25 @@ public class StandardOrderRepository implements OrderRepository {
             public Void execute(final Session session) {
                 final OrderDAO dao = DAOFactory.getTenantDatabaseDAO(OrderDAO.class);
                 dao.insert(order);   // createUserCd/createDate are set automatically
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void updateStatus(final String orderId, final String status) {
+        SessionTemplate.execute(new SessionCallback<Void, RuntimeException>() {
+            @Override
+            public Void execute(final Session session) {
+                final OrderDAO dao = DAOFactory.getTenantDatabaseDAO(OrderDAO.class);
+
+                // update updates every column except the primary key, so always load with find() first and then apply only the changes
+                final OrderEntity order = dao.find(orderId);
+                if (order == null) {
+                    return null;   // throwing an exception here is also acceptable, depending on the requirements
+                }
+                order.status = status;
+                dao.update(order);
                 return null;
             }
         });
@@ -361,7 +499,7 @@ import jp.co.example.foo.entity.OrderItemEntity;
 
 /**
  * Standard implementation class of {@link OrderItemRepository}.
- * The DAO implementation ({@code OrderItemDAO extends AbstractDAO<OrderItemEntity>}) is omitted since it is the same as Pattern 2.
+ * The DAO implementation ({@code OrderItemDAO extends AbstractDAO<OrderItemEntity>}) is omitted here since it mirrors Pattern 2.
  */
 public class StandardOrderItemRepository implements OrderItemRepository {
 
@@ -423,14 +561,14 @@ public class StandardOrderService implements OrderService {
     private final OrderItemRepository orderItemRepository = OrderItemRepositoryFactory.getInstance();
 
     /**
-     * Registers the order header and order items in the same transaction.<br>
-     * Because this operation spans multiple Repositories — {@link OrderRepository} (the foo_order table)
-     * and {@link OrderItemRepository} (the foo_order_item table) — the Service itself establishes
-     * the transaction boundary with {@code SessionTemplate.execute}, and the Repository-side
-     * {@code SessionTemplate.execute} calls (nested calls) join this boundary.
+     * Registers the order header and order items within the same transaction.<br>
+     * Because this operation spans multiple Repositories — {@link OrderRepository} (the foo_order table) and
+     * {@link OrderItemRepository} (the foo_order_item table) — the Service itself establishes the transaction
+     * boundary with {@code SessionTemplate.execute}, and the Repository-side {@code SessionTemplate.execute}
+     * calls (nested calls) join this boundary.
      *
      * @param order the order header
-     * @param items the list of order items
+     * @param items the order item list
      */
     @Override
     public void register(final OrderEntity order, final List<OrderItemEntity> items) {
@@ -447,10 +585,10 @@ public class StandardOrderService implements OrderService {
     }
 
     /**
-     * When only calling a single Repository method, the Service becomes a thin wrapper.<br>
-     * In this case, since the Repository side ({@code StandardOrderRepository#findByStatus})
-     * has already established the boundary with {@code SessionTemplate.execute}, there is no
-     * need for the Service side to establish an additional transaction boundary.
+     * When it only needs to call a single Repository method, the Service becomes a thin wrapper.<br>
+     * In this case, since the Repository side ({@code StandardOrderRepository#findByStatus}) has already
+     * established the boundary with {@code SessionTemplate.execute}, the Service does not need to establish
+     * an additional transaction boundary on top of it.
      *
      * @param status the status to search for
      * @return the order list
@@ -469,7 +607,7 @@ import jp.co.intra_mart.common.aid.jdk.java.util.ServiceLoaderUtil;
 
 /**
  * Factory class for obtaining an instance of {@link OrderService}.<br>
- * The implementation pattern is the same as {@code OrderRepositoryFactory} (see Pattern 6).
+ * The implementation pattern mirrors {@code OrderRepositoryFactory} (see Pattern 6).
  */
 public final class OrderServiceFactory {
 

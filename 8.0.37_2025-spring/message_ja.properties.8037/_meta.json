@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "from": "message_ja.properties",
+      "to": "message_ja.properties"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "regex",
+      "pattern": "\\{\\{GROUP_ID\\}\\}",
+      "replacement": "{{$group}}"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
+      "replacement": "{{$artifactId}}"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_NAME\\}\\}",
+      "replacement": "{{$name}}"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
+      "replacement": "{{$projectVersion}}"
+    },
+    {
+      "type": "regex",
+      "pattern": "\\{\\{PROJECT_DESCRIPTION\\}\\}",
+      "replacement": "{{$description}}"
+    }
+  ]
+}

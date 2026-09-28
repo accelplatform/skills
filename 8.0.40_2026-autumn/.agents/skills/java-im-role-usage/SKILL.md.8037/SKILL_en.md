@@ -33,7 +33,7 @@ If the request is "assign a role to a user" or "change the roles an account hold
 | `.agents/requirements/java-code-style/AGENTS.md` | 🟢 **Required reading** — `final` local variables, string literals, etc. |
 | `.agents/requirements/java-javadoc/AGENTS.md` | 🟢 **Required reading** — class/method JavaDoc |
 
-No dedicated Java convention defining exception-handling policy exists under `.agents/requirements` (as of 2026). Every `RoleInfoManager` method is designed to throw `AdminException` (a checked exception); follow the business-exception-wrapping pattern in `assets/role-basic-usage.md`.
+No dedicated Java convention defining exception-handling policy exists under `.agents/requirements`. Every `RoleInfoManager` method is designed to throw `AdminException` (a checked exception); follow the business-exception-wrapping pattern in `assets/role-basic-usage.md`.
 
 `jssp-*` conventions are out of scope for this skill (they do not apply to Java files).
 
@@ -93,7 +93,7 @@ Requests such as "I want to assign a role to a user" or "I want to change the ro
 
 ## Post-Generation Checks
 
-A dedicated verification script equivalent to the JSSP version (`validate-jssp-code.js`) is not yet in place. Confirm the following manually.
+Rather than an automated validation script (such as the JSSP version's `validate-jssp-code.js`), verify the following manually.
 
 1. Whether every place that uses `getRoleInfo()`'s return value performs a null check
 2. Whether every place using `RoleInfo()` (the no-argument constructor) properly handles the `IOException`

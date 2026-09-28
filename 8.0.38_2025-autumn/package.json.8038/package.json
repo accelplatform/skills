@@ -9,9 +9,6 @@
     "format": "mvn -q -s settings.xml java-format:apply -Dsettings=.accel/settings.json"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
-    "@types/node": "^24.0.0",
-    "typescript": "^6.0.3",
-    "xmllint-wasm": "^5.2.0"
+    "@playwright/test": "^1.52.0"
   }
 }

@@ -157,7 +157,7 @@ src/main/java/{basePackageのパス区切り}/{機能名}/workflow/{種別}/{Cla
 
 ## 生成後の確認
 
-JSSP 版のような専用検証スクリプト（`validate-workflow-code.js` 相当）は現時点で未整備。以下を手動で確認する。
+自動検証スクリプト（JSSP 版の `validate-workflow-code.js` 相当）ではなく、以下の項目を手動で確認する。
 
 1. 継承元クラス・実装インタフェースの FQCN が `reference/parameter-reference.md` の記載と一致しているか
 2. オーバーライドしたメソッドのシグネチャ（引数型・戻り値型・`throws`）が抽象クラス/インタフェースの定義と完全一致しているか（`@Override` を付けてコンパイラに検証させること）

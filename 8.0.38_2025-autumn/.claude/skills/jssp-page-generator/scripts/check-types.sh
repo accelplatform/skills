@@ -20,9 +20,14 @@ TARGET="${1:-src/main/jssp/src}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
 
+TSC_BIN="$(node "$SCRIPT_DIR/resolve-tsc.js")" || {
+  echo "Error: typescript が解決できません。.claude/skills/jssp-page-generator/deps/ の依存インストールを確認してください。" >&2
+  exit 2
+}
+
 cd "$ROOT_DIR"
 
-RAW="$(node_modules/.bin/tsc -p tsconfig.check.json 2>&1)"
+RAW="$(node "$TSC_BIN" -p tsconfig.check.json 2>&1)"
 
 FILTERED="$(echo "$RAW" \
   | grep "$TARGET" \

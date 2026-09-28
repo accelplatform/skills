@@ -18,37 +18,39 @@ src/main/java/{packagePath}/
 │       └── GetCategoryUseCase.java
 ├── domain/
 │   ├── model/
-│   │   ├── Category.java              ← see SampleModel.java
+│   │   ├── Category.java              ← see "5. Domain Model" in this document
 │   │   └── CategoryStatus.java
 │   ├── service/
 │   │   ├── CategoryService.java       (interface)
 │   │   └── CategoryServiceFactory.java
 │   ├── repository/
 │   │   ├── CategoryRepository.java    (interface)
-│   │   └── CategoryRepositoryFactory.java  ← see RepositoryFactoryTemplate.java
+│   │   └── CategoryRepositoryFactory.java  ← same shape as the service factory (see note below)
 │   └── exception/
 │       ├── RepositoryException.java
 │       └── CategoryServiceException.java
 └── infrastructure/
     ├── entity/
-    │   └── CategoryEntity.java        ← see SampleEntity.java
+    │   └── CategoryEntity.java        ← see the java-im-mirage-usage skill
     ├── dao/
-    │   └── CategoryDAO.java           ← see SampleDAO.java
+    │   └── CategoryDAO.java           ← see the java-im-mirage-usage skill
     ├── repository/
-    │   ├── StandardCategoryRepository.java      ← see StandardRepositoryTemplate.java
+    │   ├── StandardCategoryRepository.java      ← see "7. Repository Implementation" in this document
     │   └── StandardCategoryRepositoryFactory.java
     └── service/
-        ├── StandardCategoryService.java         ← see StandardServiceTemplate.java
+        ├── StandardCategoryService.java         ← see references/StandardServiceTemplate.java in the java-im-service-layer skill
         └── StandardCategoryServiceFactory.java
 
 src/main/resources/
-└── META-INF/sql/{packagePath}/infrastructure/dao/CategoryDAO/
-    ├── find-by-id.sql                 ← see sql-patterns.md
+└── {packagePath}/infrastructure/dao/CategoryDAO/
+    ├── find-by-id.sql                 ← see the java-im-mirage-usage skill (how to write 2way SQL)
     └── find-by-condition.sql
 
 src/main/storage/system/products/import/basic/{module_id}/
-└── {module_id}-ddl.sql               ← see ddl-templates.md
+└── {module_id}-ddl.sql               ← see "1. DDL" in this document
 ```
+
+> **Note (factory classes)**: `CategoryRepositoryFactory` / `StandardCategoryRepositoryFactory` follow the same shape as the service factory shown in `references/StandardServiceTemplate.java` and `references/MultiRepositoryServiceTemplate.java` of the `java-im-service-layer` skill (read `Service` as `Repository`). No separate, repository-specific template file is provided.
 
 ## 1. DDL
 
@@ -114,8 +116,9 @@ public class CategoryEntity implements Serializable {
 package example.infrastructure.dao;
 
 public class CategoryDAO extends AbstractDAO<CategoryEntity> {
+    // SQL file path (classpath-relative; no META-INF/sql prefix or leading slash)
     private static final String SQL_PATH =
-            "/META-INF/sql/example/infrastructure/dao/CategoryDAO/";
+            "example/infrastructure/dao/CategoryDAO/";
 
     public CategoryEntity findByCategoryId(final String categoryId) {
         final FindByIdCriteria criteria = new FindByIdCriteria();
@@ -218,12 +221,14 @@ public class StandardCategoryRepository implements CategoryRepository {
     public void save(final Category category) throws RepositoryException {
         try {
             SessionTemplate.execute(s -> {
-                final CategoryEntity entity = convertToEntity(category);
                 final CategoryDAO dao = DAOFactory.getTenantDatabaseDAO(CategoryDAO.class);
-                if (dao.find(entity.categoryId) != null) {
-                    dao.update(entity);
+                final CategoryEntity existing = dao.find(category.getCategoryId());
+                if (existing != null) {
+                    // update updates every column except the primary key, so apply only the changes to the existing Entity
+                    applyChanges(existing, category);
+                    dao.update(existing);
                 } else {
-                    dao.insert(entity);
+                    dao.insert(convertToEntity(category));
                 }
                 return null;
             });
@@ -240,12 +245,16 @@ public class StandardCategoryRepository implements CategoryRepository {
                 (e.recordDate != null) ? new Date(e.recordDate.getTime()) : null);
     }
 
+    private void applyChanges(final CategoryEntity entity, final Category m) {
+        entity.categoryName = m.getCategoryName();
+        entity.sortOrder = m.getSortOrder();
+        entity.setStatusFromEnum(m.getStatus());
+    }
+
     private CategoryEntity convertToEntity(final Category m) {
         final CategoryEntity e = new CategoryEntity();
         e.categoryId = m.getCategoryId();
-        e.categoryName = m.getCategoryName();
-        e.sortOrder = m.getSortOrder();
-        e.setStatusFromEnum(m.getStatus());
+        applyChanges(e, m);
         return e;
     }
 

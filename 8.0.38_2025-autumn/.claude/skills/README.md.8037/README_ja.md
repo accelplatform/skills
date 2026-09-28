@@ -5,7 +5,7 @@
 このレポジトリは、intra-mart Accel Platform における、以下の資材を作成するためのスキルセットを収録している。
 * JSSP（スクリプト開発モデル）による画面、各種プラグインのソースコード
 * Java（JavaEE 開発モデル）による各種プラグイン（画面を除く）のソースコード
-* IM-LogicDesigner / IM-Workflow の資材
+* IM-LogicDesigner / IM-Workflow / IM-BPM の資材
 
 コーディングエージェントのトークン消費削減のため、下記の「スキル逆引き」に従って、必要なスキルセットのみを取り出して使用することを推奨。
 
@@ -24,6 +24,13 @@
 - IM-共通マスタの検索ダイアログを業務画面に組み込みたい
   - ⇒ `jssp-im-master-usage`
     - ユーザ・会社・組織・役職・パブリックグループ・プライベートグループ・ロールの検索機能を組み込み
+
+### サーバサイドキャッシュを使いたい
+
+- JSSP（スクリプト開発モデル）のファンクションコンテナで、参照結果や計算コストの高い処理結果をキャッシュして高速化したい
+  - ⇒ `jssp-im-cache-usage`
+    - SSJS `Cache` クラス（`get`/`put`/`remove`/`removeAll`）の基本パターン、キャッシュ設定ファイル（`WEB-INF/conf/im-ehcache-config/*.xml`）の作成、キャッシュキー設計を提供
+    - Java（JavaEE 開発モデル）で同等の処理を作る場合は `java-im-cache-usage` を使用
 
 ### 外部システム向けの REST-API を作りたい
 
@@ -59,6 +66,15 @@
     - `ActionProcessEventListener` 等のプラットフォーム抽象クラス／リスナーインタフェースを継承・実装する Java クラスを生成
     - 画面（申請/承認/確認）は対象外。画面は現状 `jssp-im-workflow-usage` の JSSP 実装を使用
 
+### IM-Propagation でモジュール間データ連携をしたい
+
+- Java（JavaEE 開発モデル）で `PropagationManager` によるデータ送受信を実装したい
+  - ⇒ `java-im-propagation-generator`
+    - 送信側（データモデル・`GenericModel`・`Encoder`・送信設定ファイル）と受信側（`Decoder`・`Procedure`・受信設定ファイル）双方の実装パターンを提供
+    - `AbstractProcedure`（DBトランザクション相乗り）と `AbstractSessionableProcedure`（独自の2相コミット的ライフサイクル）の使い分けを含む
+    - intra-mart 標準の変更通知（テナント・アカウント・ロール・IM-Authz・メニュー・カレンダー・ジョブネット・Salesforce連携・Wiki等）を独自モジュールで受信するリスナー実装、および IM-Box（アプリ通知・ウォッチ）への送信パターンも提供
+    - JSSP（スクリプト開発モデル）向けの同等 API は提供されていない
+
 ### IM-LogicDesigner の資材を作りたい
 
 - ロジックフロー（ローコード）の定義ファイルを作りたい
@@ -71,6 +87,26 @@
   - ⇒ `jssp-im-logic-usage`（+ `jssp-page-generator`）
     - swagger spec（`<BASE-URL>/logic/all-api-docs`）を取得・解析し、リクエスト/レスポンス構造を特定した上で `fetch` 呼び出しコードを生成
     - 権限不足（401/403）の場合は認可設定の案内メッセージを提示
+- 独自のタスク（フロー要素）を Java（JavaEE 開発モデル）で実装したい
+  - ⇒ `java-im-logic-generator`
+    - カテゴリクラス（`ElementCategory`）・フロー要素クラス（`Task` 継承 + `@LogicFlowElement`）・メタデータクラス（`FlowElementMetadata`）・拡張パッケージ登録（`ElementScanPackageFactory` + `META-INF/services`）の実装パターンを提供
+    - マッピング関数・EL関数・フロートリガの実装は対象外
+
+### IM-BPM の資材を作りたい
+
+- BPMN(XML) から仕様書を作成したい
+  - ⇒ `bpm-docs-generator`
+    - BPMN のプロセス定義から、プロセス概要・フローの説明・タスク詳細・条件分岐ロジックを抽出し Markdown 形式の仕様書を生成
+    - 生成した仕様書は JSSP 生成時の入力プロンプトとしても使用する
+- 仕様書を intra-mart Knowledge にインポートできる形式にしたい
+  - ⇒ `bpm-docs-generator`
+    - 仕様書を Knowledge へインポート可能な zip ファイルに変換
+- BPM 仕様書を元に IM-BPM for Accel Platform 上で動かす JSSP リソースを作りたい
+  - ⇒ `bpm-scripts-generator`（+ `jssp-page-generator` / `jssp-imds-theme`）
+    - `bpm-docs-generator` が作成した仕様書を元に、スクラッチ画面連携等 IM-BPM 独自要素を含む JSSP リソースを生成
+- 仕様書・生成スクリプトの内容を BPMN-XML に反映したい
+  - ⇒ `bpm-xml-reflector`
+    - `bpm-docs-generator` で作成した仕様書、`bpm-scripts-generator` で生成したスクリプトの内容を BPMN-XML に反映
 
 ### 多言語化したい
 
@@ -79,6 +115,11 @@
     - メッセージプロパティファイル（properties）の作成
     - `<imart type="message">` タグ・MessageManager API への書き換え
     - 日本語（ja）・英語（en）・中国語簡体字（zh_CN）に対応
+- Java（JavaEE 開発モデル）で MessageManager を使ったメッセージプロパティの取得処理を作りたい
+  - ⇒ `java-im-message-usage`
+    - `jp.co.intra_mart.foundation.security.message.MessageManager` によるユーザ/テナント/システムロケールの解決順序、プレースホルダ置換、メッセージ存在確認（`hasMessage`）の実装パターンを提供
+    - メッセージプロパティファイル（`.properties`）の配置・キー命名規約（JSSP 側 `jssp-localize-support` と共通）を含む
+    - JSSP（スクリプト開発モデル）での同等実装は `jssp-localize-support` を使用
 
 ### テスト・品質チェックをしたい
 
@@ -115,6 +156,11 @@
   - ⇒ `java-im-lock-usage`
     - `try`/`finally` で解放する通常ロック（`lock()`/`tryLock()`）と、リクエスト返却時に自動解放されるリクエストスコープロック（`lockRequestScope()`/`tryLockRequestScope()`）の使い分けを提供
     - 分散環境でのDBベース排他制御を、メソッド内で完結する処理には通常ロックをデフォルトとして案内
+- Java（JavaEE 開発モデル）で CacheManager/Cache API を使ったテナント単位のキャッシュ処理を作りたい
+  - ⇒ `java-im-cache-usage`
+    - `CacheManagerFactory.getCacheManager()` によるキャッシュマネージャ取得、`Cache<K, V>` の CRUD（`get`/`put`/`remove`/`removeAll` 等）、キャッシュ設定ファイル（`WEB-INF/conf/im-ehcache-config/*.xml`）の作成を提供
+    - キャッシュキー・値の `Serializable` 制約、キャッシュミス時の再読み込みパターンを含む
+    - JSSP（スクリプト開発モデル）での同等実装は `jssp-im-cache-usage` を使用
 - Java（JavaEE 開発モデル）で AccountInfoManager を使ったアカウント情報の取得・更新処理を作りたい
   - ⇒ `java-im-account-usage`
     - ログイン設定（ロケール・タイムゾーン・カレンダー・テーマ・週開始曜日・日時フォーマット）、アカウントロック・ログイン失敗回数、アカウント属性、パスワード照合（`AccountPasswordAdapter`）の実装パターンを提供
@@ -136,10 +182,53 @@
     - アノテーション（`@WebAPIMaker`/`@Path`/`@GET` 等）のみで REST API を実装するファクトリ・サービスクラスの生成パターンを提供
     - 認証方式（`@IMAuthentication`/`@BasicAuthentication`/`@OAuth`）、認可連携（`@Authz`）、セキュアトークン検証（`@Secured`）、レスポンス制御に対応
     - 認可リソース自体の登録は `java-im-authz-usage`、JSSP での REST API は `jssp-page-generator`/`jssp-im-oauth-generator` を使用
+- Java（JavaEE 開発モデル）で SecureToken（CSRF 対策）の発行・検証を Web API Maker に頼らず実装したい
+  - ⇒ `java-im-secure-token-usage`
+    - `SecureTokenManager` による トークン発行（`createToken`）・検証（`verify`）、ワンタイムトークンと再利用可能トークンの使い分け、パラメータ連動トークンによる改ざん検知、`HTTPContextManager` による `HttpServletRequest` 取得パターンを提供
+    - Web API Maker エンドポイントでの宣言的な検証（`@Secured`）は `java-im-web-api-maker-usage` を使用
+- Java（JavaEE 開発モデル）で intra-mart 上に MCP（Model Context Protocol）サーバを作りたい
+  - ⇒ `java-im-mcp-generator`
+    - `im_copilot_mcp` モジュールの `@MCPServer`/`@Tool` アノテーションによる Streamable HTTP MCP サーバの実装パターンを提供
+    - `SchemaProperties` によるツールパラメータ定義、`McpScanPackageFactory`（推奨）/`META-INF/im_services/annotation_classes` によるプラットフォームへの登録パターンを含む
+    - 通常の REST API（AI エージェント向けでない）は `java-im-web-api-maker-usage` を使用
+- Java（JavaEE 開発モデル）でプロンプトを受けて処理し応答を返す AI エージェントを作りたい
+  - ⇒ `java-im-copilot-agent-generator`
+    - `im_copilot_agent` モジュールの `Agent`/`AgentBuilder` によるエージェント構築、`UserDefinedTool` によるカスタムツール実装、`Knowledge`（ナレッジ検索）・`SkillEntry`（Markdownスキル）の統合、Structured Output（型付き出力）、`AgentExecutionMiddleware` による実行フロー介入の実装パターンを提供
+    - IM-Copilot のチャットUIと連携させる場合の `AbstractCopilotAssistant`/`@Assistant` 連携パターンを含む（`Agent`/`AgentBuilder` 自体は Assistant フレームワークに依存しない独立した Java API）
+    - MCP サーバの実装は `java-im-mcp-generator`、通常の REST API は `java-im-web-api-maker-usage` を使用
+    - `VectorStore`/`ActionFactory` を直接使った低レベルな RAG は `java-im-copilot-rag-generator`、`ChatAction`+`ToolConfig` を直接使った低レベルな Tool Calling は `java-im-copilot-toolcalling-generator` を使用
+- Java（JavaEE 開発モデル）で `VectorStore`/`ActionFactory` を直接使って RAG（検索拡張生成）を実装したい
+  - ⇒ `java-im-copilot-rag-generator`
+    - `VectorStoreBuilder`/`VectorStore` によるベクトルストアの構築・登録・ハイブリッド検索/類似検索/キーワード検索、`ActionFactory`/`ChatAction`/`EmbeddingsAction` によるチャット・埋め込み呼び出しの実装パターンを提供
+    - 文書の標準実装 `StandardRegistrationDocument`、`TextSplitter`（`splitText` メソッド）によるチャンク分割を含む
+    - Agent フレームワーク経由の高レベルな RAG（`Knowledge`/`RegisteredKnowledge`）は `java-im-copilot-agent-generator`、Tool Calling は `java-im-copilot-toolcalling-generator` を使用
+- Java（JavaEE 開発モデル）で `ChatAction`+`ToolConfig` を直接使って Tool Calling（関数呼び出し）を実装したい
+  - ⇒ `java-im-copilot-toolcalling-generator`
+    - `ToolConfig`/`ToolDefinition`/`ToolChoice`/`ToolCall` によるプロバイダ非依存（OpenAI・Azure OpenAI Service・Amazon Bedrock 共通）の Tool Calling 実装パターンを提供（非ストリーミング・ストリーミング両対応）
+    - `JsonSchemaValidator`/`ToolJsonHelper` によるツール引数の検証・デシリアライズを含む
+    - Agent フレームワーク経由の高レベルな Tool Calling（`UserDefinedTool`）は `java-im-copilot-agent-generator`、RAG は `java-im-copilot-rag-generator` を使用
+- Java（JavaEE 開発モデル）で UserManager/CompanyManager/PublicGroupManager/PrivateGroupManager/CompanyGroupManager/CorporationGroupManager/CorporationManager/CustomerManager/ItemCategoryManager/ItemManager/CurrencyManager を使った IM-共通マスタ（ユーザ・会社・組織・役職・パブリック/プライベート/会社/法人グループ・法人・取引先・品目カテゴリ・品目・通貨）の CRUD・検索処理を作りたい
+  - ⇒ `java-im-master-usage`
+    - ユーザ情報（`User`、`UserManager`）、会社（`Company`）・組織/組織セット（`Department`/`DepartmentSet`）・役職（`CompanyPost`）・ユーザの組織所属（`UserAttach`、いずれも `CompanyManager`）の取得・検索・新規登録・更新・削除、組織階層（ツリー）取得の実装パターンを提供
+    - `Company` に新規登録専用メソッドが存在しない点、`set*` 系メソッドの期間コード（`termCd`）による新規/更新自動判定、多言語情報登録手順（`setDefaultLocale`/`createLocaleElement`/`putLocaleElement`）を含む
+    - パブリックグループ・プライベートグループ・会社グループ・法人グループそれぞれ専用のマネージャクラスによる取得・検索・新規登録・更新・削除、パブリックグループの分類（カテゴリ）・ロール・階層（ツリー）取得の実装パターンも提供
+    - グループ系4クラスの API 規模・機能範囲の違い（パブリックグループのみカテゴリ・ロール・ツリー機能を持つ、プライベートグループが最小構成、法人グループは会社コードを追加で保持する点等）を含む
+    - 法人（`CorporationManager`。法人グループとは別クラス）・取引先（`CustomerManager`）・品目カテゴリ（`ItemCategoryManager`。階層ツリーあり）・品目（`ItemManager`）・通貨（`CurrencyManager`。`Currency`/`CurrencyConversion`/`CurrencyPrecision`/`CurrencyRate`）の取得・検索・新規登録・更新・削除の実装パターンも提供。`CustomerManager`/`ItemManager` はメソッド名がエンティティ名を含まない汎用名で第一引数が `companyCd` である点を含む
+    - ユーザ分類・パブリックグループ分類・組織分類（`UserCtg`/`PublicGroupCtg`/`DepartmentCtg` 等、いずれも対応するマネージャクラスに内包される機能）の取得・検索・新規登録・更新・削除の実装パターンも提供
+    - ユーザプロファイル画像は `java-im-profile-usage`、ロール定義・ロール割当は `java-im-role-usage`/`java-im-account-usage`、認可は `java-im-authz-usage` を使用
 - Java（JavaEE 開発モデル）で im_mirage を使った DB アクセス処理を作りたい
   - ⇒ `java-im-mirage-usage`
     - エンティティクラス（`@Table`/`@Column`/`@PrimaryKey`）、DAOクラス（`AbstractDAO` 継承・`DAOFactory` 取得）、2WaySQL の SQLファイル、`SessionTemplate` によるトランザクション管理の実装パターンを提供
     - JSSP での DB アクセスは `jssp-page-generator`（`TenantDatabase`/`SharedDatabase` API）を使用。開発モデルが異なり実装は完全に独立
+- Java（JavaEE 開発モデル）で Contexts.get() を使ってログインユーザーの情報（アカウント・組織・クライアント・ジョブ実行パラメータ）を取得したい
+  - ⇒ `java-im-contexts-usage`
+    - `AccountContext`（ユーザーコード・テナントID・ロケール・タイムゾーン・ロールID・認証状態）、`UserContext`（ユーザープロファイル・所属部門・会社・役職・パブリックグループ・ユーザー分類）、`ClientContext`（クライアント種別）、`ExternalUserContext`（外部ユーザー判定）、`JobSchedulerContext`（ジョブ実行パラメータ）の取得パターンと、`ContextStatus` による認証・管理者判定を提供
+    - JSSP での同等実装は SSJS 版 Context オブジェクト（`d.ts/platform/object/`、`d.ts/platform/job-scheduler/`）を使用
+- Java（JavaEE 開発モデル）で ConfigurationLoader を使った独自の XML 設定ファイル（JAXB 設定クラス・XSD スキーマ・XML 実体）の新規作成・読込・保存処理を作りたい
+  - ⇒ `java-im-configuration-generator`
+    - `ConfigurationLoader.load`/`loadAll`/`save`/`clearCache` の使い分け、`Instance`（`SINGLETON`/`PROTOTYPE`）によるキャッシュ制御、設定ファイルの配置場所（SystemStorage の `conf/`・`WEB-INF/conf`・クラスパス）とクラス名からファイル名への変換規則を提供
+    - `check-jaxb-format-plugin` が要求する `ObjectFactory`（`factoryClass`/`factoryMethod`、`static` 必須）の実装パターンを含む
+    - JSSP（スクリプト開発モデル）向けの同等 API は提供されていない
 
 ### Java（JavaEE 開発モデル）で設計規約に沿って実装したい
 

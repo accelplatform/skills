@@ -1,7 +1,6 @@
 # Account API Basic Usage Patterns (Java Version)
 
-For the signatures and internal behavior of `AccountInfoManager` / `AccountInfo` / `AccountRoleInfo` / `AccountPasswordAdapter`, see
-`reference/account-api-reference.md`. Here we show typical call patterns.
+For the signatures and internal behavior of `AccountInfoManager` / `AccountInfo` / `AccountRoleInfo` / `AccountPasswordAdapter`, see `reference/account-api-reference.md`. Here we show typical call patterns.
 
 **Operating on role definitions themselves (new registration, hierarchy, categories) is out of scope for this skill.** The only thing covered here is "assigning a role to a user"; creating or changing role definitions should use `java-im-role-usage`.
 

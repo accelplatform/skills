@@ -90,10 +90,10 @@ CREATE TABLE 的主体（列定义、约束）需要由用户手动追加。
 --     tenant_id     VARCHAR(64)  NOT NULL,
 --     ...
 --     PRIMARY KEY (content_id)
--- );
+-- )
 ```
 
-针对各 DB 方言的类型与语法分别写入对应的文件。类型映射请参考 `.claude/skills/jssp-page-generator/reference/ddl-type-mapping.md`。
+针对各 DB 方言的类型与语法分别写入对应的文件。类型映射・命名规约・审计追踪列请参考 `.claude/rules/database-ddl.md`。
 
 ### `<key>_sample-dml.sql` 的骨架示例（合并，推荐）
 
@@ -106,7 +106,7 @@ CREATE TABLE 的主体（列定义、约束）需要由用户手动追加。
 -- =============================================================================
 
 -- 如有 imbm_content 的初始数据请写在这里
--- INSERT INTO imbm_content (...) VALUES (...);
+-- INSERT INTO imbm_content (...) VALUES (...)
 ```
 
 原则上**在标准 SQL 范围内编写 INSERT 语句**，合并为单个文件。请避免日期、时间戳等方言特定字面量（Oracle 的 `TO_DATE`、SQL Server 的 `CONVERT` 等），改用如 `'2026-01-01'` 的字符串字面量配合隐式转换，或使用 `CURRENT_TIMESTAMP` 等通用函数。
@@ -146,6 +146,8 @@ CREATE TABLE 的主体（列定义、约束）需要由用户手动追加。
 
 ## 注意事项
 
+- **不要在 SQL 注释中写分号（`;`）**。Importer 会以 `;\s*\n?` 对整个文件进行机械分割并逐条执行，因此注释中的 `;`（例如 `-- );`）同样会切断语句，切出的片段会作为独立 SQL 执行并导致导入失败。只要有 1 条语句失败，该文件的剩余全文都不会执行（由 `validate-ddl.js` 检出）
+- **SQL 语句末尾需写上分号 `;`**（骨架注释中无法包含 `;`，因此实现时不要遗漏）
 - DDL 需注意**幂等性**（对同一租户执行两次会出错）
 - DML 限定为主数据类的初始数据。**不要放入业务事务数据**
 - 字符编码为 UTF-8（不带 BOM）

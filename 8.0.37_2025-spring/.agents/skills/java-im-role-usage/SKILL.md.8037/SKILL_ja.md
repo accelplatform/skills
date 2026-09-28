@@ -33,7 +33,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのロ
 | `.agents/requirements/java-code-style/AGENTS.md` | 🟢 **必読** — `final` ローカル変数、文字列リテラル等 |
 | `.agents/requirements/java-javadoc/AGENTS.md` | 🟢 **必読** — クラス/メソッド JavaDoc |
 
-`.agents/requirements` 配下には例外処理を定めた Java 向け専用規約は存在しない（2026年時点）。`RoleInfoManager` の全メソッドは `AdminException`（チェック例外）をスローする設計であり、業務例外へのラップ方針は `assets/role-basic-usage.md` のパターンに従う。
+`.agents/requirements` 配下には例外処理を定めた Java 向け専用規約は存在しない。`RoleInfoManager` の全メソッドは `AdminException`（チェック例外）をスローする設計であり、業務例外へのラップ方針は `assets/role-basic-usage.md` のパターンに従う。
 
 `jssp-*` の規約はこのスキルの対象外（Java ファイルには適用しない）。
 
@@ -93,7 +93,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのロ
 
 ## 生成後の確認
 
-JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当）は現時点で未整備。以下を手動で確認する。
+自動検証スクリプト（JSSP 版の `validate-jssp-code.js` 相当）ではなく、以下の項目を手動で確認する。
 
 1. `getRoleInfo()` の戻り値を使用する箇所すべてで null チェックを行っているか
 2. `RoleInfo()`（引数なしコンストラクタ）を使用している箇所で `IOException` を適切にハンドリングしているか

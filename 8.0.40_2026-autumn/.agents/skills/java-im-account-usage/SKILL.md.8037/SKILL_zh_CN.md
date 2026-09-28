@@ -30,7 +30,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 | `.agents/requirements/java-code-style/AGENTS.md` | 🟢 **必读** — `final` 局部变量、字符串字面量等 |
 | `.agents/requirements/java-javadoc/AGENTS.md` | 🟢 **必读** — 类/方法 JavaDoc |
 
-`.agents/requirements` 下目前不存在规定异常处理方针的 Java 专用规约（截至2026年）。`AccountInfoManager` / `AccountPasswordAdapter` 的异常均为受检异常（详见后述），业务异常的包装方针应遵循 `assets/account-basic-usage.md` 中的模式。
+`.agents/requirements` 下目前不存在规定异常处理方针的 Java 专用规约。`AccountInfoManager` / `AccountPasswordAdapter` 的异常均为受检异常（详见后述），业务异常的包装方针应遵循 `assets/account-basic-usage.md` 中的模式。
 
 `jssp-*` 规约不适用于本技能（不适用于 Java 文件）。
 
@@ -87,7 +87,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 
 ## 生成后的确认
 
-目前尚未配备类似 JSSP 版的专用验证脚本（相当于 `validate-jssp-code.js`）。请手动确认以下事项。
+并非通过自动验证脚本（如 JSSP 版的 `validate-jssp-code.js`），而是手动确认以下事项。
 
 1. 密码校验处理是否使用了 `AccountPasswordAdapter#collate()`，而非直接比较 `AccountInfo.password`
 2. 调用 `updateAccountInfo()` 的地方是否基于事先通过 `getAccountInfo()` 获取的值，而非每次都新建 `new AccountInfo(userCd)` 从而牵连未设置的字段

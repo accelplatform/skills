@@ -76,7 +76,8 @@ DAO（`Xxx` + `DAO`）
 主なポイント:
 - **クラス・インタフェース・モデルは全て `public`、モデルは引数なしコンストラクタが必須。** getter/setter が揃ったメンバのみ入出力対象になる
 - **戻り値・引数には基本型、配列、`List`/`Set`、`byte[]`（バイナリ）、`InputStream` 等が使える。** レスポンス形式は `Accept` ヘッダの MIME タイプ（JSON/XML）に応じて自動変換される。`null` プロパティは出力されない
-- **エラー時のレスポンス形式は保証されない。** 成功時のみ `Accept` ヘッダに従った形式で返却される
+- **レスポンスボディは Endpoint メソッドの戻り値そのものではなく、`error` / `data` を持つラッパーオブジェクトに包まれて返却される。** 成功時は `{"error": false, "data": <戻り値>}`、例外発生時は `{"error": true, "errorMessage": "...", "data": <@ReturnValue の値>}`。**クライアント側でこのラッパーを解かずに参照すると、API 自体は正常でも画面でデータを受け取れない**（詳細と実装例は `reference/web-api-maker-api-reference.md`「レスポンスボディのラッパー構造」・`assets/web-api-maker-basic-usage.md` パターン7 を参照）
+- **ラップされるかどうかは、Endpoint メソッドを通ったか（＝リフレクションによる `Method#invoke` を経由したか）どうかで決まる（ステータスコードの値でも `@Response` の有無でもない）。** Endpoint メソッド自身がスローした例外は `@Response` の有無を問わず必ずラップされる（無ければ `500` になるだけ）。`400`（`@Required`）/`403`（`@Authz`・`@Secured`）/`405`/`415` もラップされる。一方、**未認証アクセスは（`@IMAuthentication` の場合）`401` ではなく `404` になり、ラップされない**（Endpoint メソッドに到達しないため）。`406`（`Accept` 不正）や、Endpoint メソッドの外（`ActionFilter` 等）で発生しその箇所が明示的に処理していない例外による `500` もラップされない（詳細は `reference/web-api-maker-api-reference.md`「ラップされる場合・されない場合」を参照）
 - 作成した API の仕様は `http://<HOST>:<PORT>/<CONTEXT_PATH>/api-docs/${api-category}` で JSON 形式（Swagger 互換）で参照できる
 
 ## 認証方式の選択
@@ -99,7 +100,8 @@ DAO（`Xxx` + `DAO`）
 | OAuth 認証 API | `assets/web-api-maker-basic-usage.md` | `@OAuth(scope=...)` の実装、3 種の設定ファイル一式 |
 | IM-Authz 連携（認可チェック） | `assets/web-api-maker-basic-usage.md` | `@Authz(uri=..., action=...)` の実装、`java-im-authz-usage` との連携ポイント |
 | セキュアトークン検証 | `assets/web-api-maker-basic-usage.md` | `@Secured` の実装パターン |
-| レスポンス制御 | `assets/web-api-maker-basic-usage.md` | 例外 → ステータスコード（`@Response`）、手動レスポンス（`@PreventWritingResponse`）、例外側の付加情報（`@ReturnValue`） |
+| レスポンス制御 | `assets/web-api-maker-basic-usage.md` | レスポンスボディのラッパー構造（`error`/`data`）、例外 → ステータスコード（`@Response`）、手動レスポンス（`@PreventWritingResponse`）、例外側の付加情報（`@ReturnValue`） |
+| クライアント（画面）側での受け取り | `assets/web-api-maker-basic-usage.md` | ラッパーを解いて `data` を取り出す `fetch` 実装、`Accept` ヘッダ指定、`X-Intramart-Secure-Token` ヘッダの付与、エラー判定の順序 |
 
 ### リファレンス
 
@@ -125,7 +127,8 @@ DAO（`Xxx` + `DAO`）
 4. `META-INF/im_web_api_maker/packages` に Endpointクラスのパッケージ名を登録する（**実装漏れが最も多い箇所**）
 5. 認可チェックが必要な場合、`@Authz(uri=..., action=...)` を付与し、対応する認可リソースが IM-Authz 側に登録済みか確認する（未登録なら `java-im-authz-usage` で登録処理を実装するようユーザに確認）
 6. OAuth 認証が必要な場合、Web API Maker OAuth認証モジュールが導入されているか確認したうえで `@OAuth(scope=...)` を付与し、`oauth-client-scopes-config`/`oauth-client-resources-config`/`oauth-client-details-config` の 3 点を整備する
-7. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+7. **API を呼び出すクライアント（JSSP プレゼンテーションページ・外部システム等）を併せて実装する場合は、レスポンスの `error` / `data` ラッパーを解く処理を必ず入れる**（`assets/web-api-maker-basic-usage.md` パターン7-4）。クライアントを別担当・別スキルが実装する場合は、レスポンス構造（成功時・例外発生時の JSON サンプル）を申し送り事項としてユーザに明示する
+8. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -134,13 +137,14 @@ DAO（`Xxx` + `DAO`）
 - **Endpoint クラスに DB アクセス（`DAOFactory`/`SqlManager` 等）を直接書かない。** 必ず Service クラス経由で Repository/DAO（`java-im-mirage-usage` の責務）を呼び出す。Endpoint から Repository/DAO を直接呼ぶと Service 層が形骸化し、ビジネスロジックの再利用性・テスト容易性が失われる
 - **`@OAuth` は基本モジュールだけでは動作しない。** Web API Maker OAuth認証モジュールの追加導入が前提条件であることをユーザに伝える
 - **`@Authz` の `uri` に指定する認可リソースは、事前に IM-Authz 側で登録されている必要がある。** Web API Maker 側で `@Authz` を付けるだけでは機能せず、`java-im-authz-usage` による `ResourceManager`/`PolicyManager` 側の登録（またはテナントセットアップのインポート資材）とセットで初めて成立する
-- **`@Secured` によるセキュアトークン検証と、認証アノテーション（`@IMAuthentication` 等）は別の関心事。** セキュアトークンは CSRF 対策、認証アノテーションは「誰としてアクセスするか」の判定であり、両方が必要な場面（例: ブラウザから呼ばれる状態変更系 API）を混同しない
-- **エラー時のレスポンス形式（JSON/XML）は保証されない。** クライアント側の実装で、成功時と失敗時のレスポンスパース処理を分ける設計にする
+- **`@Secured` によるセキュアトークン検証と、認証アノテーション（`@IMAuthentication` 等）は別の関心事。** セキュアトークンは CSRF 対策、認証アノテーションは「誰としてアクセスするか」の判定であり、両方が必要な場面（例: ブラウザから呼ばれる状態変更系 API）を混同しない。**リクエストヘッダ名は `X-Intramart-Secure-Token` で固定**（`Secured` アノテーションの javadoc・`WebApiSecureTokenActionFilter` 実装に基づく）。JSSP 画面から呼び出す場合は `.agents/requirements/jssp-presentation-page/AGENTS.md` の `<meta name="im_secure_token">` パターンで取得したトークンをそのまま載せればよく、専用の取得方法を新たに考える必要はない
+- **レスポンスボディは必ず `error` / `data` のラッパーで包まれる。** Endpoint メソッドの戻り値は `data` 配下に入る。クライアント側でラッパーを解かずに参照すると `undefined` になり、「API は正常なのに画面にデータが出ない」不具合になる（最頻出のクライアント側実装漏れ）
+- **Endpoint メソッド自身がスローした例外は `@Response` の有無を問わず必ずラップされる。** `400`（`@Required`）/`403`（`@Authz`・`@Secured`）/`405`/`415` もラップされる。一方、**未認証アクセスは `@IMAuthentication` の場合 `401` ではなく `404` になり、ラップされない。** `406`（`Accept` 不正）や、Endpoint メソッドの外（`ActionFilter` 等）で発生しその箇所が明示的に処理していない例外による `500` もラップされない。`@Response(code=...)` を付けた業務例外は `200` 以外のステータスでもラップされるため、クライアント側では「ステータスコードが `200` 以外でもボディのパースを試みる」判定順序にする（詳細は `reference/web-api-maker-api-reference.md`「ラップされる場合・されない場合」を参照）
 - **`Effect`（IM-Authz）や認可判断の詳細な CRUD API は本スキルの対象外。** `@Authz` の使い方までが本スキルの範囲で、リソース登録・ポリシー設定の実装コードは書かない（`java-im-authz-usage` に誘導する）
 
 ## 生成後の確認
 
-JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当）は現時点で未整備。以下を手動で確認する。
+自動検証スクリプト（JSSP 版の `validate-jssp-code.js` 相当）ではなく、以下の項目を手動で確認する。
 
 1. Endpoint クラスのパッケージ名が `META-INF/im_web_api_maker/packages` に登録されているか
 2. Endpoint クラス・モデルクラス・関連インタフェースが全て `public` か、モデルクラスに引数なしコンストラクタがあるか
@@ -148,12 +152,13 @@ JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当
 4. `@OAuth` を使用している場合、Web API Maker OAuth認証モジュールの導入前提と `scope` 属性の指定漏れがないか
 5. `@Authz` を使用している場合、`uri`/`action` が IM-Authz 側の登録内容と一致しているか（`java-im-authz-usage` 側の実装と突き合わせる）
 6. `@Path` の値・HTTP メソッドアノテーションがヒアリング内容と一致しているか、パスパラメータ（`{xxx}`）と `@Variable(name=...)` が一致しているか
-7. 状態変更系（POST/PUT/DELETE）のエンドポイントに `@Secured` の要否を検討したか
+7. 状態変更系（POST/PUT/DELETE）のエンドポイントに `@Secured` の要否を検討したか。付与した場合、クライアント側が `X-Intramart-Secure-Token` ヘッダにトークンを載せているか
 8. **クラス名が `Endpoint`（Web API Maker のクラス）/`EndpointFactory`（ファクトリ）/`Service`（ビジネスロジック）/`Repository`（DBアクセス抽象化）の命名規則・層構造に沿っているか。** Endpoint クラスに DB アクセスやビジネスロジックが直接書かれていないか（`Endpoint → Service → Repository → DAO` の順で委譲されているか）
 9. Endpoint クラスが `new StandardXxxService()` のように Service の具象クラスを直接生成せず、`XxxServiceFactory.getInstance()`（`ServiceLoaderUtil.loadTopPriority` によるファクトリ）で取得しているか
 10. Endpoint をインタフェース化した場合、`@IMAuthentication` 等のクラスアノテーション・`@Path`/`@GET`/引数アノテーションが実装クラスではなくインタフェース側に宣言されているか、ファクトリクラスの `@ProvideService` メソッドの**戻り値型がインタフェース**になっているか（実装クラス型のままだとアノテーションが認識されずエンドポイントが登録されない）
-11. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
-12. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
+11. **クライアント（画面・外部システム）側の実装が、レスポンスの `error` / `data` ラッパーを解いてから業務データを利用しているか。** `fetch(url).then(function (res) { return res.json(); }).then(function (order) { order.xxx; })` のようにラッパーを解かずに参照していないか（正しくは `body.data.xxx`）。`Accept: application/json` を指定しているか。未認証時（`404`）や `406`/想定外の `500` 等、ラップが保証されないケースをボディパース失敗として想定外エラー扱いにできているか。クライアントを本スキルで実装しない場合は、成功時・例外発生時のレスポンス構造をユーザに申し送りしたか
+12. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+13. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界
 

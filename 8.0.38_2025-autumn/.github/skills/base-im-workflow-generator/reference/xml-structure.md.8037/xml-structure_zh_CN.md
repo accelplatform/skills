@@ -213,7 +213,7 @@ XML 的各元素通过 `type` 属性明确声明值的类型。
 | contentsId | string | 内容 ID |
 | contentsVersionId | string | 内容版本 ID |
 | exPointId | string | `jp.co.intra_mart.workflow.plugin.event.node.action.process` |
-| pluginId | string | JSSP 实现（脚本开发模型）：`{exPointId}.pluginScriptExecutor` / Java 实现（JavaEE 开发模型）：`{exPointId}.pluginJavaExecutor`（已通过实机导出的 XML 确认。详见 [java-class-registration.md](java-class-registration.md)） |
+| pluginId | string | JSSP 实现（脚本开发模型）：`{exPointId}.pluginScriptExecutor` / Java 实现（JavaEE 开发模型）：`{exPointId}.pluginJavaExecutor`（详见 [java-class-registration.md](java-class-registration.md)） |
 | pluginName | string | 插件名称（任意） |
 | parameter | string | JSSP 实现：动作处理的 JSSP 文件路径（不含扩展名） / Java 实现：实现类的完全限定名（FQCN） |
 | nodeType | string | 节点类型编号（参见 `reference/node-types.md` 的数值代码）。在申请节点使用时指定 `2`。 |
@@ -281,7 +281,7 @@ XML 的各元素通过 `type` 属性明确声明值的类型。
 | contentsId | string | 内容 ID |
 | contentsVersionId | string | 内容版本 ID |
 | exPointId | string | 有事务：`jp.co.intra_mart.workflow.plugin.event.matter.end.process` / 无事务：`jp.co.intra_mart.workflow.plugin.event.matter.end_no_transaction.process` |
-| pluginId | string | JSSP 实现：`{exPointId}.pluginScriptExecutor` / Java 实现：`{exPointId}.pluginJavaExecutor`（已通过实机导出的 XML 确认。详见 [java-class-registration.md](java-class-registration.md)） |
+| pluginId | string | JSSP 实现：`{exPointId}.pluginScriptExecutor` / Java 实现：`{exPointId}.pluginJavaExecutor`（详见 [java-class-registration.md](java-class-registration.md)） |
 | pluginName | string | `matter_end_process` |
 | parameter | string | JSSP 实现：案件终了处理的 JSSP 文件路径（不含扩展名） / Java 实现：实现类的完全限定名（FQCN） |
 | nodeType | string | 空字符串 |

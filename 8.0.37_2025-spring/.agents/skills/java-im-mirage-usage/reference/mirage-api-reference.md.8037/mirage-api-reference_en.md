@@ -9,7 +9,6 @@ jp.co.intra_mart.mirage.annotation
 ├── Table       … Applied to entity classes, specifies the table name
 ├── Column      … Applied to fields/methods, specifies the column name
 ├── PrimaryKey  … Indicates that this is a primary key. Has GenerationType (enum)
-├── Enumerated  … Mapping specification for enum-type properties
 ├── Transient   … Specifies a property to exclude from mapping
 └── In / InOut / Out / ResultSet … Specifies parameter direction when calling stored procedures
 
@@ -123,6 +122,8 @@ public abstract class AbstractDAO<T> extends BaseDAO<T> {
 }
 ```
 
+- **`update`/`updateBatch` are not partial updates — they list every column except the primary key in the SET clause.** Fields with no value set are overwritten with `null`. `update` sets only `recordUserCd`/`recordDate` and does not fill in `createUserCd`/`createDate`, so passing a newly assembled Entity erases the audit trail from record creation
+- **On update, retrieve the existing Entity with `find()`, apply only the changes, and then pass it to `update`.** To update only some of the columns, use a SQL file together with `sqlManager.executeUpdate`
 - To add a custom query, add a method that uses `protected sqlManager` to a concrete class that extends `AbstractDAO<EntityType>`
 
 ### `DAOFactory`
@@ -155,13 +156,14 @@ public final class EntityHelper {
     public static final String RECORD_USER_CD_FIELD_NAME = "recordUserCd";
     public static final String RECORD_DATE_FIELD_NAME = "recordDate";
 
-    public static <T> void setCreateFields(T... entities);   // Sets the two create-related fields only if they are null
-    public static <T> void setRecordFields(T... entities);   // Always sets the two record-related fields
+    public static <T> void setCreateFields(T... entities);   // Sets all 4 audit fields, only when they are null
+    public static <T> void setRecordFields(T... entities);   // Always sets the two record-related fields (overwriting existing values)
 }
 ```
 
 - Automatically invoked from `AbstractDAO#insert`/`update`. There is no need for the DAO caller to invoke it directly
-- `setCreateFields` does not overwrite fields that already have a value set (sets them only if `null`). `setRecordFields` always sets them
+- `setCreateFields` targets all 4 audit fields and does not overwrite fields that already have a value set (it sets them only if `null`). `setRecordFields` targets only the two record-related fields and always overwrites them, even when they already have a value
+- **Passing an entity that does not declare even one of the 4 audit fields to `AbstractDAO#insert`/`update` causes a `NullPointerException`.** This is because `EntityHelper` uses the return value for an undeclared property — which comes back as `null` — without a `null` check. `insert`/`insertBatch` require all 4 fields, and `update`/`updateBatch` require the two record-related fields (`delete`/`deleteBatch` do not touch the audit fields, so they are unaffected). "Audit trail fields (required)" in `.agents/requirements/java-entity/AGENTS.md` is therefore not only a convention-level requirement but also a hard requirement of the implementation
 
 ## `SqlManager` (Core Interface for SQL Execution)
 
@@ -216,6 +218,26 @@ public interface SqlManager {
 
 - **Do not confuse the SQL file family (`sqlPath` argument) with the `xxxBySql` family (`sql` argument).** The former is a path to a 2WaySQL file on the classpath, while the latter is the SQL statement itself (placeholders are `?`; 2WaySQL comment syntax cannot be used)
 - `param` can be given an entity, an arbitrary JavaBean, or a `Map<String, Object>`. The placeholder names in the SQL must match the property names/key names
+
+### Return Value Specification of `getSingleResult`/`findEntity` (Differs from JPA)
+
+The APIs that return a single result (`getSingleResult`/`getSingleResultBySql`/`findEntity`, as well as `AbstractDAO#find`) all converge internally on the same implementation. Their behavior differs from JPA's `getSingleResult`.
+
+| Situation | Behavior |
+|------|------|
+| 0 rows | Returns `null` instead of throwing an exception |
+| 2 or more rows | Returns the first row of the ResultSet instead of throwing an exception (the rest are discarded) |
+
+- Because `ResultSet#next()` is called only once, **uniqueness of the row count is not guaranteed**. For queries that require uniqueness, guarantee it with a primary key / unique constraint, or retrieve with `getResultList` and verify the row count
+- When a query without `ORDER BY` matches multiple rows, which single row is returned depends on the order in which the DB returns them
+- **Always `null`-check the return value**
+
+### Constraints on the SQL File Passed to `getCount`
+
+`getCount` uses the Dialect's `getCountSql` to wrap the SQL it is given entirely in a subquery, as in `SELECT COUNT(*) FROM (<the SQL you passed>)`.
+
+- **Never write `SELECT COUNT(*)`.** It becomes `SELECT COUNT(*) FROM (SELECT COUNT(*) ...)`, which **always returns `1` without throwing an exception**. Pass a SELECT of the same shape as the one used for list retrieval
+- **Never write `ORDER BY`.** It ends up inside the subquery, which is a syntax error on SQLServer
 
 ## `IntramartSqlManager` (intra-mart Extension, Actually Used by DAOs)
 
@@ -303,6 +325,12 @@ public @interface Priority {
 | `/*IF condition*/.../*END*/` | Conditional branching | Same |
 | `/*BEGIN*/.../*END*/` | Optional block | Same |
 | `/*param*/'dummy'` | Bind placeholder | Same |
-| `/*FOR item : list*/.../*END*/` | Loop (dynamic generation of IN clauses, etc.) | **Supported only by im_mirage. Not supported in JSSP (script development model)** |
+| `IN /*param*/('dummy')` | Expands a `List`/array into `(?, ?, ?)` (dynamic generation of IN clauses) | Same |
+| `/*$param*/dummy` | Direct embedding of a value. Not bound | Same |
+| `/*FOR item in list*/.../*END*/` | Loop | **Usable in im_mirage and LogicDesigner. Not supported in JSSP (script development model)** |
 
-- Within a `/*FOR*/` block, a variable with `_has_next` appended to the loop variable name (e.g. `orderId_has_next`) can be used to determine "whether there is a next element," which can be used for comma-separated dynamic generation
+- **The delimiter of `/*FOR*/` is `in` or `IN`, with a half-width space on each side.** If the delimiter does not match, you get `TwoWaySQLException: For expression is invalid.`
+- **Within a `/*FOR*/` block, the only thing you can reference is the single element bound to the loop variable name.** To generate IN clauses dynamically, use `IN /*param*/('dummy')` rather than `/*FOR*/`
+- **With `IN /*param*/('dummy')`, both `null` and an empty list cause the entire bind portion to be omitted from the output, leaving a bare `IN` that breaks the SQL.** `/*IF list != null*/` alone cannot stop an empty list, so enclose it in a guard that stops both, such as `/*IF list != null && list.size() > 0*/` (OGNL evaluates `&&` in a short-circuit manner, so `size()` is not evaluated even when the value is `null` and no NPE occurs)
+- **`/*$param*/dummy` does not bind the value; it concatenates it directly into the SQL body. Use it only for dynamic table names, column names, and sort order, and always validate the value against a whitelist** (the same treatment as in `.agents/requirements/jssp-2way-sql/AGENTS.md`). The parser rejects the value only when it contains `;` — `OR 1=1 --` and `UNION SELECT ...` go into the SQL as-is. To pass a value as a parameter, use `/*param*/'dummy'`
+- **`/*$param*/` follows property dots only one level deep.** `/*$a.b.c*/` evaluates up to `a.b`, ignores everything from `.c` onward, and embeds the string representation of `a.b` as-is (no exception is thrown)

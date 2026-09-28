@@ -42,6 +42,12 @@
 | `jssp-performance.md` | 编译器设置 / session.js | 🟡 性能调优时 |
 | `jssp-accessibility.md` | ARIA / WCAG 2.1 AA / 屏幕阅读器 | 🟠 **业务需求依赖** — 仅在规格书有明确要求时厚涂适用；无要求时保持基本（`imdsConfirm`、基础 `aria-label` 等） |
 
+### 通用（JSSP / Java 两者适用）
+
+| 文件 | 一行摘要 | 适用范围 |
+|------|---------|---------|
+| `database-ddl.md` | 表・列命名规约 / 类型映射 / 审计追踪列 / 主键・索引设计 / DDL 中允许的语法 | 🟢 始终（创建新表的 DDL 时。无论该表由 JSSP 还是 Java 使用均适用） |
+
 ### 面向 Java（JavaEE 开发模型）
 
 | 文件 | 一行摘要 | 适用范围 |

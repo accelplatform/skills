@@ -3,8 +3,7 @@
 ## 概要
 
 IM-Workflow の申請画面プログラムのテンプレート（処理モーダル方式）。
-`imWorkflow.modal.showApply()` / `imWorkflow.modal.showTemporarySave()` API を使用して
-IM-Workflow の標準モーダル UI で申請・一時保存を行う。
+`imWorkflow.modal.showApply()` / `imWorkflow.modal.showTemporarySave()` API を使用して IM-Workflow の標準モーダル UI で申請・一時保存を行う。
 
 申請と一時保存は同一の JSSP 画面で提供する（`simple-apply-screen.md` と同様）。
 `showApply()` と `showTemporarySave()` を同一フォーム上の別々のボタンに割り当てる。

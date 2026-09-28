@@ -59,6 +59,11 @@
 }
 ```
 
+## constants の typeId
+
+`typeId` は原則 `"string"` を使うこと。IM-LogicDesigner の画面上には定数の型を指定する項目がなく、画面から作成した定数はすべて string 型として扱われる。boolean/integer 等の非 string 型で定数を生成すると、マッピング先タスク（`im_immGetDepartmentByUser` 等）でエラー終了する事象が確認されている。
+true/false やコード値を定数として持たせたい場合も、typeId は `"string"` のまま値だけ `"true"` 等の文字列で設定すること。
+
 ## 型定義（input/output/variables 共通）
 
 ```jsonc

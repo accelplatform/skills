@@ -87,7 +87,7 @@ JSSP 版（SSJS 的 `PublicStorage` 等，定义于 `d.ts/platform/storage/*.d.t
 
 ## 生成后的确认
 
-目前尚未整备类似 JSSP 版的专用验证脚本（相当于 `validate-jssp-code.js`）。请手动确认以下事项。
+并非通过自动验证脚本（如 JSSP 版的 `validate-jssp-code.js`），而是手动确认以下事项。
 
 1. 使用了 `open()`/`create()`/`append()` 的地方是否通过 `try-with-resources` 关闭
 2. `PublicStorage` / `SessionScopeStorage` / `SystemStorage` 的选择是否符合用途（持久/临时、公开/内部）

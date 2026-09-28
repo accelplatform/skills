@@ -157,7 +157,7 @@ src/main/java/{basePackage 的路径分隔}/{功能名}/workflow/{种类}/{Class
 
 ## 生成后的确认
 
-目前尚未完善类似 JSSP 版的专用验证脚本（相当于 `validate-workflow-code.js`）。请手动确认以下事项。
+并非通过自动验证脚本（如 JSSP 版的 `validate-workflow-code.js`），而是手动确认以下事项。
 
 1. 继承来源的类・实现的接口的 FQCN 是否与 `reference/parameter-reference.md` 中的记载一致
 2. 覆盖的方法签名（参数类型・返回值类型・`throws`）是否与抽象类/接口的定义完全一致（添加 `@Override` 让编译器进行验证）

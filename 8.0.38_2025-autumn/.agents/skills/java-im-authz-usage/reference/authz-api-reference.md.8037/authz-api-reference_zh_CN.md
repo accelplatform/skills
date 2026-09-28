@@ -52,13 +52,27 @@ public interface Resource extends Serializable {
     String getResourceId();
     /** 资源类型 */
     ResourceType<?> getType();
-    /** 资源URI（RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT 格式。例：service://authz/settings/basic） */
+    /** 资源URI（RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT 格式。例：flat-crud://myapp/orders/ORD001） */
     String getUri();
 }
 ```
 
 - 资源的键是 **资源URI**。资源本身不持有名称・说明，这些由与之成对的 `ResourceGroup` 保存
 - 通过 `ResourceManager` 注册资源时，会同时创建一个与之成对的 `ResourceGroup`
+
+### 标准资源类型与动作
+
+资源类型是决定「可以为该资源定义哪些动作」的要素。**资源URI 中第一个 `:` 之前的部分即为资源类型ID**，且只能使用已在认可机构中注册的资源类型（若未注册，`registerAsResource` 会抛出 `InvalidResourceUriException`）。
+
+| 资源类型ID | 资源URI 的形式 | 已定义动作 | 提供模块 | 用途 |
+|---|---|---|---|---|
+| `flat-crud` | `flat-crud://<路径>` | `c` / `r` / `u` / `d` | `im_authz_resourcetypes_standard` | **将业务数据作为认可对象时的默认选择** |
+| `service` | 从路由表解析 | **仅 `execute`** | `im_authz_impl_router` | 画面・URL 单位的访问可否。**不能用于表示单条业务数据的资源** |
+
+各功能模块（门户・IM-Workflow 等）也提供各自功能专用的资源类型，但不要将其用于业务应用的自有资源。
+
+- **只能使用资源类型所定义的动作名。** 像 `view` / `edit` / `approve` 这样的自定义名称会引发 `NoSuchActionException`。业务上的操作名应按「是读取还是写入」进行映射（例如：参照 → `r`，编辑・批准等状态变更 → `u`）
+- 若需要自有的动作体系，可实现 `ResourceType<T>` 并注册到 `WEB-INF/conf/authz-resource-type-config`（实现步骤不在本技能范围内。应先考虑能否用标准资源类型来表现）
 
 ### `Subject`
 
@@ -205,6 +219,11 @@ package jp.co.intra_mart.foundation.authz.services.admin;
 
 public interface SubjectManager {
 
+    /** 根据主体类型ID与键值确定访问主体，并注册（编号）主体。 */
+    <T> Subject registerAsSubject(String subjectTypeId, Object... keys);
+    /** 根据表示主体实体的模型注册（编号）主体。 */
+    <T> Subject registerAsSubject(T model);
+
     /** 根据 Expression（主体表达式）注册主体组。 */
     SubjectGroup registerSubjectGroup(Expression e, I18nValue<String> displayName);
     SubjectGroup registerSubjectGroup(Expression e, I18nValue<String> displayName, I18nValue<String> description);
@@ -231,8 +250,25 @@ public interface SubjectManager {
 }
 ```
 
-- 不存在针对**单个**主体的注册 API。必须将通过 `Expression`（后述）组合而成的条件表达式以 `SubjectGroup` 的形式注册
+- **`Subject` 通过 `registerAsSubject` 编号，但其单独存在时不会成为策略的对象。** 必须通过 `SubjectExpression.S(subject)` 转换为 `Expression`（后述），并以 `SubjectGroup` 的形式注册
+- 即使已存在相同表达式的主体组，`registerSubjectGroup` 也会**返回既有实例**（不会返回 `null`）。无需事先通过 `getSubjectGroupByExpression` 确认是否存在
 - `getAuthenticatedUsers()` / `getGuestSubjectGroup()` 是在为「全体用户」「未认证用户」设置策略时经常使用的内置组
+
+### 标准主体类型
+
+传给 `registerAsSubject(subjectTypeId, keys)` 的主体类型ID。键值的个数・含义因主体类型而异。
+
+| 对象 | 常量 | 值 |
+|---|---|---|
+| 角色 | `ImRole.B_M_ROLE`（`jp.co.intra_mart.foundation.authz.subjecttype.im_master.ImRole`） | `b_m_role` |
+| 用户 | `ImUser.ID` | `imm_user` |
+| 组织 | `ImDepartment.ID` | `imm_department` |
+| 公共组 | `ImPublicGroup.ID` | `imm_public_grp` |
+| 公共组的角色 | `ImPublicGroupRole.ID` | `imm_public_grp_role` |
+| 公司职位 | `ImCompanyPost.ID` | `imm_company_post` |
+
+- 仅角色由 `im_authz_subjecttypes_standard` 模块提供，其余均由 `im_master_subjecttypes` 模块（`jp.co.intra_mart.foundation.master.authz.subjecttype` 包）提供
+- **请注意，只有角色的常量名不是 `ID` 而是 `B_M_ROLE`**
 
 ## `Expression` / `SubjectExpression`（主体表达式）
 

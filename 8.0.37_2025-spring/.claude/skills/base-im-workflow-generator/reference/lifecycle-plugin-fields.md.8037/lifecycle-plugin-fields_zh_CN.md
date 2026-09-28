@@ -88,5 +88,5 @@
 
 以下内容目前无法通过 `build-workflow.js` 自动生成，需要手动编辑 XML：
 
-- **用户程序方式的分支/合并条件**：`branchMethod: "program"` 节点的节点类型代码会被输出，但对应插件本身（`jp.co.intra_mart.workflow.plugin.event.node.branch.rule` / `...union.rule`）的注册尚未实现。「规则方式」的分支（`branchMethod: "rule"`，使用 `matterProperties` + `rules`）已支持
-- **处理对象者插件（自定义实现）**：职位・组织・角色等标准插件（通过 `node.plugin.suffix` 指定）已支持，但通过 SSJS/Java 完全自定义实现的处理对象者插件的注册途径，很可能与本技能生成的 route/flow 导入 XML 是不同的体系，尚未验证（参见 `.claude/skills/jssp-im-workflow-usage/assets/simple-authority-exec-event-listener.md`）
+- **用户程序方式的分支/合并条件**：`branchMethod: "program"` 节点的节点类型代码会被输出，但对应插件本身（`jp.co.intra_mart.workflow.plugin.event.node.branch.rule` / `...union.rule`）的注册尚未实现。`exPointId`/`pluginId` 的值本身已确认（参见 `reference/java-class-registration.md`，该文件同时记载了向 XML 追加该条目的方法）。仅自动生成尚未支持，手动追加或通过 IM-Workflow 管理画面注册均可。「规则方式」的分支（`branchMethod: "rule"`，使用 `matterProperties` + `rules`）已支持
+- **处理对象者插件（自定义实现）**：职位・组织・角色等标准插件（通过 `node.plugin.suffix` 指定）已支持。已确认通过 SSJS/Java 完全自定义实现的处理对象者插件，使用的是与本技能生成的 route/flow 导入 XML 不同的体系（基于 `plugin.xml` 的插件注册）。注册方法参见 `reference/java-class-registration.md` 中的"处理对象者插件（自定义实现）的注册"。从本技能自动生成该体系本身尚未实现

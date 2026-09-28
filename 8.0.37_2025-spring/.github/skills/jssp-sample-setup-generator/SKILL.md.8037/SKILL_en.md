@@ -114,8 +114,7 @@ The build script splits its output across the following locations.
 
 `<artifactId>` may differ from `<key>`. Reference paths under storage use `<key>`.
 
-The `<role-file>`, `<authz-*-file>`, `<create-file>`, and `<insert-file>` entries in the config are written
-as paths relative to `src/main/storage/system` (e.g. `products/import/sample/<key>/<key>-role.xml`).
+The `<role-file>`, `<authz-*-file>`, `<create-file>`, and `<insert-file>` entries in the config are written as paths relative to `src/main/storage/system` (e.g. `products/import/sample/<key>/<key>-role.xml`).
 `<extends-import-class>` is written as a path relative to `src/main/jssp/src` (e.g. `<key>/initialize/<key>_import.js`).
 
 No `<version>` directory is used when placing materials. Sample data is always kept in sync with the module's latest version, so you update it by overwriting the existing files (`--force`).

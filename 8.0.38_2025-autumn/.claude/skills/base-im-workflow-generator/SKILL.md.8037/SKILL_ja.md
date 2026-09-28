@@ -376,7 +376,7 @@ node .claude/skills/base-im-workflow-generator/scripts/validate-workflow.js \
 - **生成時の注意事項・よくある誤りは `reference/import-xml-checklist.md` にチェックリスト化されている。** XML 生成後は必ず全項目を確認すること
 - **出力先は `src/main/storage/public/im_workflow/` から変更してはならない。** このディレクトリは IM-Workflow インポート資材の固定の格納場所であり、`--out` で `spec/` 等の別の場所に出力した場合、テナント環境セットアップ（Importer / `jssp-tenant-setup-generator` の連携処理）から参照されず取り込まれない
 - このスキルはワークフロー**定義ファイル**の生成専用。ワークフロー連携**プログラム**（アクション処理・申請画面・承認画面）は、JSSP 実装なら `jssp-im-workflow-usage`、Java（JavaEE 開発モデル）実装なら `java-im-workflow-usage` スキルを使うこと
-- **`actionProcess` / `matterEndProcess` に Java クラスの FQCN を登録したい場合**は [reference/java-class-registration.md](reference/java-class-registration.md) を参照。現状 `build-workflow.js` は JSSP スクリプトパスの登録のみを自動生成する（Java クラス実行の `pluginId` は実機確認が必要なため未自動化）
+- **`actionProcess` / `matterEndProcess` に Java クラスの FQCN を登録したい場合**は [reference/java-class-registration.md](reference/java-class-registration.md) を参照。`actionProcessImpl` / `matterEndProcessImpl` に `"java"` を指定すれば `build-workflow.js` が Java クラス実行の `pluginId`（`.pluginJavaExecutor`）を自動生成する。到達処理（`arriveProcess`）等の他のライフサイクル系フィールドも同様に対応している（[reference/lifecycle-plugin-fields.md](reference/lifecycle-plugin-fields.md) 参照）。分岐条件・結合条件（ユーザプログラム方式）と処理対象者プラグインの自動生成は未対応
 
 ## 他スキルとの境界・整合性責務
 

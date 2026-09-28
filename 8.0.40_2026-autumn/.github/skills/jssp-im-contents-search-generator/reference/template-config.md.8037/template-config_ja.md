@@ -187,8 +187,7 @@ iAP 製品が使用している以下の TYPE 値は**使用禁止**。クロー
 
 ## メッセージプロパティとの対応
 
-`<type-display-key>` と `imart type="message"` の `id` 属性に指定するキーは、
-`src/main/conf/message/` 配下の `.properties` ファイルに定義する。
+`<type-display-key>` と `imart type="message"` の `id` 属性に指定するキーは、`src/main/conf/message/` 配下の `.properties` ファイルに定義する。
 
 設定例:
 

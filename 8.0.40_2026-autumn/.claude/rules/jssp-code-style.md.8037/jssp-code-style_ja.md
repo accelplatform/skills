@@ -112,8 +112,7 @@ if (count) {  // boolean 以外の暗黙的な boolean 判定
 
 ## d.ts 定数・列挙値の参照
 
-`d.ts` で定義されている定数オブジェクト（`NodeType`, `ProcessType`, `TaskStatus` 等）は
-TypeScript の型定義専用であり、`.js` ファイルの SSJS ランタイムではグローバルに存在しない。
+`d.ts` で定義されている定数オブジェクト（`NodeType`, `ProcessType`, `TaskStatus` 等）は TypeScript の型定義専用であり、`.js` ファイルの SSJS ランタイムではグローバルに存在しない。
 
 `.js` ファイルでは定数値（文字列リテラル）を直接指定すること。
 

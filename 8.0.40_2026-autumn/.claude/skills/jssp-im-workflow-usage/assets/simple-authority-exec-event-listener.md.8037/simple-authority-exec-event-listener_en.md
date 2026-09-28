@@ -290,7 +290,7 @@ By adopting the users passed via `targetCodes` in the return value, a re-process
 - **Processing Target User Plugin (IM-LogicDesigner integration)**: [assets/logic-flow-authority-plugin.md](assets/logic-flow-authority-plugin.md)
   - Method to determine processing target users via a logic flow without writing SSJS
   - Uses the `.logic_flow_user` suffix in the IM-Workflow route definition
-  - Supports approval nodes, confirm nodes, and reference user settings (verified with real data)
+  - Supports approval nodes, confirm nodes, and reference user settings
 
 ### Selection Guidelines
 

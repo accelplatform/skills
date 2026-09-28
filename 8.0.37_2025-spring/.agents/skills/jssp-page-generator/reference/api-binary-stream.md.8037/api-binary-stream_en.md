@@ -52,8 +52,7 @@ function saveUpload(uploadedFile, fileKey) {
 
 ### Prohibited Pattern: Calling `ByteReader.read(buffer, offset, length)` Directly
 
-`ByteReader.read()` is the equivalent of Java's `InputStream.read(byte[], int, int)`,
-which **requires the caller to pass a pre-sized array**.
+`ByteReader.read()` is the equivalent of Java's `InputStream.read(byte[], int, int)`, which **requires the caller to pass a pre-sized array**.
 Passing a JavaScript empty array `[]` results in no bytes being written, so the call
 **always returns 0**, which causes the output file to be **0 bytes**.
 

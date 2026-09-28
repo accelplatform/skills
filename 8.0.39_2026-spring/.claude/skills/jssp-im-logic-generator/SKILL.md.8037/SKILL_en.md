@@ -344,6 +344,22 @@ Notes common to paired user definitions (`user_db_fetch` / `user_csv_fetch`).
 ]
 ```
 
+### im_startLoop (Loop Start Task) — Notes on `clearVariables`
+
+`clearVariables` ("variables to initialize") **clears the specified variables on every iteration** of the loop.
+
+- Only target **temporary, per-iteration variables** that are fine to reset each pass
+- Never target **variables that accumulate results across iterations** (e.g. an array being built up with `im_array_push`). Since it is cleared every iteration, only the last pass's contribution survives — the loop effectively produces nothing
+- A common mistake is adding such variables "just in case" out of concern that an uninitialized (null/undefined) variable would cause an error when passed to an array-manipulation function. This is unfounded: array functions (`im_array_push`, etc. — see [reference/mapping-functions.md](reference/mapping-functions.md)) do not error on an uninitialized variable. **Accumulator array variables do not need to be included in `clearVariables`**
+
+```jsonc
+// BAD: clearing an accumulator variable empties it after the loop finishes
+"properties": { "clearVariables": ["resultList"] }  // BAD if resultList is built up via im_array_push
+
+// GOOD: only clear variables that are scratch space used within a single iteration
+"properties": { "clearVariables": ["tmpItem"] }
+```
+
 ### im_logger (Log Output Task)
 
 Not a user-defined task, but commonly used inside loops as a standard task.
@@ -361,6 +377,15 @@ Not a user-defined task, but commonly used inside loops as a standard task.
 ```
 
 `properties.level`: `"DEBUG"` / `"INFO"` / `"WARN"` / `"ERROR"`
+
+**Note: do not repurpose it for assigning values to variables**
+
+`im_logger`'s input/output schema is fixed to `string` (it's log-output only) — it is not meant for assigning values to variables.
+Use `im_variableOperation` (the variable operation task) whenever a value needs to be stored in a variable.
+
+- Repurposing a task like `im_logger` for a mapping use case outside its intended input/output schema can corrupt the mapping-panel data saved by the IM-LogicDesigner editor, which can cause a plain open-and-save of the flow editor screen to fail with a 500 error
+- This kind of corruption sometimes does not resolve even after deleting the offending task in the UI and saving (the editor can retain invalid internal state and re-serialize it as-is)
+- If this happens, the safest fix is to rebuild the flow definition from scratch: delete it once and re-import it
 
 ## Combining Multiple Flows in One File
 

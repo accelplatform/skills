@@ -91,8 +91,7 @@ build スクリプトは下記 2 ヶ所に分けて出力する。
 
 `<artifactId>` は `<key>` と異なってよい（例: `<key>="equip"`、`<artifactId>="equipment-lending-system"`）。中の参照パス（`<*-file>`）には `<key>` が使われ、**Importer 設定 XML のディレクトリ名とファイル名（`import-<artifactId>-config-<N>.xml`）にだけ** `<artifactId>` が使われる。
 
-config-1.xml 内の `<role-file>`・`<authz-*-file>`・`<create-file>`・`<insert-file>` は
-`src/main/storage/system` からの相対パスで記述する（例: `products/import/basic/<key>/<version>/<key>-role.xml`）。
+config-1.xml 内の `<role-file>`・`<authz-*-file>`・`<create-file>`・`<insert-file>` は `src/main/storage/system` からの相対パスで記述する（例: `products/import/basic/<key>/<version>/<key>-role.xml`）。
 `<extends-import-class>` は `src/main/jssp/src` からの相対パスで記述する（例: `<key>/initialize/<version>/<key>_import.js`）。
 
 ## DDL / サンプル DML 配置の意義

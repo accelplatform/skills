@@ -213,7 +213,7 @@ IM-Workflow の仕様上、`2000/01/01` 〜 `2999/12/31` の全期間をカバ�
 | contentsId | string | コンテンツID |
 | contentsVersionId | string | コンテンツバージョンID |
 | exPointId | string | `jp.co.intra_mart.workflow.plugin.event.node.action.process` |
-| pluginId | string | JSSP 実装（スクリプト開発モデル）: `{exPointId}.pluginScriptExecutor` / Java 実装（JavaEE 開発モデル）: `{exPointId}.pluginJavaExecutor`（実機エクスポート済み XML で確認済み。詳細は [java-class-registration.md](java-class-registration.md)） |
+| pluginId | string | JSSP 実装（スクリプト開発モデル）: `{exPointId}.pluginScriptExecutor` / Java 実装（JavaEE 開発モデル）: `{exPointId}.pluginJavaExecutor`（詳細は [java-class-registration.md](java-class-registration.md)） |
 | pluginName | string | プラグイン名（任意） |
 | parameter | string | JSSP 実装: JSSP ファイルパス（拡張子なし） / Java 実装: 実装クラスの完全修飾名（FQCN） |
 | nodeType | string | ノード種別番号（`reference/node-types.md` の数値コード参照）。申請ノードで使用するなら `2` を指定 |
@@ -281,7 +281,7 @@ IM-Workflow の仕様上、`2000/01/01` 〜 `2999/12/31` の全期間をカバ�
 | contentsId | string | コンテンツID |
 | contentsVersionId | string | コンテンツバージョンID |
 | exPointId | string | トランザクションあり: `jp.co.intra_mart.workflow.plugin.event.matter.end.process` / トランザクションなし: `jp.co.intra_mart.workflow.plugin.event.matter.end_no_transaction.process` |
-| pluginId | string | JSSP 実装: `{exPointId}.pluginScriptExecutor` / Java 実装: `{exPointId}.pluginJavaExecutor`（実機エクスポート済み XML で確認済み。詳細は [java-class-registration.md](java-class-registration.md)） |
+| pluginId | string | JSSP 実装: `{exPointId}.pluginScriptExecutor` / Java 実装: `{exPointId}.pluginJavaExecutor`（詳細は [java-class-registration.md](java-class-registration.md)） |
 | pluginName | string | `matter_end_process` |
 | parameter | string | JSSP 実装: 案件終了処理の JSSP ファイルパス（拡張子なし） / Java 実装: 実装クラスの完全修飾名（FQCN） |
 | nodeType | string | 空文字列 |

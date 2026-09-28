@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "receiver-usage_ja.md",
+      "to": "receiver-usage.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "receiver-usage_zh_CN.md",
+      "to": "receiver-usage.md"
+    },
+    {
+      "from": "receiver-usage_en.md",
+      "to": "receiver-usage.md"
+    }
+  ]
+}

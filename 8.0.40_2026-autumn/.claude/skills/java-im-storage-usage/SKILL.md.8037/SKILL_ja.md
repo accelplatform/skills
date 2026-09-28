@@ -87,7 +87,7 @@ JSSP 版（SSJS の `PublicStorage` 等、`d.ts/platform/storage/*.d.ts` で定�
 
 ## 生成後の確認
 
-JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当）は現時点で未整備。以下を手動で確認する。
+自動検証スクリプト（JSSP 版の `validate-jssp-code.js` 相当）ではなく、以下の項目を手動で確認する。
 
 1. `open()`/`create()`/`append()` を使った箇所が `try-with-resources` でクローズされているか
 2. `PublicStorage` / `SessionScopeStorage` / `SystemStorage` の選択が用途（永続/一時、公開/内部）に合っているか

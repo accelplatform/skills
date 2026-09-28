@@ -1,24 +1,24 @@
-# Structure and Explanation of Screen Definitions
+# Structure and Description of the Screen Definition
 
-The generated screen definitions must have the following structure.
+The generated screen definition must have the following structure.
 
-1. Screen list
-  - Describe the list of screens.
-  - The items in the list are "screen ID", "screen definition name", "corresponding task", "URL path", "feature overview", and so on.
+1. List of Screens
+  - Record the list of screens.
+  - The list items include "Screen ID," "Screen Definition Name," "Corresponding Task," "URL Path," "Feature Summary," etc.
 
-2. Screen details
-  - For each screen, describe the following contents
+2. Screen Details
+  - For each screen, record the following content.
     - Screen overview
     - Screen items
-    - Mockup of the screen layout
+    - Screen layout mockup
     - Validation
-    - Action processing for buttons, etc.
+    - Action processing such as buttons
 
 ## Reference Skills
-- `jssp-imds-theme`: imds-compliant HTML code generation
-- `jssp-page-generator`: JSSP code generation support
+- `.agents/skills/jssp-imds-theme/SKILL.md`: imds-compliant HTML code generation
+- `.agents/skills/jssp-page-generator/SKILL.md`: JSSP code generation support
 
 ## Notes
-- **As a rule, do not create list screens (screens that search business data and display the results in a list) in the screen definitions; create only registration, edit, and detail screens. (However, if there is an explicit instruction, creating list screens is also permitted.)**
-* **Do not split screens with similar designs, such as the registration screen and the edit screen, into separate pages (presentation page + function container).**
-  * Switch between the registration display area and the edit display area using branching within the presentation page.
+- **As a general rule, do not create a list screen (a screen that searches business data and displays the results as a list) in the screen definition; create only registration, edit, and detail screens. (However, creating a list screen is permitted when there is an explicit instruction to do so.)**
+* **Do not split screens with a similar design, such as a registration screen and an edit screen, into separate pages (presentation page + function container).**
+  * Use branching within the presentation page to switch between the display area for registration and the display area for editing.

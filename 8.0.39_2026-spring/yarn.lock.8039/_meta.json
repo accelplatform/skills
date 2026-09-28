@@ -7,20 +7,6 @@
   "rename": [
     {
       "condition": {
-        "and": [
-          {
-            "packageManager": "yarn"
-          },
-          {
-            "module": "im_activiti"
-          }
-        ]
-      },
-      "from": "yarn_im_activiti.lock",
-      "to": "yarn.lock"
-    },
-    {
-      "condition": {
         "packageManager": "yarn"
       },
       "from": "yarn.lock",

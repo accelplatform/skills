@@ -57,37 +57,47 @@ public class Standard{ServiceName}Service implements {ServiceName}Service {
         // 1. バリデーション（トランザクション開始前に実行）
         validateInput(input);
 
-        try {
-            // 2. トランザクション境界 — サービス層が所有する
-            return SessionTemplate.execute(s -> {
-                // 3. 既存データの取得
-                {EntityName} existing = {entityName}Repository.findById(input.get{EntityName}Id());
-                if (existing == null) {
-                    throw new {ServiceName}ServiceException(
-                            "対象が見つかりません: {entityName}Id=" + input.get{EntityName}Id());
-                }
+        // 2. トランザクション境界 — サービス層が所有する
+        //    SessionCallback<T, E> の E は1種類の検査例外にしか推論されないため、
+        //    ラムダ内で発生する検査例外はその場（各リポジトリ呼び出し直後）で
+        //    {ServiceName}ServiceException に変換してから投げる。これによりラムダから
+        //    伝播する検査例外が {ServiceName}ServiceException 1種類に揃い、
+        //    SessionTemplate.execute() を try/catch で囲む必要がなくなる。
+        return SessionTemplate.execute(s -> {
+            // 3. 既存データの取得
+            final {EntityName} existing;
+            try {
+                existing = {entityName}Repository.findById(input.get{EntityName}Id());
+            } catch (RepositoryException e) {
+                LOGGER.error("Failed to find {entityName}: {entityName}Id="
+                        + input.get{EntityName}Id(), e);
+                throw new {ServiceName}ServiceException(
+                        "{EntityName}の検索に失敗しました: " + e.getMessage(), e);
+            }
+            if (existing == null) {
+                throw new {ServiceName}ServiceException(
+                        "対象が見つかりません: {entityName}Id=" + input.get{EntityName}Id());
+            }
 
-                // 4. ビジネスルールの適用
-                if (!existing.isEditable()) {
-                    throw new {ServiceName}ServiceException(
-                            "編集不可の状態です: status=" + existing.getStatus());
-                }
+            // 4. ビジネスルールの適用
+            if (!existing.isEditable()) {
+                throw new {ServiceName}ServiceException(
+                        "編集不可の状態です: status=" + existing.getStatus());
+            }
 
-                // 5. 保存
+            // 5. 保存
+            try {
                 {entityName}Repository.save(input);
+            } catch (RepositoryException e) {
+                LOGGER.error("Failed to save {entityName}: {entityName}Id="
+                        + input.get{EntityName}Id(), e);
+                throw new {ServiceName}ServiceException(
+                        "{EntityName}の保存に失敗しました: " + e.getMessage(), e);
+            }
 
-                LOGGER.info("Processed {entityName}: {entityName}Id=" + input.get{EntityName}Id());
-                return input;
-            });
-        } catch ({ServiceName}ServiceException e) {
-            // ビジネス例外はそのまま再スロー
-            throw e;
-        } catch (RepositoryException e) {
-            LOGGER.error("Failed to process {entityName}: {entityName}Id="
-                    + input.get{EntityName}Id(), e);
-            throw new {ServiceName}ServiceException(
-                    "{EntityName}の処理に失敗しました: " + e.getMessage(), e);
-        }
+            LOGGER.info("Processed {entityName}: {entityName}Id=" + input.get{EntityName}Id());
+            return input;
+        });
     }
 
     @Override

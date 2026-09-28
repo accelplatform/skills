@@ -197,9 +197,10 @@ Web API Makerのファクトリ + サービス（エンドポイント）の2ク
   - 理由: `ServiceLoaderUtil` による実装差し替え、テスト時のモック注入を可能にするため
 - 完全なサービスファクトリのテンプレートは `references/implementation-templates.md` の「ファクトリパターン」を参照
 - DAOファクトリの利用は `java-im-mirage-usage` スキルを参照
+  - `sqlManager` に渡す `SQL_PATH` 定数はクラスパス起点の相対パスとする。先頭スラッシュや、DAOクラスのパッケージパス以外の接頭辞を付けると `resource: ... is not found.` になるため付けないこと（詳細は同スキルを参照）
 
 ### 設定ファイルパターン
-- **SQLファイル**: `/META-INF/sql/{package_path}/{ClassName}/{methodName}.sql`
+- **SQLファイル**: `/src/main/resources/{package_path}/{ClassName}/{methodName}.sql`
 - **設定ファイル**: `/src/main/conf/{feature}/{config_name}-config.xml`
 - **インポート設定**: `/src/main/conf/products/import/basic/{feature}/{config_name}.xml`
 - **DDLファイル**: `/src/main/storage/system/products/import/basic/{feature}/{feature}-ddl.sql`

@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "configuration-loader-api-reference_ja.md",
+      "to": "configuration-loader-api-reference.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "configuration-loader-api-reference_zh_CN.md",
+      "to": "configuration-loader-api-reference.md"
+    },
+    {
+      "from": "configuration-loader-api-reference_en.md",
+      "to": "configuration-loader-api-reference.md"
+    }
+  ]
+}

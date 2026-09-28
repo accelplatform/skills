@@ -14,128 +14,153 @@ BPMN 形式の XML を解析し、仕様書の内容を BPMN に反映する。
 
 ## BPMN XML に反映する内容
 - 本スキルセットでは以下を行う。
-  - プロセス定義キー置換
+  - プロセス定義キー置換（iGrafx製BPMN限定）
+  - コールアクティビティの呼び出し先プロセス置換
   - ロールIDの追加
   - タスクの背景色設定
   - オプショナルタスク設定
   - プロセス変数定義追加
+  - 分岐条件式（conditionExpression）の追加
   - シグナル定義追加
   - メッセージ定義追加
+  - `.claude/skills/bpm-docs-generator/scripts/validate-bpmn.js` が検出したエラーの訂正案反映
 
-## 実施手順
+## 全体構成（3段階）
 
-### Step0.対象の確認
-- 反映元になる仕様書と反映先ファイルの確認。
-  - 反映元になる仕様書のパスと反映先BPMNファイルのパスを提示し、間違いは無いか確認を行う。
-- 反映内容の確認
-  - 仕様書より反映対象となる事項を抽出・提示し、反映したい事項を問い合わせる。
-- 反映実施の実施可否
-  - 反映処理を実施するか確認する。YESの場合、Step1以降を実行。NOの場合は処理中止。
+仕様書の内容を BPMN へ反映する処理は、**「判断・確定」と「機械的な書き込み」を分離**した3段階で構成する。
 
-### Step1.プロセス定義キー置換（固定順）
-
-本フローは必ずこの順序で実行する。
-
-#### 1-1. 置換済みチェック（JS）
-
-- 実行:
-  - `{{RUNTIME}} .claude/skills/bpm-xml-reflector/scripts/check-process-id-replaced.js <doc/*-prompt/*.bpmn> <replacements.json>`
-- 判定:
-  - `replaced`: 既に置換済み。置換処理は実行しない。
-  - `not_replaced` / `partial`: Step2 へ進む。
-
-#### 1-2. ユーザー確認（置換実施可否）
-
-- 仕様書 `to-be-discussed.md` の from-to 提案を提示する。
-- 「この from-to で置換してよいか」をユーザーに確認する。
-- OK の場合のみ Step3 へ進む。
-
-#### 1-3. 置換処理
-
-**本ステップは必ず `.claude/skills/bpm-xml-reflector/scripts/bpmn-specs-reflector.js` の `reflector.reflect()`（内部で `reflectProcessIdReplacements()` を呼ぶ）経由で実行すること。
-Read/Write/Edit ツールで `.bpmn` を直接読み書きして置換を再現してはならない。**
-対象ファイルパスは `bpmnPath` 引数としてのみ指定する。`isPromptCopyBpmnPath()` により
-`doc/<BPMプロセス名>-prompt/<BPMプロセス名>.bpmn` 形式以外（コピー元 `doc/<BPMプロセス名>.bpmn` を含む）は
-例外がスローされ、反映されない。
-以下の 1-3-1〜1-3-5 は `reflectProcessIdReplacements()` の内部動作の説明であり、エージェントが個別に手順を再現するものではない。
-
-##### 1-3-1. from-to 置換実行（メモリ上）
-- 仕様書で提案された from-to で置換した XML をメモリ上に生成する（ディスクへの書き込みは行わない）。
-- `process@id` の置換後、processタグにdocumentationタグを追加し、下記フォーマットのトークンを追記する（既存記述は保持）
 ```
-PROCESS_KEY_META:PROCESS_KEY_REPLACED=true;ORIGINAL_PROCESS_KEY=<元のprocess_id>;PROCESS_KEY=<採番後process_id>;REPLACED_DATE=<YYYY-MM-DD>;REPLACE_POLICY=initial-only
+フェーズ1: spec-to-bpmn-fixes.json 作成      ← bpm-docs-generator 側（人間確認を含む）
+         ↓
+フェーズ2: 仕様書との差分チェック・反映       ← bpm-xml-reflector 側（人間確認を含む）
+         ↓
+フェーズ3: JSON反映（reflectFixes()）        ← bpm-xml-reflector 側（本スキルの責務）
 ```
 
-##### 1-3-2. 置換検証（JS）
-- 内部で `verifyProcessIdReflections()` 相当の検証を行う。
-- 検証対象:
-  - `participant@processRef`
-  - `process@id`
-- 単体で確認したい場合の実行例（`reference/` ディレクトリから）:
-  - `{{RUNTIME}} .claude/skills/bpm-xml-reflector/scripts/verify-process-id-reflection.js <doc/*-prompt/*.bpmn> <replacements.json>`
+### フェーズ1: `spec-to-bpmn-fixes.json` 作成
+仕様書に記載された内容（下表）を、機械可読な `operation` / `params` / `targets` 形式に変換し、`doc/<BPMプロセス名>-prompt/spec-to-bpmn-fixes.json` へ出力する。**チェック・ユーザーへの問い合わせなど「何を反映するか」の判断は、すべてこのフェーズで完了させる。** 未確定の項目（signal/message の ID が仕様書に未定義など）は本ファイルに書き出さない（＝反映もスキップされる）。
 
-##### 1-3-3. 検証失敗時の再試行
-- 検証に失敗した場合は最大2回まで自動で再試行する。
-- 再試行しても失敗する場合はエラーとして処理を中断し、失敗箇所をユーザーに表示する。
+| 反映内容 | 詳細を規定するガイド |
+|---|---|
+| `.claude/skills/bpm-docs-generator/scripts/validate-bpmn.js` エラー訂正案 | `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md` |
+| プロセス定義キー（process id）置換 | `.claude/skills/bpm-docs-generator/reference/guide-process-definition-key-replacement.md` |
+| コールアクティビティの呼び出し先プロセス置換 | `.claude/skills/bpm-docs-generator/reference/guide-specification.md`（コールアクティビティ節） |
+| ロールID・タスク色・オプショナル・プロセス変数・シグナル・メッセージ | `.claude/skills/bpm-docs-generator/reference/guide-specification.md` |
+| `spec-to-bpmn-fixes.json` のエントリ構造・`fixId`命名規則・operation統制語彙 | `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md`（「`spec-to-bpmn-fixes.json` の形式」節） |
 
-##### 1-3-4. ユーザー承認後、本ファイルへ直接書き込み
-- 検証に成功した置換後 XML を、`onProcessIdReplacementDetected` コールバックでユーザーに提示する。
-- 「どのファイル（パス）に、どの from-to を反映するか」を表示し、承認を得る。
-- 承認された場合のみ、対象 `.bpmn` に置換後 XML を直接書き込む。
-- 拒否された場合は何もしない（対象 `.bpmn` は承認前に一切変更されないため、復元処理も不要）。
+このフェーズは `.claude/skills/bpm-docs-generator` 側の責務である。ただし、本フェーズ完了後に `to-be-discussed.md` / `specification.md` / `supplement.md` 等が直接編集され `spec-to-bpmn-fixes.json` に反映されないまま放置されるケースがあるため、`reflectFixes()`（フェーズ3）実行前に必ずフェーズ2（次節）を経由すること。
 
-##### 1-3-5. 完了確認
-- 「どのファイル（パス）の置換が完了したか」を表示する。
-- 対象が正しいかユーザーに確認する。
+### フェーズ2: 仕様書との差分チェック・反映
 
-#### 1-4. 仕様書更新
+`spec-to-bpmn-fixes.json` 作成後に仕様変更（要検討事項への回答の直接追記、業務要件の追加・修正等）が発生すると、`spec-to-bpmn-fixes.json` に反映されないまま取り残され、`reflectFixes()` を実行しても最新の仕様が BPMN に反映されない問題が起きる。これを防ぐため、**`reflectFixes()`（フェーズ3）実行前に必ず本フェーズを実施する。**
 
-- `to-be-discussed.md` のプロセス定義キー置換履歴を更新する。
-  - 置換状態: 置換済み
-  - 判定根拠: documentationトークン（反映後）
-  - 反映日時: YYYY-MM-DD
-  - 各置換提案テーブルの反映日: YYYY-MM-DD
+**チェック対象:**
+- `doc/<BPMプロセス名>-prompt/to-be-discussed.md`（特に3〜5章の要検討事項の記述、および各項目の「訂正案」行の `reflectStatus` 表示）
+- `doc/<BPMプロセス名>-prompt/specification.md`
+- `doc/<BPMプロセス名>-prompt/supplement.md`
+- 上記と `doc/<BPMプロセス名>-prompt/spec-to-bpmn-fixes.json` の内容
 
-#### 1-5. 変更履歴更新
+**差分の検出パターン:**
 
-- `interactive-log.md` に以下を記録する。
-  - 実行日時
-  - 対象ファイルパス
-  - from-to 一覧
-  - ユーザー確認結果（1-2 / 1-3-4）
-  - 検証結果（1-3-2 / 1-3-3）
+| パターン | 検出内容 | 対応 |
+|---|---|---|
+| ① reflectStatus 不一致 | md 側で要検討事項に回答・確定記述が追記された（例: `pending-confirmation` だった論点が確定した）のに、対応する `spec-to-bpmn-fixes.json` エントリの `reflectStatus` が未更新 | エントリの `reflectStatus` / `params` を更新（`ready` へ引き上げ等） |
+| ② エントリ未作成 | md 側に新規の業務要件反映事項（ロールID・タスク色・プロセス変数・シグナル・メッセージ・process id 置換・コールアクティビティ呼び出し先置換等）が追記されたが、対応する `spec-to-bpmn-fixes.json` エントリが存在しない | `guide-bpmn-validation.md` の `fixId` 命名規則・`operation` 統制語彙に従って新規エントリを追加 |
+| ③ 内容の乖離 | 既存エントリの `params` 等が、md 側の最新記述と食い違う（値の変更・削除等） | エントリの `params` を md の内容に合わせて更新 |
 
-#### 例外: 再置換の禁止
+**手順:**
+1. `spec-to-bpmn-fixes.json` の各エントリと、対応する md の記述を突き合わせ、上記パターンに該当する差分を洗い出す。
+2. 差分が1件もない場合は、その旨を記録した上でフェーズ3へ進んでよい（本フェーズはスキップ可）。
+3. 差分がある場合は、各差分について **fixId・変更前後の内容（`reflectStatus`/`operation`/`params`）をユーザに提示し、反映してよいか確認を取る**（自動反映しない）。
+4. 承認された差分のみ `spec-to-bpmn-fixes.json` に反映する。この反映は JSON ファイルの追加・更新のみであり、**BPMN 本体には一切書き込まない**（BPMN への書き込みは次のフェーズ3の責務）。
+5. `fixId` 命名規則・`reflectStatus` の意味・`operation` 統制語彙・`requiresApproval` の既定値は、いずれも `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md`「`spec-to-bpmn-fixes.json` の形式」節に従う（本フェーズはフォーマットの新規定義を行わない）。
 
-置換済みと判定された process に対しては、新規採番を実施してはならない。必ず既存キーを再利用する。
+**注意:**
+- 本フェーズは「判断・確定」フェーズであり、フェーズ1（`.claude/skills/bpm-docs-generator` 側）と同様にユーザ確認を必須とする。`reflectFixes()`（フェーズ3）側の「新たな判断を行わない」という原則には影響しない。
+- md 側の記述を機械的に構造化データへ変換する処理（自然言語解釈）を伴うため、本フェーズは人手（または本スキルを呼び出すエージェント）による読み合わせで行い、専用スクリプトによる自動差分検出は前提としない。
 
-- 既存キーの取得先:
-  - documentation トークンから `PROCESS_KEY=<key>` を抽出
-
-
-### Step2.ロールID・タスクの背景色・オプショナルタスク設定・プロセス変数・シグナル定義・メッセージ定義の反映処理
+### フェーズ3: JSON反映（`reflectFixes()`）
+`spec-to-bpmn-fixes.json` を読み込み、`reflectStatus: "ready"` かつ対応 `operation` のエントリのみを対象 BPMN へ機械的に反映する。**判断・確定済みの内容を書き込むことに専念し、新たな判断（何を反映するかの決定）は行わない。** ただし `replace-process-id` / `replace-callee-process` の検証・リトライ・トークン付与は「書き込み内容が仕様書の指示どおりに反映されたか」の機械的な整合性検証であり、本フェーズの責務に含まれる。
 
 反映ロジックは `.claude/skills/bpm-xml-reflector/scripts/bpmn-specs-reflector.js` に実装されている。以下はその概要と呼び出し方である。
 
-#### 処理概要
+## `reflectFixes()` の使い方
 
-| 関数 | 役割 |
-|------|------|
-| `applyProcessCandidateStarterGroups(xml, processId, roleId)` | `<process>` タグに `candidateStarterGroups="<ロールID>"` を付与する |
-| `applyLaneCandidateGroups(xml, laneId, roleId)` | `<lane>` タグに `candidateGroups="<ロールID>"` を付与する |
-| `applyUserTaskCandidateGroups(xml, taskId, roleId)` | `<userTask>` タグに `candidateGroups="<ロールID>"` を付与する |
-| `applyTaskColor(xml, taskId, taskType)` | タスク種別に応じた `color` 属性を付与する（カラーマップは下記参照） |
-| `applyIsOptional(xml, taskId)` | オプショナルタスクのタグに `isOptional="true"` を付与する |
-| `applyDataObjects(xml, processId, variables)` | プロセス変数を `<dataObject>` として `<process>` ブロック末尾に挿入する |
-| `applyConditionExpression(xml, flowId, expression)` | `<sequenceFlow>` に `<conditionExpression>` を挿入する（自己終了タグは自動展開） |
-| `applySignal(xml, signalId, signalName)` | `<signal>` 要素を `<process>` の直前に挿入する |
-| `applyMessage(xml, messageId, messageName)` | `<message>` 要素を `<process>` の直前に挿入する |
-| `replaceProcessId(xml, fromId, toId)` | Process ID を置換する（`<process id>` と `<participant processRef>` の両方を置換） |
-| `reflectProcessIdReplacements(bpmnPath, xml, replacements, options)` | Process ID 置換をメモリ上で実施し、ユーザー確認後に対象 `.bpmn` へ直接書き込む（`.tmp` は作成しない。オプション引数で `onProcessIdReplacementDetected` コールバックを指定） |
-| `verifyProcessIdReplacements(xml, replacements)` | 仕様書の process id 置換 from-to と反映後 BPMN の一致を検証する（`process@id` と `participant@processRef` を照合） |
-| `reflect(bpmnPath, specs, options)` | 上記をまとめて実行し、BPMN ファイルを上書き保存する（オプション引数で process id 置換時の動作をカスタマイズ可） |
+`reflectFixes()` を呼び出す前に、必ず「フェーズ2: 仕様書との差分チェック・反映」を実施し、`spec-to-bpmn-fixes.json` を最新化しておくこと。
 
-**タスク種別と color 値の対応:**
+### 呼び出し例
+
+```javascript
+var reflector = require('./.claude/skills/bpm-xml-reflector/scripts/bpmn-specs-reflector.js');
+var bpmnPath = 'doc/sample-process-prompt/sample-process.bpmn';
+var fixesPath = 'doc/sample-process-prompt/spec-to-bpmn-fixes.json';
+
+var result = reflector.reflectFixes(bpmnPath, fixesPath, {
+  // fix 単位の承認コールバック（requiresApproval: false のエントリは省略可）
+  onFixReflectionDetected: function (fix, onApprove, onReject) {
+    // fixId・operation・targets・params をユーザーに提示し、承認を取る
+    console.log('fixId=' + fix.fixId + ' operation=' + fix.operation);
+    console.log('targets=' + JSON.stringify(fix.targets) + ' params=' + JSON.stringify(fix.params));
+    // 実装例：vscode_askQuestions で確認を取る
+    onApprove(); // or onReject();
+  }
+});
+
+console.log(result); // { applied: ['FIX-001', ...], skipped: [{ fixId, reason }, ...] }
+```
+
+- `bpmnPath` は `doc/*-prompt/*.bpmn` 形式以外を渡すと例外がスローされる（`isPromptCopyBpmnPath()` による）。
+- 反映後、`reflectedDate` のみが更新され `fixesPath` が上書き保存される（`reflectStatus` は判定根拠を残すため変更しない）。
+- `skipped` に積まれる理由は主に次の4種類：
+  - `reflectStatus is not ready: ...`（`pending-confirmation` / `not-applicable`）
+  - `unsupported operation (manual reflection required): ...`（`convert-event-type` / `delete-element` / `manual`）
+  - `user rejected` / `approval required but no confirmation callback provided`
+  - `apply failed: ...`（`replace-process-id` 等の検証失敗。他の fix の反映は継続される）
+
+### 製造ベンダー判定
+
+`reflectFixes()` は BPMN 読み込み時に `detectVendor(xml)` でネームスペース宣言から製造ベンダーを自動判定し、`applyFixToTarget()` 経由で各 `applyXxx` 系関数にベンダー種別を引き渡す。判定結果に応じて、付与する属性名・要素タグ名が切り替わる（具体的な対応は各 `apply*` 関数・`resolveVendorName()` の実装を正とする。「共通ルール」参照）。
+
+| ベンダー | 判定条件 |
+|---------|---------|
+| `im-bpm`（IM-BPM 製） | `xmlns:activiti="http://activiti.org/bpmn"` を含む |
+| `igrafx`（iGrafx 製） | ネームスペース URI に `www.igrafx.com` を含む |
+| `other`（その他） | 上記いずれにも該当しない |
+
+### operation 対応表
+
+| operation | 反映内容 | 主な `params` | 特記事項 |
+|---|---|---|---|
+| `set-attribute` | 既存要素への属性追加・更新 | `attrName`, `attrValue` | 任意の要素・属性に対応する汎用 operation |
+| `set-eventdef-ref` | イベント定義への `messageRef`/`signalRef`/`errorRef` 設定 | `refType`, `refId` | 要素が自己終了タグの場合はスキップ |
+| `set-service-task-field` | ServiceTask の `activiti:field` 値設定 | `fieldName`, `fieldValue`（複数まとめる場合は `fields: [{name, value}]`） | |
+| `set-condition-expression` | `sequenceFlow` への分岐条件式（EL式）追加 | `expression` | |
+| `set-timer-definition` | `timerEventDefinition` の周期・日時・期間設定 | `timeCycle` / `timeDate` / `timeDuration`（いずれか）, `businessCalendarName`（任意） | 対象要素が自己終了タグ、または `timerEventDefinition` が存在しない場合はスキップ |
+| `set-role-starter-groups` | `process` への `candidateStarterGroups` 設定 | `roleId` | target は process |
+| `set-lane-candidate-groups` | `lane` への `candidateGroups` 設定 | `roleId` | target は lane |
+| `set-usertask-candidate-groups` | `userTask` への `candidateGroups`・`isOptional` 設定 | `roleId`, `isOptional`（任意） | target は userTask |
+| `set-task-color` | タスクへの背景色設定 | `taskType` | `taskType` からカラーコードを自動決定（下記カラーマップ参照） |
+| `add-data-object` | `process` へのプロセス変数（`dataObject`）追加 | `variables: [{ id, name, type }]` | target は process。既存 id はスキップ（冪等） |
+| `add-signal` | `signal` 要素の新規追加 | `id`, `name` | 仕様書で ID が未定義の場合は本ファイルに書き出さない（＝反映されない）。既存 id はスキップ（冪等） |
+| `add-message` | `message` 要素の新規追加 | `id`, `name` | 同上 |
+| `replace-process-id` | プロセス定義キー（process id）置換。検証（最大2回リトライ）・`PROCESS_KEY_META` トークン付与を伴う | `fromId`（置換対象特定用）, `toId`（置換値）, `allowFromIdExists`（任意） | 破壊的操作。`requiresApproval: true` を必須とし、機械反映時（本フェーズ）にも承認を求める |
+| `replace-callee-process` | callActivity の呼び出し先プロセス（`calledElement`）置換。`CALLEE_PROCESS_META` トークン付与を伴う | `fromId`（置換前の `calledElement` 値）, `toId`（置換後の値） | target は callActivity。破壊的操作。`requiresApproval: true` を必須とする |
+
+`convert-event-type` / `delete-element` / `manual`（構造変更・削除・図形情報同期を伴う操作）は自動反映の対象外であり、`reflectFixes()` はスキップする（人手対応・別ステップ対応に委ねる。詳細: `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md` 「設計上の制約」節を参照）。
+
+### `targets` の指定ルール
+
+- 既存要素を対象とする operation（`set-attribute` 系、`set-role-starter-groups` 系、`replace-callee-process` 等）は `targets: [{ elementId, elementType }]` で対象要素の実 ID を指定する。
+- `replace-process-id` は対象 process 自体の `id` を書き換えるため、置換対象の特定には `params.fromId` を用いる（`targets` を付与してもよいが、実際の反映処理では参照しない）。
+- `add-signal` / `add-message` のように新規 ID を発行する operation は、既存要素を参照するものではないため、`targets: [{ elementId: <新規発行する id>, elementType: 'bpmn:Signal' | 'bpmn:Message' }]` として `params.id` と同値を記載する（一覧性・トレーサビリティのため）。
+- **`add-data-object` の `targets.elementId` は process 自体の `id`（processId）を参照する。** 同じ `spec-to-bpmn-fixes.json` 内に、その process を対象とする `replace-process-id` エントリが存在する場合、`add-data-object` の `targets.elementId` には **置換後の値（`toId`）** を指定すること。`reflectFixes()` は fixes 配列を先頭から順に適用するため、`replace-process-id` が先に反映されて process の `id` が書き換わった後は、置換前の値（`fromId`）を `targets.elementId` に指定していると対象 process が見つからず `[SKIP] process not found: <fromId>` としてスキップされる（例外にはならず `applied` にも `skipped` にも計上されない、無言のスキップである点に注意）。同様の注意は今後 process 自体を target とする operation を追加する場合にも当てはまる。
+
+  | fixes.json 内の並び順 | `add-data-object` の `targets.elementId` に指定すべき値 |
+  |---|---|
+  | `replace-process-id` を含まない（process id 置換が発生しない） | 現在の process id（変更なし） |
+  | `replace-process-id` を同時に含む | 置換後の値（`toId`）。置換前の値（`fromId`）を指定すると無言でスキップされる |
+
+### タスク種別と color 値の対応
 
 | taskType | color |
 |----------|-------|
@@ -147,169 +172,71 @@ PROCESS_KEY_META:PROCESS_KEY_REPLACED=true;ORIGINAL_PROCESS_KEY=<元のprocess_i
 | `receiveTask` | `e0caf7` |
 | `callActivity` | `f9c0e4` |
 
-**共通ルール:**
-- 属性・要素が既に存在する場合はスキップする（べき等）
-- `<bpmn:process>` 等の名前空間プレフィックスにも対応している
+### 共通ルール
 
-### Step3.コールアクティビティの呼び出し先プロセスを置換
+- 属性・要素が既に存在する場合はスキップする（べき等）。`replace-process-id` / `replace-callee-process` も、埋め込み済みの `PROCESS_KEY_META` / `CALLEE_PROCESS_META` トークンの有無で判定し、同一の fix を再実行しても二重に反映されない。
+- `<bpmn:process>` 等の名前空間プレフィックスにも対応している。
+- ベンダーの判定・属性名/タグ名の切り替えは `reflectFixes()` 内部で自動的に行われるため、呼び出し側で意識する必要はない。属性名・タグ名がベンダーごとに具体的にどう変わるかは各 `apply*` 関数（`bpmn-specs-reflector.js`）・`resolveVendorName()` / `detectVendor()`（`bpmn-reflector-utils.js`）の実装・JSDoc を正とする（本ファイルでは重複管理しない）。
 
-**呼び出し先プロセスを置換時の注意事項**
-- 呼び出し先プロセスに対してチェックは不要。
-  - 呼び出し先プロセスの存在チェックや呼び出し先プロセスの内容チェックなどは行わない。
+## `applyFixToTarget()` から呼び出される主要関数
 
-#### 3-1. 置換後の値（プロセス定義キー）の取得
-- `to-be-discussed.md` の コールアクティビティの呼び出しプロセス置換履歴と呼び出し先BPMNより置換後の置換後の値（プロセス定義キー）の取得する。
-  - コールアクティビティの呼び出しプロセス置換履歴と呼び出し先BPMNのID（プロセス定義キー）の一致を確認する。
-  - 置換後の値が未定、`to-be-discussed.md`と呼び出し先BPMNの値が食い違う、呼び出し先BPMNのIDが未置換など、置換後の値が特定できない場合は、3-3.の一覧の「置換後の値」欄に、値不明を表示する。
+| 関数 | 役割 |
+|------|------|
+| `detectVendor(xml)` | ネームスペース宣言から製造ベンダー（`'im-bpm'` / `'igrafx'` / `'other'`）を判定する |
+| `applyProcessCandidateStarterGroups(xml, processId, roleId, vendor)` | `set-role-starter-groups` の反映本体 |
+| `applyLaneCandidateGroups(xml, laneId, roleId, vendor)` | `set-lane-candidate-groups` の反映本体 |
+| `applyUserTaskCandidateGroups(xml, taskId, roleId, vendor)` | `set-usertask-candidate-groups` の反映本体（`candidateGroups` 部分） |
+| `applyIsOptional(xml, taskId, vendor)` | `set-usertask-candidate-groups` の反映本体（`params.isOptional` が true の場合のみ） |
+| `applyTaskColor(xml, taskId, taskType, vendor)` | `set-task-color` の反映本体 |
+| `applyAttribute(xml, elementId, attrName, attrValue)` | `set-attribute` の反映本体。既存の `apply*` 系と異なり値を上書きする |
+| `applyEventDefinitionRef(xml, elementId, refType, refId)` | `set-eventdef-ref` の反映本体 |
+| `applyServiceTaskField(xml, taskId, fieldName, fieldValue)` | `set-service-task-field` の反映本体 |
+| `applyTimerDefinition(xml, ownerId, params)` | `set-timer-definition` の反映本体 |
+| `applyDataObjects(xml, processId, variables, vendor)` | `add-data-object` の反映本体 |
+| `applyConditionExpression(xml, flowId, expression, vendor)` | `set-condition-expression` の反映本体 |
+| `applySignal(xml, signalId, signalName, vendor)` | `add-signal` の反映本体 |
+| `applyMessage(xml, messageId, messageName, vendor)` | `add-message` の反映本体 |
+| `applyCalleeProcessReplacement(xml, callActivityId, fromId, toId)` | `replace-callee-process` の反映本体。`calledElement` 属性の上書きと `CALLEE_PROCESS_META` トークン付与を行う |
+| `applyVerifiedProcessIdReplacements(xml, replacements)` | `replace-process-id` の反映本体。メモリ上で置換・検証（最大2回リトライ）・`PROCESS_KEY_META` トークン付与まで行う（ファイル書き込みは行わない） |
+| `applyFixToTarget(xml, fix, target, vendor)` | `fix.operation` に応じて上記関数へ振り分ける（`replace-process-id` / `replace-callee-process` は `reflectFixes()` 内で別途処理） |
+| `reflectFixes(bpmnPath, fixesPath, options)` | 本ファイルのメイン API。上記をまとめて実行する |
+| `replaceProcessId(xml, fromId, toId)` | Process ID を置換する（`<process id>` と `<participant processRef>` の両方を置換） |
+| `extractRepositoryObjectId(xml)` | `<bpmn:definitions>` が持つ `ixbpmn:repositoryObjectID` 属性値を取得する（iGrafx製BPMN限定。存在しない場合は `null`） |
+| `applyProcessKeyMetaToken(xml, fromId, toId)` | `<process id="toId">` に `PROCESS_KEY_META` トークンを documentation として追加する |
+| `verifyProcessIdReplacements(xml, replacements)` | process id 置換 from-to と反映後 BPMN の一致を検証する（`process@id` と `participant@processRef` を照合） |
+| `checkProcessIdReplaced(bpmnPath, replacements)` | Process ID 置換が既に反映済みかを判定する（`replaced` / `not_replaced` / `partial`）。フェーズ1のチェックに使用（`.claude/skills/bpm-docs-generator/reference/guide-process-definition-key-replacement.md` 参照） |
 
-#### 3-2. 置換済みチェック（JS）
-- 更新対象BPMNのコールアクティビティの呼び出し先プロセスの値が置換済みか確認する。
-  - 置換済み、かつ、置換後の値が3-1で取得した値と一致する場合は置換不要。
+## PROCESS_KEY_META / CALLEE_PROCESS_META トークンの書式
 
-#### 3-3. ユーザー確認（置換実施可否）
-- 3-1. 3-2. で取得したコールアクティビティの一覧を表示し置換実施の可否を確認する。また、置換後の値が未定なものはID（プロセス定義キー）を確認し入力を促す。
-  - 一覧には、コールアクティビティ名、置換前の値、置換後の値（プロセス定義キー）、置換要否を表示する。
-  - 3-2. にて置換不要と判定したコールアクティビティは置換要否欄に「置換済み」を表示する。
-  - 3-2. にて未置換と判定したコールアクティビティは置換要否欄に「置換待ち」を表示する。
-  - 置換後の値が不明なものは置換要否欄に「値の決定待ち」を表示する。
-- 置換後の値が決めれられないコールアクティビティがあれば、そのコールアクティビティへの反映をスキップする旨を表示する。
-  - BPMNをIM-BPMへアップロードした後、プロセスデザイナにてコールアクティビティの呼び出し対象を設定することも通知する。
+`process@id` の置換後、processタグに下記フォーマットのトークンを documentation として追記する（既存記述は保持）。
 
-#### 3-4. 置換処理
-- 3-3. の一覧よりコールアクティビティの呼び出し対象プロセスの値を置換する。
-  - callActivityタグ以下にdocumentationタグを追加。以下を入力する。
-    - CALLEE_PROCESS_META:CALEE_PROCESS_REPLACED=true;ORIGINAL_CALLEE_PROCESS=<calledElementの置換前の値>;CALLEE_PROCESS=<置換後の値>;REPLACED_DATE=yyyy-MM-dd;
-  - callActivityタグのcalledElementに置換後の値を上書きする。
-
-#### 3-5. 仕様書更新
-
-- `to-be-discussed.md` のコールアクティビティの呼び出しプロセス置換履歴を更新する。
-  - 反映日: YYYY-MM-DD
-
-#### 3-6. 変更履歴更新
-
-- `interactive-log.md` に以下を記録する。
-  - 実行日時
-  - 対象ファイルパス
-  - 置換したコールアクティビティの一覧
-  - ユーザー確認結果（3-3）
-
-### 呼び出し例（Step1 → Step2 の順で実行）
-
-Step1（プロセス定義キー置換）と Step2（ロールID・色・変数等）は必ず**別々に `reflect()` を呼び出し、Step1 の完了を確認してから Step2 に進むこと**。
-1回の `reflect()` に両方のフィールドをまとめて渡さない。
-
-```javascript
-var reflector = require('.claude/skills/bpm-xml-reflector/scripts/bpmn-specs-reflector');
-var bpmnPath = 'doc/vehicle-management-prompt/vehicle-management.bpmn';
-
-// ---- Step1: プロセス定義キー置換（単独で実施） ----
-// processIdReplacements が不要な場合、Step1 は省略して Step2 から直接実施してよい。
-reflector.reflect(
-  bpmnPath,
-  {
-    // process id 置換の仕様書照合（to-be-discussed.md の from-to）
-    processIdReplacements: [
-      { fromId: 'Process_1', toId: 'daily_check_0001' }
-    ]
-  },
-  {
-    // ユーザー確認コールバック（Step1 でのみ必要）
-    onProcessIdReplacementDetected: function(filePath, replacements, onApprove, onReject) {
-      // ユーザーに確認を取り、承認なら onApprove()、拒否なら onReject() を呼び出す
-      console.log('File to be replaced: ' + filePath);
-      replacements.forEach(function(r) {
-        console.log('  ' + r.fromId + ' → ' + r.toId);
-      });
-      // 実装例：vscode_askQuestions で確認を取る
-      onApprove(); // or onReject();
-    }
-  }
-);
-
-// ---- Step2: ロールID・タスクの背景色・オプショナルタスク設定・
-//             プロセス変数・シグナル定義・メッセージ定義の反映（Step1 完了後に実施） ----
-reflector.reflect(
-  bpmnPath,
-  {
-    // プロセス・プールのロール設定
-    processes: [
-      { id: 'r_1', roleId: 'quality_safety_mgr' }
-    ],
-
-    // レーンのロール設定
-    lanes: [
-      { id: '_4', roleId: 'quality_safety_mgr' }
-    ],
-
-    // ユーザタスクのロール設定（isOptional は任意）
-    userTasks: [
-      { id: '_32', roleId: 'quality_safety_mgr' },
-      { id: '_10', roleId: 'quality_safety_mgr', isOptional: true }
-    ],
-
-    // プロセス変数（type: string / int / long / double / datetime / boolean）
-    dataObjects: [
-      {
-        processId: 'r_1',
-        variables: [
-          { id: 'vehicleId', name: 'vehicleId', type: 'string' }
-        ]
-      }
-    ],
-
-    // 分岐条件（EL式）
-    conditions: [
-      { flowId: '_50', expression: "${approved == 'true'}" },
-      { flowId: '_51', expression: "${approved == 'false'}" }
-    ],
-
-    // シグナル定義
-    signals: [
-      { id: 'sig1', name: 'OrderCompleted' }
-    ],
-
-    // メッセージ定義
-    messages: [
-      { id: 'msg1', name: 'Notification' }
-    ],
-
-    // タスクへの配色（taskType は上記カラーマップを参照）
-    colorize: [
-      { taskId: '_32', taskType: 'userTask' },
-      { taskId: '_10', taskType: 'userTask' }
-    ]
-    // processIdReplacements はここでは指定しない（Step1 で反映済みのため）
-  }
-);
+```
+PROCESS_KEY_META:{REPOSITORY_OBJECT_ID=<repositoryObjectIdの値>;ORIGINAL_PROCESS_KEY=<元のprocess_id>;PROCESS_KEY=<採番後process_id>};
 ```
 
-### specs 各フィールドの注意事項
+- 既に `<documentation>`（または `<bpmn:documentation>`）要素が存在し、かつ `PROCESS_KEY_META` トークンが未定義の場合は、その既存要素内にトークンを追記する（新規要素は追加しない）。
+- documentation 要素が存在しない場合は、ベンダー判定（`detectVendor()`）に応じたタグ名で新規要素を追加する: IM-BPM 製は `<bpmn:documentation>`、それ以外（iGrafx製・その他）は `<documentation>`。
+- 既に `PROCESS_KEY_META` トークンが存在する場合は重複追加を避けるためスキップする。
+- `REPOSITORY_OBJECT_ID` は対象 process の属性ではなく、**`<bpmn:definitions>`（ファイル直下のルート要素）が持つ `ixbpmn:repositoryObjectID` 属性値**を参照する（iGrafx製BPMN限定の属性）。
+- `<bpmn:definitions>` に `ixbpmn:repositoryObjectID` 属性が存在しない場合は、**エラーとして処理を中断する**（対象 `.bpmn` へは一切書き込まない）。この中断は検証リトライとは独立した失敗条件であり、リトライは行わない。
 
-- `processes` / `lanes` / `userTasks`: ロールID（`roleId`）は仕様書のアクター定義に記載された ID を使用すること
-- `dataObjects`: `type` には `string` / `int` / `long` / `double` / `datetime` / `boolean` のいずれかを指定する
-- `conditions`: `expression` は EL 式で記述する（例: `${p1 > 999}`）。`>` をそのまま書いてよい（スクリプトが値として扱う）
-- `colorize`: 全ユーザタスクに色を付けること。他のタスク種別も同様に漏れなく指定すること
-- `processIdReplacements`: 仕様書に記載した process id 置換提案（from-to）を設定する。`toId` は必須。`process@id` と `participant@processRef` の双方で `toId` に置換されたことを検証する。`fromId` が反映後に残ってよいケースのみ `allowFromIdExists: true` を付与する。**Step1 の呼び出し時にのみ指定し、Step2 の呼び出しには含めないこと**
-- フィールドが不要な場合は省略可（`reflect` は各フィールドを `|| []` で補完する）
-- Process ID 置換が伴う場合、第 3 引数 `options` で `onProcessIdReplacementDetected` コールバックを指定する（ユーザー確認フロー用）
+callActivity の呼び出し先プロセス置換後は、以下のフォーマットのトークンを documentation として callActivity 直下に追記する。
 
-### options（第3引数）の指定
-
-**Step1（`processIdReplacements` を渡す呼び出し）でのみ必要。Step2 の呼び出しでは指定不要。**
-
-```javascript
-{
-  onProcessIdReplacementDetected: function(filePath, replacements, onApprove, onReject) {
-    // filePath: 置換対象ファイルパス
-    // replacements: 置換内容の配列 [{ fromId: '...', toId: '...' }, ...]
-    // onApprove: 承認時のコールバック（引数なし）
-    // onReject: 拒否時のコールバック（引数なし）
-    //
-    // 実装例：
-    // - vscode_askQuestions で確認ダイアログを表示
-    // - ユーザーが「OK」を選択 → onApprove() 実行
-    // - ユーザーが「キャンセル」を選択 → onReject() 実行
-  }
-}
 ```
+CALLEE_PROCESS_META:CALEE_PROCESS_REPLACED=true;ORIGINAL_CALLEE_PROCESS=<calledElementの置換前の値>;CALLEE_PROCESS=<置換後の値>;REPLACED_DATE=yyyy-MM-dd;
+```
+
+- 既存の documentation 要素があればその中に追記し、無ければ新規追加する（`PROCESS_KEY_META` と同様のルール）。
+- 既にトークンが存在する場合は重複追加を避けるためスキップする。
+
+## 検証失敗時の扱い（`replace-process-id` / `replace-callee-process`）
+
+- `replace-process-id` の検証（`verifyProcessIdReplacements()` 相当）に失敗した場合は最大2回まで自動で再試行する。再試行しても失敗する場合は当該 fix のみ `skipped` に積み、他の fix の反映は継続する。
+- `REPOSITORY_OBJECT_ID` が取得できない場合（iGrafx製 BPMN で `ixbpmn:repositoryObjectID` 属性が無い等）は、検証リトライとは独立した失敗条件として即座にエラーとし、対象 `.bpmn` へは一切書き込まない。
+
+## 例外: 再置換の禁止
+
+置換済みと判定された process に対しては、新規採番を実施してはならない。必ず既存キーを再利用する。フェーズ1（`spec-to-bpmn-fixes.json` 作成）で `checkProcessIdReplaced()` 等を用いてこの判定を行う（詳細: `.claude/skills/bpm-docs-generator/reference/guide-process-definition-key-replacement.md`）。
+
+- 既存キーの取得先:
+  - documentation トークンから `PROCESS_KEY=<key>` を抽出

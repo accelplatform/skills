@@ -1,6 +1,6 @@
 ---
 name: java-im-mirage-usage
-description: intra-mart 固有の DB アクセス基盤である im_mirage（`jp.co.intra_mart.mirage.*`、Mirage-SQL の intra-mart 内製版）を Java（JavaEE 開発モデル）で使用するためのスキルセット。エンティティクラス（`@Table`/`@Column`/`@PrimaryKey`）、DAOクラス（`AbstractDAO` 継承・`DAOFactory` によるインスタンス取得）、2WaySQL の SQLファイル（`/*IF*/`/`/*BEGIN*/`/`/*param*/`/`/*FOR*/`）、`SqlManager` によるクエリ実行（`getResultList`/`getSingleResult`/`executeUpdate`/エンティティCRUD）、`SessionTemplate`/`SessionCallback` によるトランザクション管理、DB方言別 SQL ファイル（`_oracle.sql`/`_sqlserver.sql` 等）の実装パターンを提供する。Java で im_mirage を使いたい、Java で AbstractDAO / DAOFactory / SqlManager を使いたい、JavaEE 開発モデルで DB アクセス処理を実装したい、Mirage の DAO・エンティティを作りたい、Java 側で 2WaySQL の SQL ファイルを書きたい、と言及されたときに使用。JSSP（スクリプト開発モデル）で DB アクセスを行う場合は `jssp-page-generator`（`TenantDatabase`/`SharedDatabase` API・`jssp-2way-sql.md` 規約）を使うこと。両者は開発モデルが異なり実装は完全に独立している。
+description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有的数据库访问基础设施 im_mirage（`jp.co.intra_mart.mirage.*`，Mirage-SQL 的 intra-mart 自研版）的技能集。提供实体类（`@Table`/`@Column`/`@PrimaryKey`）、DAO 类（继承 `AbstractDAO`、通过 `DAOFactory` 获取实例）、2WaySQL 的 SQL 文件（`/*IF*/`/`/*BEGIN*/`/`/*param*/`/`/*FOR*/`）、通过 `SqlManager` 执行查询（`getResultList`/`getSingleResult`/`executeUpdate`/实体 CRUD）、通过 `SessionTemplate`/`SessionCallback` 进行事务管理、数据库方言专用 SQL 文件（`_oracle.sql`/`_sqlserver.sql` 等）的实现模式。当提及想在 Java 中使用 im_mirage、想在 Java 中使用 AbstractDAO / DAOFactory / SqlManager、想在 JavaEE 开发模型中实现数据库访问处理、想制作 Mirage 的 DAO・实体、想在 Java 侧编写 2WaySQL 的 SQL 文件时使用。若要在 JSSP（脚本开发模型）中进行数据库访问，请使用 `jssp-page-generator`（`TenantDatabase`/`SharedDatabase` API・`jssp-2way-sql.md` 规约）。两者的开发模型不同，实现完全独立。
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -89,7 +89,8 @@ Repository・Service 的实例不通过 `new StandardXxx()` 直接生成，而�
 主要要点：
 - **`SqlManager` 的 SQL 文件系方法（`getResultList`/`getSingleResult`/`getCount`/`executeUpdate`/`iterate`）用于执行 2WaySQL 模板。** 另一方面，`xxxBySql` 系方法（`getResultListBySql` 等）执行的是**非 2WaySQL** 的原生 SQL 字符串 + `?` 占位符。两者不可混淆
 - **SQL 文件会自动解析各数据库方言对应的文件。** 对于 `select_xxx.sql`，若存在 `select_xxx_oracle.sql`（Oracle）/`select_xxx_postgre.sql`（PostgreSQL）/`select_xxx_sqlserver.sql`（SQLServer），则优先使用对应文件，不存在时回退到原始文件。仅在存在方言差异时才需要添加方言专用文件（无需为所有方言都准备文件）
-- **`/*FOR item : list*/.../*END*/` 循环语法在 im_mirage 中可用。** JSSP（脚本开发模型）的 2WaySQL 不支持此语法，复用 JSSP 侧实现时需注意
+- **`/*FOR item in list*/.../*END*/` 循环语法在 im_mirage 与 LogicDesigner 中可用。** JSSP（脚本开发模型）的 2WaySQL 不支持此语法，复用 JSSP 侧实现时需注意。分隔符为前后各夹一个半角空格的 `in` 或 `IN`
+- **IN 子句的动态生成使用 `IN /*param*/('dummy')`（带括号的绑定）。** `List`/数组会按元素个数展开为 `(?, ?, ?)`。为 `null` 或空列表时，绑定部分会连同一起不被输出，因此需用 `/*IF list != null && list.size() > 0*/` 包围
 
 ## 生成对象与模板
 
@@ -98,7 +99,7 @@ Repository・Service 的实例不通过 `new StandardXxx()` 直接生成，而�
 | 实体类 | `assets/mirage-basic-usage.md` | `@Table`/`@Column`/`@PrimaryKey` 的实现、审计字段 |
 | DAO 类（基本 CRUD） | `assets/mirage-basic-usage.md` | 继承 `AbstractDAO`、通过 `DAOFactory` 获取实例 |
 | DAO 类（自定义查询） | `assets/mirage-basic-usage.md` | SQL 文件路径常量、调用 `sqlManager.getResultList`/`getSingleResult` 等 |
-| 2WaySQL 的 SQL 文件 | `assets/mirage-basic-usage.md` | `/*IF*/`/`/*BEGIN*/`/`/*param*/`/`/*FOR*/` 语法、方言专用文件 |
+| 2WaySQL 的 SQL 文件 | `assets/mirage-basic-usage.md` | `/*IF*/`/`/*BEGIN*/`/`/*param*/`/`IN /*param*/('dummy')`/`/*FOR ... in ...*/` 语法、方言专用文件 |
 | 事务管理 | `assets/mirage-basic-usage.md` | `SessionTemplate.execute(SessionCallback)` 的实现模式 |
 | Repository 层（推荐模式） | `assets/mirage-basic-usage.md` | 通过 Repository 接口 + Standard 实现类封装 DAO 调用、通过 `ServiceLoaderUtil` 实现工厂类 |
 | Service 层 | `assets/mirage-basic-usage.md` | 跨多个 Repository 的登记处理的同一事务化、单个 Repository 的薄封装、通过 `ServiceLoaderUtil` 实现工厂类 |
@@ -124,7 +125,7 @@ Repository・Service 的实例不通过 `new StandardXxx()` 直接生成，而�
 1. 听取用户需求（目标表・列构成、租户数据库/共享数据库、所需查询种类）
 2. 按照 `.claude/rules/java-entity.md` 设计并实现实体类（`@Table`/`@Column`/`@PrimaryKey`、4 个审计字段）
 3. 参考 `assets/mirage-basic-usage.md` 实现 DAO 类（继承 `AbstractDAO<实体类型>`。需要自定义查询时添加 SQL 文件路径常量与调用方法。方法签名务必参考 `reference/mirage-api-reference.md`，不可凭记忆或推测编写）
-4. 若存在自定义查询，创建 2WaySQL 的 SQL 文件（仅在存在数据库方言差异时才添加方言专用文件）
+4. 若存在自定义查询，创建 2WaySQL 的 SQL 文件（仅在存在数据库方言差异时才添加方言专用文件）。创建后执行 `scripts/validate-mirage-sql-comments.js`，检查是否误混入了注释（参见「生成后的确认」）
 5. 将 Repository 以「接口 + Standard 实现类 + 工厂类（使用 `ServiceLoaderUtil.loadTopPriority`）」的三件套结构实现，并通过 `SessionTemplate.execute(SessionCallback)` 的事务边界包装 DAO 调用
 6. 若存在跨多个 Repository 的处理，同样以「接口 + Standard 实现类 + 工厂类」的三件套结构创建 Service，在 Service 自身的 `SessionTemplate.execute` 事务边界内调用各 Repository（通过 `XxxRepositoryFactory.getInstance()` 获取）（若仅调用单个 Repository 方法即可完成，则 Service 侧无需 `SessionTemplate`，作为仅靠 Repository 侧边界即可的薄封装）
 7. 确认是否符合 `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md`
@@ -132,32 +133,45 @@ Repository・Service 的实例不通过 `new StandardXxx()` 直接生成，而�
 ## 注意事项
 
 - **不要用 `new` 直接生成 DAO 实例。** 应使用 `DAOFactory.getTenantDatabaseDAO(...)`/`getSharedDatabaseDAO(...)`。直接 `new` 会导致 `sqlManager` 字段未设置，从而引发 `NullPointerException`
-- **不要手动设置审计字段（`createUserCd`/`createDate`/`recordUserCd`/`recordDate`）。** 因为 `AbstractDAO#insert`/`update` 会自动设置，手动设置可能导致意外覆盖
+- **不要手动设置审计字段（`createUserCd`/`createDate`/`recordUserCd`/`recordDate`）。** 因为 `AbstractDAO#insert`/`update` 会自动设置，手动设置可能导致意外覆盖。但 `update` 只设置 `record` 系字段，且会更新主键以外的全部列，因此**更新时应以通过 `find()` 获取的既有 Entity 为基础，仅反映变更点**（若传入新组装的 Entity，记录创建时的审计追踪会丢失）
 - **不要混淆 `SqlManager` 的 SQL 文件系方法与 `xxxBySql` 系方法。** 前者是 2WaySQL 模板（指定文件路径），后者是原生 SQL 字符串（`?` 占位符），参数处理方式也不同
 - **数据库更新处理应在 `SessionTemplate.execute(SessionCallback)` 的事务边界内执行。** 若在边界外执行，自动提交的单位可能无法达到预期的粒度
-- **`/*FOR*/` 语法为 im_mirage 专用。** 不能直接沿用 JSSP 侧的 2WaySQL 文件（参见 `jssp-2way-sql.md`）
+- **`/*FOR*/` 语法在 im_mirage 与 LogicDesigner 中可用，JSSP（脚本开发模型）不支持。** 不能直接沿用 JSSP 侧的 2WaySQL 文件（参见 `jssp-2way-sql.md`）
+- **将缺少 4 个审计字段中任意一个的实体传给 `AbstractDAO#insert`/`update` 会引发 `NullPointerException`。** 这不仅是规约上的要求，也是实现上的强制要求（参见 `reference/mirage-api-reference.md` 的 `EntityHelper`）
+- **`getSingleResult`/`find` 不保证件数的唯一性。** 0 件时不抛出异常而是返回 `null`，2 件以上时也不抛出异常而是返回首行。返回值必须进行 `null` 检查；对于需要唯一性的查询，应通过主键／唯一约束来保证，或使用 `getResultList` 获取后验证件数
+- **具体 DAO 应直接继承 `AbstractDAO<实体类型>`，或经由原样传递类型变量的中间类（`CommonDAO<T> extends AbstractDAO<T>`）。** 由于 `AbstractDAO#find` 仅从 `getClass().getGenericSuperclass()` 的第 1 个实际类型参数解析实体类型，若插入固定了类型参数的中间类／对具体 DAO 再次继承，解析结果会变为 `null` 从而引发 `NullPointerException`；若第 1 个类型参数不是实体类型，则会导致表名错误。`insert`/`update`/`delete` 与 SQL 文件系的自定义查询不使用该解析，因此只有调用 `find()` 时才会显现
+- **传给 `getCount` 的 SQL 文件中不要写 `SELECT COUNT(*)` 和 `ORDER BY`。** `getCount` 会将传入的 SQL 整体包裹为 `SELECT COUNT(*) FROM (...)` 的子查询，因此若自行写了 `SELECT COUNT(*)`，将不抛出异常而始终返回 `1`。应传入与列表获取相同形式的 SELECT
 - **数据库方言专用 SQL 文件仅在存在差异时才创建。** 机械地为所有方言复制文件会降低可维护性。若基础文件即可覆盖所有方言，保持原样即可
 - **SQL 文件应配置在 `src/main/resources` 下，而非 `src/main/java`，且与 DAO 类使用相同的包路径。** 放在 `src/main/java` 下不会包含在运行时类路径中，会导致 `resource: xxx.sql is not found.` 错误。平台标准功能的源码树中 `.java` 与 `.sql` 看似位于同一目录下，那是构建前的仓库结构，与 Maven 标准布局的部署位置不同，需注意这一点（容易出现遗漏实现的地方）
 
 ## 生成后的确认
 
-尚未整备类似 JSSP 版的专用验证脚本（相当于 `validate-jssp-code.js`）。请手动确认以下事项。
+新建或修改 2WaySQL 的 SQL 文件（`.sql`）时，执行以下命令检测误混入的注释（`--` 注释、块注释内的 `/*` 或 `?`），并修复至 0 个错误为止。
+
+```bash
+node .claude/skills/java-im-mirage-usage/scripts/validate-mirage-sql-comments.js src/main/resources/{包路径}/
+```
+
+除此之外（实体类・DAO 类・Repository・Service 等 `.java` 文件），并非通过自动验证脚本，而是手动确认以下事项。
 
 1. 实体类是否符合 `.claude/rules/java-entity.md`（public 字段・无参构造函数・`GenerationType.APPLICATION`・4 个审计字段）
 2. DAO 类是否继承了 `AbstractDAO<实体类型>`，是否未自行重复声明 `sqlManager` 字段（`BaseDAO` 侧已提供）
 3. DAO 的获取是否通过 `DAOFactory.getTenantDatabaseDAO`/`getSharedDatabaseDAO`（而非 `new XxxDAO()`）
 4. DAO 是否经由 Repository 类调用（从 REST API 使用时，Endpoint/Service 类是否未直接调用 DAO。是否遵循 `Endpoint → Service → Repository → DAO` 的顺序）
 5. 调用 DAO 一侧是否未手动设置审计字段
-6. SQL 文件系方法（`getResultList` 等）与 `xxxBySql` 系方法的使用区分是否恰当
-7. 更新类处理是否位于 `SessionTemplate.execute(SessionCallback)` 的事务边界内
-8. SQL 文件是否配置在 `src/main/resources` 下（与 DAO 类相同的包路径）（是否未放置在 `src/main/java` 下）
-9. 跨多个 Repository 的处理是否统一在 Service 自身的 `SessionTemplate.execute` 事务边界内执行（是否未按 Repository 分别提交事务）
-10. 对于仅调用单个 Repository 方法即可完成的 Service 方法，是否存在不必要的重复 `SessionTemplate.execute` 封装（若 Repository 侧边界已足够，Service 侧应直接透传）
-11. Endpoint（Web API Maker）类是否未直接调用 `SessionTemplate`/`DAOFactory`，而是必定经由 Service
-12. Repository・Service 是否采用「接口 + Standard 实现类 + 工厂类」的三件套结构，调用方是否未通过 `new StandardXxx()` 直接生成，而是使用 `XxxFactory.getInstance()`
-13. 工厂类的实现是否使用了返回单一实例的 `loadTopPriority`，而非返回 `Collection` 的 `ServiceLoaderUtil.loadPriority`
-14. 是否符合 `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md`
-15. `jssp-code-review` / `jssp-security-check` 是 JSSP 专用技能，不适用于本技能的生成物。若项目中另有针对 Java 的代码审查・安全检查技能，请使用该技能
+6. 更新处理是否以通过 `find()` 获取的既有 Entity 为基础（是否未将新 `new` 的 Entity 传给 `update`）
+7. SQL 文件系方法（`getResultList` 等）与 `xxxBySql` 系方法的使用区分是否恰当
+8. 更新类处理是否位于 `SessionTemplate.execute(SessionCallback)` 的事务边界内
+9. SQL 文件是否配置在 `src/main/resources` 下（与 DAO 类相同的包路径）（是否未放置在 `src/main/java` 下）
+10. 传给 `getCount` 的 SQL 文件是否为与列表获取相同形式的 SELECT（是否未写 `SELECT COUNT(*)` 或 `ORDER BY`）
+11. IN 子句的动态生成是否使用了 `IN /*param*/('dummy')`，是否通过 `/*IF list != null && list.size() > 0*/` 同时守护了 `null` 与空列表
+12. 跨多个 Repository 的处理是否统一在 Service 自身的 `SessionTemplate.execute` 事务边界内执行（是否未按 Repository 分别提交事务）
+13. 对于仅调用单个 Repository 方法即可完成的 Service 方法，是否存在不必要的重复 `SessionTemplate.execute` 封装（若 Repository 侧边界已足够，Service 侧应直接透传）
+14. Endpoint（Web API Maker）类是否未直接调用 `SessionTemplate`/`DAOFactory`，而是必定经由 Service
+15. Repository・Service 是否采用「接口 + Standard 实现类 + 工厂类」的三件套结构，调用方是否未通过 `new StandardXxx()` 直接生成，而是使用 `XxxFactory.getInstance()`
+16. 工厂类的实现是否使用了返回单一实例的 `loadTopPriority`，而非返回 `Collection` 的 `ServiceLoaderUtil.loadPriority`
+17. 是否符合 `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md`
+18. `jssp-code-review` / `jssp-security-check` 是 JSSP 专用技能，不适用于本技能的生成物。若项目中另有针对 Java 的代码审查・安全检查技能，请使用该技能
 
 ## 与其他技能的边界
 

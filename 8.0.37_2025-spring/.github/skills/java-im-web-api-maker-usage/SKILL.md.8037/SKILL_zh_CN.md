@@ -77,7 +77,8 @@ DAO（`Xxx` + `DAO`）
 主要要点：
 - **类・接口・模型均须为 `public`，模型必须具有无参构造函数。** 只有 getter/setter 齐备的成员才会成为输入输出对象
 - **返回值・参数可使用基本类型、数组、`List`/`Set`、`byte[]`（二进制）、`InputStream` 等。** 响应格式将根据 `Accept` 头的 MIME 类型（JSON/XML）自动转换。`null` 属性不会被输出
-- **错误时的响应格式不作保证。** 仅在成功时按照 `Accept` 头指定的格式返回
+- **响应体并非 Endpoint 方法的返回值本身，而是被包装在带有 `error` / `data` 的包装对象中返回。** 成功时为 `{"error": false, "data": <返回值>}`，发生异常时为 `{"error": true, "errorMessage": "...", "data": <@ReturnValue 的值>}`。**客户端若不解开该包装就直接引用，即使 API 本身正常，画面也接收不到数据**（详情与实现示例请参照 `reference/web-api-maker-api-reference.md`「响应体的包装结构」与 `assets/web-api-maker-basic-usage.md` 模式7）
+- **是否被包装，取决于请求是否到达了 Endpoint 方法（即是否经过反射的 `Method#invoke`），而非取决于状态码的值或 `@Response` 的有无。** Endpoint 方法自身抛出的异常，无论是否标注 `@Response` 都必定会被包装（未标注时状态码仅为 `500`）。`400`（`@Required`）/`403`（`@Authz`・`@Secured`）/`405`/`415` 也会被包装。另一方面，**未认证访问（`@IMAuthentication` 时）返回的是 `404` 而非 `401`，且不会被包装**（因为请求根本不会到达 Endpoint 方法）。`406`（`Accept` 不正确）以及在 Endpoint 方法之外（如 `ActionFilter`）发生且该处未显式处理的异常导致的 `500`，同样不会被包装（详情参见 `reference/web-api-maker-api-reference.md`「何时会被包装、何时不会」）
 - 已创建 API 的规格可通过 `http://<HOST>:<PORT>/<CONTEXT_PATH>/api-docs/${api-category}` 以 JSON 格式（兼容 Swagger）查看
 
 ## 认证方式的选择
@@ -100,7 +101,8 @@ DAO（`Xxx` + `DAO`）
 | OAuth 认证 API | `assets/web-api-maker-basic-usage.md` | `@OAuth(scope=...)` 的实现、3 种配置文件全套 |
 | IM-Authz 联动（认可检查） | `assets/web-api-maker-basic-usage.md` | `@Authz(uri=..., action=...)` 的实现、与 `java-im-authz-usage` 的联动要点 |
 | 安全令牌验证 | `assets/web-api-maker-basic-usage.md` | `@Secured` 的实现模式 |
-| 响应控制 | `assets/web-api-maker-basic-usage.md` | 异常 → 状态码（`@Response`）、手动响应（`@PreventWritingResponse`）、异常侧的附加信息（`@ReturnValue`） |
+| 响应控制 | `assets/web-api-maker-basic-usage.md` | 响应体的包装结构（`error`/`data`）、异常 → 状态码（`@Response`）、手动响应（`@PreventWritingResponse`）、异常侧的附加信息（`@ReturnValue`） |
+| 客户端（画面）一侧的接收 | `assets/web-api-maker-basic-usage.md` | 解开包装取出 `data` 的 `fetch` 实现、`Accept` 头的指定、`X-Intramart-Secure-Token` 头的附加、错误判断的顺序 |
 
 ### 参考资料
 
@@ -126,7 +128,8 @@ DAO（`Xxx` + `DAO`）
 4. 在 `META-INF/im_web_api_maker/packages` 中注册 Endpoint 类的包名（**最常见的实现遗漏之处**）
 5. 若需要认可检查，添加 `@Authz(uri=..., action=...)`，并确认对应的认可资源是否已在 IM-Authz 一侧注册（若未注册，向用户确认是否需要用 `java-im-authz-usage` 实现注册处理）
 6. 若需要 OAuth 认证，在确认已导入 Web API Maker OAuth 认证模块的前提下添加 `@OAuth(scope=...)`，并完善 `oauth-client-scopes-config`/`oauth-client-resources-config`/`oauth-client-details-config` 这 3 项
-7. 确认是否遵循 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+7. **若同时实现调用该 API 的客户端（JSSP 展示页面・外部系统等），必须加入解开响应的 `error` / `data` 包装的处理**（`assets/web-api-maker-basic-usage.md` 模式7-4）。若客户端由其他负责人・其他技能实现，则应将响应结构（成功时・发生异常时的 JSON 示例）作为交接事项明确告知用户
+8. 确认是否遵循 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
 
 ## 注意事项
 
@@ -135,13 +138,14 @@ DAO（`Xxx` + `DAO`）
 - **不要在 Endpoint 类中直接编写 DB 访问（`DAOFactory`/`SqlManager` 等）代码。** 务必通过 Service 类间接调用 Repository/DAO（`java-im-mirage-usage` 的职责）。若从 Endpoint 直接调用 Repository/DAO，Service 层将形同虚设，业务逻辑的可复用性・可测试性也会随之丧失
 - **`@OAuth` 仅靠基本模块无法运行。** 需向用户说明，追加导入 Web API Maker OAuth 认证模块是前提条件
 - **`@Authz` 的 `uri` 中指定的认可资源，需事先在 IM-Authz 一侧完成注册。** 仅在 Web API Maker 一侧添加 `@Authz` 并不会生效，必须与通过 `java-im-authz-usage` 在 `ResourceManager`/`PolicyManager` 一侧的注册（或租户环境搭建的导入资材）配套才能成立
-- **`@Secured` 带来的安全令牌验证，与认证注解（`@IMAuthentication` 等）是不同的关注点。** 安全令牌用于应对 CSRF，认证注解用于判断「以谁的身份访问」，在两者都需要的场景（例如：从浏览器调用的状态变更类 API）中不要混淆
-- **错误时的响应格式（JSON/XML）不作保证。** 客户端一侧的实现，应设计为将成功时与失败时的响应解析处理区分开
+- **`@Secured` 带来的安全令牌验证，与认证注解（`@IMAuthentication` 等）是不同的关注点。** 安全令牌用于应对 CSRF，认证注解用于判断「以谁的身份访问」，在两者都需要的场景（例如：从浏览器调用的状态变更类 API）中不要混淆。**请求头名称固定为 `X-Intramart-Secure-Token`**（依据 `Secured` 注解的 javadoc・`WebApiSecureTokenActionFilter` 的实现）。从 JSSP 画面调用时，可直接复用通过既有的 `<meta name="im_secure_token">` 模式（参见 `.github/instructions/jssp-presentation-page.instructions.md`）获取的令牌，无需另行设计获取方式
+- **响应体必定被 `error` / `data` 的包装所包裹。** Endpoint 方法的返回值位于 `data` 之下。客户端不解开包装就直接引用会得到 `undefined`，从而导致「API 正常但画面上不显示数据」的缺陷（最常见的客户端实现遗漏）
+- **Endpoint 方法自身抛出的异常，无论是否标注 `@Response` 都必定会被包装。** `400`（`@Required`）/`403`（`@Authz`・`@Secured`）/`405`/`415` 也会被包装。而未认证访问在 `@IMAuthentication` 时返回的是 `404` 而非 `401`，不会被包装。`406`（`Accept` 不正确）以及在 Endpoint 方法之外（如 `ActionFilter`）发生且该处未显式处理的异常导致的 `500`，同样不会被包装。带 `@Response(code=...)` 的业务异常即使状态码不是 `200` 也会被包装，因此客户端应采用「状态码不是 `200` 时也尝试解析响应体」的判断顺序（详情参见 `reference/web-api-maker-api-reference.md`「何时会被包装、何时不会」）
 - **`Effect`（IM-Authz）或认可判断的详细 CRUD API 不属于本技能范畴。** 本技能的范围仅到 `@Authz` 的使用方法为止，不编写资源注册・策略设置的实现代码（引导至 `java-im-authz-usage`）
 
 ## 生成后的确认
 
-如 JSSP 版那样的专用验证脚本（相当于 `validate-jssp-code.js`）目前尚未配备。以下项目需手动确认。
+并非通过自动验证脚本（如 JSSP 版的 `validate-jssp-code.js`），而是手动确认以下事项。
 
 1. Endpoint 类的包名是否已在 `META-INF/im_web_api_maker/packages` 中注册
 2. Endpoint 类・模型类・相关接口是否均为 `public`，模型类是否具有无参构造函数
@@ -149,12 +153,13 @@ DAO（`Xxx` + `DAO`）
 4. 若使用 `@OAuth`，是否存在 Web API Maker OAuth 认证模块导入前提及 `scope` 属性指定遗漏
 5. 若使用 `@Authz`，`uri`/`action` 是否与 IM-Authz 一侧的注册内容一致（与 `java-im-authz-usage` 一侧的实现进行比对）
 6. `@Path` 的值・HTTP 方法注解是否与需求听取内容一致，路径参数（`{xxx}`）与 `@Variable(name=...)` 是否一致
-7. 是否针对状态变更类（POST/PUT/DELETE）端点考虑了 `@Secured` 的必要性
+7. 是否针对状态变更类（POST/PUT/DELETE）端点考虑了 `@Secured` 的必要性，若已添加，客户端是否在 `X-Intramart-Secure-Token` 头中携带了令牌
 8. **类名是否符合 `Endpoint`（Web API Maker 的类）/`EndpointFactory`（工厂）/`Service`（业务逻辑）/`Repository`（DB 访问抽象化）的命名规则・分层结构。** Endpoint 类中是否未直接编写 DB 访问或业务逻辑（是否按 `Endpoint → Service → Repository → DAO` 的顺序进行委托）
 9. Endpoint 类是否未像 `new StandardXxxService()` 那样直接生成 Service 的具体类，而是通过 `XxxServiceFactory.getInstance()`（基于 `ServiceLoaderUtil.loadTopPriority` 的工厂）获取
 10. 若将 Endpoint 接口化，`@IMAuthentication` 等类注解、`@Path`/`@GET`/参数注解是否声明在接口一侧而非实现类，工厂类 `@ProvideService` 方法的**返回值类型是否为接口**（若仍为实现类类型，注解将不被识别，导致端点无法注册）
-11. 是否遵循 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
-12. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目中另有面向 Java 的代码评审・安全检查技能，请使用该技能
+11. **客户端（画面・外部系统）一侧的实现是否在解开响应的 `error` / `data` 包装之后再使用业务数据。** 是否存在 `fetch(url).then(function (res) { return res.json(); }).then(function (order) { order.xxx; })` 这类不解开包装就直接引用的写法（正确写法是 `body.data.xxx`）。是否指定了 `Accept: application/json`。对于不会被包装的情形（未认证时的 `404`、`406`、无法识别的 `500` 等），是否在响应体解析失败时作为预期外错误处理。若客户端不由本技能实现，是否已将成功时・发生异常时的响应结构交接给用户
+12. 是否遵循 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+13. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目中另有面向 Java 的代码评审・安全检查技能，请使用该技能
 
 ## 与其他技能的边界
 

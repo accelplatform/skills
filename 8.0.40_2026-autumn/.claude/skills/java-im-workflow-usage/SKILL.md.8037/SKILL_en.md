@@ -158,7 +158,7 @@ Follow the PascalCase rules in `.claude/rules/java-naming.md`. Make the suffix c
 
 ## Verification After Generation
 
-A dedicated verification script equivalent to the JSSP version's `validate-workflow-code.js` is not yet in place. Check the following manually.
+Rather than an automated validation script (such as the JSSP version's `validate-workflow-code.js`), check the following manually.
 
 1. Whether the FQCN of the parent class/implemented interface matches what is described in `reference/parameter-reference.md`
 2. Whether the signature of the overridden methods (argument types, return type, `throws`) exactly matches the abstract class/interface definition (add `@Override` and let the compiler verify it)

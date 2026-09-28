@@ -24,8 +24,8 @@ import jp.co.example.foo.exception.ResourceRegistrationException;
  */
 public class AuthzResourceRegistrationService {
 
-    /** このアプリケーションのリソースタイプID */
-    private static final String RESOURCE_TYPE_ID = "service://myapp/orders";
+    /** リソースURI のプレフィックス（先頭の "flat-crud" がリソースタイプID） */
+    private static final String RESOURCE_URI_PREFIX = "flat-crud://myapp/orders/";
 
     /**
      * 発注データをリソースとして登録します。
@@ -34,8 +34,7 @@ public class AuthzResourceRegistrationService {
      * @throws ResourceRegistrationException 登録に失敗した場合
      */
     public void registerOrderResource(final String orderId, final String displayName) throws ResourceRegistrationException {
-        // リソースURIは "RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT" 形式
-        final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
+        final String resourceUri = RESOURCE_URI_PREFIX + orderId;   // 例: flat-crud://myapp/orders/ORD001
         final I18nValue<String> name = new I18nValue<String>(Locale.JAPANESE, displayName);
 
         // Manager インスタンスはテナントを跨いで使い回さず、都度 Factory から取得する
@@ -50,7 +49,7 @@ public class AuthzResourceRegistrationService {
 }
 ```
 
-- リソースURIは `RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` 形式。他アプリケーションと衝突しないよう、アプリケーション名・コンポーネント名で階層を区切って設計する
+- リソースURIは `RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` 形式（使用できるリソースタイプは `reference/authz-api-reference.md`「標準リソースタイプとアクション」）。他アプリケーションと衝突しないよう、アプリケーション名・コンポーネント名による階層はリソースタイプIDより後ろのパス部分で表現する
 - `I18nValue<String>` は `HashMap<Locale, String>` のサブクラス。複数ロケールの表示名を持たせたい場合は `put(locale, value)` を追加で呼ぶ
 - `Manager` インスタンスはフィールドにキャッシュせず、呼び出しのたびに `Factory` から取得する（テナント切替時に使い回すと一部 API が失敗する設計のため）
 
@@ -110,8 +109,54 @@ public class AuthzSubjectRegistrationService {
 }
 ```
 
-- `Subject` の具体的な実装（部署・パブリックグループ・ロール等）は本スキルの対象外（`im_master_subjecttypes` 等の拡張モジュールが提供する）。呼び出し元から `Subject` インスタンスを受け取る設計にする
+- `Subject` インスタンスは `SubjectManager#registerAsSubject(subjectTypeId, keys)` で採番する（次項参照）
 - 「全ユーザ」「未認証ユーザ」に対するポリシーを設定したいだけの場合は、新規にサブジェクトグループを登録せず `SubjectManager#getAuthenticatedUsers()` / `getGuestSubjectGroup()` の組込みグループを使う（パターン3参照）
+
+### ロール等をサブジェクトにする
+
+`Subject` はサブジェクトタイプ ID とキー値から `registerAsSubject` で採番する。「ロールに所属するユーザに権限を与える」場合の実装。
+
+```java
+package jp.co.example.foo.service;
+
+import java.util.Locale;
+
+import jp.co.intra_mart.foundation.authz.model.I18nValue;
+import jp.co.intra_mart.foundation.authz.model.subjects.Subject;
+import jp.co.intra_mart.foundation.authz.model.subjects.SubjectGroup;
+import jp.co.intra_mart.foundation.authz.services.admin.SubjectExpression;
+import jp.co.intra_mart.foundation.authz.services.admin.SubjectManager;
+import jp.co.intra_mart.foundation.authz.services.admin.SubjectManagerFactory;
+import jp.co.intra_mart.foundation.authz.subjecttype.im_master.ImRole;
+import jp.co.intra_mart.foundation.authz.util.expression.Expression;
+
+/**
+ * ロールを条件とするサブジェクトグループの登録処理を提供します。
+ */
+public class RoleSubjectRegistrationService {
+
+    /**
+     * 指定したロールに所属するユーザ群を表すサブジェクトグループを登録します。
+     * @param roleId ロールID
+     * @param displayName サブジェクトグループの表示名
+     * @return 登録されたサブジェクトグループ（既に存在する場合は既存のもの）
+     */
+    public SubjectGroup registerRoleSubjectGroup(final String roleId, final String displayName) {
+        final SubjectManager subjectManager = SubjectManagerFactory.getInstance().getSubjectManager();
+
+        // サブジェクトタイプIDとキー値（ロールはロールID 1 つ）からサブジェクトを採番する
+        final Subject subject = subjectManager.registerAsSubject(ImRole.B_M_ROLE, roleId);
+
+        // Subject 単体では登録できないため、Expression に変換してから SubjectGroup として登録する
+        final Expression expression = SubjectExpression.S(subject);
+        final I18nValue<String> name = new I18nValue<String>(Locale.JAPANESE, displayName);
+        return subjectManager.registerSubjectGroup(expression, name);
+    }
+}
+```
+
+- キー値の個数・意味はサブジェクトタイプごとに異なる。ID 一覧は `reference/authz-api-reference.md`「標準サブジェクトタイプ」を参照
+- `registerSubjectGroup` は既存があれば既存インスタンスを返すため、事前に `getSubjectGroupByExpression` で存在確認する必要はない
 
 ## パターン3: ポリシーの設定（許可・禁止の登録）
 
@@ -137,8 +182,8 @@ public class AuthzPolicyConfigurationService {
     /**
      * 認証済みユーザ全体に対して、指定したリソースグループ・アクションを許可します。
      * @param resourceGroup 対象のリソースグループ（ResourceManager#registerAsResource 等で取得済みのもの）
-     * @param resourceTypeId リソースタイプID
-     * @param action アクション（例: "view"）
+     * @param resourceTypeId リソースタイプID（例: "flat-crud"）
+     * @param action アクション（リソースタイプが定義した値。flat-crud なら "c"/"r"/"u"/"d"）
      * @return 登録されたポリシー
      */
     public Policy permitForAllAuthenticatedUsers(final ResourceGroup resourceGroup, final String resourceTypeId, final String action) {
@@ -175,17 +220,23 @@ import jp.co.example.foo.exception.ForbiddenOperationException;
  */
 public class OrderAuthorizationService {
 
-    /** このアプリケーションのリソースタイプID */
-    private static final String RESOURCE_TYPE_ID = "service://myapp/orders";
+    /** リソースURI のプレフィックス（先頭の "flat-crud" がリソースタイプID）。登録処理と必ず同じ定数を使う */
+    private static final String RESOURCE_URI_PREFIX = "flat-crud://myapp/orders/";
+
+    /** 参照アクション（flat-crud の "r"） */
+    public static final String ACTION_READ = "r";
+
+    /** 更新アクション（flat-crud の "u"） */
+    public static final String ACTION_UPDATE = "u";
 
     /**
      * アカウントコンテキストのユーザが、指定した発注データに対する操作を許可されているか確認します。
      * @param orderId 発注ID
-     * @param action アクション（例: "view", "approve"）
+     * @param action アクション（{@link #ACTION_READ} / {@link #ACTION_UPDATE}）
      * @throws ForbiddenOperationException 権限が許可されていない場合
      */
     public void assertPermitted(final String orderId, final String action) throws ForbiddenOperationException {
-        final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
+        final String resourceUri = buildResourceUri(orderId);
 
         final AuthorizationClient client = AuthorizationClientFactory.getInstance().getAuthorizationClient();
         final AuthorizeResult result = client.authorize(resourceUri, action);
@@ -205,15 +256,19 @@ public class OrderAuthorizationService {
      * @return 許可されている場合 true
      */
     public boolean isPermittedFor(final String userCd, final String orderId, final String action) {
-        final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
         final AuthorizationClient client = AuthorizationClientFactory.getInstance().getAuthorizationClient();
-        return AuthorizeResult.Permit.equals(client.authorize(resourceUri, action, userCd));
+        return AuthorizeResult.Permit.equals(client.authorize(buildResourceUri(orderId), action, userCd));
+    }
+
+    /** リソースURI を組み立てます（登録処理・確認処理で共通化する）。 */
+    private static String buildResourceUri(final String orderId) {
+        return RESOURCE_URI_PREFIX + orderId;
     }
 }
 ```
 
 - 引数を省略した場合はアカウントコンテキスト（現在ログイン中のユーザ）で自動判断される。バッチ処理等でユーザを明示したい場合は `userCd` を渡すオーバーロードを使う
-- `resourceURI` はパターン1で登録した値と完全に一致させる必要がある。文字列を組み立てる箇所（`RESOURCE_TYPE_ID + ":" + orderId` 等）は登録処理・確認処理の両方で同一のロジックを使うこと（定数化・共通メソッド化を推奨）
+- `resourceURI` はパターン1で登録した値と完全に一致させる必要がある。文字列を組み立てる箇所は登録処理・確認処理の両方で同一のロジックを使うこと（上記の `buildResourceUri` のように定数化・共通メソッド化する）
 
 ## パターン5: 実効ポリシーの参照と削除
 
@@ -293,7 +348,13 @@ public class BadService {
 final Policy declared = policyManager.getDeclaredPolicy(resourceGroupId, subjectGroupId, resourceTypeId, action);
 policyManager.removePolicy(declared); // declared が null の場合、実装依存の例外や無意味な呼び出しになる
 
+// NG: リソースタイプIDとリソースURIを混同する
+// 最初の ":" より前（= "service"）がリソースタイプIDとして解決される。
+// service は URL 単位の認可専用でアクションは execute のみのため、view/approve 等は NoSuchActionException になる
+private static final String RESOURCE_TYPE_ID = "service://myapp/orders";
+final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
+
 // NG: リソースURIの組み立てロジックを登録処理と確認処理で重複させ、表記ゆれを生む
-// 登録側: "service://myapp/orders:" + orderId
-// 確認側: "service://myapp/orders/" + orderId  ← 区切り文字が違うため一致せず、常に NOT_APPLICABLE 相当になる
+// 登録側: "flat-crud://myapp/orders/" + orderId
+// 確認側: "flat-crud://myapp/orders:" + orderId  ← 区切り文字が違うため一致せず、権限が常に付与されない
 ```

@@ -138,8 +138,7 @@ function init(request) {
 
 ### 文件上传处理示例
 
-直接调用 `ByteReader.read(buffer, ...)` 存在陷阱：字节无法写入 JavaScript 的空数组，
-导致文件 **以 0 字节保存**。
+直接调用 `ByteReader.read(buffer, ...)` 存在陷阱：字节无法写入 JavaScript 的空数组，导致文件 **以 0 字节保存**。
 传输用途时，请使用 `ByteReader.transferTo(writer, chunkSize)`。
 详情请参考 `reference/api-binary-stream.md`。
 

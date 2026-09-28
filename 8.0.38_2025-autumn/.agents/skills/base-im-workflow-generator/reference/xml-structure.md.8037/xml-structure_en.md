@@ -213,7 +213,7 @@ Plugin types are distinguished by `exPointId`.
 | contentsId | string | Content ID |
 | contentsVersionId | string | Content version ID |
 | exPointId | string | `jp.co.intra_mart.workflow.plugin.event.node.action.process` |
-| pluginId | string | JSSP implementation (script development model): `{exPointId}.pluginScriptExecutor` / Java implementation (JavaEE development model): `{exPointId}.pluginJavaExecutor` (confirmed via a real exported XML; see [java-class-registration.md](java-class-registration.md)) |
+| pluginId | string | JSSP implementation (script development model): `{exPointId}.pluginScriptExecutor` / Java implementation (JavaEE development model): `{exPointId}.pluginJavaExecutor` (see [java-class-registration.md](java-class-registration.md)) |
 | pluginName | string | Plugin name (arbitrary) |
 | parameter | string | JSSP implementation: JSSP file path (without extension) / Java implementation: fully qualified class name (FQCN) of the implementation class |
 | nodeType | string | Node type number (see numeric codes in `reference/node-types.md`). Specify `2` for use in application nodes. |
@@ -281,7 +281,7 @@ Plugin types are distinguished by `exPointId`.
 | contentsId | string | Content ID |
 | contentsVersionId | string | Content version ID |
 | exPointId | string | With transaction: `jp.co.intra_mart.workflow.plugin.event.matter.end.process` / Without transaction: `jp.co.intra_mart.workflow.plugin.event.matter.end_no_transaction.process` |
-| pluginId | string | JSSP implementation: `{exPointId}.pluginScriptExecutor` / Java implementation: `{exPointId}.pluginJavaExecutor` (confirmed via a real exported XML; see [java-class-registration.md](java-class-registration.md)) |
+| pluginId | string | JSSP implementation: `{exPointId}.pluginScriptExecutor` / Java implementation: `{exPointId}.pluginJavaExecutor` (see [java-class-registration.md](java-class-registration.md)) |
 | pluginName | string | `matter_end_process` |
 | parameter | string | JSSP implementation: JSSP file path for the matter end process (without extension) / Java implementation: fully qualified class name (FQCN) of the implementation class |
 | nodeType | string | Empty string |

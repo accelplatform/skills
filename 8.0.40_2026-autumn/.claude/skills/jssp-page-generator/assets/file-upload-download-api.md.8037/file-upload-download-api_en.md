@@ -761,10 +761,8 @@ For transfers, always use `reader.transferTo(writer, chunkSize)`. See `reference
 
 ### Preserving the Original File Name
 
-By **ensuring uniqueness via the directory** as in `uploads/{unique directory}/{safeFileName}`,
-the file name can preserve the sanitized original.
-The download response can return the original name via `Content-Disposition: attachment; filename="..."`,
-which gives users a natural download experience.
+By **ensuring uniqueness via the directory** as in `uploads/{unique directory}/{safeFileName}`, the file name can preserve the sanitized original.
+The download response can return the original name via `Content-Disposition: attachment; filename="..."`, which gives users a natural download experience.
 
 ### Download Error Response
 
@@ -775,15 +773,13 @@ The client branches on Content-Type: if it is `application/json`, display the er
 ### Size Limit
 
 **Reject sizes upfront with `uploadedFile.getLength()`.**
-In environments where Content-Length cannot be trusted, ideally you should also monitor cumulative bytes during stream transfer,
-but the standard `transferTo` does not support mid-stream cancellation. If needed, implement chunked reads yourself.
+In environments where Content-Length cannot be trusted, ideally you should also monitor cumulative bytes during stream transfer, but the standard `transferTo` does not support mid-stream cancellation. If needed, implement chunked reads yourself.
 For typical cases, the upfront check is enough.
 
 ### Secure Token
 
 Even for GET, treat file retrieval as a sensitive operation and require `X-Intramart-Secure-Token`.
-Browser `<a href>` direct links cannot be used, so on the screen side, use `fetch` to receive the response as a Blob
-and download via `URL.createObjectURL`.
+Browser `<a href>` direct links cannot be used, so on the screen side, use `fetch` to receive the response as a Blob and download via `URL.createObjectURL`.
 
 ## Related
 

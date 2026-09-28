@@ -31,7 +31,7 @@ If you are about to implement role assignment while the role definition itself d
 | `.claude/rules/java-code-style.md` | 🟢 **Required reading** — `final` local variables, string literals, etc. |
 | `.claude/rules/java-javadoc.md` | 🟢 **Required reading** — class/method JavaDoc |
 
-No dedicated Java convention defining exception-handling policy exists under `.claude/rules` (as of 2026). All of `AccountInfoManager`'s and `AccountPasswordAdapter`'s exceptions are checked exceptions (described below); follow the business-exception-wrapping pattern in `assets/account-basic-usage.md`.
+No dedicated Java convention defining exception-handling policy exists under `.claude/rules`. All of `AccountInfoManager`'s and `AccountPasswordAdapter`'s exceptions are checked exceptions (described below); follow the business-exception-wrapping pattern in `assets/account-basic-usage.md`.
 
 `jssp-*` conventions are out of scope for this skill (they do not apply to Java files).
 
@@ -88,7 +88,7 @@ Also, if the request concerns role **definitions** themselves (new registration,
 
 ## Post-Generation Checks
 
-A dedicated verification script equivalent to the JSSP version (`validate-jssp-code.js`) is not yet in place. Confirm the following manually.
+Rather than an automated validation script (such as the JSSP version's `validate-jssp-code.js`), verify the following manually.
 
 1. Whether password verification uses `AccountPasswordAdapter#collate()` rather than directly comparing `AccountInfo.password`
 2. Whether every call to `updateAccountInfo()` is based on values fetched beforehand via `getAccountInfo()`, rather than instantiating a fresh `new AccountInfo(userCd)` each time and dragging in unset fields

@@ -7,20 +7,6 @@
   "rename": [
     {
       "condition": {
-        "and": [
-          {
-            "packageManager": "bun"
-          },
-          {
-            "module": "im_activiti"
-          }
-        ]
-      },
-      "from": "bun_im_activiti.lock",
-      "to": "bun.lock"
-    },
-    {
-      "condition": {
         "packageManager": "bun"
       },
       "from": "bun.lock",
@@ -31,10 +17,7 @@
     {
       "type": "regex",
       "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
-      "replacement": "{{$artifactId}}",
-      "condition": {
-        "accelplatformVersion": "8.0.37"
-      }
+      "replacement": "{{$artifactId}}"
     }
   ]
 }

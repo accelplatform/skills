@@ -2,8 +2,7 @@
 
 ## 概述
 
-用于将通过 multipart/form-data 上传的文件保存到公共存储并返回保存键（文件路径）的上传 API，
-以及通过该键以二进制形式返回文件的下载 API，及验证两 API 用的画面模板。
+用于将通过 multipart/form-data 上传的文件保存到公共存储并返回保存键（文件路径）的上传 API，以及通过该键以二进制形式返回文件的下载 API，及验证两 API 用的画面模板。
 
 - 上传 API：`POST /sample_api/api/upload_file`（multipart/form-data，需要 `X-Intramart-Secure-Token`）
 - 下载 API：`GET /sample_api/api/download_file?fileKey=...`（需要 `X-Intramart-Secure-Token`）
@@ -760,10 +759,7 @@ function init(request) {
 
 ### 保留原文件名
 
-通过 `uploads/{唯一目录}/{safeFileName}` 这种 **由目录保证唯一性**的方式，
-文件名可以保留经过净化的原始名称。
-下载时通过 `Content-Disposition: attachment; filename="..."` 返回原文件名，
-能够为用户提供自然的下载体验。
+通过 `uploads/{唯一目录}/{safeFileName}` 这种 **由目录保证唯一性**的方式，文件名可以保留经过净化的原始名称。下载时通过 `Content-Disposition: attachment; filename="..."` 返回原文件名，能够为用户提供自然的下载体验。
 
 ### 下载的错误响应
 
@@ -774,15 +770,13 @@ function init(request) {
 ### 大小上限
 
 请使用 `uploadedFile.getLength()` **事前拦截大小上限**。
-在 Content-Length 不可信的环境中，原本还应监控流传输过程中的累计字节数，
-但标准的 `transferTo` 没有中途中断机制，必要时可自行实现分块读取。
+在 Content-Length 不可信的环境中，原本还应监控流传输过程中的累计字节数，但标准的 `transferTo` 没有中途中断机制，必要时可自行实现分块读取。
 对于一般场景，事前检查已足够。
 
 ### 安全令牌
 
 即便是 GET，也将文件取回视为机密数据操作，强制要求 `X-Intramart-Secure-Token`。
-由此浏览器的 `<a href>` 直链无法再使用，画面侧需要使用 `fetch` 将响应以 Blob 形式接收，
-并经由 `URL.createObjectURL` 进行下载。
+由此浏览器的 `<a href>` 直链无法再使用，画面侧需要使用 `fetch` 将响应以 Blob 形式接收，并经由 `URL.createObjectURL` 进行下载。
 
 ## 相关
 

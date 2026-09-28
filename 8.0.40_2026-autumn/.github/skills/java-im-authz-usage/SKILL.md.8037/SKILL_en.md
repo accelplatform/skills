@@ -1,6 +1,6 @@
 ---
 name: java-im-authz-usage
-description: intra-mart 固有の認可（Authorization）API（`jp.co.intra_mart.foundation.authz.*`、`im_authz_base` モジュール）を Java（JavaEE 開発モデル）で使用するためのスキルセット。認可リソース・リソースグループ、サブジェクト・サブジェクトグループ（Expression による条件式構成）、ポリシーの新規登録・更新・削除、AuthorizationClient による権限確認（authorize）の実装パターンを提供する。Java で認可機構を使いたい、Java で AuthorizationClient / ResourceManager / SubjectManager / PolicyManager を使いたい、JavaEE 開発モデルでリソース・サブジェクト・ポリシーを登録したい、権限チェック（authorize）をJavaで実装したい、と言及されたときに使用。ロール定義自体のCRUD（RoleInfoManager）は `java-im-role-usage`、特定ユーザへのロール割当は `java-im-account-usage` を使うこと。JSSP（スクリプト開発モデル）向けの同等API（d.ts）は2026年時点で提供されていない。
+description: intra-mart 固有の認可（Authorization）API（`jp.co.intra_mart.foundation.authz.*`、`im_authz_base` モジュール）を Java（JavaEE 開発モデル）で使用するためのスキルセット。認可リソース・リソースグループ、サブジェクト・サブジェクトグループ（Expression による条件式構成）、ポリシーの新規登録・更新・削除、AuthorizationClient による権限確認（authorize）の実装パターンを提供する。Java で認可機構を使いたい、Java で AuthorizationClient / ResourceManager / SubjectManager / PolicyManager を使いたい、JavaEE 開発モデルでリソース・サブジェクト・ポリシーを登録したい、権限チェック（authorize）をJavaで実装したい、と言及されたときに使用。ロール定義自体のCRUD（RoleInfoManager）は `java-im-role-usage`、特定ユーザへのロール割当は `java-im-account-usage` を使うこと。JSSP（スクリプト開発モデル）向けの同等API（d.ts）は提供されていない。
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -35,7 +35,7 @@ An authorization decision is made from four elements: "who" (Subject), "what" (R
 
 If a request is about "creating a new role" or "assigning a role to a user," that is role management, not authorization (Authz) — redirect to `java-im-role-usage` / `java-im-account-usage` respectively. Note that using "users belonging to a role" as an authorization **subject** condition is a legitimate use case; the concrete `Subject` implementation for that comes from an extension module such as `im_master_subjecttypes`, which is out of scope for this skill.
 
-**This skill covers Java source files (`.java`) only.** As of 2026, there is no equivalent API (d.ts) under `d.ts/` for JSSP (`.js`). If asked to use authorization from JSSP, communicate this and confirm how to proceed.
+**This skill covers Java source files (`.java`) only.** There is no equivalent API (d.ts) under `d.ts/` for JSSP (`.js`). If asked to use authorization from JSSP, communicate this and confirm how to proceed.
 
 ## Conventions to Consult
 
@@ -45,7 +45,7 @@ If a request is about "creating a new role" or "assigning a role to a user," tha
 | `.github/instructions/java-code-style.instructions.md` | 🟢 **Required reading** — `final` local variables, string literals, etc. |
 | `.github/instructions/java-javadoc.instructions.md` | 🟢 **Required reading** — class/method Javadoc |
 
-There is no Java-specific convention (as of 2026) under `.github/instructions` for exception handling. `SubjectManager#removeSubject`/`removeSubjectGroup` throw `SubjectManagingException` (a checked exception), while the main CRUD/permission-check methods of `ResourceManager`/`PolicyManager`/`AuthorizationClient` are mostly unchecked (with some exceptions such as `InvalidResourceUriException`). Follow the method definitions in `reference/authz-api-reference.md` and the patterns in `assets/authz-basic-usage.md` for exception handling.
+There is no Java-specific convention under `.github/instructions` for exception handling. `SubjectManager#removeSubject`/`removeSubjectGroup` throw `SubjectManagingException` (a checked exception), while the main CRUD/permission-check methods of `ResourceManager`/`PolicyManager`/`AuthorizationClient` are mostly unchecked (with some exceptions such as `InvalidResourceUriException`). Follow the method definitions in `reference/authz-api-reference.md` and the patterns in `assets/authz-basic-usage.md` for exception handling.
 
 `jssp-*` conventions are out of scope for this skill (do not apply them to Java files).
 
@@ -89,7 +89,7 @@ Requests such as "I want to create a new role" or "I want to assign a role to a 
 ## Implementation Steps
 
 1. Gather requirements from the user (CRUD for resources/subjects/policies, or implementing a permission check (`authorize`)? If the goal is role definitions or role assignment, redirect to `java-im-role-usage`/`java-im-account-usage`)
-2. Design the resource URI (`RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` format; segment it by application name/component name so it does not collide with other applications)
+2. Design the resource URI (`RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` format; segment it by application name/component name so it does not collide with other applications). **Choose the resource type, and map business operation names to action names, according to "Standard Resource Types and Actions" in `reference/authz-api-reference.md`**
 3. Organize the subject condition (a single `Subject`, or a composite condition built with `Expression.AND`/`OR`/`NOT`? Also check whether a built-in group — `getAuthenticatedUsers`/`getGuestSubjectGroup` — is sufficient)
 4. Implement by referring to `assets/authz-basic-usage.md` (always consult `reference/authz-api-reference.md` for method signatures — do not write from memory or guesswork)
 5. When implementing a permission check, share the resource URI construction logic between the registration code and the check code (to avoid mismatches causing incorrect decisions)
@@ -97,6 +97,7 @@ Requests such as "I want to create a new role" or "I want to assign a role to a 
 
 ## Notes
 
+- **The part of the resource URI before the first `:` is the resource type ID**, and only registered resource types can be used. Use `flat-crud` (actions `c`/`r`/`u`/`d`) for business data. `service` is exclusively for URL-level authorization and its only action is `execute`. For the full list, see "Standard Resource Types and Actions" in `reference/authz-api-reference.md`
 - **Do not cache Manager/Client instances in a field across tenants.** This is a constraint explicitly documented in `ResourceManager`'s Javadoc — reusing an instance can cause some APIs to fail. Obtain a fresh instance from `*Factory.getInstance().getXxx()` on every call
 - **There is no API to register a subject on its own.** Always follow the order `SubjectExpression.S(subject)` → `Expression.AND`/`OR`/`NOT` → `SubjectManager#registerSubjectGroup(Expression, ...)` to register it as a `SubjectGroup`
 - **`Effect.BLOCK` cannot be registered directly as a policy.** It is a value that only appears as the result of an authorization decision; passing it to `setPolicy` raises `IllegalSerializationException`. Use only `PERMIT`/`DENY` for policy registration
@@ -108,17 +109,18 @@ Requests such as "I want to create a new role" or "I want to assign a role to a 
 
 ## Post-Generation Checks
 
-A dedicated verification script equivalent to the JSSP one (`validate-jssp-code.js`) is not yet in place. Confirm the following manually.
+Rather than an automated validation script (such as the JSSP version's `validate-jssp-code.js`), verify the following manually.
 
 1. Is `AuthorizeResult` evaluated with `.equals()` (not `==`)?
 2. Is a null check performed everywhere the return value of `getDeclaredPolicy()` is used?
 3. Is the effect passed to `setPolicy(...)` always `PERMIT` or `DENY`, never `BLOCK` directly?
 4. Are `ResourceManager`/`SubjectManager`/`PolicyManager`/`AuthorizationClient` instances free of tenant-spanning caching (e.g. in `static` fields)?
 5. Is the resource URI construction logic shared between the registration code and the check code (no notation drift)?
-6. Are destructive operations such as `removeAllPolicies`, `removeResourceGroup`, `removePoliciesForResourceGroup`, `removePoliciesForSubjectGroup` executed only within the intended scope?
-7. Is `SubjectManagingException` (a checked exception) never silently swallowed?
-8. Does the code comply with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`?
-9. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-oriented code review/security check skills, use those instead
+6. Does the resource URI start with a registered resource type ID, and is the `action` passed to `setPolicy`/`authorize` one of the actions defined by that resource type (`c`/`r`/`u`/`d` for `flat-crud`)?
+7. Are destructive operations such as `removeAllPolicies`, `removeResourceGroup`, `removePoliciesForResourceGroup`, `removePoliciesForSubjectGroup` executed only within the intended scope?
+8. Is `SubjectManagingException` (a checked exception) never silently swallowed?
+9. Does the code comply with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`?
+10. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-oriented code review/security check skills, use those instead
 
 ## Boundaries with Other Skills
 
@@ -131,4 +133,4 @@ A dedicated verification script equivalent to the JSSP one (`validate-jssp-code.
 | Unique ID generation in Java (`Identifier`) | `java-im-identifier-usage` |
 | Exclusive locking in Java (`NewLock`) | `java-im-lock-usage` |
 | Workflow integration processing in Java | `java-im-workflow-usage` |
-| Using authorization from JSSP (script development model) | As of 2026, no corresponding d.ts / skill is provided (out of scope for this skill) |
+| Using authorization from JSSP (script development model) | No corresponding d.ts / skill is provided (out of scope for this skill) |

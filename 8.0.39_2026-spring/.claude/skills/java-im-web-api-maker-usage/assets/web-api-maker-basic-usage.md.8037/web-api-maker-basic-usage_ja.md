@@ -382,8 +382,8 @@ public class OrderDeletionEndpoint {
 ```
 
 - `@Authz` はクラス・メソッドどちらにも付与できる。クラスに付けると配下の全メソッドに一括適用される
-- 未認証時は `401`、認証済みだが権限なしの場合は `403` が返却される（Web API Maker 側での分岐処理は不要）
-- **`@Authz` を付けるだけでは機能しない。** `uri` に指定したリソースが IM-Authz 側で未登録の場合、常に認可失敗（`403` 等）になる。リソース登録・ポリシー設定は `java-im-authz-usage` の実装パターンを使う
+- API仕様上は「未認証時は `401`、認証済みだが権限なしの場合は `403`」だが、**`@IMAuthentication`（セッション認証）と組み合わせた場合、未認証アクセスはこの `@Authz` の判定に到達する前に `404` で止まる**（詳細は `reference/web-api-maker-api-reference.md`「ラップされる場合・されない場合」を参照）。認証済みユーザに対する認可拒否は `403` で、レスポンスはラップされる
+- **`@Authz` を付けるだけでは機能しない。** `uri` に指定したリソースが IM-Authz 側で未登録の場合、認可失敗ではなく `ResourceNotFoundException` による **`500`**（ラップされない汎用エラーページ）になる。想定した `403` にならず `500` になっている場合は、リソース未登録を疑う。リソース登録・ポリシー設定は `java-im-authz-usage` の実装パターンを使う
 - 動的にリソースを決定したい場合は `mapperClass`/`mapperParams` 属性（`AuthzMapper` の実装クラス）を使う。詳細シグネチャは `reference/web-api-maker-api-reference.md` を参照
 
 ## パターン6: セキュアトークン検証（`@Secured`）
@@ -423,6 +423,50 @@ public class OrderRegistrationEndpoint {
 
 ## パターン7: レスポンス制御
 
+### 7-1. レスポンスボディのラッパー構造（クライアント側で解き忘れると値が `undefined` になる）
+
+**Endpoint メソッドの戻り値はそのままレスポンスボディにはならず、必ず `error` / `data` を持つラッパーオブジェクトに包まれて返却される。**
+
+```java
+// Endpoint の実装
+@Path("/foo/orders/{orderId}")
+@GET
+public OrderEntity get(@Required @Variable(name = "orderId") final String orderId) {
+    return orderService.findById(orderId);
+}
+```
+
+上記が返す実際のレスポンスボディ（`Accept: application/json`）:
+
+```json
+{
+  "error": false,
+  "data": {
+    "orderId": "ORD-0001",
+    "orderName": "サンプル発注",
+    "amount": 1000
+  }
+}
+```
+
+例外発生時（`@Response`/`@ReturnValue` については 7-2 を参照）:
+
+```json
+{
+  "error": true,
+  "errorMessage": "発注情報が見つかりません: orderId=ORD-9999",
+  "data": {
+    "orderId": "ORD-9999"
+  }
+}
+```
+
+- 戻り値が `List`/配列の場合は `data` が JSON 配列になる。戻り値の型にかかわらず外側のラッパー構造は変わらない
+- `errorMessage` は例外発生時のみ、`data` は成功時（戻り値）と例外発生時（`@ReturnValue` の値）で意味が変わる
+- プロパティの詳細は `reference/web-api-maker-api-reference.md`「レスポンスボディのラッパー構造」を参照
+
+### 7-2. 例外 → ステータスコードと付加情報（`@Response`/`@ReturnValue`）
+
 ```java
 package jp.co.example.foo.webapi;
 
@@ -454,6 +498,8 @@ public class OrderNotFoundException extends Exception {
 }
 ```
 
+### 7-3. 手動レスポンス（`@PreventWritingResponse`）
+
 ```java
 package jp.co.example.foo.webapi;
 
@@ -478,11 +524,109 @@ public class OrderRedirectEndpoint {
     public void redirect(final HttpServletResponse response) throws IOException {
         response.sendRedirect("/foo/orders");
     }
+
+    /**
+     * ボディを自前で書き込む例（CSV ダウンロード）。
+     * 戻り値は常に無視されるため、応答内容は response へ直接書き込む。
+     */
+    @Path("/foo/orders/csv")
+    @GET
+    @PreventWritingResponse
+    public void downloadCsv(final HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"orders.csv\"");
+        response.getWriter().write("orderId,orderName\r\nORD-0001,サンプル発注\r\n");
+    }
 }
 ```
 
-- 例外クラスに `@Response(code=...)` を付けると、その例外がスローされた際のステータスコードを制御できる。`@ReturnValue` を付けたメソッドの戻り値はレスポンスボディへ含まれる
-- `@PreventWritingResponse` を付けたメソッドは Web API Maker 側の自動レスポンス書き込みが行われないため、`HttpServletResponse` を引数で受け取り自前で応答する
+- 例外クラスに `@Response(code=...)` を付けると、その例外がスローされた際のステータスコードを制御できる。`@ReturnValue` を付けたメソッドの戻り値はレスポンスボディの `data` 配下へ含まれる
+- `@Response(code=...)` を付けた業務例外は、`200` 以外のステータスコードでも 7-1 のラッパー構造で返却される
+- `@PreventWritingResponse` を付けたメソッドの戻り値は常に無視される
+- セキュアトークン検証・認証・認可チェックでエラーが発生した場合は、`@PreventWritingResponse` を付けていても Web API Maker 側が書き込みを行う
+
+### 7-4. クライアント（画面）側での受け取り
+
+Web API Maker の API を JSSP プレゼンテーションページ等から呼び出す場合、必ずラッパーを解いてから業務データを利用する。
+
+```javascript
+/**
+ * Web API Maker の API を呼び出し、ラッパーを解いて data を返す。
+ * @param {string} url リクエスト URL
+ * @param {Object} [options] fetch のオプション（method/body 等）
+ * @returns {Promise} 成功時は data、失敗時は Error で reject される Promise
+ */
+function callWebApi(url, options) {
+    var opts = options || {};
+    var headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
+    // @Secured を付与した API では、X-Intramart-Secure-Token ヘッダにトークンを載せる（下記参照）
+    if (opts.secureToken) {
+        headers['X-Intramart-Secure-Token'] = opts.secureToken;
+    }
+    return fetch(url, {
+        method: opts.method || 'GET',
+        // Accept を付けないと JSON で返る保証がない
+        headers: headers,
+        // @IMAuthentication はセッション Cookie で認証するため必須
+        credentials: 'same-origin',
+        body: opts.body
+    }).then(function (response) {
+        // @Response(code=...) を付けた業務例外は 200 以外でもラップ構造で返るため、
+        // ステータスコードだけで打ち切らずボディのパースを試みる
+        return response.json().then(function (body) {
+            return { status: response.status, body: body };
+        }, function () {
+            // パースできない = 想定外のエラー。未認証アクセス（404 になる。401 ではない）、406（Accept不正）、
+            // Endpoint メソッドの外（ActionFilter 等）で発生した例外による 500 等は
+            // JSON で返る保証もラップされる保証もない（Endpoint メソッド自身がスローした例外は @Response の有無を問わず必ずラップされる）
+            throw new Error('HTTP ' + response.status);
+        });
+    }).then(function (result) {
+        var body = result.body;
+        if (!body || typeof body.error === 'undefined') {
+            throw new Error('HTTP ' + result.status);
+        }
+        if (body.error) {
+            // errorMessage と、@ReturnValue で付加された data をエラー情報として扱う
+            throw new Error(body.errorMessage);
+        }
+        // body ではなく body.data が業務データ
+        return body.data;
+    });
+}
+
+// 呼び出し例（@IMAuthentication のみ）
+callWebApi('/foo/orders/ORD-0001').then(function (order) {
+    // order は data の中身（OrderEntity 相当のオブジェクト）
+    document.getElementById('orderName').textContent = order.orderName;
+}).catch(function (e) {
+    imuiShowMessageDialog({ type: 'error', message: e.message });
+});
+
+// 呼び出し例（@Secured 付き。状態変更系 API で使用）
+// セキュアトークンの取得方法は .claude/rules/jssp-presentation-page.md の <meta name="im_secure_token"> パターンに準拠する
+function getSecureToken() {
+    return document.querySelector('meta[name=im_secure_token]').content;
+}
+
+callWebApi('/foo/orders', {
+    method: 'POST',
+    secureToken: getSecureToken(),
+    body: JSON.stringify({ orderName: 'サンプル発注', amount: 1000 })
+}).then(function () {
+    imuiShowMessageDialog({ type: 'success', message: '登録しました。' });
+}).catch(function (e) {
+    imuiShowMessageDialog({ type: 'error', message: e.message });
+});
+```
+
+- **`res.json().then(function (order) { order.orderName; })` のようにラッパーを解かずに参照すると `undefined` になる。** API 側が正常でも画面にデータが表示されない不具合の典型的な原因
+- `Accept: application/json` を明示しないと、レスポンス形式が JSON である保証はない
+- **`@Secured` を付与した API を呼び出す場合は、リクエストヘッダ `X-Intramart-Secure-Token` にトークンを載せる。** トークン自体は JSSP 画面の `<meta name="im_secure_token" content="<imart type="imSecureToken" mode="value" />">`（`.claude/rules/jssp-presentation-page.md` 参照）から取得する、既存の CSRF 対策パターンをそのまま流用できる
+- **Endpoint メソッド自身がスローした例外は `@Response` の有無を問わず必ずラップされる。** `@Authz`（`403`）・`@Secured`（`403`）もラップされたレスポンスで返る。一方、**未認証アクセスは（`@IMAuthentication` の場合）`401` ではなく `404` になり、ラップされない**。`406`（`Accept` 不正）や、Endpoint メソッドの外（`ActionFilter` 等）で発生しその箇所が明示的に処理していない例外による `500` もラップされない（詳細は `reference/web-api-maker-api-reference.md`「ラップされる場合・されない場合」を参照）。上記 `callWebApi` は `body.error` が読み取れない場合を想定外のエラーとして扱うことで、この非保証ケースにも安全にフォールバックする
 
 ## パターン8: パッケージの登録（実装漏れが最も多い）
 
@@ -517,7 +661,8 @@ public OrderEntity get(@Variable(name = "id") final String orderId) { // "orderI
 }
 
 // NG: @Authz だけ付けて、IM-Authz 側のリソース登録を行わない
-// → uri="service://foo/orders" が未登録のため、常に認可失敗（403）になる
+// → uri="service://foo/orders" が未登録のため、認可失敗（403）ではなく
+//   ResourceNotFoundException による 500（ラップされない汎用エラーページ）になる
 @Authz(uri = "service://foo/orders", action = "execute")
 public class UnregisteredResourceEndpoint { }
 
@@ -557,4 +702,27 @@ public class BadEndpointFactory {
         return new StandardOrderEndpoint();
     }
 }
+```
+
+```javascript
+// NG: クライアント側で error/data のラッパーを解かずに参照する
+// → API 自体は正常に動作しているのに、画面側で値が undefined になる
+fetch('/foo/orders/ORD-0001').then(function (res) {
+    return res.json();
+}).then(function (order) {
+    console.log(order.orderName); // undefined（正しくは order.data.orderName）
+});
+
+// NG: HTTP ステータスが 200 以外なら即エラー扱いにし、ボディを読まない
+// → @Response(code=404) を付けた業務例外の errorMessage / @ReturnValue の情報を取りこぼす
+fetch(url).then(function (res) {
+    if (!res.ok) {
+        throw new Error('エラーが発生しました');
+    }
+    return res.json();
+});
+
+// NG: Accept ヘッダを指定せずに res.json() でパースする
+// → レスポンスが JSON である保証がない
+fetch(url).then(function (res) { return res.json(); });
 ```

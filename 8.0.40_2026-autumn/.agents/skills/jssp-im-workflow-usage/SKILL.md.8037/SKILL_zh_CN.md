@@ -176,7 +176,7 @@ description: 新建 IM-Workflow 集成程序。提供动作处理（申请·审�
 仅当 DML 中需要方言特定语法（如 PostgreSQL 的 `ON CONFLICT`、Oracle 的 `MERGE` 等）时，才拆分为 `{功能名}_sample-dml_postgre.sql` 等 3 个文件。
 
 - 表名·列名须与动作处理的 SQL 一致
-- **列的类型须遵循 `.agents/skills/jssp-page-generator/reference/ddl-type-mapping.md` 的类型映射表**（不得凭记忆或推测书写类型名）
+- **表名・列名的命名规约、类型、审计追踪列须遵循 `.agents/requirements/database-ddl/AGENTS.md`**（不得凭记忆或推测书写类型名）
 - DDL 须按 DB 产品分别建立文件（类型名和默认值语法不同）
 - 示例 DML 使用标准 SQL 的 INSERT 语句，确保三种产品均可使用
 - 主数据表（取引先主数据等）插入 3～5 条示例记录

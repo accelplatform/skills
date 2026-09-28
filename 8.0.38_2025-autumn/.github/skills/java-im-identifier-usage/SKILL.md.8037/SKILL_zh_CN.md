@@ -34,7 +34,7 @@ allowed-tools: Bash, Read, Write, Glob
 | `.github/instructions/java-code-style.instructions.md` | 🟢 **必读** — `final` 局部变量、字符串字面量等 |
 | `.github/instructions/java-javadoc.instructions.md` | 🟢 **必读** — 类/方法 JavaDoc |
 
-`.github/instructions` 下目前不存在规定 `IOException` 包装方针的 Java 专用规约（截至2026年）。使用 `get()` 时的异常处理应遵循 `assets/identifier-basic-usage.md` 中的模式。
+`.github/instructions` 下目前不存在规定 `IOException` 包装方针的 Java 专用规约。使用 `get()` 时的异常处理应遵循 `assets/identifier-basic-usage.md` 中的模式。
 
 `jssp-*` 规约不适用于本技能（不适用于 Java 文件）。
 
@@ -83,7 +83,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 ## 生成后的确认
 
-目前尚未配备类似 JSSP 版的专用验证脚本（相当于 `validate-jssp-code.js`）。请手动确认以下事项。
+并非通过自动验证脚本（如 JSSP 版的 `validate-jssp-code.js`），而是手动确认以下事项。
 
 1. `get()` / `make()` 的选择是否符合所要求的唯一性范围（分布式环境还是单一进程）
 2. 使用 `get()` 的地方是否存在吞掉 `IOException` 的情况

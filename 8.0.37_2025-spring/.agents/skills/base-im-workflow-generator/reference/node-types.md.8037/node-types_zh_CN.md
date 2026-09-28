@@ -51,8 +51,7 @@
 
 ## 权限插件
 
-权限插件的扩展点·后缀·targetType·parameter 格式·示例数据的详细信息，
-请参阅 `reference/authority-plugins.md`。
+权限插件的扩展点·后缀·targetType·parameter 格式·示例数据的详细信息，请参阅 `reference/authority-plugins.md`。
 
 ### 常用模式
 

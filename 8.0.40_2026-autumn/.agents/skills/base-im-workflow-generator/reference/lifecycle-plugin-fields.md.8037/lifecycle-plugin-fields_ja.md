@@ -88,5 +88,5 @@
 
 以下は現時点で `build-workflow.js` から自動生成できない。XML を手動編集する必要がある:
 
-- **分岐条件・結合条件（ユーザプログラム方式）**: `branchMethod: "program"` のノード種別コードは出力されるが、対応するプラグイン（`jp.co.intra_mart.workflow.plugin.event.node.branch.rule` / `...union.rule`）自体の登録は未実装。`matterProperties` + `rules` を使う「ルール方式」の分岐（`branchMethod: "rule"`）は対応済み
-- **処理対象者プラグイン（カスタム実装）**: 役職・組織・ロール等の標準プラグイン（`node.plugin.suffix` で指定するもの）は対応済みだが、SSJS/Javaでフルカスタム実装した処理対象者プラグインの登録経路は、本スキルが生成する route/flow インポート XML とは別体系である可能性が高く未検証（`.agents/skills/jssp-im-workflow-usage/assets/simple-authority-exec-event-listener.md` 参照）
+- **分岐条件・結合条件（ユーザプログラム方式）**: `branchMethod: "program"` のノード種別コードは出力されるが、対応するプラグイン（`jp.co.intra_mart.workflow.plugin.event.node.branch.rule` / `...union.rule`）自体の登録は未実装。`exPointId`/`pluginId` の値自体は確認済み（`reference/java-class-registration.md` 参照）で、XML への追記方法も同ファイルに記載している。自動生成が未対応なだけで、手動追記または IM-Workflow 管理画面からの登録は可能。`matterProperties` + `rules` を使う「ルール方式」の分岐（`branchMethod: "rule"`）は対応済み
+- **処理対象者プラグイン（カスタム実装）**: 役職・組織・ロール等の標準プラグイン（`node.plugin.suffix` で指定するもの）は対応済み。SSJS/Java でフルカスタム実装した処理対象者プラグインは、本スキルが生成する route/flow インポート XML とは別体系（`plugin.xml` によるプラグイン登録）であることを確認済み。登録方法は `reference/java-class-registration.md` の「処理対象者プラグイン（カスタム実装）の登録」を参照。この体系自体を本スキルから自動生成する機能は未実装

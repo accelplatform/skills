@@ -42,6 +42,12 @@ Each convention file states its **application scope** at the top. Use the **scop
 | `jssp-performance.md` | Compiler settings / session.js | 🟡 When tuning performance |
 | `jssp-accessibility.md` | ARIA / WCAG 2.1 AA / screen readers | 🟠 **Business-requirement-dependent** — apply thickly only when the spec explicitly requires it; otherwise keep to the basics (`imdsConfirm`, basic `aria-label`, etc.) |
 
+### Common (JSSP / Java)
+
+| File | One-line summary | Scope |
+|------|------------------|-------|
+| `database-ddl.md` | Table/column naming conventions / type mapping / audit trail columns / primary key & index design / syntax allowed in DDL | 🟢 Always (when creating DDL for a new table, regardless of whether the table is used from JSSP or Java) |
+
 ### For Java (JavaEE Development Model)
 
 | File | One-line summary | Scope |

@@ -1,6 +1,15 @@
 {
   "version": "1.0.0",
   "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "from": "module.xml",
+      "to": "module.xml"
+    }
+  ],
   "replacements": [
     {
       "type": "foreach",
@@ -28,12 +37,6 @@
       "type": "regex",
       "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
       "replacement": "{{$projectVersion}}"
-    }
-  ],
-  "rename": [
-    {
-      "from": "module.xml",
-      "to": "module.xml"
     }
   ]
 }

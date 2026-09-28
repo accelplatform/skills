@@ -40,20 +40,29 @@ public class Standard{ServiceName}Service implements {ServiceName}Service {
 
     @Override
     public {ResultType} process{BusinessOperation}({InputType} input) throws {ServiceName}ServiceException {
-        try {
-            validateInput(input);
-            return SessionTemplate.execute(s -> {
-                {DomainModel} entity = {entityName}Repository.findBy{BusinessKey}(input.get{BusinessKey}());
-                if (entity == null) {
-                    throw new {ServiceName}ServiceException("エンティティが見つかりません: {BusinessKey}=" + input.get{BusinessKey}());
-                }
-                {DomainModel} processedEntity = applyBusinessRules(entity, input);
+        validateInput(input);
+        // SessionCallback<T, E> の E は1種類の検査例外にしか推論されないため、
+        // ラムダ内で発生する検査例外はその場（各リポジトリ呼び出し直後）で {ServiceName}ServiceException に
+        // 変換してから投げる。これによりラムダから伝播する検査例外が {ServiceName}ServiceException 1種類に
+        // 揃い、SessionTemplate.execute() を try/catch で囲む必要がなくなる。
+        return SessionTemplate.execute(s -> {
+            final {DomainModel} entity;
+            try {
+                entity = {entityName}Repository.findBy{BusinessKey}(input.get{BusinessKey}());
+            } catch (RepositoryException e) {
+                throw new {ServiceName}ServiceException("検索に失敗しました: " + e.getMessage(), e);
+            }
+            if (entity == null) {
+                throw new {ServiceName}ServiceException("エンティティが見つかりません: {BusinessKey}=" + input.get{BusinessKey}());
+            }
+            {DomainModel} processedEntity = applyBusinessRules(entity, input);
+            try {
                 {entityName}Repository.save(processedEntity);
-                return buildResult(processedEntity);
-            });
-        } catch (RepositoryException e) {
-            throw new {ServiceName}ServiceException("処理に失敗しました: " + e.getMessage(), e);
-        }
+            } catch (RepositoryException e) {
+                throw new {ServiceName}ServiceException("保存に失敗しました: " + e.getMessage(), e);
+            }
+            return buildResult(processedEntity);
+        });
     }
 }
 ```

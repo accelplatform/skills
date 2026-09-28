@@ -1,10 +1,8 @@
 # IM-Workflow ロジックフロープラグイン登録（拡張インポート）
 
-IM-LogicDesigner のロジックフローを IM-Workflow の処理対象者プラグイン（`.logic_flow_user`）として
-登録する拡張インポート JS の仕様とテンプレート。
+IM-LogicDesigner のロジックフローを IM-Workflow の処理対象者プラグイン（`.logic_flow_user`）として登録する拡張インポート JS の仕様とテンプレート。
 
-テナント環境セットアップ時に `WorkflowLogicFlowManager` を使って登録することで、
-IM-Workflow 管理画面での手動登録を自動化できる。
+テナント環境セットアップ時に `WorkflowLogicFlowManager` を使って登録することで、IM-Workflow 管理画面での手動登録を自動化できる。
 
 ## 使用場面
 

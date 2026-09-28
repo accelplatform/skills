@@ -34,7 +34,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの一
 | `.claude/rules/java-code-style.md` | 🟢 **必読** — `final` ローカル変数、文字列リテラル等 |
 | `.claude/rules/java-javadoc.md` | 🟢 **必読** — クラス/メソッド JavaDoc |
 
-`.claude/rules` 配下には `IOException` のラップ方針を定めた Java 向け専用規約は存在しない（2026年時点）。`get()` 使用時の例外処理は `assets/identifier-basic-usage.md` のパターンに従う。
+`.claude/rules` 配下には `IOException` のラップ方針を定めた Java 向け専用規約は存在しない。`get()` 使用時の例外処理は `assets/identifier-basic-usage.md` のパターンに従う。
 
 `jssp-*` の規約はこのスキルの対象外（Java ファイルには適用しない）。
 
@@ -83,7 +83,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの一
 
 ## 生成後の確認
 
-JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当）は現時点で未整備。以下を手動で確認する。
+自動検証スクリプト（JSSP 版の `validate-jssp-code.js` 相当）ではなく、以下の項目を手動で確認する。
 
 1. `get()` / `make()` の選択が、要求されている一意性の範囲（分散環境か単一プロセスか）に合っているか
 2. `get()` を使った箇所で `IOException` が握りつぶされていないか

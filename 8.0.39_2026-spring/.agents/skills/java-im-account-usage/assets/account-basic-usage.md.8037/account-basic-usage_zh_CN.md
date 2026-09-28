@@ -1,7 +1,6 @@
 # Account API 基本使用模式（Java 版）
 
-关于 `AccountInfoManager` / `AccountInfo` / `AccountRoleInfo` / `AccountPasswordAdapter` 的签名与内部行为，请参考
-`reference/account-api-reference.md`。这里展示典型的调用模式。
+关于 `AccountInfoManager` / `AccountInfo` / `AccountRoleInfo` / `AccountPasswordAdapter` 的签名与内部行为，请参考 `reference/account-api-reference.md`。这里展示典型的调用模式。
 
 **角色定义本身（新建、层级、分类）的操作不在本技能范围内。** 这里仅涉及"为用户分配角色"的处理；创建或变更角色定义应使用 `java-im-role-usage`。
 

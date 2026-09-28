@@ -78,7 +78,7 @@ public interface UserProfileImageManager {
 }
 ```
 
-- 参数・返回值的详细 null 容许/异常条件中，有一部分依赖于实现（`UserProfileImageManagerImpl`），无法仅从接口的 JavaDoc 判断。边界值的行为（指定不存在的 `imageSizeType` 时等）建议通过实现确认或实机验证
+- 当 `imageSizeType` 为空字符串或未指定时，实现（`UserProfileImageManagerImpl`）会使用默认值 `"original"`（`UserConstant.IMAGE_SIZE_TYPE_ORIGINAL`）
 
 ## `UserProfileImageManagerFactory` 类
 

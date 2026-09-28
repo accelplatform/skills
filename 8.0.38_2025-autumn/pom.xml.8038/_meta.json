@@ -4,6 +4,12 @@
   "conditions": {
     "accelplatformVersion": "8.0.38"
   },
+  "rename": [
+    {
+      "from": "pom.xml",
+      "to": "pom.xml"
+    }
+  ],
   "replacements": [
     {
       "type": "foreach",
@@ -46,12 +52,6 @@
       "type": "regex",
       "pattern": "\\{\\{JS-JEST-MAVEN-PLUGIN-VERSION\\}\\}",
       "replacement": "1.0.0"
-    }
-  ],
-  "rename": [
-    {
-      "from": "pom.xml",
-      "to": "pom.xml"
     }
   ]
 }

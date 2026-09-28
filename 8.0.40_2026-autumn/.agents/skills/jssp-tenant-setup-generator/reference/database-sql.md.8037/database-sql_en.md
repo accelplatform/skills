@@ -90,10 +90,10 @@ The body of CREATE TABLE (column definitions and constraints) must be added manu
 --     tenant_id     VARCHAR(64)  NOT NULL,
 --     ...
 --     PRIMARY KEY (content_id)
--- );
+-- )
 ```
 
-Write the types and syntax appropriate for each DB dialect in the corresponding file. For type mapping, see `.agents/skills/jssp-page-generator/reference/ddl-type-mapping.md`.
+Write the types and syntax appropriate for each DB dialect in the corresponding file. For type mapping, naming conventions, and audit trail columns, see `.agents/requirements/database-ddl/AGENTS.md`.
 
 ### Skeleton Example for `<key>_sample-dml.sql` (consolidated, recommended)
 
@@ -106,7 +106,7 @@ Write the types and syntax appropriate for each DB dialect in the corresponding 
 -- =============================================================================
 
 -- If there is initial data for imbm_content, write it here
--- INSERT INTO imbm_content (...) VALUES (...);
+-- INSERT INTO imbm_content (...) VALUES (...)
 ```
 
 **Write INSERT statements within the range of standard SQL** as a principle, consolidated into a single file. Avoid dialect-specific literals for dates and timestamps (Oracle's `TO_DATE`, SQL Server's `CONVERT`, etc.) and rely on string literals such as `'2026-01-01'` with implicit conversion, or use common functions such as `CURRENT_TIMESTAMP`.
@@ -146,6 +146,8 @@ If `database` is omitted, no SQL files are generated, and the `<database>` secti
 
 ## Notes
 
+- **Do not put a semicolon (`;`) inside a SQL comment.** The Importer splits the whole file mechanically with `;\s*\n?` and executes it one statement at a time, so a `;` inside a comment (e.g. `-- );`) also splits the statement; the resulting fragment is executed as standalone SQL and the import fails. A single failing statement leaves the rest of that file unexecuted (detected by `validate-ddl.js`)
+- **End each SQL statement with a semicolon `;`** (the skeleton comments cannot contain a `;`, so do not forget it when writing the real statements)
 - Keep DDL **idempotent** (running it twice on the same tenant will cause errors)
 - Limit DML to initial data for master-type tables. **Do not include business transaction data**
 - Character encoding is UTF-8 (without BOM)

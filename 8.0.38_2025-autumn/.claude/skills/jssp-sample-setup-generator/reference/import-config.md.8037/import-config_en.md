@@ -9,8 +9,7 @@ It enumerates the paths of the various XML/SQL/JS files that must be referenced 
 src/main/conf/products/import/sample/import-<artifactId>-config.xml
 ```
 
-The referenced XML/SQL files (`<role-file>` etc.) are placed under `src/main/storage/system`,
-and the extended import JS is placed under `src/main/jssp/src`. Note that only `import-<artifactId>-config.xml` itself is placed under `src/main/conf`.
+The referenced XML/SQL files (`<role-file>` etc.) are placed under `src/main/storage/system`, and the extended import JS is placed under `src/main/jssp/src`. Note that only `import-<artifactId>-config.xml` itself is placed under `src/main/conf`.
 
 | Part | Meaning | How it is determined |
 |---|---|---|

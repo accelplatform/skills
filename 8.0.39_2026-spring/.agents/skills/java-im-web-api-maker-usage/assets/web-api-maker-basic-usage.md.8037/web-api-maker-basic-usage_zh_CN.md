@@ -382,8 +382,8 @@ public class OrderDeletionEndpoint {
 ```
 
 - `@Authz` 既可附加于类，也可附加于方法。附加于类时会一并应用于其下的所有方法
-- 未认证时返回 `401`，已认证但无权限时返回 `403`（Web API Maker 一侧无需自行实现该分支处理）
-- **仅附加 `@Authz` 并不能生效。** 若 `uri` 指定的资源在 IM-Authz 侧未注册，将始终授权失败（`403` 等）。资源注册・策略配置请使用 `java-im-authz-usage` 的实现模式
+- 按 API 规格，未认证时返回 `401`，已认证但无权限时返回 `403`。**但与 `@IMAuthentication`（会话认证）组合使用时，未认证请求会在到达此 `@Authz` 判定之前就以 `404` 被拦截**（参见 `reference/web-api-maker-api-reference.md`「何时会被包装、何时不会」）。已认证用户被拒绝授权时返回的 `403` 会被包装
+- **仅附加 `@Authz` 并不能生效。** 若 `uri` 指定的资源在 IM-Authz 侧未注册，结果并非授权失败，而是 `ResourceNotFoundException` 导致的（未包装的）通用 `500` 错误页。若本应是 `403` 却出现 `500`，请怀疑资源未注册。资源注册・策略配置请使用 `java-im-authz-usage` 的实现模式
 - 若希望动态决定资源，可使用 `mapperClass`/`mapperParams` 属性（`AuthzMapper` 的实现类）。详细签名请参考 `reference/web-api-maker-api-reference.md`
 
 ## 模式6：安全令牌验证（`@Secured`）
@@ -423,6 +423,50 @@ public class OrderRegistrationEndpoint {
 
 ## 模式7：响应控制
 
+### 7-1. 响应体的包装结构（客户端忘记解开会导致值为 `undefined`）
+
+**Endpoint 方法的返回值不会原样成为响应体，而是必定被包装在带有 `error` / `data` 的包装对象中返回。**
+
+```java
+// Endpoint 的实现
+@Path("/foo/orders/{orderId}")
+@GET
+public OrderEntity get(@Required @Variable(name = "orderId") final String orderId) {
+    return orderService.findById(orderId);
+}
+```
+
+上述实现返回的实际响应体（`Accept: application/json`）：
+
+```json
+{
+  "error": false,
+  "data": {
+    "orderId": "ORD-0001",
+    "orderName": "示例订单",
+    "amount": 1000
+  }
+}
+```
+
+发生异常时（关于 `@Response`/`@ReturnValue` 请参照 7-2）：
+
+```json
+{
+  "error": true,
+  "errorMessage": "找不到订单信息: orderId=ORD-9999",
+  "data": {
+    "orderId": "ORD-9999"
+  }
+}
+```
+
+- 返回值为 `List`/数组时，`data` 为 JSON 数组。无论返回值类型如何，外层的包装结构都不变
+- `errorMessage` 仅在发生异常时存在；`data` 在成功时（返回值）与发生异常时（`@ReturnValue` 的值）含义不同
+- 属性的详细说明请参照 `reference/web-api-maker-api-reference.md`「响应体的包装结构」
+
+### 7-2. 异常 → 状态码与附加信息（`@Response`/`@ReturnValue`）
+
 ```java
 package jp.co.example.foo.webapi;
 
@@ -454,6 +498,8 @@ public class OrderNotFoundException extends Exception {
 }
 ```
 
+### 7-3. 手动响应（`@PreventWritingResponse`）
+
 ```java
 package jp.co.example.foo.webapi;
 
@@ -478,11 +524,109 @@ public class OrderRedirectEndpoint {
     public void redirect(final HttpServletResponse response) throws IOException {
         response.sendRedirect("/foo/orders");
     }
+
+    /**
+     * 自行写入响应体的示例（CSV 下载）。
+     * 由于返回值总是被忽略，响应内容需直接写入 response。
+     */
+    @Path("/foo/orders/csv")
+    @GET
+    @PreventWritingResponse
+    public void downloadCsv(final HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"orders.csv\"");
+        response.getWriter().write("orderId,orderName\r\nORD-0001,示例订单\r\n");
+    }
 }
 ```
 
-- 为异常类附加 `@Response(code=...)`，可以在该异常被抛出时控制状态码。附加了 `@ReturnValue` 的方法的返回值会被包含在响应体中
-- 附加了 `@PreventWritingResponse` 的方法不会执行 Web API Maker 一侧的自动响应写入，因此需要通过参数接收 `HttpServletResponse` 并自行响应
+- 为异常类附加 `@Response(code=...)`，可以在该异常被抛出时控制状态码。附加了 `@ReturnValue` 的方法的返回值会被包含在响应体的 `data` 之下
+- 附加了 `@Response(code=...)` 的业务异常，即使状态码不是 `200`，也会以 7-1 的包装结构返回
+- 附加了 `@PreventWritingResponse` 的方法的返回值总是被忽略
+- 在安全令牌验证・认证・授权检查发生错误时，即使附加了 `@PreventWritingResponse`，Web API Maker 一侧仍会进行写入
+
+### 7-4. 客户端（画面）一侧的接收
+
+从 JSSP 展示页面等调用 Web API Maker 的 API 时，务必先解开包装再使用业务数据。
+
+```javascript
+/**
+ * 调用 Web API Maker 的 API，解开包装并返回 data。
+ * @param {string} url 请求 URL
+ * @param {Object} [options] fetch 的选项（method/body 等）
+ * @returns {Promise} 成功时以 data 兑现、失败时以 Error 拒绝的 Promise
+ */
+function callWebApi(url, options) {
+    var opts = options || {};
+    var headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
+    // 对于附加了 @Secured 的 API，需通过 X-Intramart-Secure-Token 头携带令牌（参见下文）
+    if (opts.secureToken) {
+        headers['X-Intramart-Secure-Token'] = opts.secureToken;
+    }
+    return fetch(url, {
+        method: opts.method || 'GET',
+        // 不指定 Accept 则无法保证以 JSON 返回
+        headers: headers,
+        // @IMAuthentication 通过会话 Cookie 进行认证，因此必需
+        credentials: 'same-origin',
+        body: opts.body
+    }).then(function (response) {
+        // 附加了 @Response(code=...) 的业务异常即使不是 200 也会以包装结构返回，
+        // 因此不要仅凭状态码就中止，应尝试解析响应体
+        return response.json().then(function (body) {
+            return { status: response.status, body: body };
+        }, function () {
+            // 无法解析 = 意外错误。未认证访问（返回的是 404 而非 401）、406（Accept 不正确）、
+            // 以及在 Endpoint 方法之外（如 ActionFilter）发生且未被显式处理的异常导致的 500 等，
+            // 既不保证是 JSON，也不保证会被包装（Endpoint 方法自身抛出的异常无论是否标注 @Response 都必定会被包装）
+            throw new Error('HTTP ' + response.status);
+        });
+    }).then(function (result) {
+        var body = result.body;
+        if (!body || typeof body.error === 'undefined') {
+            throw new Error('HTTP ' + result.status);
+        }
+        if (body.error) {
+            // 将 errorMessage 以及 @ReturnValue 附加的 data 作为错误信息处理
+            throw new Error(body.errorMessage);
+        }
+        // 业务数据是 body.data 而非 body
+        return body.data;
+    });
+}
+
+// 调用示例（仅 @IMAuthentication）
+callWebApi('/foo/orders/ORD-0001').then(function (order) {
+    // order 是 data 的内容（相当于 OrderEntity 的对象）
+    document.getElementById('orderName').textContent = order.orderName;
+}).catch(function (e) {
+    imuiShowMessageDialog({ type: 'error', message: e.message });
+});
+
+// 调用示例（附加 @Secured，用于状态变更类 API）
+// 安全令牌的获取方式遵循既有的 <meta name="im_secure_token"> 模式（参见 `.agents/requirements/jssp-presentation-page/AGENTS.md`）
+function getSecureToken() {
+    return document.querySelector('meta[name=im_secure_token]').content;
+}
+
+callWebApi('/foo/orders', {
+    method: 'POST',
+    secureToken: getSecureToken(),
+    body: JSON.stringify({ orderName: '示例发注', amount: 1000 })
+}).then(function () {
+    imuiShowMessageDialog({ type: 'success', message: '已登记。' });
+}).catch(function (e) {
+    imuiShowMessageDialog({ type: 'error', message: e.message });
+});
+```
+
+- **像 `res.json().then(function (order) { order.orderName; })` 这样不解开包装直接引用会得到 `undefined`。** 这是 API 一侧正常却在画面上显示不出数据的典型原因
+- 不明确指定 `Accept: application/json` 时，无法保证响应格式为 JSON
+- **调用附加了 `@Secured` 的 API 时，需通过请求头 `X-Intramart-Secure-Token` 携带令牌。** 令牌本身可直接复用既有的 CSRF 对策模式获取：JSSP 画面上的 `<meta name="im_secure_token" content="<imart type="imSecureToken" mode="value" />">`（参见 `.agents/requirements/jssp-presentation-page/AGENTS.md`）
+- **Endpoint 方法自身抛出的异常，无论是否标注 `@Response` 都必定会被包装。** `@Authz`（`403`）与 `@Secured`（`403`）也均会以包装后的响应返回。而**未认证访问返回的是 `404` 而非 `401`，且不会被包装**（`@IMAuthentication` 场景下）。`406`（`Accept` 不正确）以及在 Endpoint 方法之外（如 `ActionFilter`）发生且未被显式处理的异常导致的 `500`，同样不会被包装（详情参见 `reference/web-api-maker-api-reference.md`「何时会被包装、何时不会」）。上述 `callWebApi` 通过将无法读取 `body.error` 的情况作为意外错误处理，可安全地兜底这些未被包装的场景
 
 ## 模式8：包的注册（最容易遗漏的实现）
 
@@ -517,7 +661,8 @@ public OrderEntity get(@Variable(name = "id") final String orderId) { // "orderI
 }
 
 // NG: 只附加 @Authz，却未在 IM-Authz 一侧进行资源注册
-// → 因 uri="service://foo/orders" 未注册，将始终授权失败（403）
+// → 因 uri="service://foo/orders" 未注册，结果并非授权失败（403），
+//   而是 ResourceNotFoundException 导致的未包装的 500 通用错误页
 @Authz(uri = "service://foo/orders", action = "execute")
 public class UnregisteredResourceEndpoint { }
 
@@ -557,4 +702,27 @@ public class BadEndpointFactory {
         return new StandardOrderEndpoint();
     }
 }
+```
+
+```javascript
+// NG: 客户端不解开 error/data 包装就直接引用
+// → API 本身工作正常，画面一侧的值却是 undefined
+fetch('/foo/orders/ORD-0001').then(function (res) {
+    return res.json();
+}).then(function (order) {
+    console.log(order.orderName); // undefined（正确写法是 order.data.orderName）
+});
+
+// NG: HTTP 状态码不是 200 就立即当作错误，不读取响应体
+// → 会丢失附加了 @Response(code=404) 的业务异常的 errorMessage / @ReturnValue 信息
+fetch(url).then(function (res) {
+    if (!res.ok) {
+        throw new Error('发生了错误');
+    }
+    return res.json();
+});
+
+// NG: 不指定 Accept 头就用 res.json() 解析
+// → 无法保证响应是 JSON
+fetch(url).then(function (res) { return res.json(); });
 ```

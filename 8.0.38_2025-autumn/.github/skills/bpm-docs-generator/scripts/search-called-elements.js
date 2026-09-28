@@ -3,9 +3,9 @@
  * search-called-elements.js - callActivity の呼び出し先プロセスをプロジェクト内 BPMN から探索する。
  *
  * Usage:
- *   {{RUNTIME}} <このスクリプトのパス> <diagram.bpmn>
- *   {{RUNTIME}} <このスクリプトのパス> <diagram.bpmn> --project-root <dir>
- *   {{RUNTIME}} <このスクリプトのパス> <diagram.bpmn> --json
+ *   bun <このスクリプトのパス> <diagram.bpmn>
+ *   bun <このスクリプトのパス> <diagram.bpmn> --project-root <dir>
+ *   bun <このスクリプトのパス> <diagram.bpmn> --json
  *
  * 処理内容（reference/guide-specification.md の「コールアクティビティ」節に対応）:
  *   [1] 読込中の BPMN から bpmn:CallActivity を探索する。0 件なら何もせず終了する。
@@ -18,46 +18,19 @@
 
 const fs = require('fs');
 const path = require('path');
-const BpmnModdle = require('bpmn-moddle');
+const { nsType, readAndParseBpmnFile, findElements } = require('./bpmn-doc-utils');
 
 const EXCLUDED_DIR_NAMES = new Set(['node_modules', '.git']);
 const CALLED_ELEMENT_PATTERN = /^repos:Object-(\d+)$/;
 
-function nsType(element) {
-  if (!element || !element.$type) return '';
-  const i = element.$type.indexOf(':');
-  return i >= 0 ? element.$type.slice(i + 1) : element.$type;
-}
+// nsType / findElements（旧 findElementsByType）は bpmn-doc-utils.js に集約している
+// （validate-bpmn.js / validate-process-key-replacement.js と共通）。
 
 function getAttrValue(element, name) {
   if (!element) return undefined;
   if (Object.prototype.hasOwnProperty.call(element, name)) return element[name];
   if (element.$attrs && Object.prototype.hasOwnProperty.call(element.$attrs, name)) return element.$attrs[name];
   return undefined;
-}
-
-function findElementsByType(root, typeName, out) {
-  if (!root || typeof root !== 'object') return;
-
-  if (root.$type && nsType(root) === typeName) {
-    out.push(root);
-  }
-
-  Object.keys(root).forEach(key => {
-    const value = root[key];
-    if (!value) return;
-
-    if (Array.isArray(value)) {
-      for (const child of value) {
-        if (child && typeof child === 'object') findElementsByType(child, typeName, out);
-      }
-      return;
-    }
-
-    if (typeof value === 'object' && value.$type) {
-      findElementsByType(value, typeName, out);
-    }
-  });
 }
 
 function parseArgs(argv) {
@@ -89,7 +62,7 @@ function parseArgs(argv) {
   }
 
   if (!args.bpmnPath) {
-    throw new Error('Usage: {{RUNTIME}} ' + path.basename(__filename) + ' <diagram.bpmn> [--project-root <dir>] [--json]');
+    throw new Error('Usage: bun ' + path.basename(__filename) + ' <diagram.bpmn> [--project-root <dir>] [--json]');
   }
 
   if (!args.projectRoot) {
@@ -99,13 +72,6 @@ function parseArgs(argv) {
   }
 
   return args;
-}
-
-async function parseBpmnFile(filePath) {
-  const xml = fs.readFileSync(filePath, 'utf8');
-  const moddle = new BpmnModdle();
-  const parsed = await moddle.fromXML(xml);
-  return parsed && parsed.rootElement ? parsed.rootElement : parsed;
 }
 
 function collectBpmnFiles(rootDir) {
@@ -163,7 +129,7 @@ async function findCalleeByObjectId(objectId, bpmnFiles) {
   for (const filePath of bpmnFiles) {
     let definitions;
     try {
-      definitions = await parseBpmnFile(filePath);
+      definitions = await readAndParseBpmnFile(filePath);
     } catch (err) {
       continue;
     }
@@ -194,10 +160,7 @@ async function main() {
 
   let definitions;
   try {
-    const xml = fs.readFileSync(args.bpmnPath, 'utf8');
-    const moddle = new BpmnModdle();
-    const parsed = await moddle.fromXML(xml);
-    definitions = parsed && parsed.rootElement ? parsed.rootElement : parsed;
+    definitions = await readAndParseBpmnFile(args.bpmnPath);
   } catch (err) {
     console.error('failed to read/parse BPMN XML:', err.message);
     process.exit(1);
@@ -205,7 +168,7 @@ async function main() {
   }
 
   const callActivities = [];
-  findElementsByType(definitions, 'CallActivity', callActivities);
+  findElements(definitions, 'CallActivity', callActivities);
 
   if (callActivities.length === 0) {
     if (args.json) {
@@ -270,7 +233,7 @@ if (require.main === module) {
 
 module.exports = {
   parseArgs,
-  findElementsByType,
+  findElementsByType: findElements, // 後方互換のため旧名でも公開（実体は bpmn-doc-utils.js の findElements）
   extractCalledObjectId,
   resolveProcessName,
   collectBpmnFiles,

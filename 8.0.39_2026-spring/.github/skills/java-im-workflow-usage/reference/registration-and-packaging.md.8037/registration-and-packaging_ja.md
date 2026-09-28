@@ -14,7 +14,7 @@
 <parameter type="string">jp.co.intra_mart.sample.leave.workflow.action.LeaveActionProcess</parameter>
 ```
 
-XML 生成自体は `base-im-workflow-generator` の担当。本スキルは Java ソースの実体のみを生成する。JSSP 版の `pluginId`（`{exPointId}.pluginScriptExecutor`）に対応する Java 側の `pluginId` は **`{exPointId}.pluginJavaExecutor`**（実機でJavaクラス実行として登録・エクスポートしたXMLで確認済み。アクション処理・案件開始/終了処理・分岐条件・案件削除（未完了/完了/過去）・案件退避処理の8種で確認済み）。詳細・未確認の拡張ポイント一覧は `.github/skills/base-im-workflow-generator/reference/java-class-registration.md` を参照。到達処理・結合条件・処理対象者プラグインは同じ命名規則が推定されるが未確認のため、使用前に実機で1度確認すること。
+XML 生成自体は `base-im-workflow-generator` の担当。本スキルは Java ソースの実体のみを生成する。JSSP 版の `pluginId`（`{exPointId}.pluginScriptExecutor`）に対応する Java 側の `pluginId` は **`{exPointId}.pluginJavaExecutor`**。アクション処理・案件開始/終了処理・分岐条件・結合条件・到達処理・案件削除（未完了/完了/過去）・案件退避処理の全拡張ポイントで確認済み。`exPointId`/`pluginId` の値一覧・登録方法の詳細は `.github/skills/base-im-workflow-generator/reference/java-class-registration.md` を参照。**処理対象者プラグインのみ別体系**（`plugin.xml` によるプラグイン登録。同ファイル「処理対象者プラグイン（カスタム実装）の登録」参照）で、この `.pluginJavaExecutor` 規則は適用されない。
 
 ## 実行時クラスパスへの配置
 

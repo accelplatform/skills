@@ -279,3 +279,28 @@ Example: Mon-Fri at 6, 12, and 18 o'clock 0 minutes -> `daysOfWeek: [2,3,4,5,6]`
 - Job IDs are unique across all of intra-mart. The recommended operation is to add a prefix such as `<shortName>-job-...` per application
 - When writing the **implementation body** of the job, use the `jssp-im-job-generator` skill (templates for `execute()` / returning `JobResult` / transaction management etc. are available)
 - The **startup schedule** of the job (cron configuration) is not included in the import data. Configure it on the job scheduler administration screen after import
+
+## Running a `jobType: JAVA` Job Right After a Hot Deploy (Important)
+
+**Running a `jobType: JAVA` job from the normal "Tenant Management → Job Scheduler → Job" screen immediately after hot-deploying a module fails with a `ClassNotFoundException` when the job instance is created.**
+
+### Cause
+
+The job scheduler executes all jobs on a **single, long-lived worker thread** created when the service starts (`Executors.newSingleThreadExecutor()`). The class loader held by that thread is **fixed at the moment the thread is created (i.e. when the job scheduler service starts)** and is never refreshed afterward. As a result, **Java classes added or updated by a hot deploy after the service has started are invisible to that thread**, and `Class.forName()` fails.
+
+HTTP-request-driven processing such as Web API Maker does not have this problem, because the servlet container resets the thread's context class loader to the current one on every single request.
+
+### Workarounds
+
+Either of the following resolves it.
+
+1. **Restart the intra-mart server itself (a cool deploy)** — this reinitializes the job scheduler service, creating a new worker thread that holds an up-to-date class loader
+2. **Run the job from the Staging Management screen** instead of the normal "Tenant Management → Job Scheduler → Job" screen — this lets you run it immediately without restarting the server:
+   1. Go to Site Map → Development Support → Staging Management
+   2. Select the deployed staging ID
+   3. Select the "Job" tab
+   4. The job imported via the tenant environment setup is listed there — trigger it immediately using the "Run" icon
+
+While developing and hot-deploying updates to a job class, try **option 2 (running it from the Staging Management screen)** first. For jobs that will run on a recurring schedule in production, it is fine to configure the trigger from the normal Tenant Management screen after a regular cool deploy (this issue only matters for ad hoc runs immediately after a hot deploy).
+
+This behavior stems from the platform's implementation (`StandardJobSchedulerWorker`'s single thread never re-resolving its class loader). This section covers `jobType: JAVA` only.

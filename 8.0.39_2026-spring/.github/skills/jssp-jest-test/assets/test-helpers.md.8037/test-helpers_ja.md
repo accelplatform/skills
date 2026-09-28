@@ -50,8 +50,7 @@ describe('main', function() {
 
 ## load() による外部ファイル読み込み
 
-sourcePathMapping で自動解決されないファイル（共通ユーティリティ等）は
-`load()` で明示的に読み込む。
+sourcePathMapping で自動解決されないファイル（共通ユーティリティ等）は `load()` で明示的に読み込む。
 
 ```javascript
 // テストファイルの先頭で共通処理を読み込む

@@ -376,7 +376,7 @@ node .github/skills/base-im-workflow-generator/scripts/validate-workflow.js \
 - **生成时的注意事项和常见错误已在 `reference/import-xml-checklist.md` 中整理为清单。** 生成 XML 后必须确认所有项目。
 - **输出位置不得从 `src/main/storage/public/im_workflow/` 变更。** 该目录是 IM-Workflow 导入资源的固定存放位置，若通过 `--out` 输出到其他位置（如 `spec/` 等），则不会被租户环境设置（Importer / `jssp-tenant-setup-generator` 的集成处理）引用并导入。
 - 本技能专用于工作流**定义文件**的生成。工作流集成**程序**（动作处理·申请画面·审批画面）：JSSP 实现请使用 `jssp-im-workflow-usage` 技能，Java（JavaEE 开发模型）实现请使用 `java-im-workflow-usage` 技能。
-- **若要在 `actionProcess` / `matterEndProcess` 中注册 Java 类的 FQCN**，请参阅 [reference/java-class-registration.md](reference/java-class-registration.md)。`build-workflow.js` 现已同时支持两者（参见 `actionProcessImpl` / `matterEndProcessImpl` 字段）。
+- **若要在 `actionProcess` / `matterEndProcess` 中注册 Java 类的 FQCN**，请参阅 [reference/java-class-registration.md](reference/java-class-registration.md)。将 `actionProcessImpl` / `matterEndProcessImpl` 指定为 `"java"`，`build-workflow.js` 即可自动生成 Java 类执行的 `pluginId`（`.pluginJavaExecutor`）。到达处理（`arriveProcess`）等其他生命周期相关字段同样支持（参见 [reference/lifecycle-plugin-fields.md](reference/lifecycle-plugin-fields.md)）。分支条件・结合条件（用户程序方式）及处理对象者插件的自动生成尚不支持。
 
 ## 与其他技能的边界·一致性职责
 

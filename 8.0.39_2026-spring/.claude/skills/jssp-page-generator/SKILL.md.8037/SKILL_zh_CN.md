@@ -207,7 +207,10 @@ DDL 生成的详细规则，请参考本文件末尾的"DDL 生成规则详情"�
 在步骤 6 中生成 DDL 时，请遵守以下规则：
 
 - 表名和列名必须与生成的功能容器 SQL 中的一致
-- **列的类型必须遵照 `reference/ddl-type-mapping.md` 的类型映射表**（不得凭记忆或猜测填写类型名）
+- **表名・列名的命名规约（小写蛇形命名、保留字大写等）须遵照 `.claude/rules/database-ddl.md` 的「表・列命名规约」**
+- **列的类型必须遵照 `.claude/rules/database-ddl.md` 的类型映射表**（不得凭记忆或猜测填写类型名）
+- **必须包含审计追踪列**（`create_user_cd` / `create_date` / `record_user_cd` / `record_date`，详见 `.claude/rules/database-ddl.md` 的「审计追踪列（必须）」）
+- 主键・索引设计须遵照 `.claude/rules/database-ddl.md` 的「主键设计」「索引命名规则」
 - DDL 须按数据库产品分文件输出（因为类型名和默认值语法各不相同）
 - 示例 DML 须使用标准 SQL 的 INSERT 语句编写，以便 3 种产品通用
 - 主数据表须插入 3～5 条示例记录

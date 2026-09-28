@@ -143,7 +143,7 @@ The structure differs from direct/combination specifications; do not confuse the
 
 **Note:** targetType is generally camelCase (`publicGroup`, `publicGroupRole`). `user`, `department`, `post`, `role` are all lowercase, but compound words are always camelCase.
 
-### Combination Specification (verified with actual machine export data)
+### Combination Specification
 
 parameter and targetCode have the same value. Separator is pipe `|` (not caret `^`).
 
@@ -170,7 +170,7 @@ parameter and targetCode have the same value. Separator is pipe `|` (not caret `
 <targetCode type="string">sample_public^public_group_a|im_workflow_user</targetCode>
 ```
 
-### Dynamic Specification (verified with actual machine export data, all 37 patterns)
+### Dynamic Specification (all 37 patterns)
 
 Dynamically determines approvers based on the applicant's or previous processor's affiliated organization, etc.
 Set `targetType` / `targetCode` to empty tags.
@@ -380,7 +380,7 @@ No sample data.
 
 ---
 
-## Logic Flow Type (IM-LogicDesigner Integration) (Verified with real export data)
+## Logic Flow Type (IM-LogicDesigner Integration)
 
 A method to dynamically determine processing target users by executing an IM-LogicDesigner logic flow.
 Complex logic such as DB lookups or external API calls can be implemented inside the flow.
@@ -395,15 +395,13 @@ Complex logic such as DB lookups or external API calls can be implemented inside
 - `version`: `null` = use the latest version. Specify an integer to pin a specific version
 - `versionDecide`: `false` = auto-determine version (latest). `true` = use the value in `version`
 
-### Supported Extension Points (Confirmed with real data)
+### Supported Extension Points
 
 | Extension Point | pluginId |
 |----------------|---------|
 | `node.approve` (approval authority, dynamic) | `...node.approve.logic_flow_user` |
 | `node.confirm` (confirm authority) | `...node.confirm.logic_flow_user` |
 | `administrator.flow.handle` (reference users) | `...administrator.flow.handle.logic_flow_user` |
-
-> ⚠️ `.logic_flow_user` for `node.apply` (apply authority) and `node.approve.static` (static approval) is unconfirmed in real data.
 
 ### XML Example
 

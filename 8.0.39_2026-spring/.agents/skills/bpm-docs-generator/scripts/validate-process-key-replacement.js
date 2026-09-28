@@ -5,71 +5,37 @@
  * BPMN 内の process id 置換メタ情報を機械判定で検証する。
  *
  * Usage:
- *   {{RUNTIME}} <このスクリプトのパス> <diagram.bpmn>
- *   {{RUNTIME}} <このスクリプトのパス> <diagram.bpmn> --json
+ *   bun <このスクリプトのパス> <diagram.bpmn>
  *
  * Checks:
  *   [parseArgs]
- *            - CLI 引数（<diagram.bpmn>, --json）を検証
+ *            - CLI 引数（<diagram.bpmn>）を検証
  *   [extractProcessKeyTokens]
- *            - documentation から PROCESS_KEY_META:PROCESS_KEY_REPLACED=true トークンを抽出
- *   [classify]
- *            - 置換状態を分類（documentation-only / none）
+ *            - documentation から PROCESS_KEY_META:{...} トークンを抽出する（トークンの存在自体が置換済みを意味する）
  *   [validateProcess]
  *            - process 単位の整合性チェック
- *            - PROCESS_KEY / ORIGINAL_PROCESS_KEY の必須項目チェック
+ *            - PROCESS_KEY / ORIGINAL_PROCESS_KEY  の必須項目チェック
  *            - process id と PROCESS_KEY の一致チェック
- *            - replacePolicy=initial-only 推奨チェック（不一致は warning）
- *            - 戻り値に processId と PROCESS_KEY_META の processKey / originalProcessKey（未定義時は null）を含める
+ *            - 戻り値に processId と PROCESS_KEY_META の processKey / originalProcessKey （未定義時は null）を含める
  *   [main]
  *            - BPMN 読込/解析、Process 要素存在チェック、集計、終了コード判定
- *   [printTextReport]
- *            - テキスト形式の結果出力（process ごとの status / error / warning）
- *            - JSON 形式は --json 指定時に main から出力
+ *            - 結果は JSON 形式で標準出力へ出力する
+ *            - 同じ結果オブジェクト（JSON）を戻り値としても返す（fail() 経由の異常終了時も含む）
+ *            - 終了コードは process.exitCode に設定し、戻り値が呼び出し元へ返るようにする
  */
 
-const fs = require('fs');
-const BpmnModdle = require('bpmn-moddle');
+const { nsType, readAndParseBpmnFile } = require('./bpmn-doc-utils');
+
+/* nsType / BPMN ファイル読込・解析（readAndParseBpmnFile）は bpmn-doc-utils.js に集約している
+ * （search-called-elements.js / validate-bpmn.js と共通）。 */
 
 /* CLI 引数の妥当性をチェックし、実行オプションを確定する。 */
 function parseArgs(argv) {
-  const args = {
-    bpmnPath: null,
-    json: false
-  };
-
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i];
-    if (!args.bpmnPath && !a.startsWith('--')) {
-      args.bpmnPath = a;
-      continue;
-    }
-
-    if (a === '--json') {
-      args.json = true;
-      continue;
-    }
-
-    throw new Error('Unknown argument: ' + a);
+  if (argv.length !== 1) {
+    throw new Error('Usage: bun ' + require('path').basename(__filename) + ' <diagram.bpmn>');
   }
 
-  if (!args.bpmnPath) {
-    throw new Error('Usage: {{RUNTIME}} ' + require('path').basename(__filename) + ' <diagram.bpmn> [--json]');
-  }
-
-  return args;
-}
-
-/* BPMN要素の型名から名前空間プレフィックスを除いた型名を取得する。 */
-function nsType(element) {
-  if (!element || !element.$type) return '';
-  const index = element.$type.indexOf(':');
-  return index >= 0 ? element.$type.slice(index + 1) : element.$type;
-}
-
-/* true/false を示す文字列表現を真偽値として解釈する。 */
-function parseBoolean(value) {
-  return value === true || value === 'true' || value === '1';
+  return { bpmnPath: argv[0] };
 }
 
 /* documentation 配下のテキストを連結し、トークン解析用の文字列を作る。 */
@@ -105,47 +71,31 @@ function parseTokenPairs(tokenBody) {
   return data;
 }
 
-/* documentation から PROCESS_KEY_REPLACED=true の置換トークンのみ抽出する。 */
+/* documentation から PROCESS_KEY_META トークンを抽出する（トークンの存在自体が置換済みを意味する）。 */
 function extractProcessKeyTokens(docText) {
   const tokens = [];
-  const regex = /PROCESS_KEY_META:([^\r\n]+)/g;
+  const regex = /PROCESS_KEY_META:\{([^{}\r\n]*)\}/g;
   let match;
 
   while ((match = regex.exec(docText)) !== null) {
     const tokenBody = match[1] || '';
-    const data = parseTokenPairs(tokenBody);
-    if (parseBoolean(data.PROCESS_KEY_REPLACED)) {
-      tokens.push(data);
-    }
+    tokens.push(parseTokenPairs(tokenBody));
   }
 
   return tokens;
 }
 
-/* documentation の検出有無から置換状態を分類する。 */
-function classify(docReplaced) {
-  if (docReplaced) return 'documentation-only';
-  return 'none';
-}
-
-/* process 単位で必須項目・キー一致・ポリシーを検証し、errors/warnings を作成する。 */
+/* process 単位で必須項目・キー一致・ポリシーを検証し、errors を作成する。 */
 function validateProcess(process) {
   const processId = process.id || '(missing process id)';
   const errors = [];
-  const warnings = [];
 
   const docText = collectDocumentationText(process);
   const docTokens = extractProcessKeyTokens(docText);
-  const docToken = docTokens.length > 0 ? docTokens[docTokens.length - 1] : null;
-  const docReplaced = !!docToken;
+  const docToken = docTokens[docTokens.length - 1] || null;
+  const status = docToken ? 'replaced' : 'none';
 
-  if (docTokens.length > 1) {
-    warnings.push('documentation token exists multiple times; latest token is used for validation');
-  }
-
-  const status = classify(docReplaced);
-
-  if (docReplaced) {
+  if (docToken) {
     if (!docToken.PROCESS_KEY) {
       errors.push('documentation token is missing PROCESS_KEY');
     }
@@ -155,10 +105,8 @@ function validateProcess(process) {
     if (docToken.PROCESS_KEY && process.id && docToken.PROCESS_KEY !== process.id) {
       errors.push('documentation PROCESS_KEY does not match process id');
     }
-  }
-
-  if (docReplaced && docToken.REPLACE_POLICY && docToken.REPLACE_POLICY !== 'initial-only') {
-    warnings.push('documentation token REPLACE_POLICY is not initial-only');
+    // PROCESS_KEY_METAには、REPOSITORY_OBJECT_IDもあるが、
+    // プロセス定義キー置換には利用しないためチェック無。
   }
 
   return {
@@ -166,52 +114,19 @@ function validateProcess(process) {
     status: status,
     processKey: docToken && docToken.PROCESS_KEY ? docToken.PROCESS_KEY : null,
     originalProcessKey: docToken && docToken.ORIGINAL_PROCESS_KEY ? docToken.ORIGINAL_PROCESS_KEY : null,
-    detail: {
-      documentationDetected: docReplaced,
-      documentationToken: docToken
-    },
-    errors: errors,
-    warnings: warnings
+    errors: errors
   };
 }
 
-/* BPMN XML をパースし、definitions(rootElement) を返す。 */
-async function parseBpmn(xml) {
-  const moddle = new BpmnModdle();
-  const parsed = await moddle.fromXML(xml);
-  return parsed && parsed.rootElement ? parsed.rootElement : parsed;
-}
-
-/* 人間向けのテキストレポートを整形出力する。 */
-function printTextReport(report) {
-  console.error('Process key replacement validation');
-  console.error('--------------------------------');
-
-  for (const item of report.processes) {
-    console.error('Process:', item.processId);
-    console.error('  status:', item.status);
-    console.error('  processKey:', item.processKey || '(none)');
-    console.error('  originalProcessKey:', item.originalProcessKey || '(none)');
-
-    if (item.errors.length === 0 && item.warnings.length === 0) {
-      console.error('  result: OK');
-    }
-
-    for (const warning of item.warnings) {
-      console.error('  WARN :', warning);
-    }
-
-    for (const err of item.errors) {
-      console.error('  ERROR:', err);
-    }
-  }
-
-  console.error('--------------------------------');
-  if (report.ok) {
-    console.error('PASS (' + report.warningCount + ' warning(s))');
-  } else {
-    console.error('FAIL (' + report.errorCount + ' error(s), ' + report.warningCount + ' warning(s))');
-  }
+/* エラーメッセージを標準エラー出力へ出し、エラーレポート（JSON）を返す。終了コードは呼び出し元で設定する。 */
+function fail(message) {
+  console.error(message);
+  return {
+    ok: false,
+    errorCount: 1,
+    processes: [],
+    errors: [message]
+  };
 }
 
 /* 入力読込から検証実行、結果出力、終了コード決定までを統括する。 */
@@ -220,27 +135,16 @@ async function main() {
   try {
     args = parseArgs(process.argv.slice(2));
   } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-    return;
-  }
-
-  let xml;
-  try {
-    xml = fs.readFileSync(args.bpmnPath, 'utf8');
-  } catch (err) {
-    console.error('failed to read file:', err.message);
-    process.exit(1);
-    return;
+    process.exitCode = 1;
+    return fail(err.message);
   }
 
   let definitions;
   try {
-    definitions = await parseBpmn(xml);
+    definitions = await readAndParseBpmnFile(args.bpmnPath);
   } catch (err) {
-    console.error('failed to parse BPMN XML:', err.message);
-    process.exit(1);
-    return;
+    process.exitCode = 1;
+    return fail('failed to read or parse BPMN file: ' + err.message);
   }
 
   const rootElements = definitions && Array.isArray(definitions.rootElements) ? definitions.rootElements : [];
@@ -250,40 +154,27 @@ async function main() {
     const empty = {
       ok: false,
       errorCount: 1,
-      warningCount: 0,
       processes: [],
       errors: ['process element does not exist']
     };
 
-    if (args.json) {
-      console.log(JSON.stringify(empty, null, 2));
-    } else {
-      console.error('ERROR: process element does not exist');
-      console.error('FAIL (1 error(s), 0 warning(s))');
-    }
-
-    process.exit(1);
-    return;
+    console.log(JSON.stringify(empty, null, 2));
+    process.exitCode = 1;
+    return empty;
   }
 
   const results = processes.map(validateProcess);
   const errorCount = results.reduce((sum, row) => sum + row.errors.length, 0);
-  const warningCount = results.reduce((sum, row) => sum + row.warnings.length, 0);
 
   const report = {
     ok: errorCount === 0,
     errorCount: errorCount,
-    warningCount: warningCount,
     processes: results
   };
 
-  if (args.json) {
-    console.log(JSON.stringify(report, null, 2));
-  } else {
-    printTextReport(report);
-  }
-
-  process.exit(report.ok ? 0 : 1);
+  console.log(JSON.stringify(report, null, 2));
+  process.exitCode = report.ok ? 0 : 1;
+  return report;
 }
 
 if (require.main === module) {
@@ -293,6 +184,5 @@ if (require.main === module) {
 module.exports = {
   parseArgs,
   validateProcess,
-  extractProcessKeyTokens,
-  classify
+  extractProcessKeyTokens
 };

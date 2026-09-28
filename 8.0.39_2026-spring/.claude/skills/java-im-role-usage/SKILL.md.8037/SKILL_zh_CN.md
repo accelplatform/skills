@@ -34,7 +34,7 @@ allowed-tools: Bash, Read, Write, Glob
 | `.claude/rules/java-code-style.md` | 🟢 **必读** — `final` 局部变量、字符串字面量等 |
 | `.claude/rules/java-javadoc.md` | 🟢 **必读** — 类/方法 JavaDoc |
 
-`.claude/rules` 下目前不存在规定异常处理方针的 Java 专用规约（截至2026年）。`RoleInfoManager` 的所有方法都被设计为抛出 `AdminException`（受检异常），业务异常的包装方针应遵循 `assets/role-basic-usage.md` 中的模式。
+`.claude/rules` 下目前不存在规定异常处理方针的 Java 专用规约。`RoleInfoManager` 的所有方法都被设计为抛出 `AdminException`（受检异常），业务异常的包装方针应遵循 `assets/role-basic-usage.md` 中的模式。
 
 `jssp-*` 的规约不适用于本技能（不适用于 Java 文件）。
 
@@ -94,7 +94,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 ## 生成后确认
 
-目前尚未配备类似 JSSP 版的专用验证脚本（相当于 `validate-jssp-code.js`）。请手动确认以下内容。
+并非通过自动验证脚本（如 JSSP 版的 `validate-jssp-code.js`），而是手动确认以下内容。
 
 1. 所有使用 `getRoleInfo()` 返回值的地方是否都进行了 null 检查
 2. 使用 `RoleInfo()`（无参构造函数）的地方是否恰当地处理了 `IOException`

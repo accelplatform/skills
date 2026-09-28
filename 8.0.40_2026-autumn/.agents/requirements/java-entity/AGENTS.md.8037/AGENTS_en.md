@@ -32,7 +32,7 @@ public Timestamp recordDate;
 
 - `createUserCd`, `createDate`: Audit trail for record creation
 - `recordUserCd`, `recordDate`: Audit trail for record updates
-- When using AbstractDAO's basic methods (insert/update), these fields are set automatically. Manual setting is prohibited
+- When using AbstractDAO's basic methods (insert/update), these fields are set automatically. Manual setting is prohibited (note that `update` automatically sets only `recordUserCd`/`recordDate`)
 
 ## Field Types
 
@@ -70,3 +70,7 @@ public Timestamp recordDate;
 | Conversion | Converted to/from each other at the repository layer | Converted to/from each other at the repository layer |
 
 An entity is a reflection of the DB structure and must not hold business logic. Business logic should be implemented in the domain model.
+
+## Related
+
+- `.agents/requirements/database-ddl/AGENTS.md` - Table/column naming conventions, DDL type mapping, and the DB-side definition of audit trail columns (the DDL itself is authored as a JSSP-side artifact, but the convention is common regardless of development model)

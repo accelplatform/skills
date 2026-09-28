@@ -9,21 +9,21 @@
       "condition": {
         "locale": "ja"
       },
-      "from": "validate-xml_ja.instructions.md",
+      "from": "validate-xml.instructions_ja.md",
       "to": "validate-xml.instructions.md"
     },
     {
       "condition": {
         "locale": "en"
       },
-      "from": "validate-xml_en.instructions.md",
+      "from": "validate-xml.instructions_en.md",
       "to": "validate-xml.instructions.md"
     },
     {
       "condition": {
         "locale": "zh_CN"
       },
-      "from": "validate-xml_zh_CN.instructions.md",
+      "from": "validate-xml.instructions_zh_CN.md",
       "to": "validate-xml.instructions.md"
     }
   ]

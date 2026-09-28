@@ -58,7 +58,7 @@ zip 直下のディレクトリ構造は以下：
 | `specification.md` | 仕様書ページ | rootPageCd | `"1"` | title=「仕様書」 |
 | `business-data.md` | 業務データ定義ページ | rootPageCd | `"2"` | title=「業務データ定義」 |
 | `to-be-discussed.md` | 要検討事項ページ | rootPageCd | `"8"` | title=「要検討事項」 |
-| `supplement.md` | 仕様採用方針・補足事項ページ | rootPageCd | `"9"` | title=「仕様採用方針と補足事項を記載」 |
+| `supplement.md` | 仕様採用方針・補足事項ページ | rootPageCd | `"9"` | title=「仕様採用方針と補足事項」 |
 | `interactive-log.md` | 対話履歴ページ | rootPageCd | `"10"` | title=「対話履歴」 |
 | `<機能ディレクトリ>/` | 機能フォルダページ | rootPageCd | `"11"` 以降 | title=「[<機能名>]機能」。本文は `# 機能定義\n\n{{child_pages}}` |
 | `<機能ディレクトリ>/<機能名>-screen.md` | 画面定義ページ | 機能フォルダ pageCd | `"0"` | title=「[<機能名>]画面定義」 |
@@ -250,7 +250,7 @@ im_knowledge_<YYYYMMDD>_<HHMM>.zip
    ├─ <pageA>/<pageA>.json                                 （title=仕様書, parent=<root>, sortKey="1"）
    ├─ <pageB>/<pageB>.json                                 （title=業務データ定義, parent=<root>, sortKey="2"）
    ├─ <pageC>/<pageC>.json                                 （title=要検討事項, parent=<root>, sortKey="8"）
-   ├─ <pageD>/<pageD>.json                                 （title=補足事項, parent=<root>, sortKey="9"）
+   ├─ <pageD>/<pageD>.json                                 （title=仕様採用方針と補足事項, parent=<root>, sortKey="9"）
    ├─ <pageE>/<pageE>.json                                 （title=対話履歴, parent=<root>, sortKey="10"）
    ├─ <folderF>/<folderF>.json                             （title=[<機能名>]機能, parent=<root>, sortKey="11"）
    ├─ <pageF1>/<pageF1>.json                               （title=[<機能名>]画面定義, parent=<folderF>, sortKey="0"）

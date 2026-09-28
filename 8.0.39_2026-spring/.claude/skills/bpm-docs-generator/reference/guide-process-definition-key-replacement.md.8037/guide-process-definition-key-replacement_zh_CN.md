@@ -1,100 +1,141 @@
-# 流程定义键（process id）置换指南
+# 流程定义键（process id）替换指南
 
-为避免源自 iGrafx 的 BPMN 中 process id 重复，定义面向 IM-BPM 导入的 process id 采番・管理机制。
+为避免源自 iGrafx 的 BPMN 出现 process id 重复问题，本文档定义了面向 IM-BPM 导入的 process id 编号与管理机制。
 
 **基本方针**：
-- 在规格书创建阶段（bpm-docs-generator），仅进行置换状态的判定与置换方案的提示。
-  - BPMN 的 ID 置换，在收到将规格书内容反映到 BPMN 的请求时，利用 bpm-xml-reflector 的技能集实施。
-- 首次置换后复用既有的键。为防止错误的新采番，已置换信息将持久保存在规格书与 BPMN 中。
+- 仅当加载的 BPMN 文件为 iGrafx 制作时才执行本流程。
+- 在规格书制作阶段（bpm-docs-generator），仅进行替换状态的判定与替换方案的提示。
+  - BPMN 的 ID 替换，将在收到把规格书内容反映到 BPMN 的请求时，使用 bpm-xml-reflector 技能集来执行。
+  - 一旦确定替换方案（from-to），除记载到 `to-be-discussed.md` 外，需在同一时间点将其作为 `operation: "replace-process-id"` 的条目输出到 `spec-to-bpmn-fixes.json` 中（详情参见「输出到 `spec-to-bpmn-fixes.json`」一节）。向 BPMN 的实际反映由 `.claude/skills/bpm-xml-reflector/reference/bpmn-specs-reflector.md` 的 `reflectFixes()` 以 `spec-to-bpmn-fixes.json` 作为唯一输入来执行。
+- 首次替换后，需复用已有的键。为防止错误的重新编号，替换完成的信息需在要探讨事项和 BPMN 内永久保留。
 
 ## 适用范围
 - BPMN 文件生成时的 process id（= IM-BPM 的流程定义键）
-- 置换对象**仅限 process id**，不变更流程要素 ID・顺序 ID・DI 要素 ID。
+- 替换对象**仅限 process id**，流程元素 ID、序列 ID、DI 元素 ID 不做变更。
 
 ## 检查实现
-BPMN 文件的 ID 值・置换状态检查与获取的实现，使用以下脚本。
+BPMN 文件的 ID 值、替换状态检查及获取的实现，使用以下脚本。
 
 - `.claude/skills/bpm-docs-generator/scripts/validate-process-key-replacement.js`
-- 执行示例：`{{RUNTIME}} .claude/skills/bpm-docs-generator/scripts/validate-process-key-replacement.js <processNm-prompt/diagram.bpmn> --json`
-
-之后的判定・一致性确认，原则上基于该脚本的输出进行。不得手动重新实现同等逻辑进行判定。
-
+- 执行示例：`{{ENSURE_CMD}} .claude/skills/bpm-docs-generator/scripts/validate-process-key-replacement.js <processNm-prompt/diagram.bpmn>`（结果始终以 JSON 格式返回）
 
 ## 处理流程
 
-### Step 1: 确认既有 ID
-- 比较输入源 BPMN 文件（`doc/*.bpmn`）、规格书（`to-be-discussed.md`）、复制目标 BPMN 文件（`<BPM流程名>-prompt/*.bpmn`）的 ID，决定之后的处理。
-  - 无需 ID 置换提案，可结束处理流程的情况。
-    - 输入源 BPMN、规格书、复制目标 BPMN 的各 ID 一致时。
-    - 复制目标 BPMN 中未反映置换 ID，且输入源 BPMN 与规格书的各 ID 一致时。
-  - 判定为 Step 2：首次采番的情况
-    - 不存在 `<BPM流程名>-prompt` 目录时
-    - 存在规格书但未记载 ID 置换方案，且复制目标 BPMN 中未反映 ID 时。
-  - 判定为 Step 3：追加采番的情况
-    - 输入源 BPMN、规格书、复制目标 BPMN 的既有各 ID 一致，但输入源 BPMN 中存在新的 ID 时。
-  - 判定为 Step 4：规格书订正的情况
-    - 规格书与复制目标 BPMN 的既有各 ID 一致，但置换后 ID 不同时。
-  - 判定为 Step 5：需确认的情况
-    - 输入源 BPMN、规格书、复制目标 BPMN 之间的各 ID 存在不一致时。Step 2～Step 4 的情况除外。
+### Step 1：获取 ID
 
-**输入源 BPMN 文件与复制目标 BPMN 文件，应各自执行 validate-process-key-replacement.js 以获取 ID 值・置换状况**
+- 输入源 BPMN（`doc/<BPM流程名>.bpmn`）
+  - `{{ENSURE_CMD}} .claude/skills/bpm-docs-generator/scripts/validate-process-key-replacement.js <输入源BPMN文件>`
+- 要探讨事项（`to-be-discussed.md`）
+  - 从第 2 章「流程定义键替换履历」中获取各流程的「原流程定义键」与「替换后流程定义键」。
+- 复制目标 BPMN（`<BPM流程名>-prompt/<BPM流程名>.bpmn`）
+  - `{{ENSURE_CMD}} .claude/skills/bpm-docs-generator/scripts/validate-process-key-replacement.js <复制目标BPMN文件>`
 
-**复制目标 BPMN 参照 `documentation` 的 `PROCESS_KEY_META` 中 `ORIGINAL_PROCESS_KEY` 的值。**
+- **对输入源 BPMN 文件和复制目标 BPMN 文件，分别执行 validate-process-key-replacement.js 以获取 ID 值和替换状态**
 
-### Step 2: 首次采番
-依据**采番规则**提示 ID 置换方案并记载至规格书。记载后，本处理流程结束。
-
-### Step 3: 追加采番
-对追加部分的 ID，依据**采番规则**提示 ID 置换方案并追记至规格书。记载后，本处理流程结束。
-
-### Step 4: 规格书订正
-报告复制目标 BPMN 与规格书的置换后 ID 不同。确认后，以复制目标 BPMN 的置换后 ID 订正规格书的记载。订正后，本处理流程结束。
-※ 由于流程定义键（置换后 ID）是在 IM-BPM 上特定 BPM 的唯一键，因此判定以复制目标 BPMN 一侧为准。
-
-### Step 5: 需确认
-报告 ID 存在不一致，并请求关于 ID 采番方针的处理指示。
+- **对于复制目标 BPMN，需参照 `documentation` 中 `PROCESS_KEY_META` 的值。**
+  - `PROCESS_KEY_META` 的格式及嵌入处理详情以 `.claude/skills/bpm-xml-reflector/reference/bpmn-specs-reflector.md` 为准。
 
 
-**采番规则**
-- 置换后的键应为「与作为来源的 BPMN 文件・流程相关的 ID」。
-- 推荐的键格式为 `<processSlug>_<serial>`。
-  - `processSlug`：将流程名或原 process id 规范化后的标识符（仅限英数字・`_`・`-`・`.`，首字符为英文字母或 `_`）
-  - `serial`：4 位以上的连号（例：`0001`、`0002`、…）
-- 例：`vehicle_purchase_0001`、`daily_check_0001`、`expense_approval_0001`
+### Step 2：确认现有 ID
+- 将 Step 1 中获取的结果按流程逐一比较，以此决定后续处理。
+  | 类别 | `输入源BPMN` | `要探讨事项` | `复制目标BPMN` |
+  |------|-----|-----|-----|
+  | 替换前定义键 | processId | 原流程定义键 | originalProcessKey |
+  | 替换后定义键 | 无 | 替换后流程定义键 | processKey（或 processId）|
 
+- 无需提出 ID 替换方案，可将处理流程视为结束的情形。
+  - `输入源BPMN`、`要探讨事项`、`复制目标BPMN` 各流程的「替换前定义键」一致，且 `要探讨事项` 与 `复制目标BPMN` 各流程的「替换后定义键」一致时。
+  - `复制目标BPMN` 的「替换后定义键」未定义，且 `输入源BPMN` 与 `要探讨事项` 的「替换前定义键」一致时。
+- Step 3：判定为首次编号的情形
+  - 不存在 `<BPM流程名>-prompt` 目录时
+  - `要探讨事项` 中未记载 ID 替换方案，且 `复制目标BPMN` 的「替换后定义键」未定义时。
+- Step 4：判定为追加编号的情形
+  - `输入源BPMN`、`要探讨事项`、`复制目标BPMN` 中已有流程的各定义键一致，但 `输入源BPMN` 中存在新的「替换后定义键」时。
+- Step 5：判定为要探讨事项订正的情形
+  - `要探讨事项` 与 `复制目标BPMN` 的「替换前定义键」一致，但「替换后定义键」不同时。
+- Step 6：判定为需要确认的情形
+  - `输入源BPMN`、`要探讨事项`、`复制目标BPMN` 之间存在定义键不一致的情形。但排除 Step3～Step5 所涵盖的情形。
 
-## 记载至规格书
+### Step 3：首次编号
+- 依据**编号规则**提出 ID 替换方案并记载到要探讨事项中。同时也输出到 `spec-to-bpmn-fixes.json`（参见「输出到 `spec-to-bpmn-fixes.json`」）。记载完成后，本处理流程结束。
 
-### 置换提案在待讨论事项中的记载
-在规格书创建阶段，作为**置换提案**，在 `to-be-discussed.md` 的「2. 流程定义键置换履历」章节中记载以下信息。（格式参见流程定义键置换履历的记载模板）
+### Step 4：追加编号
+- 针对新增部分的 ID，依据**编号规则**提出 ID 替换方案并追记到要探讨事项中。同时也追记到 `spec-to-bpmn-fixes.json`。记载完成后，本处理流程结束。
 
-- 对象流程
+### Step 5：要探讨事项订正
+- 报告复制目标 BPMN 与要探讨事项中的替换后 ID 不一致。确认后，以复制目标 BPMN 的替换后 ID 为准订正要探讨事项的记载。`spec-to-bpmn-fixes.json` 中对应条目也订正为相同的值。订正完成后，本处理流程结束。
+- ※由于流程定义键（替换后 ID）是在 IM-BPM 上标识 BPM 的唯一键，故以复制目标 BPMN 一侧为准。
+
+### Step 6：需要确认
+- 报告存在 ID 不一致的情况，并请示 ID 编号方针的应对指示。
+
+**编号规则**
+- 替换后的键须为「与原始 BPMN 文件・流程相关联的 ID」，且不超过 44 个字符。
+- 键的格式推荐采用 `<processSlug>_<serial>`。
+  - `processSlug`：将流程名或原 process id 规范化后的标识符（仅限英数字、`_`、`-`、`.`，开头须为英文字母或 `_`）
+  - `serial`：4 位以上的连续编号（例：`0001`、`0002`……）
+- 示例：`vehicle_purchase_0001`、`daily_check_0001`、`expense_approval_0001`
+
+## 记载到要探讨事项
+
+### 将替换方案记载到要探讨事项
+在规格书制作阶段，需将以下信息作为**替换方案**记载到 `to-be-discussed.md` 的「2. 流程定义键替换履历」一节中。（格式参见流程定义键替换履历记载模板）
+
+- 目标流程
 - 原 process id
-- 置换候选的 process id
-- 提案日
+- 候选替换 process id
+- 提案日期
 
-### 流程定义键置换履历的记载模板
+### 流程定义键替换履历记载模板
 
-#### 置换提案（<对象流程名>）
+#### 替换方案（<目标流程名>）
 
 | 项目 | 值 |
 |------|-----|
-| 对象流程 | <流程名>（根据需要补充 ID） |
+| 目标流程 | <流程名>（如有需要可补充 ID） |
 | 原流程定义键 | <originalProcessDefinitionKey> |
-| 置换后的流程定义键 | <processDefinitionKey> |
-| 提案日 | <YYYY-MM-DD> |
-| 反映日 | <YYYY-MM-DD 或 未反映> |
+| 替换后流程定义键 | <processDefinitionKey> |
+| 提案日期 | <YYYY-MM-DD> |
+| 反映日期 | <YYYY-MM-DD 或 未反映> |
 
 
-**记述流程定义键置换履历时的注意事项**
-- 面向最终用户，不得记载 `status` / `errors` / `warnings` / `none` 等内部判定值。
-- 在规格书创建阶段，应作为「置换提案（候选）」记载，不可断定为已实施。
-- 在规格书创建阶段，`反映日` 应记载为 `未反映`。
-- 在 BPMN 反映阶段实施置换后，应将 `反映日` 更新为实施日。
-- 不得记载如 `反映日: YYYY-MM-DD` 这样位于表外的独立文本（必须作为表内的行记载）。
-- 应为各置换流程创建独立的子章节。
-- 多个流程为置换对象时，应分开记载。
-- 原键与置换后的键必须成对明确记载，禁止只记载其中一方。
+**记述流程定义键替换履历时的注意事项**
+- 面向最终用户时，不得记载 `status` / `errors` / `none` 等内部判定值。
+- 在规格书制作阶段，需记载为「替换方案（候选）」，不得断定为已经实施。
+- 在规格书制作阶段，`反映日期` 应记载为字面值「未反映」。
+- 若在 BPMN 反映阶段实施了替换，需将 `反映日期` 更新为实施日期。
+- 不得记载表格外的独立文本，例如 `反映日期: YYYY-MM-DD`（必须作为表格内的一行记载）。
+- 需为每个替换流程创建独立的子章节。
+- 若有多个流程为替换对象，需分别记载。
+- 原键与替换后的键必须成对明确记载，禁止仅记载其中一方。
 
-**关于向 BPMN 文件反映 ID 置换方案**
-- 反映时的既有键复用・例外时的处理・记录更新，以 bpm-xml-reflector 的 `.claude/skills/bpm-xml-reflector/reference/bpmn-specs-reflector.md` 为准。
+### 输出到 `spec-to-bpmn-fixes.json`
+
+在 Step 3～Step 5 中确定的替换方案（from-to），需在记载到 `to-be-discussed.md` 的同一时间点，也输出到 `doc/<BPM流程名>-prompt/spec-to-bpmn-fixes.json` 中。条目结构、命名规则、`operation` 受控词汇以 `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md` 的「`spec-to-bpmn-fixes.json` 的格式」为准，本节仅说明 process id 替换特有的指定内容。
+
+```json
+{
+  "fixId": "PID-001",
+  "reflectStatus": "ready",
+  "operation": "replace-process-id",
+  "targets": [
+    { "elementId": "<原process id（fromId）>", "elementType": "bpmn:Process" }
+  ],
+  "params": {
+    "fromId": "<原process id>",
+    "toId": "<替换后的process id>"
+  },
+  "requiresApproval": true,
+  "reflectedDate": "未反映"
+}
+```
+
+- `fixId` 应为 `PID-<3位以上连续编号>`（参见 `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md` 的命名规则）。
+- `params.fromId` 用于确定替换对象，`params.toId` 为被反映的替换值。两者必须成对指定。
+- 仅在反映后允许 `fromId` 保留的情形（例如不存在 `<participant processRef>` 的结构等）下，才附加 `params.allowFromIdExists: true`。
+- `requiresApproval` 始终为 `true`（因为这是破坏性操作）。审批在 BPMN 反映阶段（执行 `.claude/skills/bpm-xml-reflector/reference/bpmn-specs-reflector.md` 的 `reflectFixes()` 时）进行。
+- 若在 Step 5（要探讨事项订正）中订正了 `to-be-discussed.md` 的记载，也需将对应的 `spec-to-bpmn-fixes.json` 条目中的 `params.toId` 订正为相同的值。
+- `reflectedDate` 应保持输出为字面值「未反映」，实际的反映日期时间由 `.claude/skills/bpm-xml-reflector/reference/bpmn-specs-reflector.md` 的 `reflectFixes()` 在反映后更新（本步骤不进行更新）。
+
+**关于将 ID 替换方案反映到 BPMN 文件**
+- 反映时对既有键的复用、异常情况的处理、记录的更新，以 `.claude/skills/bpm-xml-reflector/reference/bpmn-specs-reflector.md` 为准。

@@ -1,141 +1,166 @@
 # BPMN Specification Reflector
 
 ## Overview
-Parses BPMN-format XML and reflects the contents of the specifications into the BPMN.
+Parses BPMN-format XML and reflects the content of specification documents into the BPMN.
 
 ## When to Use
-When the user makes a request such as the following:
-- "Reflect the contents of the specifications in `doc/<BPM process name>-prompt/` into the BPMN XML"
-- "Reflect the contents of the specifications into the BPMN XML"
+When the user makes a request such as:
+- "Please reflect the content of the specification document under `doc/<BPM process name>-prompt/` into the BPMN XML."
+- "Please reflect the content of the specification document into the BPMN XML."
 
 ## Reflection Target
-- Correct: `doc/<BPM process name>-prompt/<BPM process name>.bpmn` (the copy destination; this is the only file that may be modified)
-- Incorrect: `doc/<BPM process name>.bpmn` (the copy source; **never rewrite this file**)
+- Correct: `doc/<BPM process name>-prompt/<BPM process name>.bpmn` (the copy destination. This is the only place that may be modified.)
+- Incorrect: `doc/<BPM process name>.bpmn` (the copy source. **Never modify this.**)
 
-## What Is Reflected into the BPMN XML
+## Content Reflected into the BPMN XML
 - This skill set performs the following:
-  - Process definition key replacement
+  - Replacing the process definition key (iGrafx-produced BPMN only)
+  - Replacing the callee process of a call activity
   - Adding role IDs
-  - Setting task background colors
-  - Optional task settings
+  - Setting the background color of tasks
+  - Setting optional tasks
   - Adding process variable definitions
+  - Adding a branch condition expression (conditionExpression)
   - Adding signal definitions
   - Adding message definitions
+  - Reflecting correction proposals for errors detected by `.claude/skills/bpm-docs-generator/scripts/validate-bpmn.js`
 
-## Procedure
+## Overall Structure (Three Phases)
 
-### Step 0. Confirm the Targets
-- Confirm the specifications to reflect from and the file to reflect into.
-  - Present the path of the specifications to reflect from and the path of the BPMN file to reflect into, then confirm that they are correct.
-- Confirm what will be reflected
-  - Extract and present the items to be reflected from the specifications, and ask which items should be reflected.
-- Confirm whether to perform the reflection
-  - Confirm whether to perform the reflection process. If YES, execute Step 1 and onward. If NO, abort the process.
+The process of reflecting the content of the specification document into the BPMN is composed of three phases that **separate "judgment/confirmation" from "mechanical writing"**.
 
-### Step 1. Process Definition Key Replacement (Fixed Order)
-
-This flow must always be executed in this order.
-
-#### 1-1. Already-Replaced Check (JS)
-
-- Execute:
-  - `{{RUNTIME}} .claude/skills/bpm-xml-reflector/scripts/check-process-id-replaced.js <doc/*-prompt/*.bpmn> <replacements.json>`
-- Judgment:
-  - `replaced`: Already replaced. Do not run the replacement process.
-  - `not_replaced` / `partial`: Proceed to Step 2.
-
-#### 1-2. User Confirmation (Whether to Perform the Replacement)
-
-- Present the from-to proposals in the specification `to-be-discussed.md`.
-- Ask the user whether it is acceptable to replace with these from-to pairs.
-- Proceed to Step 3 only if OK.
-
-#### 1-3. Replacement Process
-
-**This step must always be executed via `reflector.reflect()` in `.claude/skills/bpm-xml-reflector/scripts/bpmn-specs-reflector.js` (which internally calls `reflectProcessIdReplacements()`).
-The replacement must not be reproduced by reading and writing `.bpmn` directly with the Read/Write/Edit tools.**
-The target file path is specified only as the `bpmnPath` argument. By `isPromptCopyBpmnPath()`,
-anything other than the `doc/<BPM process name>-prompt/<BPM process name>.bpmn` format (including the copy source `doc/<BPM process name>.bpmn`)
-throws an exception and is not reflected.
-The following 1-3-1 through 1-3-5 describe the internal behavior of `reflectProcessIdReplacements()`; they are not steps the agent reproduces individually.
-
-##### 1-3-1. Execute from-to Replacement (In Memory)
-- Generate the XML replaced with the from-to pairs proposed in the specifications in memory (do not write to disk).
-- After replacing `process@id`, add a documentation tag to the process tag and append a token in the following format (existing descriptions are preserved).
 ```
-PROCESS_KEY_META:PROCESS_KEY_REPLACED=true;ORIGINAL_PROCESS_KEY=<original process_id>;PROCESS_KEY=<newly assigned process_id>;REPLACED_DATE=<YYYY-MM-DD>;REPLACE_POLICY=initial-only
+Phase 1: Creating spec-to-bpmn-fixes.json           ← bpm-docs-generator side (including human confirmation)
+         ↓
+Phase 2: Checking/reflecting diffs against the spec ← bpm-xml-reflector side (including human confirmation)
+         ↓
+Phase 3: Reflecting the JSON (reflectFixes())       ← bpm-xml-reflector side (the responsibility of this skill)
 ```
 
-##### 1-3-2. Replacement Verification (JS)
-- Internally performs verification equivalent to `verifyProcessIdReflections()`.
-- Verification targets:
-  - `participant@processRef`
-  - `process@id`
-- Example of running it standalone (from the `reference/` directory):
-  - `{{RUNTIME}} .claude/skills/bpm-xml-reflector/scripts/verify-process-id-reflection.js <doc/*-prompt/*.bpmn> <replacements.json>`
+### Phase 1: Creating `spec-to-bpmn-fixes.json`
+Convert the content described in the specification document (see the table below) into the machine-readable `operation` / `params` / `targets` format, and output it to `doc/<BPM process name>-prompt/spec-to-bpmn-fixes.json`. **All judgments about "what to reflect", such as checks and inquiries to the user, must be completed in this phase.** Items that are not yet finalized (e.g., the ID of a signal/message not yet defined in the specification document) must not be written out to this file (i.e., they are also skipped from reflection).
 
-##### 1-3-3. Retry on Verification Failure
-- If verification fails, retry automatically up to 2 times.
-- If it still fails after retrying, abort the process as an error and show the failure points to the user.
+| Content reflected | Guide that defines the details |
+|---|---|
+| Correction proposals for `.claude/skills/bpm-docs-generator/scripts/validate-bpmn.js` errors | `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md` |
+| Replacement of the process definition key (process id) | `.claude/skills/bpm-docs-generator/reference/guide-process-definition-key-replacement.md` |
+| Replacement of the callee process of a call activity | `.claude/skills/bpm-docs-generator/reference/guide-specification.md` (Call Activity section) |
+| Role ID / task color / optional / process variable / signal / message | `.claude/skills/bpm-docs-generator/reference/guide-specification.md` |
+| Entry structure of `spec-to-bpmn-fixes.json`, `fixId` naming convention, controlled vocabulary of `operation` | `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md` (the "Format of `spec-to-bpmn-fixes.json`" section) |
 
-##### 1-3-4. After User Approval, Write Directly to the File
-- Present the verified, replaced XML to the user through the `onProcessIdReplacementDetected` callback.
-- Show "which from-to pairs will be reflected into which file (path)" and obtain approval.
-- Only when approved, write the replaced XML directly to the target `.bpmn`.
-- If rejected, do nothing (since the target `.bpmn` is not modified at all before approval, no restoration process is required).
+This phase is the responsibility of `.claude/skills/bpm-docs-generator`. However, there are cases where `to-be-discussed.md` / `specification.md` / `supplement.md`, etc. are edited directly after this phase completes and are left unreflected in `spec-to-bpmn-fixes.json`, so always go through Phase 2 (the next section) before executing `reflectFixes()` (Phase 3).
 
-##### 1-3-5. Completion Confirmation
-- Show "which file (path) the replacement was completed for".
-- Confirm with the user that the target is correct.
+### Phase 2: Checking/Reflecting Diffs Against the Specification Document
 
-#### 1-4. Update the Specifications
+If a specification change occurs after `spec-to-bpmn-fixes.json` has been created (a direct addition of an answer to an item under consideration, an addition/correction of a business requirement, etc.), it is left behind unreflected in `spec-to-bpmn-fixes.json`, causing the problem that the latest specification is not reflected into the BPMN even when `reflectFixes()` is executed. To prevent this, **always perform this phase before executing `reflectFixes()` (Phase 3).**
 
-- Update the process definition key replacement history in `to-be-discussed.md`.
-  - Replacement status: Replaced
-  - Basis for judgment: documentation token (after reflection)
-  - Reflection date and time: YYYY-MM-DD
-  - Reflection date of each replacement proposal table: YYYY-MM-DD
+**Check targets:**
+- `doc/<BPM process name>-prompt/to-be-discussed.md` (in particular, the descriptions of the items under consideration in chapters 3–5, and the `reflectStatus` shown on the "correction proposal" line of each item)
+- `doc/<BPM process name>-prompt/specification.md`
+- `doc/<BPM process name>-prompt/supplement.md`
+- The content of the above versus `doc/<BPM process name>-prompt/spec-to-bpmn-fixes.json`
 
-#### 1-5. Update the Change History
+**Diff detection patterns:**
 
-- Record the following in `interactive-log.md`.
-  - Execution date and time
-  - Target file path
-  - List of from-to pairs
-  - User confirmation results (1-2 / 1-3-4)
-  - Verification results (1-3-2 / 1-3-3)
+| Pattern | Content detected | Action |
+|---|---|---|
+| ① `reflectStatus` mismatch | An answer or a finalized description was added to an item under consideration on the md side (e.g., a point that was `pending-confirmation` has been finalized), yet the `reflectStatus` of the corresponding `spec-to-bpmn-fixes.json` entry has not been updated | Update the entry's `reflectStatus` / `params` (e.g., raise it to `ready`) |
+| ② Entry not created | A new item to be reflected from the business requirements (role ID, task color, process variable, signal, message, process id replacement, call activity callee replacement, etc.) was added on the md side, but no corresponding `spec-to-bpmn-fixes.json` entry exists | Add a new entry following the `fixId` naming convention and the controlled vocabulary of `operation` in `guide-bpmn-validation.md` |
+| ③ Content divergence | The `params`, etc. of an existing entry disagree with the latest description on the md side (a changed or deleted value, etc.) | Update the entry's `params` to match the content of the md |
 
-#### Exception: Re-replacement Is Prohibited
+**Procedure:**
+1. Cross-check each entry of `spec-to-bpmn-fixes.json` against the corresponding description in the md, and identify the diffs that fall under the patterns above.
+2. If there is not a single diff, you may record that fact and proceed to Phase 3 (this phase can be skipped).
+3. If there are diffs, for each diff **present the fixId and the content before/after the change (`reflectStatus`/`operation`/`params`) to the user and obtain confirmation on whether it may be reflected** (do not reflect automatically).
+4. Reflect only the approved diffs into `spec-to-bpmn-fixes.json`. This reflection is limited to adding/updating the JSON file; **do not write anything at all into the BPMN itself** (writing into the BPMN is the responsibility of the next phase, Phase 3).
+5. The `fixId` naming convention, the meaning of `reflectStatus`, the controlled vocabulary of `operation`, and the default value of `requiresApproval` all follow the "Format of `spec-to-bpmn-fixes.json`" section of `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md` (this phase does not newly define any format).
 
-For a process determined to be already replaced, a new key must not be assigned. Always reuse the existing key.
+**Notes:**
+- This phase is a "judgment/confirmation" phase and, as with Phase 1 (the `.claude/skills/bpm-docs-generator` side), user confirmation is mandatory. This does not affect the principle on the `reflectFixes()` (Phase 3) side of "making no new judgments".
+- Because this phase involves processing that mechanically converts the descriptions on the md side into structured data (natural language interpretation), it is performed by a manual read-through (by a human, or by the agent that invokes this skill); automatic diff detection by a dedicated script is not assumed.
 
-- Where to obtain the existing key:
-  - Extract `PROCESS_KEY=<key>` from the documentation token
+### Phase 3: Reflecting the JSON (`reflectFixes()`)
+Read `spec-to-bpmn-fixes.json` and mechanically reflect into the target BPMN only the entries whose `reflectStatus` is `"ready"` and whose `operation` is supported. **Focus solely on writing content that has already been judged and confirmed; do not make any new judgments (decisions about what to reflect).** However, the verification, retry, and token attachment for `replace-process-id` / `replace-callee-process` are mechanical consistency verifications of "whether the written content was reflected as instructed in the specification document", and are included in the responsibility of this phase.
 
+The reflection logic is implemented in `.claude/skills/bpm-xml-reflector/scripts/bpmn-specs-reflector.js`. The following describes its overview and how to call it.
 
-### Step 2. Reflection of Role IDs, Task Background Colors, Optional Task Settings, Process Variables, Signal Definitions, and Message Definitions
+## How to Use `reflectFixes()`
 
-The reflection logic is implemented in `.claude/skills/bpm-xml-reflector/scripts/bpmn-specs-reflector.js`. The following is its overview and how to call it.
+Before calling `reflectFixes()`, always perform "Phase 2: Checking/Reflecting Diffs Against the Specification Document" and bring `spec-to-bpmn-fixes.json` up to date.
 
-#### Processing Overview
+### Example Call
 
-| Function | Role |
-|------|------|
-| `applyProcessCandidateStarterGroups(xml, processId, roleId)` | Adds `candidateStarterGroups="<role ID>"` to the `<process>` tag |
-| `applyLaneCandidateGroups(xml, laneId, roleId)` | Adds `candidateGroups="<role ID>"` to the `<lane>` tag |
-| `applyUserTaskCandidateGroups(xml, taskId, roleId)` | Adds `candidateGroups="<role ID>"` to the `<userTask>` tag |
-| `applyTaskColor(xml, taskId, taskType)` | Adds a `color` attribute according to the task type (see the color map below) |
-| `applyIsOptional(xml, taskId)` | Adds `isOptional="true"` to the tag of an optional task |
-| `applyDataObjects(xml, processId, variables)` | Inserts process variables as `<dataObject>` at the end of the `<process>` block |
-| `applyConditionExpression(xml, flowId, expression)` | Inserts `<conditionExpression>` into `<sequenceFlow>` (self-closing tags are expanded automatically) |
-| `applySignal(xml, signalId, signalName)` | Inserts a `<signal>` element immediately before `<process>` |
-| `applyMessage(xml, messageId, messageName)` | Inserts a `<message>` element immediately before `<process>` |
-| `replaceProcessId(xml, fromId, toId)` | Replaces the Process ID (replaces both `<process id>` and `<participant processRef>`) |
-| `reflectProcessIdReplacements(bpmnPath, xml, replacements, options)` | Performs the Process ID replacement in memory and, after user confirmation, writes directly to the target `.bpmn` (no `.tmp` is created; specify the `onProcessIdReplacementDetected` callback in the options argument) |
-| `verifyProcessIdReplacements(xml, replacements)` | Verifies that the process id replacement from-to pairs in the specifications match the reflected BPMN (checks `process@id` and `participant@processRef`) |
-| `reflect(bpmnPath, specs, options)` | Executes the above collectively and overwrites the BPMN file (the behavior during process id replacement can be customized with the options argument) |
+```javascript
+var reflector = require('./.claude/skills/bpm-xml-reflector/scripts/bpmn-specs-reflector.js');
+var bpmnPath = 'doc/sample-process-prompt/sample-process.bpmn';
+var fixesPath = 'doc/sample-process-prompt/spec-to-bpmn-fixes.json';
 
-**Mapping of task type to color value:**
+var result = reflector.reflectFixes(bpmnPath, fixesPath, {
+  // Approval callback per fix (can be omitted for entries with requiresApproval: false)
+  onFixReflectionDetected: function (fix, onApprove, onReject) {
+    // Present the fixId, operation, targets, and params to the user and obtain approval
+    console.log('fixId=' + fix.fixId + ' operation=' + fix.operation);
+    console.log('targets=' + JSON.stringify(fix.targets) + ' params=' + JSON.stringify(fix.params));
+    // Implementation example: obtain confirmation via vscode_askQuestions
+    onApprove(); // or onReject();
+  }
+});
+
+console.log(result); // { applied: ['FIX-001', ...], skipped: [{ fixId, reason }, ...] }
+```
+
+- If `bpmnPath` is passed in a form other than `doc/*-prompt/*.bpmn`, an exception is thrown (by `isPromptCopyBpmnPath()`).
+- After reflection, only `reflectedDate` is updated and `fixesPath` is overwritten and saved (`reflectStatus` is not changed, since it retains the basis for the judgment).
+- The reasons accumulated in `skipped` are mainly the following four kinds:
+  - `reflectStatus is not ready: ...` (`pending-confirmation` / `not-applicable`)
+  - `unsupported operation (manual reflection required): ...` (`convert-event-type` / `delete-element` / `manual`)
+  - `user rejected` / `approval required but no confirmation callback provided`
+  - `apply failed: ...` (verification failure of `replace-process-id`, etc. Reflection of other fixes continues.)
+
+### Vendor Detection
+
+When `reflectFixes()` reads the BPMN, it uses `detectVendor(xml)` to automatically determine the authoring vendor from the namespace declarations, and passes the vendor type to each `applyXxx` family of functions via `applyFixToTarget()`. Depending on the determination result, the attribute names and element tag names to be applied are switched (for the concrete correspondence, the implementations of each `apply*` function and of `resolveVendorName()` are authoritative. See "Common Rules").
+
+| Vendor | Determination condition |
+|---------|---------|
+| `im-bpm` (produced by IM-BPM) | Contains `xmlns:activiti="http://activiti.org/bpmn"` |
+| `igrafx` (produced by iGrafx) | The namespace URI contains `www.igrafx.com` |
+| `other` | Does not correspond to either of the above |
+
+### Operation Correspondence Table
+
+| operation | Content reflected | Main `params` | Special notes |
+|---|---|---|---|
+| `set-attribute` | Adds/updates an attribute on an existing element | `attrName`, `attrValue` | A general-purpose operation that supports arbitrary elements/attributes |
+| `set-eventdef-ref` | Sets `messageRef`/`signalRef`/`errorRef` on an event definition | `refType`, `refId` | Skipped if the element is a self-closing tag |
+| `set-service-task-field` | Sets an `activiti:field` value on a ServiceTask | `fieldName`, `fieldValue` (use `fields: [{name, value}]` to set multiple at once) | |
+| `set-condition-expression` | Adds a branch condition expression (EL expression) to a `sequenceFlow` | `expression` | |
+| `set-timer-definition` | Sets the cycle/date-time/duration of a `timerEventDefinition` | One of `timeCycle` / `timeDate` / `timeDuration`, `businessCalendarName` (optional) | Skipped if the target element is a self-closing tag, or if `timerEventDefinition` does not exist |
+| `set-role-starter-groups` | Sets `candidateStarterGroups` on a `process` | `roleId` | The target is process |
+| `set-lane-candidate-groups` | Sets `candidateGroups` on a `lane` | `roleId` | The target is lane |
+| `set-usertask-candidate-groups` | Sets `candidateGroups` and `isOptional` on a `userTask` | `roleId`, `isOptional` (optional) | The target is userTask |
+| `set-task-color` | Sets the background color of a task | `taskType` | The color code is automatically determined from `taskType` (see the color map below) |
+| `add-data-object` | Adds a process variable (`dataObject`) to a `process` | `variables: [{ id, name, type }]` | The target is process. Existing ids are skipped (idempotent) |
+| `add-signal` | Newly adds a `signal` element | `id`, `name` | If the ID is undefined in the specification document, it is not written out to this file (i.e., it is not reflected). Existing ids are skipped (idempotent) |
+| `add-message` | Newly adds a `message` element | `id`, `name` | Same as above |
+| `replace-process-id` | Replaces the process definition key (process id). Involves verification (up to 2 retries) and attaching a `PROCESS_KEY_META` token | `fromId` (for identifying the replacement target), `toId` (the replacement value), `allowFromIdExists` (optional) | A destructive operation. `requiresApproval: true` is mandatory, and approval is also required at the time of mechanical reflection (this phase) |
+| `replace-callee-process` | Replaces the callee process (`calledElement`) of a callActivity. Involves attaching a `CALLEE_PROCESS_META` token | `fromId` (the value of `calledElement` before replacement), `toId` (the value after replacement) | The target is callActivity. A destructive operation. `requiresApproval: true` is mandatory |
+
+`convert-event-type` / `delete-element` / `manual` (operations involving structural change, deletion, or synchronization of diagram information) are outside the scope of automatic reflection, and `reflectFixes()` skips them (leaving them to manual handling or a separate step. For details, see the "Design Constraints" section of `.claude/skills/bpm-docs-generator/reference/guide-bpmn-validation.md`).
+
+### Rules for Specifying `targets`
+
+- For operations that target an existing element (the `set-attribute` family, the `set-role-starter-groups` family, `replace-callee-process`, etc.), specify the actual ID of the target element with `targets: [{ elementId, elementType }]`.
+- Since `replace-process-id` rewrites the `id` of the target process itself, `params.fromId` is used to identify the replacement target (`targets` may also be attached, but it is not referenced in the actual reflection process).
+- For operations that issue a new ID, such as `add-signal` / `add-message`, since they do not reference an existing element, describe `targets: [{ elementId: <newly issued id>, elementType: 'bpmn:Signal' | 'bpmn:Message' }]` with the same value as `params.id` (for the sake of listability and traceability).
+- **The `targets.elementId` of `add-data-object` refers to the `id` (processId) of the process itself.** If a `replace-process-id` entry targeting that process exists within the same `spec-to-bpmn-fixes.json`, specify **the value after replacement (`toId`)** for the `targets.elementId` of `add-data-object`. Since `reflectFixes()` applies the fixes array in order from the beginning, once `replace-process-id` has been reflected first and the process's `id` has been rewritten, if the value before replacement (`fromId`) is specified for `targets.elementId`, the target process will not be found and it will be skipped as `[SKIP] process not found: <fromId>` (note that this is not raised as an exception and is not counted in either `applied` or `skipped` — it is a silent skip). The same caution applies when adding, in the future, other operations that target the process itself.
+
+  | Order within fixes.json | Value that should be specified for the `targets.elementId` of `add-data-object` |
+  |---|---|
+  | Does not include `replace-process-id` (no process id replacement occurs) | The current process id (unchanged) |
+  | Includes `replace-process-id` at the same time | The value after replacement (`toId`). Specifying the value before replacement (`fromId`) results in a silent skip |
+
+### Correspondence Between Task Type and Color Value
 
 | taskType | color |
 |----------|-------|
@@ -147,169 +172,71 @@ The reflection logic is implemented in `.claude/skills/bpm-xml-reflector/scripts
 | `receiveTask` | `e0caf7` |
 | `callActivity` | `f9c0e4` |
 
-**Common rules:**
-- If the attribute or element already exists, it is skipped (idempotent)
-- Namespace prefixes such as `<bpmn:process>` are also supported
+### Common Rules
 
-### Step 3. Replace the Called Process of Call Activities
+- If the attribute or element already exists, it is skipped (idempotent). For `replace-process-id` / `replace-callee-process` as well, the determination is made based on the presence or absence of an already embedded `PROCESS_KEY_META` / `CALLEE_PROCESS_META` token, so re-running the same fix does not result in duplicate reflection.
+- Namespace prefixes such as `<bpmn:process>` are also supported.
+- Since the determination of the vendor and the switching of attribute names/tag names are performed automatically inside `reflectFixes()`, the caller does not need to be aware of them. For exactly how the attribute names and tag names change per vendor, the implementations and JSDoc of each `apply*` function (`bpmn-specs-reflector.js`) and of `resolveVendorName()` / `detectVendor()` (`bpmn-reflector-utils.js`) are authoritative (this file does not maintain a duplicate).
 
-**Notes when replacing the called process**
-- No checks are required against the called process.
-  - Do not perform existence checks on the called process or content checks of the called process.
+## Main Functions Called from `applyFixToTarget()`
 
-#### 3-1. Obtain the Post-Replacement Value (Process Definition Key)
-- Obtain the post-replacement value (process definition key) from the call activity called-process replacement history in `to-be-discussed.md` and from the called BPMN.
-  - Confirm that the call activity called-process replacement history matches the ID (process definition key) of the called BPMN.
-  - If the post-replacement value cannot be determined — for example, the post-replacement value is undecided, the values in `to-be-discussed.md` and the called BPMN conflict, or the ID of the called BPMN has not been replaced — display "value unknown" in the "post-replacement value" column of the list in 3-3.
+| Function | Role |
+|------|------|
+| `detectVendor(xml)` | Determines the authoring vendor (`'im-bpm'` / `'igrafx'` / `'other'`) from the namespace declarations |
+| `applyProcessCandidateStarterGroups(xml, processId, roleId, vendor)` | The main body of the reflection for `set-role-starter-groups` |
+| `applyLaneCandidateGroups(xml, laneId, roleId, vendor)` | The main body of the reflection for `set-lane-candidate-groups` |
+| `applyUserTaskCandidateGroups(xml, taskId, roleId, vendor)` | The main body of the reflection for `set-usertask-candidate-groups` (the `candidateGroups` part) |
+| `applyIsOptional(xml, taskId, vendor)` | The main body of the reflection for `set-usertask-candidate-groups` (only when `params.isOptional` is true) |
+| `applyTaskColor(xml, taskId, taskType, vendor)` | The main body of the reflection for `set-task-color` |
+| `applyAttribute(xml, elementId, attrName, attrValue)` | The main body of the reflection for `set-attribute`. Unlike the existing `apply*` family, it overwrites the value |
+| `applyEventDefinitionRef(xml, elementId, refType, refId)` | The main body of the reflection for `set-eventdef-ref` |
+| `applyServiceTaskField(xml, taskId, fieldName, fieldValue)` | The main body of the reflection for `set-service-task-field` |
+| `applyTimerDefinition(xml, ownerId, params)` | The main body of the reflection for `set-timer-definition` |
+| `applyDataObjects(xml, processId, variables, vendor)` | The main body of the reflection for `add-data-object` |
+| `applyConditionExpression(xml, flowId, expression, vendor)` | The main body of the reflection for `set-condition-expression` |
+| `applySignal(xml, signalId, signalName, vendor)` | The main body of the reflection for `add-signal` |
+| `applyMessage(xml, messageId, messageName, vendor)` | The main body of the reflection for `add-message` |
+| `applyCalleeProcessReplacement(xml, callActivityId, fromId, toId)` | The main body of the reflection for `replace-callee-process`. Overwrites the `calledElement` attribute and attaches the `CALLEE_PROCESS_META` token |
+| `applyVerifiedProcessIdReplacements(xml, replacements)` | The main body of the reflection for `replace-process-id`. Performs the replacement, verification (up to 2 retries), and attaching the `PROCESS_KEY_META` token in memory (does not write to the file) |
+| `applyFixToTarget(xml, fix, target, vendor)` | Dispatches to the above functions according to `fix.operation` (`replace-process-id` / `replace-callee-process` are handled separately within `reflectFixes()`) |
+| `reflectFixes(bpmnPath, fixesPath, options)` | The main API of this file. Executes the above together |
+| `replaceProcessId(xml, fromId, toId)` | Replaces the Process ID (replaces both `<process id>` and `<participant processRef>`) |
+| `extractRepositoryObjectId(xml)` | Obtains the value of the `ixbpmn:repositoryObjectID` attribute held by `<bpmn:definitions>` (iGrafx-produced BPMN only. Returns `null` if it does not exist) |
+| `applyProcessKeyMetaToken(xml, fromId, toId)` | Adds a `PROCESS_KEY_META` token as documentation to `<process id="toId">` |
+| `verifyProcessIdReplacements(xml, replacements)` | Verifies that the process id replacement from-to matches the reflected BPMN (checks `process@id` and `participant@processRef`) |
+| `checkProcessIdReplaced(bpmnPath, replacements)` | Determines whether the Process ID replacement has already been reflected (`replaced` / `not_replaced` / `partial`). Used for the check in Phase 1 (see `.claude/skills/bpm-docs-generator/reference/guide-process-definition-key-replacement.md`) |
 
-#### 3-2. Already-Replaced Check (JS)
-- Check whether the value of the called process of the call activity in the BPMN to be updated has already been replaced.
-  - If it has already been replaced and the post-replacement value matches the value obtained in 3-1, replacement is not required.
+## Format of the PROCESS_KEY_META / CALLEE_PROCESS_META Tokens
 
-#### 3-3. User Confirmation (Whether to Perform the Replacement)
-- Display the list of call activities obtained in 3-1 and 3-2, and confirm whether to perform the replacement. Also, for entries whose post-replacement value is undecided, confirm the ID (process definition key) and prompt for input.
-  - The list shows the call activity name, the pre-replacement value, the post-replacement value (process definition key), and whether replacement is required.
-  - For call activities determined in 3-2 as not requiring replacement, display "Already replaced" in the replacement-required column.
-  - For call activities determined in 3-2 as not yet replaced, display "Awaiting replacement" in the replacement-required column.
-  - For entries whose post-replacement value is unknown, display "Awaiting value decision" in the replacement-required column.
-- If there are call activities whose post-replacement value cannot be decided, state that reflection into those call activities will be skipped.
-  - Also notify the user that the call target of the call activity can be configured in Process Designer after uploading the BPMN to IM-BPM.
+After the replacement of `process@id`, append a token in the following format to the process tag as documentation.
 
-#### 3-4. Replacement Process
-- Replace the values of the called processes of the call activities based on the list in 3-3.
-  - Add a documentation tag under the callActivity tag. Enter the following.
-    - CALLEE_PROCESS_META:CALEE_PROCESS_REPLACED=true;ORIGINAL_CALLEE_PROCESS=<pre-replacement value of calledElement>;CALLEE_PROCESS=<post-replacement value>;REPLACED_DATE=yyyy-MM-dd;
-  - Overwrite `calledElement` of the callActivity tag with the post-replacement value.
-
-#### 3-5. Update the Specifications
-
-- Update the call activity called-process replacement history in `to-be-discussed.md`.
-  - Reflection date: YYYY-MM-DD
-
-#### 3-6. Update the Change History
-
-- Record the following in `interactive-log.md`.
-  - Execution date and time
-  - Target file path
-  - List of replaced call activities
-  - User confirmation results (3-3)
-
-### Call Example (Execute in the Order Step 1 → Step 2)
-
-Step 1 (process definition key replacement) and Step 2 (role IDs, colors, variables, etc.) must always **call `reflect()` separately, and Step 2 must not begin until the completion of Step 1 has been confirmed**.
-Do not pass both sets of fields to a single `reflect()` call.
-
-```javascript
-var reflector = require('.claude/skills/bpm-xml-reflector/scripts/bpmn-specs-reflector');
-var bpmnPath = 'doc/vehicle-management-prompt/vehicle-management.bpmn';
-
-// ---- Step 1: Process definition key replacement (performed on its own) ----
-// If processIdReplacements is not needed, Step 1 may be omitted and Step 2 performed directly.
-reflector.reflect(
-  bpmnPath,
-  {
-    // Cross-check of the process id replacement against the specifications (the from-to pairs in to-be-discussed.md)
-    processIdReplacements: [
-      { fromId: 'Process_1', toId: 'daily_check_0001' }
-    ]
-  },
-  {
-    // User confirmation callback (required only in Step 1)
-    onProcessIdReplacementDetected: function(filePath, replacements, onApprove, onReject) {
-      // Confirm with the user; call onApprove() if approved, or onReject() if rejected
-      console.log('File to be replaced: ' + filePath);
-      replacements.forEach(function(r) {
-        console.log('  ' + r.fromId + ' → ' + r.toId);
-      });
-      // Implementation example: confirm with vscode_askQuestions
-      onApprove(); // or onReject();
-    }
-  }
-);
-
-// ---- Step 2: Reflection of role IDs, task background colors, optional task settings,
-//              process variables, signal definitions, and message definitions (performed after Step 1 completes) ----
-reflector.reflect(
-  bpmnPath,
-  {
-    // Role settings for processes and pools
-    processes: [
-      { id: 'r_1', roleId: 'quality_safety_mgr' }
-    ],
-
-    // Role settings for lanes
-    lanes: [
-      { id: '_4', roleId: 'quality_safety_mgr' }
-    ],
-
-    // Role settings for user tasks (isOptional is optional)
-    userTasks: [
-      { id: '_32', roleId: 'quality_safety_mgr' },
-      { id: '_10', roleId: 'quality_safety_mgr', isOptional: true }
-    ],
-
-    // Process variables (type: string / int / long / double / datetime / boolean)
-    dataObjects: [
-      {
-        processId: 'r_1',
-        variables: [
-          { id: 'vehicleId', name: 'vehicleId', type: 'string' }
-        ]
-      }
-    ],
-
-    // Branch conditions (EL expressions)
-    conditions: [
-      { flowId: '_50', expression: "${approved == 'true'}" },
-      { flowId: '_51', expression: "${approved == 'false'}" }
-    ],
-
-    // Signal definitions
-    signals: [
-      { id: 'sig1', name: 'OrderCompleted' }
-    ],
-
-    // Message definitions
-    messages: [
-      { id: 'msg1', name: 'Notification' }
-    ],
-
-    // Coloring of tasks (see the color map above for taskType)
-    colorize: [
-      { taskId: '_32', taskType: 'userTask' },
-      { taskId: '_10', taskType: 'userTask' }
-    ]
-    // Do not specify processIdReplacements here (it was already reflected in Step 1)
-  }
-);
+```
+PROCESS_KEY_META:{REPOSITORY_OBJECT_ID=<value of repositoryObjectId>;ORIGINAL_PROCESS_KEY=<original process_id>;PROCESS_KEY=<process_id after numbering>};
 ```
 
-### Notes on Each specs Field
+- If a `<documentation>` (or `<bpmn:documentation>`) element already exists and the `PROCESS_KEY_META` token is not yet defined, append the token within that existing element (do not add a new element).
+- If a documentation element does not exist, add a new element with a tag name corresponding to the vendor determination (`detectVendor()`): `<bpmn:documentation>` when produced by IM-BPM, and `<documentation>` for others (iGrafx-produced, other).
+- If the `PROCESS_KEY_META` token already exists, it is skipped to avoid a duplicate addition.
+- `REPOSITORY_OBJECT_ID` is not an attribute of the target process; it refers to **the value of the `ixbpmn:repositoryObjectID` attribute held by `<bpmn:definitions>` (the root element directly under the file)** (an attribute exclusive to iGrafx-produced BPMN).
+- If `<bpmn:definitions>` does not have the `ixbpmn:repositoryObjectID` attribute, **the process is aborted as an error** (nothing at all is written to the target `.bpmn`). This abort is a failure condition independent of the verification retry, and no retry is performed.
 
-- `processes` / `lanes` / `userTasks`: For the role ID (`roleId`), use the ID described in the actor definitions of the specifications
-- `dataObjects`: Specify one of `string` / `int` / `long` / `double` / `datetime` / `boolean` for `type`
-- `conditions`: Write `expression` as an EL expression (e.g. `${p1 > 999}`). `>` may be written as-is (the script treats it as a value)
-- `colorize`: Color all user tasks. Specify the other task types just as thoroughly, without omissions
-- `processIdReplacements`: Set the process id replacement proposals (from-to) described in the specifications. `toId` is required. It is verified that both `process@id` and `participant@processRef` have been replaced with `toId`. Add `allowFromIdExists: true` only for cases where `fromId` may remain after reflection. **Specify this only in the Step 1 call; do not include it in the Step 2 call**
-- Fields that are not needed may be omitted (`reflect` fills in each field with `|| []`)
-- When a Process ID replacement is involved, specify the `onProcessIdReplacementDetected` callback in the third argument `options` (for the user confirmation flow)
+After the replacement of the callee process of a call activity, append a token in the following format as documentation directly under the callActivity.
 
-### Specifying options (the Third Argument)
-
-**Required only in Step 1 (the call that passes `processIdReplacements`). Not required for the Step 2 call.**
-
-```javascript
-{
-  onProcessIdReplacementDetected: function(filePath, replacements, onApprove, onReject) {
-    // filePath: path of the file to be replaced
-    // replacements: array of replacement contents [{ fromId: '...', toId: '...' }, ...]
-    // onApprove: callback on approval (no arguments)
-    // onReject: callback on rejection (no arguments)
-    //
-    // Implementation example:
-    // - Show a confirmation dialog with vscode_askQuestions
-    // - The user selects "OK" → execute onApprove()
-    // - The user selects "Cancel" → execute onReject()
-  }
-}
 ```
+CALLEE_PROCESS_META:CALEE_PROCESS_REPLACED=true;ORIGINAL_CALLEE_PROCESS=<value of calledElement before replacement>;CALLEE_PROCESS=<value after replacement>;REPLACED_DATE=yyyy-MM-dd;
+```
+
+- If an existing documentation element exists, append within it; if not, add a new one (the same rule as `PROCESS_KEY_META`).
+- If the token already exists, it is skipped to avoid a duplicate addition.
+
+## Handling of Verification Failures (`replace-process-id` / `replace-callee-process`)
+
+- If the verification of `replace-process-id` (equivalent to `verifyProcessIdReplacements()`) fails, it is automatically retried up to 2 times. If it still fails after retrying, only that fix is accumulated in `skipped`, and reflection of the other fixes continues.
+- If `REPOSITORY_OBJECT_ID` cannot be obtained (e.g., an iGrafx-produced BPMN lacking the `ixbpmn:repositoryObjectID` attribute), it is immediately treated as an error, independent of the verification retry, and nothing is written to the target `.bpmn` at all.
+
+## Exception: Prohibition of Re-replacement
+
+For a process that has been determined to have already been replaced, new numbering must not be performed. The existing key must always be reused. This determination is made in Phase 1 (creating `spec-to-bpmn-fixes.json`) using `checkProcessIdReplaced()`, etc. (for details, see `.claude/skills/bpm-docs-generator/reference/guide-process-definition-key-replacement.md`).
+
+- Where to obtain the existing key from:
+  - Extract `PROCESS_KEY=<key>` from the documentation token

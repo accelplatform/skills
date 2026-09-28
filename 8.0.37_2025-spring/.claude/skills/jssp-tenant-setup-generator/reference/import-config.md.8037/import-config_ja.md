@@ -9,8 +9,7 @@
 src/main/conf/products/import/basic/<artifactId>/import-<artifactId>-config-<N>.xml
 ```
 
-参照対象の XML/SQL（`<role-file>` 等）は `src/main/storage/system` 配下に置かれ、
-拡張インポート JS は `src/main/jssp/src` 配下に置かれる。`import-<artifactId>-config-<N>.xml` 自身だけが `src/main/conf` 配下に置かれる点に注意。
+参照対象の XML/SQL（`<role-file>` 等）は `src/main/storage/system` 配下に置かれ、拡張インポート JS は `src/main/jssp/src` 配下に置かれる。`import-<artifactId>-config-<N>.xml` 自身だけが `src/main/conf` 配下に置かれる点に注意。
 
 | 部分 | 意味 | 決まり方 |
 |---|---|---|

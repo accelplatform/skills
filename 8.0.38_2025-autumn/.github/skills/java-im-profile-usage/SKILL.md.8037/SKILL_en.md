@@ -1,6 +1,6 @@
 ---
 name: java-im-profile-usage
-description: A skillset for using the intra-mart-specific user profile image management API (`jp.co.intra_mart.foundation.master.user.UserProfileImageManager`, IM-Common Master / im_master-main module) in Java (JavaEE development model). Provides implementation patterns for retrieving profile images (Stream form and URL form, single and multiple), deleting them, and registering them (data URL form / via Storage). Use when the user mentions wanting to get/register/delete a user's profile image in Java, wanting to use UserProfileImageManager in Java, or wanting to handle IM-Common Master profile images in the JavaEE development model. Operations on the user's basic information itself (name, affiliation, classification, etc.) are out of scope — this API is dedicated to profile images only. IM-LogicDesigner logic flow elements (under `jp.co.intra_mart.foundation.logic.element.profile`) are also out of scope. As of 2026 no equivalent API is provided for JSSP (script development model).
+description: A skillset for using the intra-mart-specific user profile image management API (`jp.co.intra_mart.foundation.master.user.UserProfileImageManager`, IM-Common Master / im_master-main module) in Java (JavaEE development model). Provides implementation patterns for retrieving profile images (Stream form and URL form, single and multiple), deleting them, and registering them (data URL form / via Storage). Use when the user mentions wanting to get/register/delete a user's profile image in Java, wanting to use UserProfileImageManager in Java, or wanting to handle IM-Common Master profile images in the JavaEE development model. Operations on the user's basic information itself (name, affiliation, classification, etc.) are out of scope — this API is dedicated to profile images only. Use `jp.co.intra_mart.foundation.master.user.UserManager` for the name and user category, and `jp.co.intra_mart.foundation.master.company.CompanyManager` for the affiliation. IM-LogicDesigner logic flow elements (under `jp.co.intra_mart.foundation.logic.element.profile`) are also out of scope. No equivalent API is provided for JSSP (script development model).
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -17,12 +17,12 @@ The term "IM-Common Master (profile)" can refer to several different pieces of f
 | Functionality | In Scope for This Skill? |
 |------|-----------------|
 | Retrieving, registering, and deleting a user's **profile image** (avatar image) (`UserProfileImageManager`) | **In scope (this skill)** |
-| Registering, updating, and searching the user's **basic information** itself (name, affiliation, classification, etc.) | **Out of scope.** As of 2026, this investigation has not confirmed an equivalent Java API (something corresponding to the SSJS version's `IMMUserManager`). If such a request comes up, confirm the implementation approach with the user |
+| Registering, updating, and searching the user's **basic information** itself (name, affiliation, classification, etc.) | **Out of scope** (this API is dedicated to profile images only). Use `jp.co.intra_mart.foundation.master.user.UserManager` for the name and user category, and `jp.co.intra_mart.foundation.master.company.CompanyManager` for the affiliation (company, organization, and company post) — both belong to IM-Common Master (the `im_master-main` module). This skill provides no implementation patterns for them, so check the method signatures in the API reference (do not write them from memory or guesswork) |
 | IM-LogicDesigner logic flow elements (`GetProfileTask` / `UpdateProfileTask` / `RegisterProfileTask` / `RemoveProfileTask`, etc., under `jp.co.intra_mart.foundation.logic.element.profile`) | **Out of scope.** These are internal implementation classes for the logic flow feature and are not intended to be called directly as a general-purpose Java API |
 
 If a request concerns something other than profile images (CRUD on basic user information, etc.), tell the user that it is out of scope for this skill.
 
-**This skill covers Java source files (`.java`) only.** For equivalent implementation in JSSP (`.js`), no corresponding SSJS API exists as of 2026, so confirm the implementation approach with the user.
+**This skill covers Java source files (`.java`) only.** For equivalent implementation in JSSP (`.js`), no corresponding SSJS API exists, so confirm the implementation approach with the user.
 
 ## Conventions to Reference
 
@@ -32,7 +32,7 @@ If a request concerns something other than profile images (CRUD on basic user in
 | `.github/instructions/java-code-style.instructions.md` | 🟢 **Required reading** — `final` local variables, `try-with-resources`, string literals, etc. |
 | `.github/instructions/java-javadoc.instructions.md` | 🟢 **Required reading** — class/method JavaDoc |
 
-No dedicated Java convention defining exception-handling policy exists under `.github/instructions` (as of 2026). Follow the business-exception-wrapping pattern in `assets/profile-basic-usage.md` for `UserProfileImageManager`'s exceptions (`BizApiException`, a checked exception).
+No dedicated Java convention defining exception-handling policy exists under `.github/instructions`. Follow the business-exception-wrapping pattern in `assets/profile-basic-usage.md` for `UserProfileImageManager`'s exceptions (`BizApiException`, a checked exception).
 
 `jssp-*` conventions are out of scope for this skill (they do not apply to Java files).
 
@@ -66,7 +66,7 @@ Use this skill when the user makes a request such as:
 
 If there is no explicit mention of "in Java" / "in the JavaEE development model," confirm with the user which development model the existing project implementation uses.
 
-Also, if the request concerns CRUD on **basic user information** (name, affiliation, etc.) or the **IM-LogicDesigner logic flow**, tell the user it is out of scope for this skill (the former has no corresponding skill in place yet, and the latter is deliberately out of scope).
+Also, if the request concerns CRUD on **basic user information** (name, affiliation, etc.) or the **IM-LogicDesigner logic flow**, tell the user it is out of scope for this skill (for the former, use `UserManager` / `CompanyManager`; the latter is deliberately out of scope).
 
 ## Implementation Steps
 
@@ -88,7 +88,7 @@ Also, if the request concerns CRUD on **basic user information** (name, affiliat
 
 ## Post-Generation Checks
 
-A dedicated verification script equivalent to the JSSP version (`validate-jssp-code.js`) is not yet in place. Confirm the following manually.
+Rather than an automated validation script (such as the JSSP version's `validate-jssp-code.js`), verify the following manually.
 
 1. Whether the implementation is obtained via `UserProfileImageManagerFactory.getFactory().getService()` (not instantiated directly with `new`)
 2. Whether calls to the multiple-retrieval methods (`getUserProfileImagesStream()`/`getUserProfileImagesURL()`) handle the case where the result may not include every requested user code
@@ -103,8 +103,8 @@ A dedicated verification script equivalent to the JSSP version (`validate-jssp-c
 | Responsibility | Owning Skill |
 |------|-----------|
 | **Retrieving, registering, and deleting user profile images in Java (JavaEE development model)** | **This skill** |
-| CRUD on basic user information (name, affiliation, classification, etc.) | No corresponding Java skill in place yet (as of 2026). Confirm the implementation approach with the user |
+| CRUD and searching of basic user information (name, affiliation, classification, etc.) | No dedicated skill in place yet. Use IM-Common Master's `UserManager` (name, user category) / `CompanyManager` (company, organization, company post) directly |
 | Assigning roles to users, account attributes, login settings | `java-im-account-usage` |
 | IM-LogicDesigner logic flow elements/triggers | Out of scope for this skill. See `jssp-im-logic-generator` for generating logic flows themselves |
 | File operations in Java (`PublicStorage`/`SessionScopeStorage`/`SystemStorage`) | `java-im-storage-usage` |
-| Profile image operations in SSJS (JSSP) | No corresponding SSJS API has been confirmed as of 2026. Confirm the implementation approach with the user |
+| Profile image operations in SSJS (JSSP) | No corresponding SSJS API is defined under `d.ts/` (Java version only) |

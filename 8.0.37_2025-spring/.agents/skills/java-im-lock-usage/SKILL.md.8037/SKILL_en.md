@@ -34,7 +34,7 @@ Decision criteria:
 | `.agents/requirements/java-code-style/AGENTS.md` | 🟢 **Required reading** — `final` local variables, string literals, etc. |
 | `.agents/requirements/java-javadoc/AGENTS.md` | 🟢 **Required reading** — class/method JavaDoc |
 
-No dedicated Java convention defining exception-handling policy exists under `.agents/requirements` (as of 2026). All of `NewLock`'s exceptions are unchecked (described below); follow the business-exception-wrapping pattern in `assets/lock-basic-usage.md`.
+No dedicated Java convention defining exception-handling policy exists under `.agents/requirements`. All of `NewLock`'s exceptions are unchecked (described below); follow the business-exception-wrapping pattern in `assets/lock-basic-usage.md`.
 
 `jssp-*` conventions are out of scope for this skill (they do not apply to Java files).
 
@@ -86,7 +86,7 @@ Also, **when the mutual exclusion only needs to cover concurrency within a singl
 
 ## Post-Generation Checks
 
-A dedicated verification script equivalent to the JSSP version (`validate-jssp-code.js`) is not yet in place. Confirm the following manually.
+Rather than an automated validation script (such as the JSSP version's `validate-jssp-code.js`), verify the following manually.
 
 1. Wherever an ordinary lock is used, whether everything from `lock()`/`tryLock()` through `unlock()` is reliably wrapped in `try`/`finally`
 2. Whether the choice between an ordinary lock and a request-scope lock matches the lock's intended holding scope (self-contained within a single method, or spanning multiple points)

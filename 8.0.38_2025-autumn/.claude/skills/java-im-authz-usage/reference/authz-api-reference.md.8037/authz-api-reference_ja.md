@@ -52,13 +52,27 @@ public interface Resource extends Serializable {
     String getResourceId();
     /** リソースタイプ */
     ResourceType<?> getType();
-    /** リソースURI（RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT 形式。例: service://authz/settings/basic） */
+    /** リソースURI（RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT 形式。例: flat-crud://myapp/orders/ORD001） */
     String getUri();
 }
 ```
 
 - リソースのキーは **リソースURI**。名称・説明は持たず、対になる `ResourceGroup` が保持する
 - `ResourceManager` でリソースを登録すると、対になる `ResourceGroup` が1つ作成される
+
+### 標準リソースタイプとアクション
+
+リソースタイプは「そのリソースにどんなアクションを定義できるか」を決める要素。**リソースURI の最初の `:` より前がリソースタイプ ID** であり、認可機構に登録済みのものしか使えない（未登録なら `registerAsResource` が `InvalidResourceUriException`）。
+
+| リソースタイプID | リソースURI の形 | 定義アクション | 提供モジュール | 用途 |
+|---|---|---|---|---|
+| `flat-crud` | `flat-crud://<パス>` | `c` / `r` / `u` / `d` | `im_authz_resourcetypes_standard` | **業務データを認可対象にする場合の既定の選択肢** |
+| `service` | ルーティングテーブルから解決される | **`execute` のみ** | `im_authz_impl_router` | 画面・URL 単位のアクセス可否。**業務データ 1 件ごとのリソースには使えない** |
+
+各機能モジュール（ポータル・IM-Workflow 等）も自機能専用のリソースタイプを提供するが、業務アプリの独自リソースには使わない。
+
+- **アクション名はリソースタイプが定義したものしか使えない。** `view` / `edit` / `approve` のような独自の名前は `NoSuchActionException` になる。業務上の操作名は「読むのか・書くのか」でマッピングする（例: 参照 → `r`、編集・承認等の状態変更 → `u`）
+- 独自のアクション体系が必要な場合は `ResourceType<T>` を実装し `WEB-INF/conf/authz-resource-type-config` へ登録する（実装手順は本スキルの対象外。標準リソースタイプで表現できないか先に検討する）
 
 ### `Subject`
 
@@ -205,6 +219,11 @@ package jp.co.intra_mart.foundation.authz.services.admin;
 
 public interface SubjectManager {
 
+    /** サブジェクトタイプIDとキー値からアクセス主体を特定し、サブジェクトを登録（採番）します。 */
+    <T> Subject registerAsSubject(String subjectTypeId, Object... keys);
+    /** サブジェクトの実体を表すモデルからサブジェクトを登録（採番）します。 */
+    <T> Subject registerAsSubject(T model);
+
     /** Expression（サブジェクト式）からサブジェクトグループを登録します。 */
     SubjectGroup registerSubjectGroup(Expression e, I18nValue<String> displayName);
     SubjectGroup registerSubjectGroup(Expression e, I18nValue<String> displayName, I18nValue<String> description);
@@ -231,8 +250,25 @@ public interface SubjectManager {
 }
 ```
 
-- サブジェクト**単体**の登録 API は存在しない。必ず `Expression`（後述）で組んだ条件式を `SubjectGroup` として登録する
+- **`Subject` は `registerAsSubject` で採番するが、それ単体ではポリシーの対象にならない。** 必ず `SubjectExpression.S(subject)` で `Expression`（後述）に変換し、`SubjectGroup` として登録する
+- `registerSubjectGroup` は同じ式のサブジェクトグループが既に存在する場合も**既存インスタンスを返す**（`null` にはならない）。事前に `getSubjectGroupByExpression` で存在確認をする必要はない
 - `getAuthenticatedUsers()` / `getGuestSubjectGroup()` は「全ユーザ」「未認証ユーザ」に対するポリシーを設定する際によく使う組込みグループ
+
+### 標準サブジェクトタイプ
+
+`registerAsSubject(subjectTypeId, keys)` に渡すサブジェクトタイプ ID。キー値の個数・意味はサブジェクトタイプごとに異なる。
+
+| 対象 | 定数 | 値 |
+|---|---|---|
+| ロール | `ImRole.B_M_ROLE`（`jp.co.intra_mart.foundation.authz.subjecttype.im_master.ImRole`） | `b_m_role` |
+| ユーザ | `ImUser.ID` | `imm_user` |
+| 組織 | `ImDepartment.ID` | `imm_department` |
+| パブリックグループ | `ImPublicGroup.ID` | `imm_public_grp` |
+| パブリックグループ役割 | `ImPublicGroupRole.ID` | `imm_public_grp_role` |
+| 会社役職 | `ImCompanyPost.ID` | `imm_company_post` |
+
+- ロールのみ `im_authz_subjecttypes_standard` モジュール、それ以外は `im_master_subjecttypes` モジュール（`jp.co.intra_mart.foundation.master.authz.subjecttype` パッケージ）が提供する
+- **定数名がロールだけ `ID` ではなく `B_M_ROLE` である点に注意**
 
 ## `Expression` / `SubjectExpression`（サブジェクト式）
 

@@ -37,7 +37,7 @@ public Timestamp recordDate;
 
 - `createUserCd`, `createDate`: レコード作成時の監査証跡
 - `recordUserCd`, `recordDate`: レコード更新時の監査証跡
-- AbstractDAOの基本メソッド（insert/update）使用時はこれらのフィールドが自動設定される。手動設定は禁止
+- AbstractDAOの基本メソッド（insert/update）使用時はこれらのフィールドが自動設定される。手動設定は禁止（ただし `update` が自動設定するのは `recordUserCd`/`recordDate` のみ）
 
 ## フィールドの型
 
@@ -75,3 +75,7 @@ public Timestamp recordDate;
 | 変換 | リポジトリ層で相互変換 | リポジトリ層で相互変換 |
 
 エンティティはDB構造の反映であり、ビジネスロジックを持たせない。ビジネスロジックはドメインモデルに実装すること。
+
+## 関連
+
+- `.github/instructions/database-ddl.instructions.md` - テーブル・カラムの命名規約、DDLの型マッピング、監査証跡カラムのDB側定義（DDL自体はJSSP側の資材として作成されるが、開発モデルに依存しない共通規約）

@@ -1,0 +1,396 @@
+[
+  {
+    "id": "definitions.targetNamespace",
+    "selector": "bpmn:Definitions",
+    "path": "targetNamespace",
+    "label": "targetNamespace",
+    "rule": {
+      "required": true,
+      "format": "^\\S+$",
+      "maxLength": 255,
+      "requiredPrefix": ["http://", "https://"],
+      "invalidPrefix": ["urn:"]
+    }
+  },
+  {
+    "id": "process.id",
+    "selector": "bpmn:Process",
+    "path": "id",
+    "label": "process id",
+    "rule": {
+      "required": true,
+      "format": "^[A-Za-z_][A-Za-z0-9_\\-.]*$",
+      "maxLength": 44,
+      "invalidPrefix": ["tmp_"],
+      "requiredWithoutPrefix": true
+    }
+  },
+  {
+    "id": "process.name.conditionalRequired",
+    "selector": "bpmn:Process",
+    "path": "name",
+    "label": "process name",
+    "rule": {
+      "requiredIf": {
+        "path": "isExecutable",
+        "equals": true
+      },
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "serviceTask.implementation.requiredGroup",
+    "selector": "bpmn:ServiceTask",
+    "path": "activiti:class",
+    "label": "service task implementation",
+    "rule": {
+      "requiredGroup": [
+        "activiti:class",
+        "activiti:delegateExpression",
+        "activiti:expression",
+        "activiti:type"
+      ]
+    }
+  },
+  {
+    "id": "serviceTask.delegateExpression.prefix",
+    "selector": "bpmn:ServiceTask",
+    "path": "activiti:delegateExpression",
+    "label": "service task delegateExpression",
+    "rule": {
+      "requiredPrefix": ["${"],
+      "invalidPrefix": ["#{"]
+    }
+  },
+  {
+    "id": "startEvent.initiator",
+    "selector": "bpmn:StartEvent",
+    "path": "activiti:initiator",
+    "label": "start event initiator",
+    "rule": {
+      "required": false,
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "errorEventDefinition.errorRef",
+    "selector": "bpmn:ErrorEventDefinition",
+    "path": "errorRef",
+    "label": "error event definition errorRef",
+    "rule": {
+      "required": true,
+      "format": "^[A-Za-z_][A-Za-z0-9_\\-.]*$"
+    }
+  },
+  {
+    "id": "dataObject.name",
+    "selector": "bpmn:DataObject",
+    "path": "name",
+    "label": "data object name",
+    "rule": {
+      "required": false,
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "process.message",
+    "selector": "bpmn:Message",
+    "path": "name",
+    "label": "process message",
+    "rule": {
+      "required": false,
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "process.signal",
+    "selector": "bpmn:Signal",
+    "path": "name",
+    "label": "process signal",
+    "rule": {
+      "required": false,
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "userTask.formKey",
+    "selector": "bpmn:UserTask",
+    "path": "activiti:formKey",
+    "label": "userTask formKey",
+    "rule": {
+      "required": false,
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "signalEventDefinition.signalRef",
+    "selector": "bpmn:SignalEventDefinition",
+    "path": "signalRef",
+    "label": "signalEventDefinition signalRef",
+    "rule": {
+      "required": true,
+      "format": "^[A-Za-z_][A-Za-z0-9_\\-.]*$"
+    }
+  },
+  {
+    "id": "messageEventDefinition.messageRef",
+    "selector": "bpmn:MessageEventDefinition",
+    "path": "messageRef",
+    "label": "messageEventDefinition messageRef",
+    "rule": {
+      "required": true,
+      "format": "^[A-Za-z_][A-Za-z0-9_\\-.]*$"
+    }
+  },
+  {
+    "id": "process.adHocTaskFormKey.invalidValues",
+    "selector": "bpmn:Process",
+    "path": "activiti:adHocTaskFormKey",
+    "label": "process adHocTaskFormKey",
+    "rule": {
+      "requiredIf": {
+        "path": "activiti:useAdHocTask",
+        "equals": "true"
+      },
+      "invalidValues": ["ticket:"],
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "callActivity.in.target.maxLength",
+    "selector": "bpmn:CallActivity",
+    "forEach": { "extensionType": "activiti:in" },
+    "path": "target",
+    "label": "callActivity in target",
+    "rule": {
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "callActivity.out.target.maxLength",
+    "selector": "bpmn:CallActivity",
+    "forEach": { "extensionType": "activiti:out" },
+    "path": "target",
+    "label": "callActivity out target",
+    "rule": {
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "mailTask.to.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "mail" },
+    "path": "field(to).value",
+    "label": "mail task field[to]",
+    "rule": {
+      "required": true
+    }
+  },
+  {
+    "id": "mailTask.text.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "mail" },
+    "path": "field(text).value",
+    "label": "mail task field[text]",
+    "rule": {
+      "required": true
+    }
+  },
+  {
+    "id": "mailTask.exceptionVariableName.maxLength",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "mail" },
+    "path": "field(exceptionVariableName).value",
+    "label": "mail task field[exceptionVariableName]",
+    "rule": {
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "callActivity.calledElement",
+    "selector": "bpmn:CallActivity",
+    "path": "calledElement",
+    "label": "callActivity calledElement",
+    "rule": {
+      "required": true
+    }
+  },
+  {
+    "id": "callActivity.version",
+    "selector": "bpmn:CallActivity",
+    "path": "activiti:version",
+    "label": "callActivity version",
+    "rule": {
+      "requiredIfPresent": true
+    }
+  },
+  {
+    "id": "logicdesignerTask.flowId.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "logicdesigner" },
+    "path": "field(flowId).value",
+    "label": "logicdesigner task field[flowId]",
+    "rule": {
+      "required": true,
+      "maxLength": 100
+    }
+  },
+  {
+    "id": "logicdesignerTask.version.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "logicdesigner" },
+    "path": "field(version).value",
+    "label": "logicdesigner task field[version]",
+    "rule": {
+      "requiredIf": { "path": "field(useLatestVersion).value", "equals": false }
+    }
+  },
+  {
+    "id": "logicdesignerTask.resultVariableName.maxLength",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "logicdesigner" },
+    "path": "activiti:resultVariableName",
+    "label": "logicdesigner task resultVariableName",
+    "rule": {
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "logicdesignerTask.inputData.name.maxLength",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "logicdesigner" },
+    "forEach": { "extensionFieldPrefix": "inputData_" },
+    "path": "name",
+    "label": "logicdesigner task inputData field name",
+    "rule": {
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "logicdesignerTask.inputData.value.maxLength",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "logicdesigner" },
+    "forEach": { "extensionFieldPrefix": "inputData_" },
+    "path": "value",
+    "label": "logicdesigner task inputData field value",
+    "rule": {
+      "maxLength": 255
+    }
+  },
+  {
+    "id": "applyworkflowTask.flowId.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "applyworkflow" },
+    "path": "field(flowId).value",
+    "label": "applyworkflow task field[flowId]",
+    "rule": {
+      "required": true,
+      "maxLength": 20
+    }
+  },
+  {
+    "id": "applyworkflowTask.userDataId.maxLength",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "applyworkflow" },
+    "path": "field(userDataId).value",
+    "label": "applyworkflow task field[userDataId]",
+    "rule": {
+      "maxLength": 20
+    }
+  },
+  {
+    "id": "applyworkflowTask.matterName.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "applyworkflow" },
+    "path": "field(matterName).value",
+    "label": "applyworkflow task field[matterName]",
+    "rule": {
+      "required": true,
+      "maxLength": 400
+    }
+  },
+  {
+    "id": "applyworkflowTask.applyExecuteUserCode.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "applyworkflow" },
+    "path": "field(applyExecuteUserCode).value",
+    "label": "applyworkflow task field[applyExecuteUserCode]",
+    "rule": {
+      "required": true
+    }
+  },
+  {
+    "id": "applyworkflowTask.applyAuthUserCode.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "applyworkflow" },
+    "path": "field(applyAuthUserCode).value",
+    "label": "applyworkflow task field[applyAuthUserCode]",
+    "rule": {
+      "required": true
+    }
+  },
+  {
+    "id": "applyworkflowTask.processComment.maxLength",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "applyworkflow" },
+    "path": "field(processComment).value",
+    "label": "applyworkflow task field[processComment]",
+    "rule": {
+      "maxLength": 2000
+    }
+  },
+  {
+    "id": "draftworkflowTask.flowId.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "draftworkflow" },
+    "path": "field(flowId).value",
+    "label": "draftworkflow task field[flowId]",
+    "rule": {
+      "required": true,
+      "maxLength": 20
+    }
+  },
+  {
+    "id": "draftworkflowTask.userDataId.maxLength",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "draftworkflow" },
+    "path": "field(userDataId).value",
+    "label": "draftworkflow task field[userDataId]",
+    "rule": {
+      "maxLength": 20
+    }
+  },
+  {
+    "id": "draftworkflowTask.matterName.required",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "draftworkflow" },
+    "path": "field(matterName).value",
+    "label": "draftworkflow task field[matterName]",
+    "rule": {
+      "required": true,
+      "maxLength": 400
+    }
+  },
+  {
+    "id": "draftworkflowTask.draftUserCode.maxLength",
+    "selector": "bpmn:ServiceTask",
+    "when": { "activiti:type": "draftworkflow" },
+    "path": "field(draftUserCode).value",
+    "label": "draftworkflow task field[draftUserCode]",
+    "rule": {
+      "maxLength": 400
+    }
+  },
+  {
+    "id": "scriptTask.scriptSource.requiredGroup",
+    "selector": "bpmn:ScriptTask",
+    "path": "activiti:scriptFile",
+    "label": "script task script source",
+    "rule": {
+      "requiredGroup": ["activiti:scriptFile", "script"]
+    }
+  }
+
+]
+
+

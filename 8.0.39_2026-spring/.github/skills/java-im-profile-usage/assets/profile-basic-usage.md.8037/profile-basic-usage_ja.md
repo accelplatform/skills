@@ -1,7 +1,6 @@
 # User Profile Image API 基本利用パターン（Java 版）
 
-`UserProfileImageManager` / `UserImage` / `UserImageFileInfo` のシグネチャ・内部動作は
-`reference/profile-api-reference.md` を参照。ここでは典型的な呼び出しパターンを示す。
+`UserProfileImageManager` / `UserImage` / `UserImageFileInfo` のシグネチャ・内部動作は `reference/profile-api-reference.md` を参照。ここでは典型的な呼び出しパターンを示す。
 
 **ユーザ基本情報（氏名・所属等）の操作、および IM-LogicDesigner のロジックフロー要素はこのスキルの対象外である。** ここで扱うのは「ユーザのプロファイル画像」の取得・登録・削除のみ。
 

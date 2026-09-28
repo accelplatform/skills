@@ -79,7 +79,7 @@ public interface UserProfileImageManager {
 }
 ```
 
-- The detailed null-acceptance/exception conditions for the arguments and return values include parts that depend on the implementation (`UserProfileImageManagerImpl`) and cannot be determined from the interface's JavaDoc alone. For boundary-value behavior (e.g., specifying an `imageSizeType` that does not exist), checking the implementation or verifying on an actual environment is recommended
+- When `imageSizeType` is blank or omitted, the implementation (`UserProfileImageManagerImpl`) uses the default value `"original"` (`UserConstant.IMAGE_SIZE_TYPE_ORIGINAL`)
 
 ## `UserProfileImageManagerFactory` Class
 

@@ -345,6 +345,22 @@ node .claude/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 ]
 ```
 
+### im_startLoop（循环开始任务）的 `clearVariables` 注意事项
+
+`clearVariables`（"要初始化的变量名"）会**在每次循环时清空所指定的变量**。
+
+- 只应将**循环内一次性使用的临时变量**（每次循环重置也无妨的变量）作为对象
+- **不要**将**跨循环累积结果的变量**（例如通过 `im_array_push` 不断追加元素的数组）作为对象。因为每次循环都会被清空，循环结束时只会残留最后一次循环的内容（＝实质上什么都不会留下）
+- 有时会出于"担心未初始化（null/undefined）的变量传给数组操作函数会报错"的顾虑，而将其加入初始化对象，但数组操作函数（`im_array_push` 等，参见 [reference/mapping-functions.md](reference/mapping-functions.md)）即使传入未初始化的变量也不会报错。**用于累积结果的数组变量无需加入 `clearVariables`**
+
+```jsonc
+// 错误示例：将累积用的数组变量设为清空对象，会导致循环结束后变为空
+"properties": { "clearVariables": ["resultList"] }  // 如果 resultList 通过 im_array_push 累积元素则为错误示例
+
+// 正确示例：只将循环内使用的临时变量设为清空对象
+"properties": { "clearVariables": ["tmpItem"] }
+```
+
 ### im_logger（日志输出任务）
 
 虽然不是用户定义任务，但经常在循环内处理中使用的通常任务。
@@ -362,6 +378,15 @@ node .claude/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 ```
 
 `properties.level`：`"DEBUG"` / `"INFO"` / `"WARN"` / `"ERROR"`
+
+**注意：不要挪用于变量赋值**
+
+`im_logger` 的输入输出模式固定为 `string`（仅用于日志输出），并非用于变量赋值。
+若需要给变量赋值，务必使用 `im_variableOperation`（变量操作任务）。
+
+- 若将 `im_logger` 等任务挪用于与其本来的输入输出模式不符的用途并添加映射规则，会导致 IM-LogicDesigner 编辑画面的映射面板数据以不正确的结构保存，可能出现只是打开并保存流程编辑画面就报 500 错误的情况
+- 此类故障有时即使在画面上删除该任务并保存也无法解决（因为编辑器会保持不正确的内部状态并原样重新序列化）
+- 若发生此情况，最可靠的方法是重新制作该流程定义：先删除一次再重新导入
 
 ## 将多个流程合并在一个文件中
 

@@ -143,7 +143,7 @@ pluginId 由 `{扩展点ID}.{后缀}` 的形式构成，通过后缀切换指定
 
 **注意：** targetType 基本为驼峰命名法（`publicGroup`、`publicGroupRole`）。`user`、`department`、`post`、`role` 为纯小写，复合词必须使用驼峰命名法。
 
-### 组合指定系（经实机导出数据验证）
+### 组合指定系
 
 parameter 和 targetCode 值相同。分隔符为竖线 `|`（非插入符 `^`）。
 
@@ -170,7 +170,7 @@ parameter 和 targetCode 值相同。分隔符为竖线 `|`（非插入符 `^`�
 <targetCode type="string">sample_public^public_group_a|im_workflow_user</targetCode>
 ```
 
-### 动态指定系（经实机导出数据验证，共37种模式）
+### 动态指定系（共37种模式）
 
 基于申请者或前处理者的所属组织等动态决定审批者。
 将 `targetType` / `targetCode` 设为空标签。
@@ -380,7 +380,7 @@ parameter 和 targetCode 值相同。分隔符为竖线 `|`（非插入符 `^`�
 
 ---
 
-## 逻辑流程指定系（IM-LogicDesigner 集成）（已通过实机导出数据验证）
+## 逻辑流程指定系（IM-LogicDesigner 集成）
 
 通过执行 IM-LogicDesigner 的逻辑流程来动态决定处理对象者的方式。
 可以在流程中实现 DB 查询、外部 API 调用等复杂逻辑。
@@ -395,15 +395,13 @@ parameter 和 targetCode 值相同。分隔符为竖线 `|`（非插入符 `^`�
 - `version`：`null` = 使用最新版本。指定整数则使用固定版本
 - `versionDecide`：`false` = 自动决定版本（最新）。`true` = 使用 `version` 字段的值
 
-### 可用扩展点（已通过实机验证）
+### 可用扩展点
 
 | 扩展点 | pluginId |
 |--------|---------|
 | `node.approve`（审批权限・动态） | `...node.approve.logic_flow_user` |
 | `node.confirm`（确认权限） | `...node.confirm.logic_flow_user` |
 | `administrator.flow.handle`（参照者） | `...administrator.flow.handle.logic_flow_user` |
-
-> ⚠️ `node.apply`（申请权限）和 `node.approve.static`（静态审批权限）的 `.logic_flow_user` 在实机数据中未经确认。
 
 ### XML 示例
 

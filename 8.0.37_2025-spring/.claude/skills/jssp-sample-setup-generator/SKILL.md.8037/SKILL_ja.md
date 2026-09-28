@@ -114,8 +114,7 @@ build スクリプトは下記に分けて出力する。
 
 `<artifactId>` は `<key>` と異なってよい。ストレージ配下の参照パスには `<key>` が使われる。
 
-config 内の `<role-file>`・`<authz-*-file>`・`<create-file>`・`<insert-file>` は
-`src/main/storage/system` からの相対パスで記述する（例: `products/import/sample/<key>/<key>-role.xml`）。
+config 内の `<role-file>`・`<authz-*-file>`・`<create-file>`・`<insert-file>` は `src/main/storage/system` からの相対パスで記述する（例: `products/import/sample/<key>/<key>-role.xml`）。
 `<extends-import-class>` は `src/main/jssp/src` からの相対パスで記述する（例: `<key>/initialize/<key>_import.js`）。
 
 資材の配置に `<version>` ディレクトリは設けない。サンプルデータはモジュールの最新バージョンに合わせて常に最新状態を維持する運用のため、更新は既存ファイルの上書き（`--force`）で行う。

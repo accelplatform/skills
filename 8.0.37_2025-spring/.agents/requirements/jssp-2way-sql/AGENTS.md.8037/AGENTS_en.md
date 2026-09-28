@@ -41,28 +41,123 @@ let SQL_SELECT_CONTENT = '/content/sql/select_content';
 db.executeByTemplate(SQL_SELECT_CONTENT, params);
 ```
 
+## [Important] Do Not Write `--` Comments in SQL Files
+
+The 2WaySQL parser does not distinguish the content of `--` line comments — it **scans the entire file to detect template syntax**.
+As a result, if syntax notation such as `/*IF*/`, an actual bind name (e.g. `/*orderId*/`), or a `?` is written literally inside a `--` comment meant only as an explanation, it is mistakenly recognized as a genuine template directive despite being a comment, causing a runtime error that appears unrelated to the comment's content (such as `"IF" is not defined.`, `"$1" is not defined.`, `Column index out of range`, etc.).
+
+For the reasons above, **never write `--` comments in SQL files at all.**
+Describe the file's purpose, verification viewpoints, and parameter explanations in the JSDoc (function comment) on the calling function container side instead.
+SQL files should contain only the SQL body that gets executed.
+
+```javascript
+/**
+ * Searches orders by optional conditions on status and category_cd (retrieves all records if unspecified).
+ * SQL: /content/sql/search_orders
+ *
+ * @param {Object} criteria - Search criteria
+ * @return {Object} Search result
+ */
+function searchOrders(criteria) {
+  // ...
+}
+```
+
+```sql
+SELECT order_id, customer_name, status, category_cd
+FROM foo_order
+/*BEGIN*/
+WHERE
+  /*IF status != null*/
+  status = /*status*/'dummy'
+  /*END*/
+/*END*/
+ORDER BY order_id
+```
+
+The Java side (`im_mirage`) uses a similar implementation, so the same problem can occur there too (see the `java-im-mirage-usage` skill).
+In the sample code that follows, some places carry explanatory file-path comments or NG/OK annotations for the purpose of this document, but **the actual SQL files must not include such comments**.
+
 ## Syntax
 
 | Syntax | Purpose | Notes |
 |--------|---------|-------|
 | `/*IF condition*/.../*END*/` | Conditional branching | |
-| `/*BEGIN*/.../*END*/` | Optional block (WHERE etc. are automatically removed when all content inside is removed) | |
+| `/*BEGIN*/.../*END*/` | Optional block (WHERE etc. are automatically removed when all content inside is removed) | The only prefixes that can be auto-removed are `AND`/`OR`. Do not use it to expect automatic removal of a `,` prefix in the SET clause of an UPDATE statement (see "Building a Dynamic SET Clause") |
 | `/*param*/'dummy'` | Bind placeholder (PreparedStatement style) | **Recommended** |
+| `/*param*/('dummy')` | Parenthesized bind for IN clauses (dynamically expands an array into a placeholder list) | See "Dynamic Generation of IN Clauses" below for details |
 | `/*$param*/dummy` | Direct embedding | SQL injection risk; whitelist required |
 
 ### Prohibited Syntax
 
-- **`/*FOR item : list*/.../*END*/`** can be used in LogicDesigner / im_mirage but is **not supported in the script development model**. Do not use it.
+- **`/*FOR item in list*/.../*END*/`** can be used in LogicDesigner / im_mirage but is **not supported in the script development model**. Do not use it.
+
+### Note: Do Not Nest `/*IF*/` Inside a `/*BEGIN*/` Block
+
+The parser does support nesting `/*IF*/` itself, but nesting it inside a `/*BEGIN*/` block causes the leading `AND`/`OR` of the inner `/*IF*/` to become a target for prefix removal, and it gets stripped when the outer `/*IF*/` was the first condition to succeed in that block (because the block's overall "already output" state is not finalized until the inner condition finishes being processed). The result is malformed SQL such as `WHERE a = ? b = ?`. If a preceding sibling condition has already succeeded, it renders correctly — so whether this passes or fails depends on the combination of parameters (confirmed on a real environment: it produces a syntax error when the outer IF is the first condition to succeed in the block, and works correctly when a preceding sibling condition succeeds first).
+
+Do not nest multiple conditions; place them as siblings instead, and express the dependency through the condition expression.
+
+```sql
+/*IF status != null*/
+status = /*status*/'dummy'
+/*END*/
+/*IF status != null && categoryCd != null*/
+AND category_cd = /*categoryCd*/'dummy'
+/*END*/
+```
+
+(Nesting where the inner block does not start with `AND`/`OR`/`,` — such as switching an operator or a value fragment — is not affected by this issue and may be used.)
 
 ### Meaning of Dummy Values
 
 The `'dummy'` in `/*param*/'dummy'` is a **dummy value for 2WaySQL execution verification** and is replaced by the bind parameter at runtime.
 Write a syntactically valid value so the SQL can be executed standalone in a SQL client.
 
+For the parenthesized bind used in IN clauses (`/*param*/('dummy')`), a single dummy value such as `('dummy')` is fine (listing multiple values, e.g. `('dummy1', 'dummy2')`, has also been confirmed to work correctly on a real environment).
+
+## Dynamic Generation of IN Clauses (`/*param*/('dummy')`)
+
+When dynamically expanding an array into an `IN` clause, use the parenthesized bind, placing `('dummy')` immediately after `/*param*/`.
+
+```sql
+SELECT user_id, user_name
+FROM users
+/*BEGIN*/
+WHERE
+  /*IF userIds != null && userIds.length > 0*/
+  user_id IN /*userIds*/('dummy')
+  /*END*/
+/*END*/
+```
+
+```javascript
+function searchByIds(userIds) {
+  let db = new TenantDatabase();
+  let params = {
+    // Convert an empty array to null (guard against both null and an empty array with /*IF*/ on the SQL side).
+    // Array elements must also be wrapped with DbParameter, just like any other bind variable.
+    // Passing a plain string array results in "The parameter must be instance of DbParameter."
+    userIds: userIds.length > 0
+      ? userIds.map(function(userId) { return DbParameter.string(userId); })
+      : null
+  };
+  return db.executeByTemplate('/user/sql/searchByIds', params);
+}
+```
+
+**Guard against both `null` and an empty array with `/*IF*/`** (without a guard, a bare `IN` is left behind and the SQL breaks).
+
+### [Important] The guard can turn an empty array into "all rows" instead of "zero rows"
+
+As shown above, when the IN-clause guard is the only condition inside `/*BEGIN*/`, a `null` or empty `userIds` causes the contents of `/*IF*/` to vanish, leaving the `/*BEGIN*/` block empty, so **the entire `WHERE` clause is removed** (this follows `/*BEGIN*/`'s basic behavior: `WHERE` etc. are automatically removed once all the content inside is gone).
+As a result, while no SQL error occurs, the query returns **all rows with no filtering** rather than the intended "no matches (zero rows)" — confirmed on a real environment.
+
+If the intent is "when the caller passes an empty array, the result should also be empty," **do not rely on the SQL-side guard alone** — add an application-side guard where the caller checks for `null`/an empty array and returns an empty array without executing the SQL. This is a mandatory countermeasure especially when this pattern is used for authorization/permission filtering (e.g. passing a list of accessible IDs into an `IN` clause), to prevent an empty array from accidentally exposing all records.
+
 ## SQL File Example
 
 ```sql
--- src/main/jssp/src/user/sql/searchUsers.sql
 SELECT user_id, user_name, email
 FROM users
 /*BEGIN*/
@@ -71,7 +166,7 @@ WHERE
     user_id = /*userId*/'dummy'
   /*END*/
   /*IF userName != null*/
-    AND user_name LIKE /*userName*/'%dummy%' ESCAPE '\'
+    AND user_name LIKE /*userName*/'%dummy%' ESCAPE '@'
   /*END*/
   /*IF status != null*/
     AND status = /*status*/'active'
@@ -82,23 +177,30 @@ ORDER BY user_id
 
 ## LIKE Search Escaping (LIKE Pattern Injection Prevention)
 
-Parameters passed to LIKE operators must always **escape LIKE special characters (`\`, `%`, `_`) contained in user input**.
+Parameters passed to LIKE operators must always **escape LIKE special characters contained in user input (the escape character itself, `%`, and `_`)**.
 Appending wildcards (`%`) without escaping causes the following issues:
 
 - Input `%` → `%%%` hits all rows (unintended full retrieval)
 - Input `_` → `%_%` matches any single character (unintended partial match)
 
+### [Important] Do Not Use a Backslash (`\`) as the Escape Character
+
+It has been confirmed on a real environment that the 2WaySQL template compiler used by `TenantDatabase#executeByTemplate` **strips backslash characters from within SQL files, regardless of whether they are in comments or in the SQL body**.
+As a result, even if you write `ESCAPE '\'`, it becomes `ESCAPE ''` (an empty string) at runtime, **disabling the escaping itself**. This results in the confusing bug of getting zero hits when searching for a keyword that requires escaping (a keyword containing `%` or `_`).
+
+General web searches and documentation for other database products commonly recommend `ESCAPE '\'` as the standard practice, but **this standard practice does not work with `TenantDatabase`/`SharedDatabase` in the script development model**. intra-mart traditionally has a **convention of using `@` (at sign) as the escape character**, so this convention also uses `@`.
+(The Java side (`im_mirage`) does not have this problem — it has been confirmed on a real environment to work correctly with `\`. This is a constraint specific to `TenantDatabase` on the JSSP side.)
+
 ### Required Rules
 
 1. **Append wildcards (`%`) on the server side** — do not send `%keyword%` from the client (browser)
 2. **Escape LIKE special characters before appending wildcards**
-3. **Add `ESCAPE '\'` clause to the SQL**
+3. **Add an `ESCAPE '@'` clause to the SQL (do not use `ESCAPE '\'`)**
 
 ### SQL Side
 
 ```sql
--- Always add ESCAPE clause
-AND user_name LIKE /*userName*/'%dummy%' ESCAPE '\'
+AND user_name LIKE /*userName*/'%dummy%' ESCAPE '@'
 ```
 
 ### Server Side (Function Container)
@@ -107,6 +209,7 @@ AND user_name LIKE /*userName*/'%dummy%' ESCAPE '\'
 /**
  * Generates a parameter for LIKE search.
  * Escapes LIKE special characters and appends wildcards on both sides.
+ * Uses '@' as the escape character ('\' cannot be used because TenantDatabase strips it).
  *
  * @param {String} value - Search keyword (raw input value)
  * @return {String} Escaped LIKE parameter
@@ -116,9 +219,9 @@ function toLikeParam(value) {
     return '%';
   }
   let escaped = value
-    .replace(/\\/g, '\\\\')   // \ → \\
-    .replace(/%/g, '\\%')     // % → \%
-    .replace(/_/g, '\\_');    // _ → \_
+    .replace(/@/g, '@@')   // @ → @@
+    .replace(/%/g, '@%')   // % → @%
+    .replace(/_/g, '@_');  // _ → @_
   return '%' + escaped + '%';
 }
 
@@ -254,14 +357,39 @@ period_end_date: periodEndDate
   : new DbParameter(null, DbParameter.TYPE_DATE)
 ```
 
+**Note that this table applies only when the column is always output to the SQL body without branching via `/*IF*/`** (a column that is always specified in an INSERT statement, or always SET in an UPDATE statement, etc.).
+
 > **Note:** `DbParameter.NULL` is a type constant (a value of type `number`), not a `DbParameter` instance. It is for stored procedures only. Do not use it for normal INSERT/UPDATE.
+
+### [Important] Pass a Raw `null` for DATE / TIMESTAMP Parameters that Branch via `/*IF*/`
+
+For DATE / TIMESTAMP parameters whose presence is branched on with `/*IF paramName != null*/`, as in a search condition (WHERE clause), passing `new DbParameter(null, DbParameter.TYPE_DATE)` with the same mindset as the table above has been confirmed on a real environment to cause the following problem:
+**the `/*IF*/` condition expression evaluates the `DbParameter` object itself, so even when the value is null it is misjudged as "specified," adding a condition such as `AND some_date >= NULL` to the SQL that is always false, and as a result yielding zero hits.**
+
+```javascript
+// NG: /*IF orderDateFrom != null*/ is always evaluated as true,
+//     appending "AND order_date >= NULL" so nothing ever hits
+let params = {
+  orderDateFrom: orderDateFrom
+    ? DbParameter.date(parseLocalDate(orderDateFrom))
+    : new DbParameter(null, DbParameter.TYPE_DATE)
+};
+
+// OK: Pass a raw null when unspecified, so /*IF*/ branches correctly
+let params = {
+  orderDateFrom: orderDateFrom
+    ? DbParameter.date(parseLocalDate(orderDateFrom))
+    : null
+};
+```
+
+In summary, use `new DbParameter(null, TYPE_DATE)` only when the column is **always** output to the SQL body, and use a **raw `null`** when branching with `/*IF*/`.
 
 ## Direct Embedding (`/*$param*/`) Usage Rules
 
 Use only for **locations that cannot be specified with bind variables**, such as column names and sort direction in ORDER BY clauses.
 
 ```sql
--- src/main/jssp/src/user/sql/dynamicSort.sql
 SELECT user_id, user_name, email
 FROM users
 ORDER BY /*$sortColumn*/user_id /*$sortOrder*/ASC
@@ -319,6 +447,49 @@ for (let i = 0; i < result.data.length; i++) {
 - Return value is a `DatabaseResult` object
 - `result.data` is an array; each element is an object with **column names (lowercase) as keys**
 - Check execution success/failure with `isSuccess()`; error message is in `errorMessage`
+
+## Building a Dynamic SET Clause (UPDATE Statement)
+
+Wrapping the SET clause of an UPDATE statement with `/*BEGIN*/` so that it removes the leading comma of each item behaves inconsistently, because **the outcome depends on where the comma is placed in the file**.
+
+- When the comma is placed at the **start of the same line** as the `/*IF*/` marker, the parser correctly recognizes it as a prefix and removes it
+- When the comma is placed on a **separate, indented line after a line break**, the parser fails to recognize it as a prefix, leaving a bare leading comma behind and producing invalid SQL that causes a syntax error (confirmed on a real environment: `ERROR: syntax error at or near ","`)
+
+In addition, `/*BEGIN*/` removes the entire SET clause (including the `SET` keyword itself) when every condition inside it evaluates to false, which produces invalid SQL (an `UPDATE` with no `SET`) when there are no columns to update.
+
+Because **comma-prefix removal is fragile and format-dependent, and also conflicts with `/*BEGIN*/`'s "the whole block vanishes when every condition is false" behavior**, do not rely on `/*BEGIN*/` to remove the comma in a SET clause at all.
+
+Example that causes a syntax error (comma placed on a separate, indented line):
+
+```sql
+UPDATE users
+/*BEGIN*/
+SET
+  /*IF status != null*/
+  , status = /*status*/'active'
+  /*END*/
+  /*IF memo != null*/
+  , memo = /*memo*/'memo'
+  /*END*/
+/*END*/
+WHERE user_id = /*userId*/'dummy'
+```
+
+Always place a self-assignment that does not change the target (e.g. the primary key column `= itself`) at the head of the SET clause, and always concatenate the remaining items with a leading comma, without using `/*BEGIN*/`.
+This approach is independent of comma placement, and there is no risk of the SET clause vanishing entirely.
+
+```sql
+UPDATE users
+SET
+  user_id = /*userId*/'dummy'
+  /*IF status != null*/
+  , status = /*status*/'active'
+  /*END*/
+  /*IF memo != null*/
+  , memo = /*memo*/'memo'
+  /*END*/
+WHERE user_id = /*userId*/'dummy'
+```
 
 ## Transaction Processing
 
@@ -387,17 +558,20 @@ for (let i = 0; i < items.length; i++) {
 - [ ] Is the path passed to `executeByTemplate` / `fetchByTemplate` an absolute path starting from `src/main/jssp/src/` (with leading slash)?
 - [ ] Is the file encoding UTF-8?
 - [ ] Is the `.sql` extension removed from the path passed to `executeByTemplate` / `fetchByTemplate`?
+- [ ] **Are `--` comments absent from SQL files** (is the purpose/explanation written in the caller's JSDoc instead)?
 - [ ] Are bind parameters using the `/*param*/'dummy'` format?
 - [ ] Are locations using `/*$param*/` validated against a whitelist?
-- [ ] Is the `/*FOR*/` syntax not being used?
+- [ ] Is the `/*FOR*/` syntax not being used? Is `/*IF*/` not nested inside a `/*BEGIN*/` block (placed as siblings instead)?
 - [ ] Are parameters wrapped with `DbParameter.xxx()`?
 - [ ] Do `DbParameter` type methods match the DDL column types (e.g., `string()` for VARCHAR, `number()` for INTEGER/DECIMAL)?
 - [ ] Is `DbParameter.string()` not being used for `DATE` / `TIMESTAMP` columns (causes a type mismatch error in PostgreSQL)?
-- [ ] For NULL insertion into `DATE` / `TIMESTAMP` columns, is `new DbParameter(null, DbParameter.TYPE_DATE)` / `new DbParameter(null, DbParameter.TYPE_TIMESTAMP)` being used (`DbParameter.date(null)` fails; VARCHAR/numeric columns work with `DbParameter.string(null)` / `DbParameter.number(null)`; only factory methods that require object-type arguments cannot accept `null`)?
+- [ ] For NULL insertion into `DATE` / `TIMESTAMP` columns, is `new DbParameter(null, DbParameter.TYPE_DATE)` / `new DbParameter(null, DbParameter.TYPE_TIMESTAMP)` being used only when the column is always output (and a raw `null` used when branching with `/*IF*/`)?
+- [ ] For the parenthesized IN-clause bind (`/*param*/('dummy')`), is each array element wrapped with `DbParameter`?
+- [ ] For the SET clause of UPDATE statements, is `/*BEGIN*/` not being expected to remove a leading comma (is the self-assignment-first approach used instead)?
 - [ ] Is execution success/failure checked with `result.isSuccess()`?
 - [ ] Is SQL construction by string concatenation not being used?
-- [ ] Are LIKE special characters (`\`, `%`, `_`) escaped in LIKE searches?
-- [ ] Is the `ESCAPE '\'` clause added to the SQL for LIKE searches?
+- [ ] Are LIKE special characters (the escape character itself, `%`, `_`) escaped in LIKE searches?
+- [ ] Is the `ESCAPE '@'` clause added to the SQL for LIKE searches (and `ESCAPE '\'` not used)?
 - [ ] Are wildcards (`%`) for LIKE searches appended on the server side (sending from client is prohibited)?
 - [ ] Are write SQL statements (INSERT/UPDATE/DELETE) executed inside `Transaction.begin()`?
 - [ ] Are updates to multiple tables and loop updates grouped in the same transaction?

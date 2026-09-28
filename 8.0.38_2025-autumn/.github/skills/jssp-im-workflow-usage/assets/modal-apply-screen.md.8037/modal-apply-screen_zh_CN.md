@@ -3,8 +3,7 @@
 ## 概述
 
 IM-Workflow 申请画面程序的模板（处理模态方式）。
-使用 `imWorkflow.modal.showApply()` / `imWorkflow.modal.showTemporarySave()` API，
-通过 IM-Workflow 的标准模态 UI 进行申请、暂存。
+使用 `imWorkflow.modal.showApply()` / `imWorkflow.modal.showTemporarySave()` API，通过 IM-Workflow 的标准模态 UI 进行申请、暂存。
 
 申请与暂存在同一个 JSSP 画面上提供（与 `simple-apply-screen.md` 相同）。
 将 `showApply()` 与 `showTemporarySave()` 分配到同一表单上的不同按钮。

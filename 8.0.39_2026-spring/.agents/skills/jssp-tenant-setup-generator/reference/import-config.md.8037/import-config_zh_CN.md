@@ -9,8 +9,7 @@
 src/main/conf/products/import/basic/<artifactId>/import-<artifactId>-config-<N>.xml
 ```
 
-被参照的 XML/SQL（`<role-file>` 等）放置在 `src/main/storage/system` 目录下，
-扩展导入 JS 放置在 `src/main/jssp/src` 目录下。请注意，仅 `import-<artifactId>-config-<N>.xml` 自身放置在 `src/main/conf` 目录下。
+被参照的 XML/SQL（`<role-file>` 等）放置在 `src/main/storage/system` 目录下，扩展导入 JS 放置在 `src/main/jssp/src` 目录下。请注意，仅 `import-<artifactId>-config-<N>.xml` 自身放置在 `src/main/conf` 目录下。
 
 | 部分 | 含义 | 决定方式 |
 |---|---|---|

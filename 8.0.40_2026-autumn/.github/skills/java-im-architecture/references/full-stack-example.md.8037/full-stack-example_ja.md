@@ -18,37 +18,39 @@ src/main/java/{packagePath}/
 │       └── GetCategoryUseCase.java
 ├── domain/
 │   ├── model/
-│   │   ├── Category.java              ← SampleModel.java 参照
+│   │   ├── Category.java              ← 本ドキュメントの「5. Domain Model」参照
 │   │   └── CategoryStatus.java
 │   ├── service/
 │   │   ├── CategoryService.java       (interface)
 │   │   └── CategoryServiceFactory.java
 │   ├── repository/
 │   │   ├── CategoryRepository.java    (interface)
-│   │   └── CategoryRepositoryFactory.java  ← RepositoryFactoryTemplate.java 参照
+│   │   └── CategoryRepositoryFactory.java  ← サービスファクトリと同型（下記の注記を参照）
 │   └── exception/
 │       ├── RepositoryException.java
 │       └── CategoryServiceException.java
 └── infrastructure/
     ├── entity/
-    │   └── CategoryEntity.java        ← SampleEntity.java 参照
+    │   └── CategoryEntity.java        ← java-im-mirage-usage スキル参照
     ├── dao/
-    │   └── CategoryDAO.java           ← SampleDAO.java 参照
+    │   └── CategoryDAO.java           ← java-im-mirage-usage スキル参照
     ├── repository/
-    │   ├── StandardCategoryRepository.java      ← StandardRepositoryTemplate.java 参照
+    │   ├── StandardCategoryRepository.java      ← 本ドキュメントの「7. Repository実装」参照
     │   └── StandardCategoryRepositoryFactory.java
     └── service/
-        ├── StandardCategoryService.java         ← StandardServiceTemplate.java 参照
+        ├── StandardCategoryService.java         ← java-im-service-layer スキルの references/StandardServiceTemplate.java 参照
         └── StandardCategoryServiceFactory.java
 
 src/main/resources/
-└── META-INF/sql/{packagePath}/infrastructure/dao/CategoryDAO/
-    ├── find-by-id.sql                 ← sql-patterns.md 参照
+└── {packagePath}/infrastructure/dao/CategoryDAO/
+    ├── find-by-id.sql                 ← java-im-mirage-usage スキル参照（2WaySQL の書き方）
     └── find-by-condition.sql
 
 src/main/storage/system/products/import/basic/{module_id}/
-└── {module_id}-ddl.sql               ← ddl-templates.md 参照
+└── {module_id}-ddl.sql               ← 本ドキュメントの「1. DDL」参照
 ```
+
+> **補足（ファクトリクラス）**: `CategoryRepositoryFactory` / `StandardCategoryRepositoryFactory` の実装は、`java-im-service-layer` スキルの `references/StandardServiceTemplate.java` および `references/MultiRepositoryServiceTemplate.java` が示すサービスファクトリと同型（`Service` → `Repository` に読み替え）である。リポジトリ専用の独立したテンプレートファイルは提供していない。
 
 ## 1. DDL
 
@@ -114,8 +116,9 @@ public class CategoryEntity implements Serializable {
 package example.infrastructure.dao;
 
 public class CategoryDAO extends AbstractDAO<CategoryEntity> {
+    // SQLファイルパス（クラスパス起点。META-INF/sql プレフィックスや先頭スラッシュは付けない）
     private static final String SQL_PATH =
-            "/META-INF/sql/example/infrastructure/dao/CategoryDAO/";
+            "example/infrastructure/dao/CategoryDAO/";
 
     public CategoryEntity findByCategoryId(final String categoryId) {
         final FindByIdCriteria criteria = new FindByIdCriteria();
@@ -218,12 +221,14 @@ public class StandardCategoryRepository implements CategoryRepository {
     public void save(final Category category) throws RepositoryException {
         try {
             SessionTemplate.execute(s -> {
-                final CategoryEntity entity = convertToEntity(category);
                 final CategoryDAO dao = DAOFactory.getTenantDatabaseDAO(CategoryDAO.class);
-                if (dao.find(entity.categoryId) != null) {
-                    dao.update(entity);
+                final CategoryEntity existing = dao.find(category.getCategoryId());
+                if (existing != null) {
+                    // update は主キー以外の全カラムを更新するため、既存 Entity へ変更点だけを反映する
+                    applyChanges(existing, category);
+                    dao.update(existing);
                 } else {
-                    dao.insert(entity);
+                    dao.insert(convertToEntity(category));
                 }
                 return null;
             });
@@ -240,12 +245,16 @@ public class StandardCategoryRepository implements CategoryRepository {
                 (e.recordDate != null) ? new Date(e.recordDate.getTime()) : null);
     }
 
+    private void applyChanges(final CategoryEntity entity, final Category m) {
+        entity.categoryName = m.getCategoryName();
+        entity.sortOrder = m.getSortOrder();
+        entity.setStatusFromEnum(m.getStatus());
+    }
+
     private CategoryEntity convertToEntity(final Category m) {
         final CategoryEntity e = new CategoryEntity();
         e.categoryId = m.getCategoryId();
-        e.categoryName = m.getCategoryName();
-        e.sortOrder = m.getSortOrder();
-        e.setStatusFromEnum(m.getStatus());
+        applyChanges(e, m);
         return e;
     }
 

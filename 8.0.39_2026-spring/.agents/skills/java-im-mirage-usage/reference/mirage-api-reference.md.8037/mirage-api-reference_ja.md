@@ -9,7 +9,6 @@ jp.co.intra_mart.mirage.annotation
 ├── Table       … エンティティクラスに付与、テーブル名を指定
 ├── Column      … フィールド/メソッドに付与、カラム名を指定
 ├── PrimaryKey  … 主キーであることを表す。GenerationType（列挙）を持つ
-├── Enumerated  … 列挙型プロパティのマッピング指定
 ├── Transient   … マッピング対象外にするプロパティ指定
 └── In / InOut / Out / ResultSet … ストアドプロシージャ呼び出し時のパラメータ方向指定
 
@@ -123,6 +122,8 @@ public abstract class AbstractDAO<T> extends BaseDAO<T> {
 }
 ```
 
+- **`update`/`updateBatch` は部分更新ではなく、主キー以外の全カラムを SET 句に並べる。** 値を設定していないフィールドは `null` で上書きされる。`update` が設定するのは `recordUserCd`/`recordDate` のみで `createUserCd`/`createDate` は補完されないため、新規に組み立てた Entity を渡すと登録時の監査証跡が消える
+- **更新時は `find()` で既存 Entity を取得し、変更点のみ反映してから `update` に渡す。** 一部カラムのみ更新する場合は SQLファイル＋`sqlManager.executeUpdate` を使う
 - 独自クエリを追加する場合は `AbstractDAO<エンティティ型>` を継承した具象クラスに、`protected sqlManager` を使うメソッドを追加する
 
 ### `DAOFactory`
@@ -155,13 +156,14 @@ public final class EntityHelper {
     public static final String RECORD_USER_CD_FIELD_NAME = "recordUserCd";
     public static final String RECORD_DATE_FIELD_NAME = "recordDate";
 
-    public static <T> void setCreateFields(T... entities);   // create系2項目が null の場合のみ設定
-    public static <T> void setRecordFields(T... entities);   // record系2項目を設定
+    public static <T> void setCreateFields(T... entities);   // 監査項目4項目すべてを、null の場合のみ設定
+    public static <T> void setRecordFields(T... entities);   // record系2項目を常に設定（既存値を上書きする）
 }
 ```
 
 - `AbstractDAO#insert`/`update` から自動的に呼び出される。DAO 呼び出し側が直接呼ぶ必要はない
-- `setCreateFields` は既に値が設定されているフィールドは上書きしない（`null` の場合のみ設定）。`setRecordFields` は常に設定する
+- `setCreateFields` は監査項目4項目すべてを対象とし、既に値が設定されているフィールドは上書きしない（`null` の場合のみ設定）。`setRecordFields` は record系2項目のみを対象とし、既存の値があっても常に上書きする
+- **監査項目4フィールドを1つでも宣言していないエンティティを `AbstractDAO#insert`/`update` に渡すと `NullPointerException` になる。** `EntityHelper` は未宣言のプロパティに対して `null` が返る戻り値を `null` チェックせずに使用するため。`insert`/`insertBatch` は4項目すべてが、`update`/`updateBatch` は record系2項目が必須となる（`delete`/`deleteBatch` は監査項目に触れないため影響しない）。`.agents/requirements/java-entity/AGENTS.md` の「監査証跡フィールド（必須）」は、規約上の要求であると同時に実装上の強制要件でもある
 
 ## `SqlManager`（SQL実行の中核インタフェース）
 
@@ -216,6 +218,26 @@ public interface SqlManager {
 
 - **SQLファイル系（`sqlPath` 引数）と `xxxBySql` 系（`sql` 引数）を混同しない。** 前者はクラスパス上の 2WaySQL ファイルへのパス、後者は SQL 文そのもの（プレースホルダは `?`、2WaySQL のコメント構文は使えない）
 - `param` にはエンティティ・任意の JavaBean・`Map<String, Object>` のいずれも渡せる。SQL内のプレースホルダ名とプロパティ名/キー名を一致させる
+
+### `getSingleResult`/`findEntity` の戻り値仕様（JPA と異なる）
+
+単一結果を返す API（`getSingleResult`/`getSingleResultBySql`/`findEntity`、および `AbstractDAO#find`）は、すべて内部で同一の実装に集約される。JPA の `getSingleResult` とは挙動が異なる。
+
+| 状況 | 挙動 |
+|------|------|
+| 0件 | 例外にならず `null` を返す |
+| 2件以上 | 例外にならず ResultSet の先頭1行を返す（残りは捨てられる） |
+
+- `ResultSet#next()` を1回しか呼ばないため、**件数の一意性は保証されない**。一意性が必要なクエリでは、主キー／一意制約で担保するか、`getResultList` で取得して件数を検証する
+- `ORDER BY` の無いクエリが複数件ヒットした場合、どの1件が返るかは DB の返却順に依存する
+- **戻り値は必ず `null` チェックする**
+
+### `getCount` に渡す SQLファイルの制約
+
+`getCount` は渡された SQL を Dialect の `getCountSql` で `SELECT COUNT(*) FROM (<渡した SQL>)` のようにサブクエリへ丸ごと包む。
+
+- **`SELECT COUNT(*)` を書いてはいけない。** `SELECT COUNT(*) FROM (SELECT COUNT(*) ...)` となり、**例外を出さずに常に `1` を返す**。リスト取得と同じ形の SELECT を渡すこと
+- **`ORDER BY` を書いてはいけない。** サブクエリの内側に入るため、SQLServer では構文エラーになる
 
 ## `IntramartSqlManager`（intra-mart向け拡張、DAOが実際に使うクラス）
 
@@ -303,6 +325,12 @@ public @interface Priority {
 | `/*IF condition*/.../*END*/` | 条件分岐 | 同一 |
 | `/*BEGIN*/.../*END*/` | オプショナルブロック | 同一 |
 | `/*param*/'dummy'` | バインドプレースホルダ | 同一 |
-| `/*FOR item : list*/.../*END*/` | ループ（IN句の動的生成等） | **im_mirage のみ対応。JSSP（スクリプト開発モデル）では非対応** |
+| `IN /*param*/('dummy')` | `List`/配列を `(?, ?, ?)` へ展開（IN句の動的生成） | 同一 |
+| `/*$param*/dummy` | 値の直接埋め込み。バインドしない | 同一 |
+| `/*FOR item in list*/.../*END*/` | ループ | **im_mirage と LogicDesigner で使用可。JSSP（スクリプト開発モデル）では非対応** |
 
-- `/*FOR*/` ブロック内では、ループ変数名に `_has_next`（例: `orderId_has_next`）を付けた変数で「次の要素があるか」を判定でき、カンマ区切りの動的生成に使える
+- **`/*FOR*/` の区切り子は、前後を半角スペースで挟んだ `in` または `IN`。** 区切りが一致しない場合は `TwoWaySQLException: For expression is invalid.` になる
+- **`/*FOR*/` ブロック内で参照できるのは、ループ変数名に束ねられた要素1つだけ。** IN句の動的生成には `/*FOR*/` ではなく `IN /*param*/('dummy')` を使う
+- **`IN /*param*/('dummy')` は、`null` と空リストのどちらでもバインド部分ごと出力されず、`IN` が裸で残って SQL が壊れる。** `/*IF list != null*/` だけでは空リストを止められないため、`/*IF list != null && list.size() > 0*/` のように両方を止めるガードで囲む（OGNL は `&&` を短絡評価するため、`null` でも `size()` は評価されず NPE にならない）
+- **`/*$param*/dummy` は値をバインドせず、SQL 本文へそのまま連結する。動的なテーブル名・カラム名・ソート順にのみ使用し、値は必ずホワイトリスト検証する**（`.agents/requirements/jssp-2way-sql/AGENTS.md` と同じ扱い）。パーサが拒否するのは値に `;` が含まれる場合のみで、`OR 1=1 --` や `UNION SELECT ...` はそのまま SQL に入る。値をパラメータとして渡す場合は `/*param*/'dummy'` を使う
+- **`/*$param*/` が辿るプロパティのドットは1段まで。** `/*$a.b.c*/` は `a.b` までを評価し、`.c` 以降は無視して `a.b` の文字列表現をそのまま埋め込む（例外にならない）

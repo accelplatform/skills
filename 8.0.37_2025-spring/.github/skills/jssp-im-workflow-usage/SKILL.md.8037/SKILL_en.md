@@ -161,7 +161,7 @@ In `import-<key>-config-1.xml`, the `<create-file>` / `<insert-file>` references
 Split DML into `{feature}_sample-dml_postgre.sql` etc. only when dialect-specific syntax is required (e.g., PostgreSQL `ON CONFLICT`, Oracle `MERGE`).
 
 - Match table/column names with the SQL in action processing
-- **Follow the type mapping table in `.github/skills/jssp-page-generator/reference/ddl-type-mapping.md` for column types** (never write type names from memory or guesswork)
+- **Follow `.github/instructions/database-ddl.instructions.md` for table/column naming conventions, types, and audit trail columns** (never write type names from memory or guesswork)
 - Separate DDL files by DB product (type names and default value syntax differ)
 - Write sample DML as standard SQL INSERT statements usable across all 3 products
 - Insert 3–5 sample records for master tables (supplier masters, etc.)

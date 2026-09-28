@@ -5,7 +5,7 @@
 本代码库收录了用于在 intra-mart Accel Platform 上创建以下资源的技能集。
 * 使用 JSSP（脚本开发模型）的画面・各种插件的源代码
 * 使用 Java（JavaEE 开发模型）的各种插件（不含画面）的源代码
-* IM-LogicDesigner / IM-Workflow 相关资源
+* IM-LogicDesigner / IM-Workflow / IM-BPM 相关资源
 
 为降低编码代理（Coding Agent）的 Token 消耗，建议根据下方的"技能反查"，仅取出所需的技能集进行使用。
 
@@ -24,6 +24,13 @@
 - 想在业务画面中嵌入 IM-通用主数据的检索对话框
   - ⇒ `jssp-im-master-usage`
     - 嵌入用户・公司・组织・职位・公共组・私有组・角色的检索功能
+
+### 想要使用服务端缓存
+
+- 想在 JSSP（脚本开发模型）的功能容器中，通过缓存检索结果或计算成本较高的处理结果来提升性能
+  - ⇒ `jssp-im-cache-usage`
+    - 提供 SSJS `Cache` 类（`get`/`put`/`remove`/`removeAll`）的基本模式、缓存配置文件（`WEB-INF/conf/im-ehcache-config/*.xml`）的创建、缓存键设计
+    - 若要用 Java（JavaEE 开发模型）实现同等处理，应使用 `java-im-cache-usage`
 
 ### 想要创建面向外部系统的 REST-API
 
@@ -59,6 +66,15 @@
     - 生成继承/实现 `ActionProcessEventListener` 等平台抽象类・监听器接口的 Java 类
     - 画面（申请/审批/确认）不在范围内。画面目前使用 `jssp-im-workflow-usage` 的 JSSP 实现
 
+### 想要通过 IM-Propagation 实现模块间数据联动
+
+- 想要在 Java（JavaEE 开发模型）中通过 `PropagationManager` 实现数据收发
+  - ⇒ `java-im-propagation-generator`
+    - 提供发送方（数据模型・`GenericModel`・`Encoder`・发送配置文件）与接收方（`Decoder`・`Procedure`・接收配置文件）双方的实现模式
+    - 包含 `AbstractProcedure`（搭载于数据库事务）与 `AbstractSessionableProcedure`（自定义的两阶段提交式生命周期）的选用方法
+    - 同时提供在自定义模块中接收 intra-mart 标准变更通知（租户・账户・角色・IM-Authz・菜单・日历・作业网・Salesforce 联动・Wiki 等）的监听器实现模式，以及向 IM-Box（应用通知・关注）发送数据的模式
+    - 尚未提供面向 JSSP（脚本开发模型）的同等 API
+
 ### 想要创建 IM-LogicDesigner 资源
 
 - 想要创建逻辑流（低代码）的定义文件
@@ -71,6 +87,26 @@
   - ⇒ `jssp-im-logic-usage`（+ `jssp-page-generator`）
     - 获取并解析 swagger spec（`<BASE-URL>/logic/all-api-docs`），确定请求/响应结构后生成 `fetch` 调用代码
     - 权限不足（401/403）时提示认可设置的引导信息
+- 想用 Java（JavaEE 开发模型）实现自定义任务（流程要素）
+  - ⇒ `java-im-logic-generator`
+    - 提供分类类（`ElementCategory`）、流程要素类（继承 `Task` + `@LogicFlowElement`）、元数据类（`FlowElementMetadata`）、扩展包注册（`ElementScanPackageFactory` + `META-INF/services`）的实现模式
+    - 映射函数、EL函数、流程触发器不在范围内
+
+### 想要创建 IM-BPM 相关资源
+
+- 想从 BPMN(XML) 创建规格书
+  - ⇒ `bpm-docs-generator`
+    - 从 BPMN 的流程定义中提取流程概要、流程说明、任务详情、条件分支逻辑，生成 Markdown 格式的规格书
+    - 生成的规格书也用作生成 JSSP 时的输入提示
+- 想将规格书转换为可导入 intra-mart Knowledge 的格式
+  - ⇒ `bpm-docs-generator`
+    - 将规格书转换为可导入 Knowledge 的 zip 文件
+- 想根据 BPM 规格书创建在 IM-BPM for Accel Platform 上运行的 JSSP 资源
+  - ⇒ `bpm-scripts-generator`（+ `jssp-page-generator` / `jssp-imds-theme`）
+    - 基于 `bpm-docs-generator` 创建的规格书，生成包含画面联动等 IM-BPM 专有元素的 JSSP 资源
+- 想将规格书・生成脚本的内容反映到 BPMN-XML
+  - ⇒ `bpm-xml-reflector`
+    - 将 `bpm-docs-generator` 创建的规格书、`bpm-scripts-generator` 生成的脚本内容反映到 BPMN-XML
 
 ### 想要进行多语言化
 
@@ -79,6 +115,11 @@
     - 创建消息属性文件（properties）
     - 改写为 `<imart type="message">` 标签・MessageManager API
     - 支持日语（ja）・英语（en）・简体中文（zh_CN）
+- 想在 Java（JavaEE 开发模型）中使用 MessageManager 实现消息属性获取处理
+  - ⇒ `java-im-message-usage`
+    - 提供 `jp.co.intra_mart.foundation.security.message.MessageManager` 的用户/租户/系统区域设置解析顺序、占位符替换、消息存在性判断（`hasMessage`）的实现模式
+    - 包含消息属性文件（`.properties`）的配置与键命名规约（与 JSSP 侧 `jssp-localize-support` 共通）
+    - JSSP（脚本开发模型）中的同等实现请使用 `jssp-localize-support`
 
 ### 想要进行测试・质量检查
 
@@ -115,6 +156,11 @@
   - ⇒ `java-im-lock-usage`
     - 提供通过 `try`/`finally` 释放的普通锁（`lock()`/`tryLock()`），与在响应返回时自动释放的请求作用域锁（`lockRequestScope()`/`tryLockRequestScope()`）的使用区分
     - 对于在方法内闭环完成的处理，默认引导使用普通锁实现分布式环境下基于数据库的互斥控制
+- 想用 Java（JavaEE 开发模型）通过 CacheManager/Cache API 实现以租户为单位的缓存处理
+  - ⇒ `java-im-cache-usage`
+    - 提供通过 `CacheManagerFactory.getCacheManager()` 获取缓存管理器、`Cache<K, V>` 的 CRUD（`get`/`put`/`remove`/`removeAll` 等）、缓存配置文件（`WEB-INF/conf/im-ehcache-config/*.xml`）的创建
+    - 包含缓存键・值的 `Serializable` 约束、缓存未命中时的重新加载模式
+    - 若要在 JSSP（脚本开发模型）中实现同等处理，应使用 `jssp-im-cache-usage`
 - 想用 Java（JavaEE 开发模型）通过 AccountInfoManager 实现账户信息的获取・更新处理
   - ⇒ `java-im-account-usage`
     - 提供登录设置（区域设置・时区・日历・主题・每周起始日・日期时间格式）、账户锁定・登录失败次数、账户属性、密码核对（`AccountPasswordAdapter`）的实现模式
@@ -136,10 +182,53 @@
     - 提供仅通过注解（`@WebAPIMaker`/`@Path`/`@GET` 等）实现 REST API 的工厂・服务类生成模式
     - 支持认证方式（`@IMAuthentication`/`@BasicAuthentication`/`@OAuth`）、认可联动（`@Authz`）、安全令牌验证（`@Secured`）、响应控制
     - 认可资源本身的注册请使用 `java-im-authz-usage`；JSSP 中的 REST API 请使用 `jssp-page-generator`/`jssp-im-oauth-generator`
+- 想在 Java（JavaEE 开发模型）中不依赖 Web API Maker 实现 SecureToken（CSRF 防护）的签发与验证
+  - ⇒ `java-im-secure-token-usage`
+    - 提供通过 `SecureTokenManager` 进行令牌签发（`createToken`）・验证（`verify`）、一次性令牌与可重用令牌的选择、通过参数绑定令牌进行篡改检测、通过 `HTTPContextManager` 获取 `HttpServletRequest` 的实现模式
+    - Web API Maker 端点上的声明式验证（`@Secured`）请使用 `java-im-web-api-maker-usage`
+- 想用 Java（JavaEE 开发模型）在 intra-mart 上构建 MCP（Model Context Protocol）服务器
+  - ⇒ `java-im-mcp-generator`
+    - 提供基于 `im_copilot_mcp` 模块的 `@MCPServer`/`@Tool` 注解实现 Streamable HTTP MCP 服务器的实现模式
+    - 包含通过 `SchemaProperties` 定义工具参数、通过 `McpScanPackageFactory`（推荐）/`META-INF/im_services/annotation_classes` 向平台注册的模式
+    - 普通 REST API（非面向 AI 智能体）请使用 `java-im-web-api-maker-usage`
+- 想用 Java（JavaEE 开发模型）构建接收提示词、进行处理并返回响应的 AI 智能体
+  - ⇒ `java-im-copilot-agent-generator`
+    - 提供基于 `im_copilot_agent` 模块的 `Agent`/`AgentBuilder` 构建智能体、通过 `UserDefinedTool` 实现自定义工具、集成 `Knowledge`（知识检索）・`SkillEntry`（Markdown 技能）、Structured Output（类型化输出）、通过 `AgentExecutionMiddleware` 介入执行流程的实现模式
+    - 包含与 IM-Copilot 聊天界面对接时的 `AbstractCopilotAssistant`/`@Assistant` 对接模式（`Agent`/`AgentBuilder` 本身是不依赖 Assistant 框架的独立 Java API）
+    - MCP 服务器的实现请使用 `java-im-mcp-generator`，普通 REST API 请使用 `java-im-web-api-maker-usage`
+    - 直接使用 `VectorStore`/`ActionFactory` 的低层级 RAG 请使用 `java-im-copilot-rag-generator`，直接使用 `ChatAction`+`ToolConfig` 的低层级 Tool Calling 请使用 `java-im-copilot-toolcalling-generator`
+- 想用 Java（JavaEE 开发模型）直接使用 `VectorStore`/`ActionFactory` 实现 RAG（检索增强生成）
+  - ⇒ `java-im-copilot-rag-generator`
+    - 提供通过 `VectorStoreBuilder`/`VectorStore` 构建・注册向量存储、以及混合检索/相似度检索/关键词检索，通过 `ActionFactory`/`ChatAction`/`EmbeddingsAction` 调用聊天・嵌入的实现模式
+    - 包含文档标准实现 `StandardRegistrationDocument`、通过 `TextSplitter`（`splitText` 方法）进行分块
+    - 通过 Agent 框架实现的高层级 RAG（`Knowledge`/`RegisteredKnowledge`）请使用 `java-im-copilot-agent-generator`，Tool Calling 请使用 `java-im-copilot-toolcalling-generator`
+- 想用 Java（JavaEE 开发模型）直接使用 `ChatAction`+`ToolConfig` 实现 Tool Calling（函数调用）
+  - ⇒ `java-im-copilot-toolcalling-generator`
+    - 提供不依赖具体供应商（OpenAI・Azure OpenAI Service・Amazon Bedrock 通用）的 Tool Calling 实现模式，基于 `ToolConfig`/`ToolDefinition`/`ToolChoice`/`ToolCall`（同时支持非流式与流式）
+    - 包含通过 `JsonSchemaValidator`/`ToolJsonHelper` 进行工具参数校验・反序列化
+    - 通过 Agent 框架实现的高层级 Tool Calling（`UserDefinedTool`）请使用 `java-im-copilot-agent-generator`，RAG 请使用 `java-im-copilot-rag-generator`
+- 想用 Java（JavaEE 开发模型）通过 UserManager/CompanyManager/PublicGroupManager/PrivateGroupManager/CompanyGroupManager/CorporationGroupManager/CorporationManager/CustomerManager/ItemCategoryManager/ItemManager/CurrencyManager 构建 IM-通用主数据（用户・公司・组织・职位・公共组・私有组・公司组・法人组・法人・客户・品目类别・品目・货币）的 CRUD・检索处理
+  - ⇒ `java-im-master-usage`
+    - 提供用户信息（`User`、`UserManager`）、公司（`Company`）・组织/组织集合（`Department`/`DepartmentSet`）・职位（`CompanyPost`）・用户的组织归属（`UserAttach`，均通过 `CompanyManager`）的获取・检索・新建・更新・删除，以及组织层级结构（树）获取的实现模式
+    - 包含 `Company` 不存在专用新建方法这一事实、`set*` 系方法根据期间代码（`termCd`）自动判定新建/更新、多语言信息注册步骤（`setDefaultLocale`/`createLocaleElement`/`putLocaleElement`）
+    - 同时提供公共组・私有组・公司组・法人组各自专用管理类的获取・检索・新建・更新・删除，以及公共组的分类（类别）・角色・层级结构（树）获取的实现模式
+    - 包含群组四个类之间 API 规模・功能范围的差异（仅公共组具有分类・角色・树功能，私有组为最小构成，法人组额外持有公司代码等）
+    - 同时提供法人（`CorporationManager`，与法人组为不同的类）・客户（`CustomerManager`）・品目类别（`ItemCategoryManager`，具有层级树）・品目（`ItemManager`）・货币（`CurrencyManager`；`Currency`/`CurrencyConversion`/`CurrencyPrecision`/`CurrencyRate`）的获取・检索・新建・更新・删除的实现模式。包含 `CustomerManager`/`ItemManager` 的方法名为不含实体名称的通用名称、且第一参数为 `companyCd` 这一点
+    - 同时提供用户分类・公共组分类・组织分类（`UserCtg`/`PublicGroupCtg`/`DepartmentCtg` 等，均为对应管理类内置的功能）的获取・检索・新建・更新・删除的实现模式
+    - 用户头像图片请使用 `java-im-profile-usage`，角色定义・角色分配请使用 `java-im-role-usage`/`java-im-account-usage`，认可请使用 `java-im-authz-usage`
 - 想用 Java（JavaEE 开发模型）通过 im_mirage 构建 DB 访问处理
   - ⇒ `java-im-mirage-usage`
     - 提供实体类（`@Table`/`@Column`/`@PrimaryKey`）、DAO 类（继承 `AbstractDAO`・通过 `DAOFactory` 获取）、2WaySQL 的 SQL 文件、通过 `SessionTemplate` 进行事务管理的实现模式
     - JSSP 中的 DB 访问请使用 `jssp-page-generator`（`TenantDatabase`/`SharedDatabase` API）。两者开发模型不同，实现完全独立
+- 想用 Java（JavaEE 开发模型）通过 Contexts.get() 获取登录用户的信息（账户、组织、客户端、任务执行参数）
+  - ⇒ `java-im-contexts-usage`
+    - 提供 `AccountContext`（用户代码、租户ID、区域设置、时区、角色ID、认证状态）、`UserContext`（用户资料、所属部门、公司、职位、公共组、用户分类）、`ClientContext`（客户端类型）、`ExternalUserContext`（外部用户判定）、`JobSchedulerContext`（任务执行参数）的获取模式，以及通过 `ContextStatus` 进行的认证/管理员判定
+    - JSSP 中的同等实现请使用 SSJS 版 Context 对象（`d.ts/platform/object/`、`d.ts/platform/job-scheduler/`）
+- 想在 Java（JavaEE 开发模型）中使用 ConfigurationLoader，新建自定义 XML 配置文件（JAXB 配置类・XSD 模式・XML 实体）的读取・保存处理
+  - ⇒ `java-im-configuration-generator`
+    - 提供 `ConfigurationLoader.load`/`loadAll`/`save`/`clearCache` 的选用方法、通过 `Instance`（`SINGLETON`/`PROTOTYPE`）进行的缓存控制、配置文件的放置位置（SystemStorage 的 `conf/`・`WEB-INF/conf`・类路径）与类名到文件名的转换规则
+    - 包含 `check-jaxb-format-plugin` 所要求的 `ObjectFactory`（`factoryClass`/`factoryMethod`，必须为 `static`）实现模式
+    - JSSP（脚本开发模型）方向尚未提供对应的 SSJS 版 API
 
 ### 想按照设计规约在 Java（JavaEE 开发模型）中实现
 

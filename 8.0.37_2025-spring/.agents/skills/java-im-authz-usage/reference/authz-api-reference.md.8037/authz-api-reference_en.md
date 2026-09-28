@@ -52,13 +52,27 @@ public interface Resource extends Serializable {
     String getResourceId();
     /** Resource type */
     ResourceType<?> getType();
-    /** Resource URI (RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT format. Example: service://authz/settings/basic) */
+    /** Resource URI (RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT format. Example: flat-crud://myapp/orders/ORD001) */
     String getUri();
 }
 ```
 
 - A resource's key is its **resource URI**. It does not hold a name or description; the paired `ResourceGroup` holds those
 - Registering a resource via `ResourceManager` creates one paired `ResourceGroup`
+
+### Standard Resource Types and Actions
+
+A resource type is the element that determines "what actions can be defined on that resource." **The part of the resource URI before the first `:` is the resource type ID**, and only resource types already registered with the authorization mechanism can be used (with an unregistered one, `registerAsResource` raises `InvalidResourceUriException`).
+
+| Resource type ID | Resource URI form | Defined actions | Providing module | Purpose |
+|---|---|---|---|---|
+| `flat-crud` | `flat-crud://<path>` | `c` / `r` / `u` / `d` | `im_authz_resourcetypes_standard` | **The default choice for making business data an authorization target** |
+| `service` | Resolved from the routing table | **`execute` only** | `im_authz_impl_router` | Access control per screen/URL. **Cannot be used for a resource that represents a single business data record** |
+
+Each feature module (Portal, IM-Workflow, etc.) also provides resource types dedicated to its own feature, but do not use those for an application's own resources.
+
+- **Only the action names defined by the resource type can be used.** Custom names such as `view` / `edit` / `approve` raise a `NoSuchActionException`. Map business operation names by whether the operation reads or writes (for example, reference → `r`; a state change such as editing or approval → `u`)
+- If you need your own action scheme, implement `ResourceType<T>` and register it in `WEB-INF/conf/authz-resource-type-config` (the implementation steps are out of scope for this skill; first consider whether a standard resource type can express what you need)
 
 ### `Subject`
 
@@ -205,6 +219,11 @@ package jp.co.intra_mart.foundation.authz.services.admin;
 
 public interface SubjectManager {
 
+    /** Identifies the access subject from a subject type ID and key values, then registers (numbers) the subject. */
+    <T> Subject registerAsSubject(String subjectTypeId, Object... keys);
+    /** Registers (numbers) a subject from the model that represents the subject itself. */
+    <T> Subject registerAsSubject(T model);
+
     /** Registers a subject group from an Expression (subject expression). */
     SubjectGroup registerSubjectGroup(Expression e, I18nValue<String> displayName);
     SubjectGroup registerSubjectGroup(Expression e, I18nValue<String> displayName, I18nValue<String> description);
@@ -231,8 +250,25 @@ public interface SubjectManager {
 }
 ```
 
-- There is no API for registering a subject **on its own**. A condition expression built with `Expression` (described below) must always be registered as a `SubjectGroup`
+- **A `Subject` is numbered by `registerAsSubject`, but on its own it does not become the target of a policy.** Always convert it into an `Expression` (described below) with `SubjectExpression.S(subject)` and register it as a `SubjectGroup`
+- Even when a subject group with the same expression already exists, `registerSubjectGroup` **returns that existing instance** (it never returns `null`). There is no need to check for existence in advance with `getSubjectGroupByExpression`
 - `getAuthenticatedUsers()` / `getGuestSubjectGroup()` are built-in groups commonly used when setting a policy for "all users" or "unauthenticated users"
+
+### Standard Subject Types
+
+The subject type IDs to pass to `registerAsSubject(subjectTypeId, keys)`. The number and meaning of the key values differ for each subject type.
+
+| Target | Constant | Value |
+|---|---|---|
+| Role | `ImRole.B_M_ROLE` (`jp.co.intra_mart.foundation.authz.subjecttype.im_master.ImRole`) | `b_m_role` |
+| User | `ImUser.ID` | `imm_user` |
+| Organization | `ImDepartment.ID` | `imm_department` |
+| Public group | `ImPublicGroup.ID` | `imm_public_grp` |
+| Public group role | `ImPublicGroupRole.ID` | `imm_public_grp_role` |
+| Company post | `ImCompanyPost.ID` | `imm_company_post` |
+
+- Only the role is provided by the `im_authz_subjecttypes_standard` module; the rest are provided by the `im_master_subjecttypes` module (the `jp.co.intra_mart.foundation.master.authz.subjecttype` package)
+- **Note that the constant name is `B_M_ROLE` rather than `ID` for the role alone**
 
 ## `Expression` / `SubjectExpression` (Subject Expressions)
 

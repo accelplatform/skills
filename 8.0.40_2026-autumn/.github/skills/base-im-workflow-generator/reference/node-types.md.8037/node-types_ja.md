@@ -51,8 +51,7 @@
 
 ## 権限プラグイン
 
-権限プラグインの拡張ポイント・サフィックス・targetType・parameter 形式・サンプルデータの詳細は
-`reference/authority-plugins.md` を参照。
+権限プラグインの拡張ポイント・サフィックス・targetType・parameter 形式・サンプルデータの詳細は `reference/authority-plugins.md` を参照。
 
 ### よく使うパターン
 

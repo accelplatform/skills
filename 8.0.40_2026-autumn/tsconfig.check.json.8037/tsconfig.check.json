@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "allowJs": true,
+    "noEmit": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "target": "ES5",
+    "lib": ["ES5"],
+    "skipLibCheck": false,
+    "moduleResolution": "node",
+    "module": "none",
+    "typeRoots": [],
+    "ignoreDeprecations": "6.0"
+  },
+  "include": [
+    "d.ts/**/*.d.ts",
+    "src/main/jssp/src/**/*.js"
+  ]
+}

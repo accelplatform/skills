@@ -87,7 +87,7 @@ If there is no explicit mention of "in Java" or "in the JavaEE development model
 
 ## Post-Generation Verification
 
-A dedicated verification script equivalent to the JSSP version (`validate-jssp-code.js`) is not yet available. Verify the following manually.
+Rather than an automated validation script (such as the JSSP version's `validate-jssp-code.js`), verify the following manually.
 
 1. Whether places using `open()`/`create()`/`append()` are closed with `try-with-resources`
 2. Whether the choice of `PublicStorage` / `SessionScopeStorage` / `SystemStorage` matches the purpose (persistent/temporary, public/internal)

@@ -40,20 +40,30 @@ public class Standard{ServiceName}Service implements {ServiceName}Service {
 
     @Override
     public {ResultType} process{BusinessOperation}({InputType} input) throws {ServiceName}ServiceException {
-        try {
-            validateInput(input);
-            return SessionTemplate.execute(s -> {
-                {DomainModel} entity = {entityName}Repository.findBy{BusinessKey}(input.get{BusinessKey}());
-                if (entity == null) {
-                    throw new {ServiceName}ServiceException("エンティティが見つかりません: {BusinessKey}=" + input.get{BusinessKey}());
-                }
-                {DomainModel} processedEntity = applyBusinessRules(entity, input);
+        validateInput(input);
+        // SessionCallback<T, E> 的 E 只能推断为单一的受检异常类型，
+        // 因此 lambda 内产生的受检异常应在发生的当场（每次仓储调用之后）
+        // 立即转换为 {ServiceName}ServiceException 再抛出。这样从 lambda 传播出去的
+        // 受检异常就统一为 {ServiceName}ServiceException 一种类型，
+        // SessionTemplate.execute() 也就不再需要用 try/catch 包裹。
+        return SessionTemplate.execute(s -> {
+            final {DomainModel} entity;
+            try {
+                entity = {entityName}Repository.findBy{BusinessKey}(input.get{BusinessKey}());
+            } catch (RepositoryException e) {
+                throw new {ServiceName}ServiceException("检索失败: " + e.getMessage(), e);
+            }
+            if (entity == null) {
+                throw new {ServiceName}ServiceException("未找到对应的实体: {BusinessKey}=" + input.get{BusinessKey}());
+            }
+            {DomainModel} processedEntity = applyBusinessRules(entity, input);
+            try {
                 {entityName}Repository.save(processedEntity);
-                return buildResult(processedEntity);
-            });
-        } catch (RepositoryException e) {
-            throw new {ServiceName}ServiceException("処理に失敗しました: " + e.getMessage(), e);
-        }
+            } catch (RepositoryException e) {
+                throw new {ServiceName}ServiceException("保存失败: " + e.getMessage(), e);
+            }
+            return buildResult(processedEntity);
+        });
     }
 }
 ```
@@ -127,7 +137,7 @@ public {ResultType} process{BusinessOperation}({InputType} input) throws {Servic
             return buildResult(processed);
         });
     } catch (RepositoryException e) {
-        throw new {ServiceName}ServiceException("処理に失敗しました: " + e.getMessage(), e);
+        throw new {ServiceName}ServiceException("处理失败: " + e.getMessage(), e);
     }
 }
 
@@ -139,7 +149,7 @@ public void save({DomainModel} model) throws RepositoryException {
         final {EntityName}DAO dao = DAOFactory.getTenantDatabaseDAO({EntityName}DAO.class);
         dao.insert(entity);
     } catch (SQLRuntimeException e) {
-        throw new RepositoryException("{EntityName}の保存に失敗しました", e);
+        throw new RepositoryException("保存{EntityName}失败", e);
     }
 }
 ```
@@ -160,7 +170,7 @@ public void save({DomainModel} model) throws RepositoryException {
             return null;
         });
     } catch (SQLRuntimeException e) {
-        throw new RepositoryException("{EntityName}の保存に失敗しました", e);
+        throw new RepositoryException("保存{EntityName}失败", e);
     }
 }
 ```
@@ -175,14 +185,14 @@ public void save({DomainModel} model) throws RepositoryException {
 ```java
 private void validateInput({InputType} input) throws {ServiceName}ServiceException {
     if (input == null) {
-        throw new {ServiceName}ServiceException("入力が null です");
+        throw new {ServiceName}ServiceException("输入不能为 null");
     }
     if (input.get{BusinessKey}() == null || input.get{BusinessKey}().isEmpty()) {
-        throw new {ServiceName}ServiceException("{BusinessKey} は必須です");
+        throw new {ServiceName}ServiceException("{BusinessKey} 为必填项");
     }
     // 业务专属校验
     if (input.getAmount() != null && input.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-        throw new {ServiceName}ServiceException("金額は0以上である必要があります: " + input.getAmount());
+        throw new {ServiceName}ServiceException("金额必须大于等于0: " + input.getAmount());
     }
 }
 ```
@@ -198,7 +208,7 @@ private {DomainModel} applyBusinessRules({DomainModel} entity, {InputType} input
     // 校验状态
     if (!entity.isEditable()) {
         throw new {ServiceName}ServiceException(
-                "編集不可の状態です: " + entity.getStatus());
+                "当前状态不可编辑: " + entity.getStatus());
     }
     // 更新领域模型
     entity.updateFrom(input);
@@ -231,7 +241,7 @@ public class {ServiceName}RuntimeException extends RuntimeException {
 ### 异常转换规则
 - **RepositoryException** → 包装为 `{ServiceName}ServiceException`（并保留 cause）
 - **RuntimeException（非预期）** → 原样抛出（不捕获）
-- 异常消息应使用日语编写，并包含排查问题所需的变量值
+- 异常消息应使用与本文档一致的语言（此处为中文）编写，并包含排查问题所需的变量值
 
 ## 主要要求
 

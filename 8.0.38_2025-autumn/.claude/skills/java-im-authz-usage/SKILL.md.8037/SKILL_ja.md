@@ -1,6 +1,6 @@
 ---
 name: java-im-authz-usage
-description: intra-mart 固有の認可（Authorization）API（`jp.co.intra_mart.foundation.authz.*`、`im_authz_base` モジュール）を Java（JavaEE 開発モデル）で使用するためのスキルセット。認可リソース・リソースグループ、サブジェクト・サブジェクトグループ（Expression による条件式構成）、ポリシーの新規登録・更新・削除、AuthorizationClient による権限確認（authorize）の実装パターンを提供する。Java で認可機構を使いたい、Java で AuthorizationClient / ResourceManager / SubjectManager / PolicyManager を使いたい、JavaEE 開発モデルでリソース・サブジェクト・ポリシーを登録したい、権限チェック（authorize）をJavaで実装したい、と言及されたときに使用。ロール定義自体のCRUD（RoleInfoManager）は `java-im-role-usage`、特定ユーザへのロール割当は `java-im-account-usage` を使うこと。JSSP（スクリプト開発モデル）向けの同等API（d.ts）は2026年時点で提供されていない。
+description: intra-mart 固有の認可（Authorization）API（`jp.co.intra_mart.foundation.authz.*`、`im_authz_base` モジュール）を Java（JavaEE 開発モデル）で使用するためのスキルセット。認可リソース・リソースグループ、サブジェクト・サブジェクトグループ（Expression による条件式構成）、ポリシーの新規登録・更新・削除、AuthorizationClient による権限確認（authorize）の実装パターンを提供する。Java で認可機構を使いたい、Java で AuthorizationClient / ResourceManager / SubjectManager / PolicyManager を使いたい、JavaEE 開発モデルでリソース・サブジェクト・ポリシーを登録したい、権限チェック（authorize）をJavaで実装したい、と言及されたときに使用。ロール定義自体のCRUD（RoleInfoManager）は `java-im-role-usage`、特定ユーザへのロール割当は `java-im-account-usage` を使うこと。JSSP（スクリプト開発モデル）向けの同等API（d.ts）は提供されていない。
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -35,7 +35,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの認
 
 「ロールを新規作成したい」「ユーザにロールを割り当てたい」という依頼が来た場合、認可（Authz）ではなくロール管理の話であるため、それぞれ `java-im-role-usage` / `java-im-account-usage` に誘導すること。ただし認可の**サブジェクト**として「ロールに所属するユーザ群」を条件に使うこと自体はあり得る（その場合の `Subject` 実装は `im_master_subjecttypes` 等の拡張モジュールが提供するもので、本スキルの対象外）。
 
-**このスキルが扱うのは Java ソースファイル（`.java`）のみ。** JSSP（`.js`）向けの同等 API（d.ts）は 2026 年時点で `d.ts/` 配下に存在しない。JSSP からの認可利用を求められた場合はその旨をユーザに伝え、対応方針を確認すること。
+**このスキルが扱うのは Java ソースファイル（`.java`）のみ。** JSSP（`.js`）向けの同等 API（d.ts）は `d.ts/` 配下に存在しない。JSSP からの認可利用を求められた場合はその旨をユーザに伝え、対応方針を確認すること。
 
 ## 参照すべき規約
 
@@ -45,7 +45,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの認
 | `.claude/rules/java-code-style.md` | 🟢 **必読** — `final` ローカル変数、文字列リテラル等 |
 | `.claude/rules/java-javadoc.md` | 🟢 **必読** — クラス/メソッド JavaDoc |
 
-`.claude/rules` 配下には例外処理を定めた Java 向け専用規約は存在しない（2026年時点）。`SubjectManager#removeSubject`/`removeSubjectGroup` は `SubjectManagingException`（チェック例外）をスローするが、`ResourceManager`/`PolicyManager`/`AuthorizationClient` の主要な CRUD・権限確認メソッドは非チェック例外中心（`InvalidResourceUriException` 等一部を除く）である。例外の扱いは `reference/authz-api-reference.md` の各メソッド定義と `assets/authz-basic-usage.md` のパターンに従う。
+`.claude/rules` 配下には例外処理を定めた Java 向け専用規約は存在しない。`SubjectManager#removeSubject`/`removeSubjectGroup` は `SubjectManagingException`（チェック例外）をスローするが、`ResourceManager`/`PolicyManager`/`AuthorizationClient` の主要な CRUD・権限確認メソッドは非チェック例外中心（`InvalidResourceUriException` 等一部を除く）である。例外の扱いは `reference/authz-api-reference.md` の各メソッド定義と `assets/authz-basic-usage.md` のパターンに従う。
 
 `jssp-*` の規約はこのスキルの対象外（Java ファイルには適用しない）。
 
@@ -89,7 +89,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの認
 ## 実装手順
 
 1. ユーザの要件をヒアリング（リソース・サブジェクト・ポリシーの CRUD か、権限確認（authorize）の実装か。ロール定義・ロール割当が目的の場合は `java-im-role-usage`/`java-im-account-usage` に誘導）
-2. リソースURIの設計（`RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` 形式。アプリケーション名・コンポーネント名で階層を区切り、他アプリケーションと衝突しないようにする）を決定
+2. リソースURIの設計（`RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` 形式。アプリケーション名・コンポーネント名で階層を区切り、他アプリケーションと衝突しないようにする）を決定。**リソースタイプの選定と、業務上の操作名からアクション名へのマッピングは `reference/authz-api-reference.md`「標準リソースタイプとアクション」に従う**
 3. サブジェクトの条件を整理（単一の `Subject` か、`Expression.AND`/`OR`/`NOT` で組む複合条件か。組込みグループ（`getAuthenticatedUsers`/`getGuestSubjectGroup`）で足りるかも確認）
 4. `assets/authz-basic-usage.md` を参照して実装（メソッドのシグネチャは `reference/authz-api-reference.md` を必ず参照し、記憶や推測で書かない）
 5. 権限確認を実装する場合、リソースURIの組み立てロジックを登録処理と確認処理で共通化する（表記ゆれによる判定ミスを防ぐため）
@@ -97,6 +97,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの認
 
 ## 注意事項
 
+- **リソースURI の最初の `:` より前がリソースタイプID**であり、登録済みのものに限る。業務データには `flat-crud`（アクション `c`/`r`/`u`/`d`）を使う。`service` は URL 単位の認可専用でアクションは `execute` のみ。一覧は `reference/authz-api-reference.md`「標準リソースタイプとアクション」を参照
 - **Manager/Client インスタンスをテナントを跨いでフィールドにキャッシュしない。** `ResourceManager` の Javadoc に明記された制約で、使い回した場合に一部 API の実行が失敗することがある。呼び出しのたびに `*Factory.getInstance().getXxx()` で取得する
 - **サブジェクトは単体で登録する API が存在しない。** 必ず `SubjectExpression.S(subject)` → `Expression.AND`/`OR`/`NOT` → `SubjectManager#registerSubjectGroup(Expression, ...)` の順で `SubjectGroup` として登録する
 - **`Effect.BLOCK` はポリシーとして直接登録できない。** 認可判断の結果としてのみ現れる値であり、`setPolicy` に渡すと `IllegalSerializationException` が発生する。ポリシー登録には `PERMIT`/`DENY` のみを使う
@@ -108,17 +109,18 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの認
 
 ## 生成後の確認
 
-JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当）は現時点で未整備。以下を手動で確認する。
+自動検証スクリプト（JSSP 版の `validate-jssp-code.js` 相当）ではなく、以下の項目を手動で確認する。
 
 1. `AuthorizeResult` の判定を `.equals()` で行っているか（`==` 比較になっていないか）
 2. `getDeclaredPolicy()` の戻り値を使用する箇所すべてで null チェックを行っているか
 3. `setPolicy(...)` に渡すエフェクトが `PERMIT`/`DENY` のいずれかであり、`BLOCK` を直接登録していないか
 4. `ResourceManager`/`SubjectManager`/`PolicyManager`/`AuthorizationClient` のインスタンスを `static` フィールド等でテナントを跨いでキャッシュしていないか
 5. リソースURIの組み立てロジックが登録処理と確認処理で共通化されているか（表記ゆれの有無）
-6. `removeAllPolicies`・`removeResourceGroup`・`removePoliciesForResourceGroup`・`removePoliciesForSubjectGroup` 等の破壊的操作について、要件通りの範囲でのみ実行されるか
-7. `SubjectManagingException`（チェック例外）を握りつぶしていないか
-8. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
-9. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
+6. リソースURI の先頭が登録済みのリソースタイプID になっているか、かつ `setPolicy`/`authorize` の `action` がそのリソースタイプの定義済みアクション（`flat-crud` なら `c`/`r`/`u`/`d`）になっているか
+7. `removeAllPolicies`・`removeResourceGroup`・`removePoliciesForResourceGroup`・`removePoliciesForSubjectGroup` 等の破壊的操作について、要件通りの範囲でのみ実行されるか
+8. `SubjectManagingException`（チェック例外）を握りつぶしていないか
+9. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+10. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界
 
@@ -131,4 +133,4 @@ JSSP 版のような専用検証スクリプト（`validate-jssp-code.js` 相当
 | Java での一意 ID 生成（`Identifier`） | `java-im-identifier-usage` |
 | Java での排他制御（`NewLock`） | `java-im-lock-usage` |
 | Java でのワークフロー連携処理 | `java-im-workflow-usage` |
-| JSSP（スクリプト開発モデル）での認可利用 | 2026年時点で対応する d.ts / スキルは未提供（本スキルの対象外） |
+| JSSP（スクリプト開発モデル）での認可利用 | 対応する d.ts / スキルは未提供（本スキルの対象外） |

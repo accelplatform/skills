@@ -135,7 +135,7 @@ div.imds-container.pgstyle-layout-container    ... 根 div（因配置在 intra-
           name="sample-proprietor"
           value="sample-proprietor-1"
           checked="" />
-        <span>NTT DATA Intramart</span>
+        <span>INTRAMART</span>
       </label>
       <label class="imds-radio">
         <input

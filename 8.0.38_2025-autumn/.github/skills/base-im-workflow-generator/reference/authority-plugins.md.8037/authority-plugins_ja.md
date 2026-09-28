@@ -143,7 +143,7 @@ pluginId は `{拡張ポイントID}.{サフィックス}` の形式で構成さ
 
 **注意:** targetType は基本的にキャメルケース（`publicGroup`, `publicGroupRole`）。`user`, `department`, `post`, `role` は小文字のみのため見分けがつかないが、複合語は必ずキャメルケース。
 
-### 組み合わせ指定系（実機エクスポートデータで検証済み）
+### 組み合わせ指定系
 
 parameter と targetCode は同一値。セパレータはパイプ `|`（キャレット `^` ではない）。
 
@@ -170,7 +170,7 @@ parameter と targetCode は同一値。セパレータはパイプ `|`（キャ
 <targetCode type="string">sample_public^public_group_a|im_workflow_user</targetCode>
 ```
 
-### 動的指定系（実機エクスポートデータで検証済み・全37パターン）
+### 動的指定系（全37パターン）
 
 申請者または前処理者の所属組織等に基づいて承認者を動的に決定する。
 `targetType` / `targetCode` は空タグにする。
@@ -380,7 +380,7 @@ parameter と targetCode は同一値。セパレータはパイプ `|`（キャ
 
 ---
 
-## ロジックフロー指定系（IM-LogicDesigner 連携）（実機エクスポートデータで検証済み）
+## ロジックフロー指定系（IM-LogicDesigner 連携）
 
 IM-LogicDesigner のロジックフローを実行して処理対象者を動的に決定する方式。
 フロー内で DB 参照や外部 API 呼び出しなど複雑なロジックを実装できる。
@@ -395,15 +395,13 @@ IM-LogicDesigner のロジックフローを実行して処理対象者を動的
 - `version` : `null` = 最新版を使用。整数を指定すると固定バージョンを使用
 - `versionDecide` : `false` = バージョンを自動決定（最新）。`true` = `version` フィールドの値で固定
 
-### 使用可能な拡張ポイント（実機確認済み）
+### 使用可能な拡張ポイント
 
 | 拡張ポイント | pluginId |
 |------------|---------|
 | `node.approve`（承認権限・動的） | `...node.approve.logic_flow_user` |
 | `node.confirm`（確認権限） | `...node.confirm.logic_flow_user` |
 | `administrator.flow.handle`（参照者） | `...administrator.flow.handle.logic_flow_user` |
-
-> ⚠️ `node.apply`（申請権限）および `node.approve.static`（承認権限・静的）での `.logic_flow_user` は実機データ未確認。
 
 ### XML 例
 

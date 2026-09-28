@@ -1,6 +1,6 @@
 ---
 name: java-im-profile-usage
-description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有的用户头像图片管理 API（`jp.co.intra_mart.foundation.master.user.UserProfileImageManager`，IM-通用主数据 / im_master-main 模块）的技能集。提供头像图片的获取（Stream 形式・URL 形式，单个/多个）、删除、注册（数据 URL 形式／通过 Storage）的实现模式。当提及想在 Java 中获取/注册/删除用户的头像图片、想在 Java 中使用 UserProfileImageManager、想在 JavaEE 开发模型中处理 IM-通用主数据的头像图片时使用。用户基本信息（姓名・所属・分类区分等）本身的操作不在本技能范围内（本 API 专用于头像图片）。IM-LogicDesigner 的逻辑流程要素（`jp.co.intra_mart.foundation.logic.element.profile` 下）不在本技能范围内。截至2026年，尚未提供面向 JSSP（脚本开发模型）的同等 API。
+description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有的用户头像图片管理 API（`jp.co.intra_mart.foundation.master.user.UserProfileImageManager`，IM-通用主数据 / im_master-main 模块）的技能集。提供头像图片的获取（Stream 形式・URL 形式，单个/多个）、删除、注册（数据 URL 形式／通过 Storage）的实现模式。当提及想在 Java 中获取/注册/删除用户的头像图片、想在 Java 中使用 UserProfileImageManager、想在 JavaEE 开发模型中处理 IM-通用主数据的头像图片时使用。用户基本信息（姓名・所属・分类区分等）本身的操作不在本技能范围内（本 API 专用于头像图片）。姓名・用户分类请使用 `jp.co.intra_mart.foundation.master.user.UserManager`，所属请使用 `jp.co.intra_mart.foundation.master.company.CompanyManager`。IM-LogicDesigner 的逻辑流程要素（`jp.co.intra_mart.foundation.logic.element.profile` 下）不在本技能范围内。尚未提供面向 JSSP（脚本开发模型）的同等 API。
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -17,12 +17,12 @@ allowed-tools: Bash, Read, Write, Glob
 | 功能 | 是否属于本技能范围 |
 |------|-----------------|
 | 用户**头像图片**（Avatar 图片）的获取・注册・删除（`UserProfileImageManager`） | **属于本技能范围** |
-| 用户**基本信息**（姓名・所属・分类区分等）本身的注册・更新・检索 | **不在本技能范围内**。截至2026年，本次调查中未能确认面向 Java 的同等 API（相当于 SSJS 版 `IMMUserManager` 的对应物）。若有相关需求，应向用户确认实现方针 |
+| 用户**基本信息**（姓名・所属・分类区分等）本身的注册・更新・检索 | **不在本技能范围内**（本 API 专用于头像图片）。姓名・用户分类请使用 `jp.co.intra_mart.foundation.master.user.UserManager`，所属（公司・组织・公司职位）请使用 `jp.co.intra_mart.foundation.master.company.CompanyManager`（两者均属于 IM-通用主数据 / `im_master-main` 模块）。由于本技能不提供相关的实现模式，方法签名应通过 API 参考资料确认（不要凭记忆或推测编写） |
 | IM-LogicDesigner 的逻辑流程要素（`jp.co.intra_mart.foundation.logic.element.profile` 下的 `GetProfileTask` / `UpdateProfileTask` / `RegisterProfileTask` / `RemoveProfileTask` 等） | **不在本技能范围内**。这些是逻辑流程专用的内部实现类，并非设计为可作为通用 Java API 直接调用的对象 |
 
 若需求内容指向头像图片以外的事项（用户基本信息的 CRUD 等），应告知用户这不在本技能范围内。
 
-**本技能仅处理 Java 源文件（`.java`）。** 由于截至2026年尚未提供对应的 SSJS 版 API，JSSP（`.js`）中的同等实现应向用户确认实现方针。
+**本技能仅处理 Java 源文件（`.java`）。** 由于尚未提供对应的 SSJS 版 API，JSSP（`.js`）中的同等实现应向用户确认实现方针。
 
 ## 应参考的规约
 
@@ -32,7 +32,7 @@ allowed-tools: Bash, Read, Write, Glob
 | `.claude/rules/java-code-style.md` | 🟢 **必读** — `final` 局部变量、`try-with-resources`、字符串字面量等 |
 | `.claude/rules/java-javadoc.md` | 🟢 **必读** — 类/方法 JavaDoc |
 
-`.claude/rules` 下目前不存在规定异常处理方针的 Java 专用规约（截至2026年）。`UserProfileImageManager` 的异常（`BizApiException`，受检异常）的业务异常包装方针应遵循 `assets/profile-basic-usage.md` 中的模式。
+`.claude/rules` 下目前不存在规定异常处理方针的 Java 专用规约。`UserProfileImageManager` 的异常（`BizApiException`，受检异常）的业务异常包装方针应遵循 `assets/profile-basic-usage.md` 中的模式。
 
 `jssp-*` 规约不适用于本技能（不适用于 Java 文件）。
 
@@ -66,7 +66,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 若未明确说明"在 Java 中"、"在 JavaEE 开发模型中"等，应向用户确认项目现有实现使用的是哪种开发模型。
 
-此外，若需求涉及**用户基本信息**（姓名・所属等）的 CRUD，或 **IM-LogicDesigner 的逻辑流程**，应告知用户这不在本技能范围内（前者是尚未配备对应技能，后者是有意排除在外）。
+此外，若需求涉及**用户基本信息**（姓名・所属等）的 CRUD，或 **IM-LogicDesigner 的逻辑流程**，应告知用户这不在本技能范围内（前者请使用 `UserManager` / `CompanyManager`，后者是有意排除在外）。
 
 ## 实现步骤
 
@@ -88,7 +88,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 ## 生成后的确认
 
-目前尚未配备类似 JSSP 版的专用验证脚本（相当于 `validate-jssp-code.js`）。请手动确认以下事项。
+并非通过自动验证脚本（如 JSSP 版的 `validate-jssp-code.js`），而是手动确认以下事项。
 
 1. 是否经由 `UserProfileImageManagerFactory.getFactory().getService()` 获取实现（是否未直接 `new`）
 2. 调用多个获取系方法（`getUserProfileImagesStream()`/`getUserProfileImagesURL()`）时，是否在"结果中可能存在缺失的用户代码"这一前提下进行了处理
@@ -103,8 +103,8 @@ allowed-tools: Bash, Read, Write, Glob
 | 职责 | 负责技能 |
 |------|-----------|
 | **Java（JavaEE 开发模型）中用户头像图片的获取・注册・删除** | **本技能** |
-| 用户基本信息（姓名・所属・分类区分等）的 CRUD | 尚未配备对应的 Java 向技能（截至2026年）。应向用户确认实现方针 |
+| 用户基本信息（姓名・所属・分类区分等）的 CRUD・检索 | 尚未配备专用技能。直接使用 IM-通用主数据的 `UserManager`（姓名・用户分类）/ `CompanyManager`（公司・组织・公司职位） |
 | 为用户分配角色・账户属性・登录设置 | `java-im-account-usage` |
 | IM-LogicDesigner 的逻辑流程要素・触发器 | 不在本技能范围内。逻辑流程本身的生成请参考 `jssp-im-logic-generator` |
 | Java 中的文件操作（`PublicStorage`/`SessionScopeStorage`/`SystemStorage`） | `java-im-storage-usage` |
-| SSJS（JSSP）中的头像图片操作 | 截至2026年尚未确认对应的 SSJS API。应向用户确认实现方针 |
+| SSJS（JSSP）中的头像图片操作 | `d.ts/` 下没有对应的 SSJS API 定义（仅提供 Java 版） |

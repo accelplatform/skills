@@ -1166,7 +1166,7 @@ const DDL_EXISTS_GUARD_HINT = {
     '--   Oracle の CREATE TABLE IF NOT EXISTS は 23ai 以降のみ。それ以前は PL/SQL ブロックが',
     '--   必要だが、Importer により SQL がセミコロンで分割されるため利用できない。',
     '--   また、分割された SQL の実行で失敗した場合は、後続の SQL は実行せずに次のファイル処理を開始する。',
-    '--   そのため、DROP TABLE ...;CREATE TABLE ... のように DROP → CREATE を同一ファイル内に記述できない。',
+    '--   そのため、DROP → CREATE を同一ファイル内に記述できない。',
     '--   23ai 未満は素の CREATE TABLE のみを書き（DROP を混ぜない）、または拡張インポートで作成する。',
     '--   詳細は reference/database-sql.md「Oracle 23ai 未満は存在チェックを書けない」を参照。',
   ],
@@ -1198,7 +1198,7 @@ function buildDdlSql(spec, dialect) {
     lines.push('-- ' + t.name + (t.comment ? ': ' + t.comment : ''));
     lines.push('-- CREATE TABLE ' + t.name + ' (');
     lines.push('--     -- カラム定義をここに記述');
-    lines.push('-- );');
+    lines.push('-- )');
     lines.push('');
   }
   return lines.join('\n');
@@ -1326,7 +1326,7 @@ function buildDmlSql(spec, dialect) {
   lines.push('');
   for (const t of (spec.database || {}).tables || []) {
     lines.push('-- ' + t.name + ' への初期データがあればここに記述');
-    lines.push('-- INSERT INTO ' + t.name + ' (...) VALUES (...);');
+    lines.push('-- INSERT INTO ' + t.name + ' (...) VALUES (...)');
     lines.push('');
   }
   lines.push(...buildPortletDmlLines(spec));

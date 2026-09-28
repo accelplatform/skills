@@ -3,32 +3,5 @@
   "type": "directory",
   "conditions": {
     "accelplatformVersion": "8.0.40"
-  },
-  "replacements": [
-    {
-      "type": "regex",
-      "pattern": "\\{\\{GROUP_ID\\}\\}",
-      "replacement": "{{$group}}"
-    },
-    {
-      "type": "regex",
-      "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
-      "replacement": "{{$artifactId}}"
-    },
-    {
-      "type": "regex",
-      "pattern": "\\{\\{PROJECT_NAME\\}\\}",
-      "replacement": "{{$name}}"
-    },
-    {
-      "type": "regex",
-      "pattern": "\\{\\{PROJECT_VERSION\\}\\}",
-      "replacement": "{{$projectVersion}}"
-    },
-    {
-      "type": "regex",
-      "pattern": "\\{\\{PROJECT_DESCRIPTION\\}\\}",
-      "replacement": "{{$description}}"
-    }
-  ]
+  }
 }

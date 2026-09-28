@@ -113,8 +113,7 @@ build 脚本将输出分开放置到以下位置。
 
 `<artifactId>` 可与 `<key>` 不同。storage 之下的引用路径使用 `<key>`。
 
-config 中的 `<role-file>`、`<authz-*-file>`、`<create-file>`、`<insert-file>` 以
-相对 `src/main/storage/system` 的路径书写（如 `products/import/sample/<key>/<key>-role.xml`）。
+config 中的 `<role-file>`、`<authz-*-file>`、`<create-file>`、`<insert-file>` 以相对 `src/main/storage/system` 的路径书写（如 `products/import/sample/<key>/<key>-role.xml`）。
 `<extends-import-class>` 以相对 `src/main/jssp/src` 的路径书写（如 `<key>/initialize/<key>_import.js`）。
 
 资料的放置不设置 `<version>` 目录。示例数据的运维要求是始终与模块的最新版本保持最新状态，因此更新时覆盖既有文件（`--force`）。

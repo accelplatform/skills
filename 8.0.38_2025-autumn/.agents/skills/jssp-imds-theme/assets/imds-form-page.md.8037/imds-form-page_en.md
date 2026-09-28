@@ -135,7 +135,7 @@ Add a required mark with `imds-required-label-required` to the group label.
           name="sample-proprietor"
           value="sample-proprietor-1"
           checked="" />
-        <span>NTT DATA Intramart</span>
+        <span>INTRAMART</span>
       </label>
       <label class="imds-radio">
         <input

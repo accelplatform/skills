@@ -35,7 +35,7 @@ allowed-tools: Bash, Read, Write, Glob
 | `.github/instructions/java-code-style.instructions.md` | 🟢 **必读** — `final` 局部变量、字符串字面量等 |
 | `.github/instructions/java-javadoc.instructions.md` | 🟢 **必读** — 类/方法 JavaDoc |
 
-`.github/instructions` 下目前不存在规定异常处理方针的 Java 专用规约（截至2026年）。`NewLock` 的异常全部为非受检异常（详见后述），业务异常的包装方针应遵循 `assets/lock-basic-usage.md` 中的模式。
+`.github/instructions` 下目前不存在规定异常处理方针的 Java 专用规约。`NewLock` 的异常全部为非受检异常（详见后述），业务异常的包装方针应遵循 `assets/lock-basic-usage.md` 中的模式。
 
 `jssp-*` 规约不适用于本技能（不适用于 Java 文件）。
 
@@ -87,7 +87,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 ## 生成后的确认
 
-目前尚未配备类似 JSSP 版的专用验证脚本（相当于 `validate-jssp-code.js`）。请手动确认以下事项。
+并非通过自动验证脚本（如 JSSP 版的 `validate-jssp-code.js`），而是手动确认以下事项。
 
 1. 使用普通锁的地方，从 `lock()`/`tryLock()` 到 `unlock()` 是否被 `try`/`finally` 确实包裹
 2. 普通锁与请求作用域锁的选择是否符合锁的持有作用域（单个方法内，还是跨多个位置）

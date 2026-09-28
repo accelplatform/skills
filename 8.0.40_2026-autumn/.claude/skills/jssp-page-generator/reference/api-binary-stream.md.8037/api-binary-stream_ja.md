@@ -59,8 +59,7 @@ function saveUpload(uploadedFile, fileKey) {
 
 `ByteReader.read()` は Java の `InputStream.read(byte[], int, int)` 相当であり、
 **呼び出し側が事前に容量を確保した配列を渡す前提**になっている。
-JavaScript の空配列 `[]` を渡しても要素は書き込まれず、結果として **常に 0 件読み取り** となり、
-出力先のファイルが **0 バイト** になる症状が発生する。
+JavaScript の空配列 `[]` を渡しても要素は書き込まれず、結果として **常に 0 件読み取り** となり、出力先のファイルが **0 バイト** になる症状が発生する。
 
 ```javascript
 // NG: 0 バイト保存になる落とし穴

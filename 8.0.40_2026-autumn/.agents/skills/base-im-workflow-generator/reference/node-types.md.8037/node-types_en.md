@@ -51,8 +51,7 @@ Source: `d.ts/workflow/enum/im-ssjs-node-type.d.ts`
 
 ## Authority Plugins
 
-For details on authority plugin extension points, suffixes, targetType, parameter formats, and sample data,
-refer to `reference/authority-plugins.md`.
+For details on authority plugin extension points, suffixes, targetType, parameter formats, and sample data, refer to `reference/authority-plugins.md`.
 
 ### Common Patterns
 

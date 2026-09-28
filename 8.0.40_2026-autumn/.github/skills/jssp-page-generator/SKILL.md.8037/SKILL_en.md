@@ -207,7 +207,10 @@ Skip if a skill does not exist. Complete before reporting to the user.
 Follow these rules when generating DDL in Step 6:
 
 - Table names and column names must match the SQL in the generated function container
-- **Column types must follow the type mapping table in `reference/ddl-type-mapping.md`** (do not write type names from memory or guesswork)
+- **Follow the "Table and Column Naming Conventions" in `.github/instructions/database-ddl.instructions.md`** for naming rules (lowercase snake_case, uppercase reserved words, etc.)
+- **Column types must follow the type mapping table in `.github/instructions/database-ddl.instructions.md`** (do not write type names from memory or guesswork)
+- **Always include the audit trail columns** (`create_user_cd` / `create_date` / `record_user_cd` / `record_date`) — see "Audit Trail Columns (Required)" in `.github/instructions/database-ddl.instructions.md`
+- Follow "Primary Key Design" and "Index Naming Conventions" in `.github/instructions/database-ddl.instructions.md` for primary key and index design
 - Separate DDL into files per database product (because type names and default value syntax differ)
 - Sample DML must be written in standard SQL INSERT statements, usable across all 3 products
 - Insert 3–5 sample records into master tables

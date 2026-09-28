@@ -2,8 +2,7 @@
 
 build-sample-setup-import.js を実行した後、以下を確認すること。
 
-多言語ファイル・参照整合性・ジョブスケジューラ・メニューグループの各セクションは
-`.claude/skills/jssp-tenant-setup-generator/reference/checklist.md` を参照する（読み替えは SKILL.md の「参照時の読み替え」）。
+多言語ファイル・参照整合性・ジョブスケジューラ・メニューグループの各セクションは `.claude/skills/jssp-tenant-setup-generator/reference/checklist.md` を参照する（読み替えは SKILL.md の「参照時の読み替え」）。
 
 以下はサンプルデータセットアップ固有の項目。
 

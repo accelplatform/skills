@@ -384,8 +384,8 @@ public class OrderDeletionEndpoint {
 ```
 
 - `@Authz` can be attached to either a class or a method. Attaching it to a class applies it to all methods within
-- When unauthenticated, `401` is returned; when authenticated but lacking permission, `403` is returned (no branching logic is needed on the Web API Maker side)
-- **Attaching `@Authz` alone does not make it work.** If the resource specified in `uri` is not registered on the IM-Authz side, authorization always fails (`403`, etc.). Use the implementation patterns in `java-im-authz-usage` for resource registration and policy configuration
+- Per the API spec, when unauthenticated `401` is returned, and when authenticated but lacking permission `403` is returned. **However, when combined with `@IMAuthentication` (session authentication), an unauthenticated request is stopped as `404` before it ever reaches this `@Authz` check** (see "When the Wrapper Is Applied and When It Isn't" in `reference/web-api-maker-api-reference.md`). Authorization denial for an authenticated user comes back as a wrapped `403` response
+- **Attaching `@Authz` alone does not make it work.** If the resource specified in `uri` is not registered on the IM-Authz side, the result is not an authorization failure but a `ResourceNotFoundException` producing an (unwrapped) generic `500` error page. If you see a `500` where a `403` was expected, suspect an unregistered resource. Use the implementation patterns in `java-im-authz-usage` for resource registration and policy configuration
 - To determine the resource dynamically, use the `mapperClass`/`mapperParams` attributes (an implementation class of `AuthzMapper`). See `reference/web-api-maker-api-reference.md` for the detailed signature
 
 ## Pattern 6: Secure Token Verification (`@Secured`)
@@ -425,6 +425,50 @@ public class OrderRegistrationEndpoint {
 
 ## Pattern 7: Response Control
 
+### 7-1. Response Body Wrapper Structure (Forgetting to Unwrap It on the Client Yields `undefined`)
+
+**The Endpoint method's return value does not become the response body as-is; it is always wrapped in an object that has `error` / `data`.**
+
+```java
+// Endpoint implementation
+@Path("/foo/orders/{orderId}")
+@GET
+public OrderEntity get(@Required @Variable(name = "orderId") final String orderId) {
+    return orderService.findById(orderId);
+}
+```
+
+The actual response body it returns (`Accept: application/json`):
+
+```json
+{
+  "error": false,
+  "data": {
+    "orderId": "ORD-0001",
+    "orderName": "Sample order",
+    "amount": 1000
+  }
+}
+```
+
+On exception (see 7-2 for `@Response`/`@ReturnValue`):
+
+```json
+{
+  "error": true,
+  "errorMessage": "Order information not found: orderId=ORD-9999",
+  "data": {
+    "orderId": "ORD-9999"
+  }
+}
+```
+
+- When the return value is a `List`/array, `data` becomes a JSON array. The outer wrapper structure is the same regardless of the return type
+- `errorMessage` is present only on exception, and the meaning of `data` differs between success (the return value) and exception (the `@ReturnValue` values)
+- For property details, see "Response Body Wrapper Structure" in `reference/web-api-maker-api-reference.md`
+
+### 7-2. Exception → Status Code and Supplementary Information (`@Response`/`@ReturnValue`)
+
 ```java
 package jp.co.example.foo.webapi;
 
@@ -456,6 +500,8 @@ public class OrderNotFoundException extends Exception {
 }
 ```
 
+### 7-3. Manual Response (`@PreventWritingResponse`)
+
 ```java
 package jp.co.example.foo.webapi;
 
@@ -480,11 +526,113 @@ public class OrderRedirectEndpoint {
     public void redirect(final HttpServletResponse response) throws IOException {
         response.sendRedirect("/foo/orders");
     }
+
+    /**
+     * Example of writing the body yourself (a CSV download).
+     * The return value is always ignored, so the response content is written directly to response.
+     */
+    @Path("/foo/orders/csv")
+    @GET
+    @PreventWritingResponse
+    public void downloadCsv(final HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"orders.csv\"");
+        response.getWriter().write("orderId,orderName\r\nORD-0001,Sample order\r\n");
+    }
 }
 ```
 
-- Attaching `@Response(code=...)` to an exception class controls the status code returned when that exception is thrown. The return value of a method annotated with `@ReturnValue` is included in the response body
-- A method annotated with `@PreventWritingResponse` does not have Web API Maker's automatic response write applied, so it must receive `HttpServletResponse` as an argument and respond manually
+- Attaching `@Response(code=...)` to an exception class controls the status code returned when that exception is thrown. The return value of a method annotated with `@ReturnValue` is included under `data` in the response body
+- A business exception annotated with `@Response(code=...)` is returned in the 7-1 wrapper structure even with a status code other than `200`
+- The return value of a method annotated with `@PreventWritingResponse` is always ignored
+- When an error occurs in secure token verification, authentication, or the authorization check, Web API Maker still writes the response even with `@PreventWritingResponse`
+
+### 7-4. Receiving the Response on the Client (Screen) Side
+
+When calling a Web API Maker API from a JSSP presentation page or similar, always unwrap the envelope before using the business data.
+
+```javascript
+/**
+ * Calls a Web API Maker API, unwraps the envelope, and returns data.
+ * @param {string} url the request URL
+ * @param {Object} [options] fetch options (method/body, etc.)
+ * @returns {Promise} a Promise resolved with data on success, rejected with an Error on failure
+ */
+function callWebApi(url, options) {
+    var opts = options || {};
+    var headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
+    // For an API annotated with @Secured, attach the token via the X-Intramart-Secure-Token header (see below)
+    if (opts.secureToken) {
+        headers['X-Intramart-Secure-Token'] = opts.secureToken;
+    }
+    return fetch(url, {
+        method: opts.method || 'GET',
+        // Without Accept there is no guarantee the response comes back as JSON
+        headers: headers,
+        // Required because @IMAuthentication authenticates via the session cookie
+        credentials: 'same-origin',
+        body: opts.body
+    }).then(function (response) {
+        // A business exception annotated with @Response(code=...) is returned in the wrapper
+        // structure even for non-200 statuses, so try to parse the body instead of stopping
+        // at the status code
+        return response.json().then(function (body) {
+            return { status: response.status, body: body };
+        }, function () {
+            // Cannot parse = an unexpected error. Unauthenticated access (comes back as 404,
+            // not 401), 406 (invalid Accept), and a 500 from an exception that occurs outside
+            // the Endpoint method (e.g. in an ActionFilter) and isn't explicitly handled there
+            // guarantee neither JSON format nor the wrapper (an exception thrown by the
+            // Endpoint method itself is always wrapped, @Response or not)
+            throw new Error('HTTP ' + response.status);
+        });
+    }).then(function (result) {
+        var body = result.body;
+        if (!body || typeof body.error === 'undefined') {
+            throw new Error('HTTP ' + result.status);
+        }
+        if (body.error) {
+            // Treat errorMessage and the data added by @ReturnValue as the error information
+            throw new Error(body.errorMessage);
+        }
+        // The business data is body.data, not body
+        return body.data;
+    });
+}
+
+// Example call (@IMAuthentication only)
+callWebApi('/foo/orders/ORD-0001').then(function (order) {
+    // order is the content of data (an object equivalent to OrderEntity)
+    document.getElementById('orderName').textContent = order.orderName;
+}).catch(function (e) {
+    imuiShowMessageDialog({ type: 'error', message: e.message });
+});
+
+// Example call (with @Secured, used for state-changing APIs)
+// The secure token retrieval follows the existing <meta name="im_secure_token"> pattern
+// (see `.agents/requirements/jssp-presentation-page/AGENTS.md`)
+function getSecureToken() {
+    return document.querySelector('meta[name=im_secure_token]').content;
+}
+
+callWebApi('/foo/orders', {
+    method: 'POST',
+    secureToken: getSecureToken(),
+    body: JSON.stringify({ orderName: 'Sample order', amount: 1000 })
+}).then(function () {
+    imuiShowMessageDialog({ type: 'success', message: 'Registered.' });
+}).catch(function (e) {
+    imuiShowMessageDialog({ type: 'error', message: e.message });
+});
+```
+
+- **Reading the response without unwrapping, as in `res.json().then(function (order) { order.orderName; })`, yields `undefined`.** This is the classic cause of "no data on the screen" even when the API side is correct
+- Without an explicit `Accept: application/json`, there is no guarantee that the response format is JSON
+- **When calling an API annotated with `@Secured`, attach the token via the `X-Intramart-Secure-Token` request header.** The token itself can be obtained by reusing the existing CSRF countermeasure pattern: `<meta name="im_secure_token" content="<imart type="imSecureToken" mode="value" />">` on the JSSP screen (see `.agents/requirements/jssp-presentation-page/AGENTS.md`)
+- **An exception thrown by the Endpoint method itself is always wrapped, `@Response` or not.** `@Authz` (`403`) and `@Secured` (`403`) are also returned wrapped. Unauthenticated access, however, **comes back as `404` rather than `401` and is not wrapped** (under `@IMAuthentication`). `406` (invalid `Accept`) and a `500` from an exception that occurs outside the Endpoint method (e.g. in an `ActionFilter`) and isn't explicitly handled there are also not wrapped (for details, see "When the Wrapper Is Applied and When It Isn't" in `reference/web-api-maker-api-reference.md`). The `callWebApi` above safely falls back for these unwrapped cases by treating an unreadable `body.error` as an unexpected error
 
 ## Pattern 8: Package Registration (the Most Commonly Missed Step)
 
@@ -519,7 +667,9 @@ public OrderEntity get(@Variable(name = "id") final String orderId) { // "orderI
 }
 
 // NG: attaching only @Authz without registering the resource on the IM-Authz side
-// → since uri="service://foo/orders" is unregistered, authorization always fails (403)
+// → since uri="service://foo/orders" is unregistered, this is not an authorization
+//   failure (403) but a ResourceNotFoundException, producing an unwrapped 500
+//   generic error page
 @Authz(uri = "service://foo/orders", action = "execute")
 public class UnregisteredResourceEndpoint { }
 
@@ -559,4 +709,27 @@ public class BadEndpointFactory {
         return new StandardOrderEndpoint();
     }
 }
+```
+
+```javascript
+// NG: reading the response on the client without unwrapping the error/data envelope
+// → the API itself works correctly, yet the value is undefined on the screen
+fetch('/foo/orders/ORD-0001').then(function (res) {
+    return res.json();
+}).then(function (order) {
+    console.log(order.orderName); // undefined (it is order.data.orderName)
+});
+
+// NG: treating any non-200 status as an error without reading the body
+// → loses the errorMessage / @ReturnValue information of a business exception annotated with @Response(code=404)
+fetch(url).then(function (res) {
+    if (!res.ok) {
+        throw new Error('An error occurred');
+    }
+    return res.json();
+});
+
+// NG: parsing with res.json() without specifying the Accept header
+// → there is no guarantee that the response is JSON
+fetch(url).then(function (res) { return res.json(); });
 ```

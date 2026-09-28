@@ -5,7 +5,7 @@
 This repository holds skill sets for creating the following assets on intra-mart Accel Platform.
 * Source code for screens and various plugins using JSSP (script development model)
 * Source code for various plugins (excluding screens) using Java (JavaEE development model)
-* IM-LogicDesigner / IM-Workflow assets
+* IM-LogicDesigner / IM-Workflow / IM-BPM assets
 
 To reduce token consumption by coding agents, it is recommended to pick out only the necessary skill sets following the "Skill Reverse Lookup" below.
 
@@ -24,6 +24,13 @@ To reduce token consumption by coding agents, it is recommended to pick out only
 - I want to embed an IM-CommonMaster search dialog into a business screen
   - ⇒ `jssp-im-master-usage`
     - Embeds search functions for users, companies, organizations, posts, public groups, private groups, and roles
+
+### I want to use server-side caching
+
+- I want to speed up processing in a JSSP (script development model) function container by caching search results or the results of computationally expensive processing
+  - ⇒ `jssp-im-cache-usage`
+    - Provides basic patterns for the SSJS `Cache` class (`get`/`put`/`remove`/`removeAll`), creation of cache configuration files (`WEB-INF/conf/im-ehcache-config/*.xml`), and cache key design
+    - For the equivalent processing in Java (JavaEE development model), use `java-im-cache-usage`
 
 ### I want to build a REST-API for external systems
 
@@ -59,6 +66,15 @@ To reduce token consumption by coding agents, it is recommended to pick out only
     - Generates Java classes that extend/implement platform abstract classes and listener interfaces such as `ActionProcessEventListener`
     - Screens (apply/approve/confirm) are out of scope. Screens currently use the JSSP implementation from `jssp-im-workflow-usage`
 
+### I want to implement inter-module data linkage with IM-Propagation
+
+- I want to implement data sending/receiving via `PropagationManager` in Java (JavaEE development model)
+  - ⇒ `java-im-propagation-generator`
+    - Provides implementation patterns for both the sender side (Data Model / `GenericModel` / `Encoder` / sender configuration file) and the receiver side (`Decoder` / `Procedure` / receiver configuration file)
+    - Includes the choice between `AbstractProcedure` (riding on a DB transaction) and `AbstractSessionableProcedure` (a custom two-phase-commit-like lifecycle)
+    - Also provides listener implementation patterns for receiving, in a custom module, intra-mart standard change notifications (tenants, accounts, roles, IM-Authz, menus, calendars, jobnets, Salesforce integration, Wiki, etc.), as well as patterns for sending to IM-Box (app notifications/watches)
+    - No equivalent API for JSSP (script development model) is provided
+
 ### I want to build IM-LogicDesigner assets
 
 - I want to create a logic flow (low-code) definition file
@@ -71,6 +87,26 @@ To reduce token consumption by coding agents, it is recommended to pick out only
   - ⇒ `jssp-im-logic-usage` (+ `jssp-page-generator`)
     - Fetches and parses the swagger spec (`<BASE-URL>/logic/all-api-docs`) to determine the request/response structure, then generates `fetch` call code
     - Presents an authorization-setup guidance message when access is denied (401/403)
+- I want to implement a custom task (flow element) in Java (JavaEE development model)
+  - ⇒ `java-im-logic-generator`
+    - Provides implementation patterns for the category class (`ElementCategory`), the flow element class (extends `Task` + `@LogicFlowElement`), the metadata class (`FlowElementMetadata`), and extension package registration (`ElementScanPackageFactory` + `META-INF/services`)
+    - Mapping functions, EL functions, and flow triggers are out of scope
+
+### I want to build IM-BPM assets
+
+- I want to create a specification document from BPMN (XML)
+  - ⇒ `bpm-docs-generator`
+    - Extracts the process overview, flow description, task details, and branch-condition logic from a BPMN process definition and generates a Markdown specification document
+    - The generated specification is also used as the input prompt when generating JSSP
+- I want to convert a specification document into a format importable into intra-mart Knowledge
+  - ⇒ `bpm-docs-generator`
+    - Converts a specification document into a zip file importable into Knowledge
+- I want to create JSSP resources to run a BPM process on IM-BPM for Accel Platform based on a specification document
+  - ⇒ `bpm-scripts-generator` (+ `jssp-page-generator` / `jssp-imds-theme`)
+    - Generates JSSP resources — including IM-BPM-specific elements such as scratch-screen integration — based on the specification document created by `bpm-docs-generator`
+- I want to reflect the content of a specification document or generated scripts into the BPMN-XML
+  - ⇒ `bpm-xml-reflector`
+    - Reflects the content of the specification document from `bpm-docs-generator` and the scripts from `bpm-scripts-generator` into the BPMN-XML
 
 ### I want to localize
 
@@ -79,6 +115,11 @@ To reduce token consumption by coding agents, it is recommended to pick out only
     - Creates message property files (properties)
     - Rewrites to `<imart type="message">` tags / MessageManager API
     - Supports Japanese (ja) / English (en) / Simplified Chinese (zh_CN)
+- I want to build message property retrieval using MessageManager in Java (JavaEE development model)
+  - ⇒ `java-im-message-usage`
+    - Provides implementation patterns for `jp.co.intra_mart.foundation.security.message.MessageManager`: user/tenant/system locale resolution order, placeholder substitution, and message existence checks (`hasMessage`)
+    - Includes message properties file (`.properties`) placement and key naming conventions (shared with the JSSP-side `jssp-localize-support`)
+    - For the equivalent implementation in JSSP (script development model), use `jssp-localize-support`
 
 ### I want to test / check quality
 
@@ -115,6 +156,11 @@ To reduce token consumption by coding agents, it is recommended to pick out only
   - ⇒ `java-im-lock-usage`
     - Provides guidance on choosing between an ordinary lock (`lock()`/`tryLock()`), released with `try`/`finally`, and a request-scope lock (`lockRequestScope()`/`tryLockRequestScope()`), automatically released when the response is returned
     - Guides toward the ordinary lock as the default for DB-based mutual exclusion across a distributed environment when the processing is self-contained within a method
+- I want to build tenant-scoped caching processing in Java (JavaEE development model) using the CacheManager/Cache API
+  - ⇒ `java-im-cache-usage`
+    - Provides cache manager acquisition via `CacheManagerFactory.getCacheManager()`, CRUD operations on `Cache<K, V>` (`get`/`put`/`remove`/`removeAll`, etc.), and creation of cache configuration files (`WEB-INF/conf/im-ehcache-config/*.xml`)
+    - Includes the `Serializable` constraint on cache keys/values and the reload pattern on a cache miss
+    - For the equivalent implementation in JSSP (script development model), use `jssp-im-cache-usage`
 - I want to build account information retrieval/update processing in Java (JavaEE development model) using AccountInfoManager
   - ⇒ `java-im-account-usage`
     - Provides implementation patterns for login settings (locale, time zone, calendar, theme, first day of week, date/time formats), account lock and login failure count, account attributes, and password verification (`AccountPasswordAdapter`)
@@ -136,10 +182,53 @@ To reduce token consumption by coding agents, it is recommended to pick out only
     - Provides generation patterns for factory/service classes that implement a REST API using annotations only (`@WebAPIMaker`/`@Path`/`@GET`, etc.)
     - Supports authentication methods (`@IMAuthentication`/`@BasicAuthentication`/`@OAuth`), authorization integration (`@Authz`), secure-token verification (`@Secured`), and response control
     - Registration of the authorization resource itself is handled by `java-im-authz-usage`; for REST APIs in JSSP, use `jssp-page-generator`/`jssp-im-oauth-generator`
+- I want to issue/verify a SecureToken (CSRF protection) in Java (JavaEE development model) without relying on Web API Maker
+  - ⇒ `java-im-secure-token-usage`
+    - Provides token issuance (`createToken`) and verification (`verify`) via `SecureTokenManager`, choosing between one-time and reusable tokens, tamper detection via parameter-bound tokens, and how to obtain an `HttpServletRequest` via `HTTPContextManager`
+    - For declarative verification on a Web API Maker endpoint (`@Secured`), use `java-im-web-api-maker-usage`
+- I want to build an MCP (Model Context Protocol) server running on intra-mart in Java (JavaEE development model)
+  - ⇒ `java-im-mcp-generator`
+    - Provides implementation patterns for a Streamable HTTP MCP server using the `@MCPServer`/`@Tool` annotations from the `im_copilot_mcp` module
+    - Includes tool parameter definitions via `SchemaProperties` and registration with the platform via `McpScanPackageFactory` (recommended) / `META-INF/im_services/annotation_classes`
+    - For a regular REST API (not aimed at AI agents), use `java-im-web-api-maker-usage`
+- I want to build an AI agent in Java (JavaEE development model) that receives a prompt, processes it, and returns a response
+  - ⇒ `java-im-copilot-agent-generator`
+    - Provides implementation patterns for building an agent with `Agent`/`AgentBuilder` from the `im_copilot_agent` module, implementing custom tools with `UserDefinedTool`, integrating `Knowledge` (knowledge search) and `SkillEntry` (Markdown skills), Structured Output (typed output), and intervening in the execution flow with `AgentExecutionMiddleware`
+    - Includes the `AbstractCopilotAssistant`/`@Assistant` integration pattern for wiring into the IM-Copilot chat UI (`Agent`/`AgentBuilder` itself is an independent Java API that does not depend on the Assistant framework)
+    - For MCP server implementation, use `java-im-mcp-generator`; for regular REST APIs, use `java-im-web-api-maker-usage`
+    - For low-level RAG that uses `VectorStore`/`ActionFactory` directly, use `java-im-copilot-rag-generator`; for low-level Tool Calling that uses `ChatAction`+`ToolConfig` directly, use `java-im-copilot-toolcalling-generator`
+- I want to implement RAG (Retrieval-Augmented Generation) in Java (JavaEE development model) using `VectorStore`/`ActionFactory` directly
+  - ⇒ `java-im-copilot-rag-generator`
+    - Provides implementation patterns for building/registering a vector store and hybrid/similarity/keyword search with `VectorStoreBuilder`/`VectorStore`, and for chat/embeddings calls with `ActionFactory`/`ChatAction`/`EmbeddingsAction`
+    - Includes the standard document implementation `StandardRegistrationDocument` and chunk splitting with `TextSplitter` (the `splitText` method)
+    - For high-level RAG via the Agent framework (`Knowledge`/`RegisteredKnowledge`), use `java-im-copilot-agent-generator`; for Tool Calling, use `java-im-copilot-toolcalling-generator`
+- I want to implement Tool Calling (function calling) in Java (JavaEE development model) using `ChatAction`+`ToolConfig` directly
+  - ⇒ `java-im-copilot-toolcalling-generator`
+    - Provides provider-agnostic (works uniformly across OpenAI, Azure OpenAI Service, and Amazon Bedrock) Tool Calling implementation patterns using `ToolConfig`/`ToolDefinition`/`ToolChoice`/`ToolCall` (both non-streaming and streaming)
+    - Includes tool-argument validation/deserialization with `JsonSchemaValidator`/`ToolJsonHelper`
+    - For high-level Tool Calling via the Agent framework (`UserDefinedTool`), use `java-im-copilot-agent-generator`; for RAG, use `java-im-copilot-rag-generator`
+- I want to build CRUD/search processing for the IM Common Master (user, company, organization, post, public/private/company/corporation group, corporation, customer, item category, item, currency) in Java (JavaEE development model) using UserManager/CompanyManager/PublicGroupManager/PrivateGroupManager/CompanyGroupManager/CorporationGroupManager/CorporationManager/CustomerManager/ItemCategoryManager/ItemManager/CurrencyManager
+  - ⇒ `java-im-master-usage`
+    - Provides implementation patterns for retrieving, searching, creating, updating, and deleting user information (`User`, `UserManager`), companies (`Company`), organizations/organization sets (`Department`/`DepartmentSet`), posts (`CompanyPost`), user-to-organization attachment (`UserAttach`, all via `CompanyManager`), and retrieving the organization hierarchy (tree)
+    - Covers the fact that `Company` has no dedicated creation method, the `set*` methods' automatic create/update decision based on the term code (`termCd`), and the multilingual registration procedure (`setDefaultLocale`/`createLocaleElement`/`putLocaleElement`)
+    - Also provides implementation patterns for retrieving, searching, creating, updating, and deleting public groups, private groups, company groups, and corporation groups, each via its own dedicated manager class, plus retrieving public group categories, roles, and the hierarchy (tree)
+    - Covers the differences in API scope across the four group classes (only the public group API has category/role/tree features, the private group API is the smallest, the corporation group model additionally holds a company code, etc.)
+    - Also provides implementation patterns for retrieving, searching, creating, updating, and deleting corporations (`CorporationManager`; a separate class from corporation groups), customers (`CustomerManager`), item categories (`ItemCategoryManager`; has a hierarchy tree), items (`ItemManager`), and currencies (`CurrencyManager`; `Currency`/`CurrencyConversion`/`CurrencyPrecision`/`CurrencyRate`). Covers the fact that `CustomerManager`/`ItemManager` use generic method names that don't include the entity name, with `companyCd` as the first argument
+    - Also provides implementation patterns for retrieving, searching, creating, updating, and deleting user categories, public group categories, and organization categories (`UserCtg`/`PublicGroupCtg`/`DepartmentCtg`, etc., each a feature included in its corresponding manager class)
+    - For user profile images, use `java-im-profile-usage`; for role definitions/assignment, use `java-im-role-usage`/`java-im-account-usage`; for authorization, use `java-im-authz-usage`
 - I want to build DB access processing in Java (JavaEE development model) using im_mirage
   - ⇒ `java-im-mirage-usage`
     - Provides implementation patterns for entity classes (`@Table`/`@Column`/`@PrimaryKey`), DAO classes (extending `AbstractDAO`, obtained via `DAOFactory`), 2WaySQL SQL files, and transaction management via `SessionTemplate`
     - For DB access in JSSP, use `jssp-page-generator` (`TenantDatabase`/`SharedDatabase` API); the development models differ and the implementations are completely independent
+- I want to get the logged-in user's information (account, organization, client, job execution parameters) in Java (JavaEE development model) using Contexts.get()
+  - ⇒ `java-im-contexts-usage`
+    - Provides retrieval patterns for `AccountContext` (user code, tenant ID, locale, time zone, role IDs, authentication state), `UserContext` (user profile, department, company, post, public group, user category), `ClientContext` (client type), `ExternalUserContext` (external-user detection), `JobSchedulerContext` (job execution parameters), plus authentication/administrator checks via `ContextStatus`
+    - For the equivalent implementation in JSSP, use the SSJS Context objects (`d.ts/platform/object/`, `d.ts/platform/job-scheduler/`)
+- Want to create a custom XML configuration file (a JAXB configuration class, XSD schema, and XML instance) in Java (JavaEE development model) using ConfigurationLoader — creating, loading, and saving it
+  - ⇒ `java-im-configuration-generator`
+    - Provides guidance on choosing between `ConfigurationLoader.load`/`loadAll`/`save`/`clearCache`, cache control via `Instance` (`SINGLETON`/`PROTOTYPE`), where configuration files are placed (SystemStorage's `conf/`, `WEB-INF/conf`, the classpath), and the class-name-to-file-name conversion rule
+    - Includes the `ObjectFactory` (`factoryClass`/`factoryMethod`, must be `static`) implementation pattern required by `check-jaxb-format-plugin`
+    - No SSJS-version API equivalent is provided for JSSP (script development model)
 
 ### I want to implement Java (JavaEE development model) following the design conventions
 

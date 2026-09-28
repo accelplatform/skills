@@ -24,8 +24,8 @@ import jp.co.example.foo.exception.ResourceRegistrationException;
  */
 public class AuthzResourceRegistrationService {
 
-    /** The resource type ID for this application */
-    private static final String RESOURCE_TYPE_ID = "service://myapp/orders";
+    /** The resource URI prefix (the leading "flat-crud" is the resource type ID) */
+    private static final String RESOURCE_URI_PREFIX = "flat-crud://myapp/orders/";
 
     /**
      * Registers order data as a resource.
@@ -34,8 +34,7 @@ public class AuthzResourceRegistrationService {
      * @throws ResourceRegistrationException if registration fails
      */
     public void registerOrderResource(final String orderId, final String displayName) throws ResourceRegistrationException {
-        // The resource URI is in the "RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT" format
-        final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
+        final String resourceUri = RESOURCE_URI_PREFIX + orderId;   // e.g. flat-crud://myapp/orders/ORD001
         final I18nValue<String> name = new I18nValue<String>(Locale.JAPANESE, displayName);
 
         // Manager instances must not be reused across tenants; always obtain a fresh one from the Factory each time
@@ -50,7 +49,7 @@ public class AuthzResourceRegistrationService {
 }
 ```
 
-- The resource URI is in the `RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` format. Design it with a hierarchy delimited by application name and component name so it does not collide with other applications
+- The resource URI is in the `RESOURCE-TYPE-ID:IDENTIFIER-COMPONENT` format (for the resource types you can use, see "Standard Resource Types and Actions" in `reference/authz-api-reference.md`). To keep it from colliding with other applications, express the hierarchy of application name and component name in the path part that follows the resource type ID
 - `I18nValue<String>` is a subclass of `HashMap<Locale, String>`. If you want to hold display names for multiple locales, call `put(locale, value)` additionally
 - Do not cache `Manager` instances in a field; obtain a fresh one from the `Factory` on every call (because the design causes some APIs to fail if an instance is reused across a tenant switch)
 
@@ -110,8 +109,54 @@ public class AuthzSubjectRegistrationService {
 }
 ```
 
-- Concrete implementations of `Subject` (departments, public groups, roles, etc.) are out of scope for this skill (they are provided by extension modules such as `im_master_subjecttypes`). Design your code to receive a `Subject` instance from the caller
+- Use `SubjectManager#registerAsSubject(subjectTypeId, keys)` to number a `Subject` instance (see the next section)
 - If you only want to set a policy for "all users" or "unauthenticated users," do not register a new subject group — use the built-in groups `SubjectManager#getAuthenticatedUsers()` / `getGuestSubjectGroup()` (see Pattern 3)
+
+### Making a Role or Similar into a Subject
+
+`registerAsSubject` numbers a `Subject` from a subject type ID and key values. The following is the implementation for "granting a permission to the users who belong to a role."
+
+```java
+package jp.co.example.foo.service;
+
+import java.util.Locale;
+
+import jp.co.intra_mart.foundation.authz.model.I18nValue;
+import jp.co.intra_mart.foundation.authz.model.subjects.Subject;
+import jp.co.intra_mart.foundation.authz.model.subjects.SubjectGroup;
+import jp.co.intra_mart.foundation.authz.services.admin.SubjectExpression;
+import jp.co.intra_mart.foundation.authz.services.admin.SubjectManager;
+import jp.co.intra_mart.foundation.authz.services.admin.SubjectManagerFactory;
+import jp.co.intra_mart.foundation.authz.subjecttype.im_master.ImRole;
+import jp.co.intra_mart.foundation.authz.util.expression.Expression;
+
+/**
+ * Provides registration processing for subject groups conditioned on a role.
+ */
+public class RoleSubjectRegistrationService {
+
+    /**
+     * Registers a subject group representing the users who belong to the specified role.
+     * @param roleId the role ID
+     * @param displayName the display name of the subject group
+     * @return the registered subject group (the existing one if it already exists)
+     */
+    public SubjectGroup registerRoleSubjectGroup(final String roleId, final String displayName) {
+        final SubjectManager subjectManager = SubjectManagerFactory.getInstance().getSubjectManager();
+
+        // Numbers a subject from the subject type ID and the key values (for a role, a single role ID)
+        final Subject subject = subjectManager.registerAsSubject(ImRole.B_M_ROLE, roleId);
+
+        // A Subject cannot be registered on its own, so convert it into an Expression and register it as a SubjectGroup
+        final Expression expression = SubjectExpression.S(subject);
+        final I18nValue<String> name = new I18nValue<String>(Locale.JAPANESE, displayName);
+        return subjectManager.registerSubjectGroup(expression, name);
+    }
+}
+```
+
+- The number and meaning of the key values differ for each subject type. For the list of IDs, see "Standard Subject Types" in `reference/authz-api-reference.md`
+- `registerSubjectGroup` returns the existing instance when one already exists, so there is no need to check for existence in advance with `getSubjectGroupByExpression`
 
 ## Pattern 3: Setting a Policy (Registering Permit/Deny)
 
@@ -137,8 +182,8 @@ public class AuthzPolicyConfigurationService {
     /**
      * Permits all authenticated users for the specified resource group and action.
      * @param resourceGroup the target resource group (already obtained via ResourceManager#registerAsResource, etc.)
-     * @param resourceTypeId the resource type ID
-     * @param action the action (e.g., "view")
+     * @param resourceTypeId the resource type ID (e.g., "flat-crud")
+     * @param action the action (a value defined by the resource type; for flat-crud, "c"/"r"/"u"/"d")
      * @return the registered policy
      */
     public Policy permitForAllAuthenticatedUsers(final ResourceGroup resourceGroup, final String resourceTypeId, final String action) {
@@ -175,17 +220,23 @@ import jp.co.example.foo.exception.ForbiddenOperationException;
  */
 public class OrderAuthorizationService {
 
-    /** The resource type ID for this application */
-    private static final String RESOURCE_TYPE_ID = "service://myapp/orders";
+    /** The resource URI prefix (the leading "flat-crud" is the resource type ID). Always use the same constant as the registration processing */
+    private static final String RESOURCE_URI_PREFIX = "flat-crud://myapp/orders/";
+
+    /** The reference action ("r" in flat-crud) */
+    public static final String ACTION_READ = "r";
+
+    /** The update action ("u" in flat-crud) */
+    public static final String ACTION_UPDATE = "u";
 
     /**
      * Checks whether the account-context user is permitted to perform the specified operation on the given order data.
      * @param orderId the order ID
-     * @param action the action (e.g., "view", "approve")
+     * @param action the action ({@link #ACTION_READ} / {@link #ACTION_UPDATE})
      * @throws ForbiddenOperationException if the permission is not granted
      */
     public void assertPermitted(final String orderId, final String action) throws ForbiddenOperationException {
-        final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
+        final String resourceUri = buildResourceUri(orderId);
 
         final AuthorizationClient client = AuthorizationClientFactory.getInstance().getAuthorizationClient();
         final AuthorizeResult result = client.authorize(resourceUri, action);
@@ -205,15 +256,19 @@ public class OrderAuthorizationService {
      * @return true if permitted
      */
     public boolean isPermittedFor(final String userCd, final String orderId, final String action) {
-        final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
         final AuthorizationClient client = AuthorizationClientFactory.getInstance().getAuthorizationClient();
-        return AuthorizeResult.Permit.equals(client.authorize(resourceUri, action, userCd));
+        return AuthorizeResult.Permit.equals(client.authorize(buildResourceUri(orderId), action, userCd));
+    }
+
+    /** Assembles the resource URI (shared between the registration processing and the checking processing). */
+    private static String buildResourceUri(final String orderId) {
+        return RESOURCE_URI_PREFIX + orderId;
     }
 }
 ```
 
 - If the argument is omitted, the decision is automatically made using the account context (the currently logged-in user). For batch processing where you want to specify the user explicitly, use the overload that takes `userCd`
-- The `resourceURI` must exactly match the value registered in Pattern 1. Where the string is assembled (e.g., `RESOURCE_TYPE_ID + ":" + orderId`), use the same logic in both the registration processing and the checking processing (constant extraction or a shared method is recommended)
+- The `resourceURI` must exactly match the value registered in Pattern 1. Use the same logic wherever the string is assembled, in both the registration processing and the checking processing (extract it into a constant and a shared method, as `buildResourceUri` does above)
 
 ## Pattern 5: Inspecting and Removing Effective Policies
 
@@ -293,7 +348,13 @@ public class BadService {
 final Policy declared = policyManager.getDeclaredPolicy(resourceGroupId, subjectGroupId, resourceTypeId, action);
 policyManager.removePolicy(declared); // If declared is null, this results in an implementation-dependent exception or a meaningless call
 
+// NG: Confusing the resource type ID with the resource URI
+// The part before the first ":" (= "service") is resolved as the resource type ID.
+// service is exclusively for URL-level authorization and its only action is execute, so view/approve and the like raise a NoSuchActionException
+private static final String RESOURCE_TYPE_ID = "service://myapp/orders";
+final String resourceUri = RESOURCE_TYPE_ID + ":" + orderId;
+
 // NG: Duplicating the resource URI assembly logic between the registration processing and the checking processing, causing inconsistent notation
-// Registration side: "service://myapp/orders:" + orderId
-// Checking side: "service://myapp/orders/" + orderId  ← the delimiter differs, so they never match and the result is effectively always NOT_APPLICABLE
+// Registration side: "flat-crud://myapp/orders/" + orderId
+// Checking side: "flat-crud://myapp/orders:" + orderId  ← the delimiter differs, so they never match and the permission is never granted
 ```
