@@ -1,0 +1,18 @@
+{
+  "servers": {
+    "staging_log": {
+      "type": "http",
+      "url": "{{$endpoint}}/copilot/mcp/development/staging/logs",
+      "headers": {
+        "Authorization": "Bearer {{$apiKey}}"
+      }
+    },
+    "frontend_fix": {
+      "type": "http",
+      "url": "{{$endpoint}}/copilot/mcp/development/staging/frontend-fix",
+      "headers": {
+        "Authorization": "Bearer {{$apiKey}}"
+      }
+    }
+  }
+}

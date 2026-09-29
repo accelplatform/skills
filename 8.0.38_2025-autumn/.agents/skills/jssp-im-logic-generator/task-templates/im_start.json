@@ -1,0 +1,109 @@
+{
+  "kind": "task",
+  "keyId": "im_start",
+  "flowElementSample": {
+    "executeId": "im_start",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_start",
+      "version": null
+    },
+    "label": "開始",
+    "comment": "",
+    "properties": {},
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.StartModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 50
+    },
+    "id": "96e1e6b8-ff91-4147-bc2d-6e9b9f6b5d78",
+    "z": 1,
+    "attrs": {
+      "rect.title": {
+        "width": 150
+      },
+      "text.title": {
+        "text": "im_start"
+      },
+      "text.label": {
+        "text": "開始"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_start"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": null,
+    "outputDataDefinition": null
+  },
+  "dataMapTypical": {},
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_start",
+    "label": "開始",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

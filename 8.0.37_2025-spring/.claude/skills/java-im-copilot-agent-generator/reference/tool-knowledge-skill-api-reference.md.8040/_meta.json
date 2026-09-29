@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.40"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "tool-knowledge-skill-api-reference_ja.md",
+      "to": "tool-knowledge-skill-api-reference.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "tool-knowledge-skill-api-reference_zh_CN.md",
+      "to": "tool-knowledge-skill-api-reference.md"
+    },
+    {
+      "from": "tool-knowledge-skill-api-reference_en.md",
+      "to": "tool-knowledge-skill-api-reference.md"
+    }
+  ]
+}

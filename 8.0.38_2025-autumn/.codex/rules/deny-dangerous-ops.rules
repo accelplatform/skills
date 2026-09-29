@@ -1,0 +1,91 @@
+# deny-dangerous-ops.rules
+
+# ── Git: 破壊的操作を禁止 ──────────────────────────────────────────────────
+
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "forbidden",
+    justification = "リモートへのプッシュは CI/CD または手動で行うこと",
+    match = ["git push origin main", "git push --force origin main"],
+    not_match = ["git pull origin main"],
+)
+
+prefix_rule(
+    pattern = ["git", "clean"],
+    decision = "forbidden",
+    justification = "追跡外ファイルの一括削除を防止",
+    match = ["git clean -fd"],
+    not_match = ["git status"],
+)
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "forbidden",
+    justification = "ハードリセットによる変更消失を防止",
+    match = ["git reset --hard HEAD", "git reset --hard origin/main"],
+    not_match = ["git reset --soft HEAD"],
+)
+
+prefix_rule(
+    pattern = ["git", "checkout", "--"],
+    decision = "forbidden",
+    justification = "ファイルの強制上書きを防止",
+    match = ["git checkout -- src/foo.js"],
+    not_match = ["git checkout main"],
+)
+
+prefix_rule(
+    pattern = ["git", "branch", ["-D", "-d"]],
+    decision = "forbidden",
+    justification = "ブランチ削除は手動で行うこと",
+    match = ["git branch -D feature/foo", "git branch -d feature/foo"],
+    not_match = ["git branch -a"],
+)
+
+prefix_rule(
+    pattern = ["git", "rebase"],
+    decision = "forbidden",
+    justification = "リベースによる履歴改変を防止",
+    match = ["git rebase main", "git rebase -i HEAD~3"],
+    not_match = ["git merge main"],
+)
+
+prefix_rule(
+    pattern = ["git", "stash", ["drop", "clear"]],
+    decision = "forbidden",
+    justification = "スタッシュの削除・全消去を防止",
+    match = ["git stash drop", "git stash clear"],
+    not_match = ["git stash list", "git stash pop"],
+)
+
+# ── Maven: デプロイ・exec を禁止 ───────────────────────────────────────────
+
+prefix_rule(
+    pattern = ["mvn", "deploy"],
+    decision = "forbidden",
+    justification = "デプロイは CI/CD パイプライン経由で実施すること",
+    match = ["mvn deploy", "mvn deploy -DskipTests"],
+    not_match = ["mvn package", "mvn install"],
+)
+
+# 注意: "mvn * deploy *"（deploy がライフサイクル内の任意位置）および
+# "mvn exec:*"（exec: プラグインのゴール名）はトークン内ワイルドカードのため
+# prefix_rule では表現不可。AGENTS.md の禁止事項として補完すること。
+
+# ── システム操作を禁止 ──────────────────────────────────────────────────────
+
+prefix_rule(
+    pattern = ["chmod"],
+    decision = "forbidden",
+    justification = "パーミッション変更は手動で行うこと",
+    match = ["chmod 777 foo.sh"],
+    not_match = ["ls -l"],
+)
+
+prefix_rule(
+    pattern = ["chown"],
+    decision = "forbidden",
+    justification = "オーナー変更は手動で行うこと",
+    match = ["chown root:root foo.sh"],
+    not_match = ["ls -l"],
+)

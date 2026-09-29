@@ -1,0 +1,292 @@
+{
+  "kind": "task",
+  "keyId": "im_immGetPostByUser",
+  "flowElementSample": {
+    "executeId": "im_immGetPostByUser1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_immGetPostByUser",
+      "version": null
+    },
+    "label": "ユーザの役職情報の取得",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 2040,
+      "y": 1370
+    },
+    "id": "c14a7498-70b6-4a1f-bf9d-cf0d6a1e00a0",
+    "z": 354,
+    "attrs": {
+      "rect.body": {
+        "width": 240,
+        "fill": "#5d4037"
+      },
+      "rect.icon": {
+        "fill": "#5d4037"
+      },
+      "rect.title": {
+        "width": 190,
+        "fill": "#785447"
+      },
+      "rect.label": {
+        "width": 190,
+        "fill": "#8c6d62"
+      },
+      "text.title": {
+        "text": "im_immGetPostByUser1"
+      },
+      "text.label": {
+        "text": "ユーザの役職情報の取得"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_immGetPostByUser"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_post_GetPostByUserTaskKey",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_post_GetPostByUserTaskKey",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "companyCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "departmentCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "departmentSetCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "disable",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "main",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "targetDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "locale",
+              "name": "targetLocale",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "userCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "locale",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_post_GetPostByUserTaskResult",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_post_PostInfoResult",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "companyCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "departmentCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "departmentSetCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "postCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "postName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_post_GetPostByUserTaskResult",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_post_PostInfoResult",
+              "name": "posts",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_immGetPostByUser1",
+    "label": "ユーザの役職情報の取得",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "_comment": "最小構成サンプル: 申請+承認のみ。一時保存・確認画面は不要、起票案件運用なしのケース",
+  "workflowName": "minimal_request",
+  "shortName": "min_req",
+  "names": {
+    "en": "Minimal Request",
+    "ja": "最小申請",
+    "zh_CN": "最小申请"
+  },
+  "screenBasePath": "sample/minimal_request/workflow",
+  "pattern": "straight",
+  "generationDate": "2026/04/10",
+  "screens": {
+    "tempSave": false,
+    "confirm": false
+  },
+  "nodes": [
+    { "id": "start", "type": "start" },
+    { "id": "apply", "type": "apply", "plugin": { "suffix": "role", "targetCode": "im_workflow_user" } },
+    { "id": "01", "type": "approve", "name": "Manager", "plugin": { "suffix": "apply_user_department_and_post", "targetCode": "ps002" } },
+    { "id": "end", "type": "end" }
+  ]
+}

@@ -1,0 +1,3 @@
+[mcp_servers.im_logic]
+url = "{{$endpoint}}/copilot/mcp/development/im_logic"
+http_headers = { Authorization = "Bearer {{$apiKey}}" }

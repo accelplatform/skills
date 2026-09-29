@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "type": "mcp",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "agent": "claude-code"
+      },
+      {
+        "feature": "mcp"
+      }
+    ]
+  },
+  "files": [
+    {
+      "condition": {
+        "module": "im_logic"
+      },
+      "file": "10-im-logic.json"
+    },
+    {
+      "condition": {
+        "module": "im_workflow"
+      },
+      "file": "20-im-workflow.json"
+    },
+    {
+      "file": "30-staging.json"
+    },
+    {
+      "condition": {
+        "accelplatformVersion": "8.0.37"
+      },
+      "file": "90-dev-knowledge-8.0.37.json"
+    },
+    {
+      "condition": {
+        "accelplatformVersion": "8.0.38"
+      },
+      "file": "90-dev-knowledge-8.0.38.json"
+    },
+    {
+      "condition": {
+        "accelplatformVersion": "8.0.39"
+      },
+      "file": "90-dev-knowledge-8.0.39.json"
+    }
+  ]
+}

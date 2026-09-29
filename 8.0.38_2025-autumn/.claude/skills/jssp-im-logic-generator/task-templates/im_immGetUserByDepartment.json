@@ -1,0 +1,253 @@
+{
+  "kind": "task",
+  "keyId": "im_immGetUserByDepartment",
+  "flowElementSample": {
+    "executeId": "im_immGetUserByDepartment1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_immGetUserByDepartment",
+      "version": null
+    },
+    "label": "組織に所属するユーザの取得",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 280,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 2020,
+      "y": 270
+    },
+    "id": "cf166fc2-6e8d-496e-b186-e7d9ea341f07",
+    "z": 330,
+    "attrs": {
+      "rect.body": {
+        "width": 280,
+        "fill": "#5d4037"
+      },
+      "rect.icon": {
+        "fill": "#5d4037"
+      },
+      "rect.title": {
+        "width": 230,
+        "fill": "#785447"
+      },
+      "rect.label": {
+        "width": 230,
+        "fill": "#8c6d62"
+      },
+      "text.title": {
+        "text": "im_immGetUserByDepartment1"
+      },
+      "text.label": {
+        "text": "組織に所属するユーザの取得"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_immGetUserByDepartment"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_department_GetUserByDepartmentTaskKey",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_department_GetUserByDepartmentTaskKey",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "companyCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "departmentCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "departmentSetCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "includeSubDepartment",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "main",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "targetDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_department_GetUserByDepartmentTaskResult",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_department_GetUserByDepartmentTaskResult$UserInfoResult",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "userCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "userName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_department_GetUserByDepartmentTaskResult",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_department_GetUserByDepartmentTaskResult$UserInfoResult",
+              "name": "users",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_immGetUserByDepartment1",
+    "label": "組織に所属するユーザの取得",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "kind": "task",
+  "keyId": "im_endLoop",
+  "flowElementSample": {
+    "executeId": "im_endLoop1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_endLoop",
+      "version": null
+    },
+    "label": "繰り返し終了",
+    "comment": "",
+    "properties": {
+      "startPoint": "im_startLoop1"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.LoopEndModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 400
+    },
+    "id": "177269d5-96b3-49df-9c2c-bf22dc4ee984",
+    "z": 7,
+    "attrs": {
+      "text.title": {
+        "text": "im_endLoop1"
+      },
+      "text.label": {
+        "text": "繰り返し終了"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_endLoop"
+    },
+    "pairElementKey": {
+      "type": "application",
+      "id": "im_startLoop"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "startPoint",
+        "enable": false,
+        "required": false,
+        "array": false,
+        "label": "startPoint",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": null,
+    "outputDataDefinition": null
+  },
+  "dataMapTypical": {},
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_endLoop1",
+    "label": "繰り返し終了",
+    "inNum": 1,
+    "outNum": 1,
+    "pairElementId": "b137353a-d472-4d9d-bbcd-ad9684ba42d7"
+  }
+}

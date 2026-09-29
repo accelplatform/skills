@@ -1,0 +1,250 @@
+{
+  "kind": "task",
+  "keyId": "im_export",
+  "flowElementSample": {
+    "executeId": "im_export1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_export",
+      "version": null
+    },
+    "label": "データエクスポート",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 840,
+      "y": 2080
+    },
+    "id": "3bc2e715-5c1e-4b65-b70c-2bfc35c01ef5",
+    "z": 178,
+    "attrs": {
+      "rect.body": {
+        "fill": "#679e37"
+      },
+      "rect.icon": {
+        "fill": "#679e37"
+      },
+      "rect.title": {
+        "fill": "#8ac249"
+      },
+      "rect.label": {
+        "fill": "#9bcb64"
+      },
+      "text.title": {
+        "text": "im_export1"
+      },
+      "text.label": {
+        "text": "データエクスポート"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_export"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_foundation_DataExportInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "storage",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_foundation_DataExportInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "exportId",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "map",
+              "name": "options",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "storage",
+              "name": "storage",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "map",
+          "properties": []
+        },
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_foundation_DataExportResultObject",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_foundation_DataExportResultObject",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "executeId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "long",
+              "name": "faultCount",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "message",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "success",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "long",
+              "name": "totalCount",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "long",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_export1",
+    "label": "データエクスポート",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

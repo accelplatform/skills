@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "pre-commit_ja",
+      "to": "pre-commit"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "pre-commit_en",
+      "to": "pre-commit"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "pre-commit_zh_CN",
+      "to": "pre-commit"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "from": "gitignore",
+      "to": ".gitignore"
+    }
+  ]
+}

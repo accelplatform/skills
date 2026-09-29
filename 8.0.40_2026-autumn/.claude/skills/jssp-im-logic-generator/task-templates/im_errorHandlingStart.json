@@ -1,0 +1,109 @@
+{
+  "kind": "task",
+  "keyId": "im_errorHandlingStart",
+  "flowElementSample": {
+    "executeId": "im_errorHandlingStart",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_errorHandlingStart",
+      "version": null
+    },
+    "label": "エラー処理開始",
+    "comment": "",
+    "properties": {},
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ErrorHandlingStartModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 2990,
+      "y": 110
+    },
+    "id": "7b48b2d0-a6ec-47cb-bcb6-dd74d229cdcb",
+    "z": 383,
+    "attrs": {
+      "rect.title": {
+        "width": 150
+      },
+      "text.title": {
+        "text": "im_errorHandlingStart"
+      },
+      "text.label": {
+        "text": "エラー処理開始"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_errorHandlingStart"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": null,
+    "outputDataDefinition": null
+  },
+  "dataMapTypical": {},
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_errorHandlingStart",
+    "label": "エラー処理開始",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

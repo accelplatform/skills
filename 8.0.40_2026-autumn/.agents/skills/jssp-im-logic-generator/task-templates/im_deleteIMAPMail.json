@@ -1,0 +1,267 @@
+{
+  "kind": "task",
+  "keyId": "im_deleteIMAPMail",
+  "flowElementSample": {
+    "executeId": "im_deleteIMAPMail1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_deleteIMAPMail",
+      "version": null
+    },
+    "label": "IMAPメッセージの削除",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 380,
+      "y": 140
+    },
+    "id": "8faf576e-61fa-4bc8-b957-0dbe26679b67",
+    "z": 68,
+    "attrs": {
+      "rect.body": {
+        "width": 240
+      },
+      "rect.title": {
+        "width": 190
+      },
+      "rect.label": {
+        "width": 190
+      },
+      "text.title": {
+        "text": "im_deleteIMAPMail1"
+      },
+      "text.label": {
+        "text": "IMAPメッセージの削除"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_deleteIMAPMail"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_DeleteIMAPMessageTaskInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_DeleteIMAPMessageTaskInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "folder",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailServerSettings",
+              "name": "serverSetting",
+              "listingType": "none",
+              "required": true,
+              "basic": false
+            },
+            {
+              "typeId": "long",
+              "name": "uid",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailServerSettings",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "accessToken",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "authentification",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "debug",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "host",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "password",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "port",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "ssl",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "starttls",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "user",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "long",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_deleteIMAPMail1",
+    "label": "IMAPメッセージの削除",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

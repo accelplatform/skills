@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.40"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "toolcalling-basic-usage_ja.md",
+      "to": "toolcalling-basic-usage.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "toolcalling-basic-usage_zh_CN.md",
+      "to": "toolcalling-basic-usage.md"
+    },
+    {
+      "from": "toolcalling-basic-usage_en.md",
+      "to": "toolcalling-basic-usage.md"
+    }
+  ]
+}

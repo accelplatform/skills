@@ -1,0 +1,358 @@
+{
+  "kind": "task",
+  "keyId": "im_repositoryEntityDataInsert",
+  "flowElementSample": {
+    "executeId": "im_repositoryEntityDataInsert1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_repositoryEntityDataInsert",
+      "version": null
+    },
+    "label": "エンティティデータの登録",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "entityId": "imprtl_portlet_info_tables_imprtl_portlet_info_bookmarked"
+    },
+    "mappingDefinition": {
+      "mappingRules": [
+        {
+          "id": "47c6800e-0387-4e66-9799-d0b31c26b736",
+          "target": "im_repositoryEntityDataInsert1/portletId",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$input/input/portletId",
+            "arguments": null
+          }
+        },
+        {
+          "id": "c2f0741b-92a1-46a2-b984-8731a0780974",
+          "target": "im_repositoryEntityDataInsert1/infoId",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$input/input/infoId",
+            "arguments": null
+          }
+        },
+        {
+          "id": "50631a02-4b47-4f55-997e-dd87df304a73",
+          "target": "im_repositoryEntityDataInsert1/bookmarkedFlg",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$input/input/bookmarkedFlg",
+            "arguments": null
+          }
+        },
+        {
+          "id": "74046b06-2944-4ce1-9ab2-ea871dee7a42",
+          "target": "im_repositoryEntityDataInsert1/userCd",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$account_context/userCd",
+            "arguments": null
+          }
+        },
+        {
+          "id": "bf56720a-1a0c-435e-a46d-3dd13518b7e5",
+          "target": "im_repositoryEntityDataInsert1/recordDate",
+          "source": {
+            "type": "value",
+            "name": null,
+            "path": "$session_properties/systemDate",
+            "arguments": null
+          }
+        }
+      ]
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 360,
+      "y": 700
+    },
+    "id": "3fced49e-eec8-4f27-ae78-6fa4a3efbc99",
+    "z": 90,
+    "attrs": {
+      "rect.body": {
+        "width": 240,
+        "fill": "#424242"
+      },
+      "rect.icon": {
+        "fill": "#424242"
+      },
+      "rect.title": {
+        "width": 190,
+        "fill": "#757575"
+      },
+      "rect.label": {
+        "width": 190,
+        "fill": "#9e9e9e"
+      },
+      "text.title": {
+        "text": "im_repositoryEntityDataInsert1"
+      },
+      "text.label": {
+        "text": "エンティティデータの登録"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_repositoryEntityDataInsert"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "entityId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "エンティティID",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "imrepo_entity_input_imprtl_portlet_info_tables_imprtl_portlet_info_bookmarked",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "imdatetime",
+          "properties": []
+        },
+        {
+          "id": "imrepo_entity_input_imprtl_portlet_info_tables_imprtl_portlet_info_bookmarked",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "portletId",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            },
+            {
+              "typeId": "string",
+              "name": "infoId",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            },
+            {
+              "typeId": "string",
+              "name": "userCd",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            },
+            {
+              "typeId": "string",
+              "name": "bookmarkedFlg",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            },
+            {
+              "typeId": "imdatetime",
+              "name": "recordDate",
+              "listingType": "none",
+              "basic": true,
+              "required": true
+            }
+          ]
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "entityId": "imprtl_portlet_info_tables_imprtl_portlet_info_bookmarked"
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const",
+      "$account_context",
+      "$session_properties"
+    ],
+    "additionalKeys": [],
+    "json": {
+      "version": 1,
+      "attrs": {},
+      "connectors": [
+        {
+          "id": "47c6800e-0387-4e66-9799-d0b31c26b736",
+          "source": {
+            "id": "85cd298e-72d1-4d19-a260-361452d37bd7",
+            "type": "$input",
+            "path": "$input\tinput\tportletId",
+            "port": "out"
+          },
+          "target": {
+            "id": "04eb95f5-df77-4b2e-b860-8288d0afda98",
+            "type": "$output",
+            "path": "im_repositoryEntityDataInsert1\tportletId",
+            "port": "in"
+          }
+        },
+        {
+          "id": "c2f0741b-92a1-46a2-b984-8731a0780974",
+          "source": {
+            "id": "f7a3911b-6329-42a2-9e41-3982d2bebb86",
+            "type": "$input",
+            "path": "$input\tinput\tinfoId",
+            "port": "out"
+          },
+          "target": {
+            "id": "9d093a9c-d328-4eda-9328-8e46ce92c38e",
+            "type": "$output",
+            "path": "im_repositoryEntityDataInsert1\tinfoId",
+            "port": "in"
+          }
+        },
+        {
+          "id": "50631a02-4b47-4f55-997e-dd87df304a73",
+          "source": {
+            "id": "9386ca76-3ff6-4418-b87c-70b29713c325",
+            "type": "$input",
+            "path": "$input\tinput\tbookmarkedFlg",
+            "port": "out"
+          },
+          "target": {
+            "id": "45aa7fdc-c532-45e7-a727-0ee63afa12f2",
+            "type": "$output",
+            "path": "im_repositoryEntityDataInsert1\tbookmarkedFlg",
+            "port": "in"
+          }
+        },
+        {
+          "id": "74046b06-2944-4ce1-9ab2-ea871dee7a42",
+          "source": {
+            "id": "1e30c0e7-ce97-4fe5-a62e-bfcc1e50df80",
+            "type": "$input",
+            "path": "$account_context\tuserCd",
+            "port": "out"
+          },
+          "target": {
+            "id": "6a54011f-e52a-4e51-906e-06e47eba38ba",
+            "type": "$output",
+            "path": "im_repositoryEntityDataInsert1\tuserCd",
+            "port": "in"
+          }
+        },
+        {
+          "id": "bf56720a-1a0c-435e-a46d-3dd13518b7e5",
+          "source": {
+            "id": "696756f3-0c2b-4b25-80ed-9902a9ab5023",
+            "type": "$input",
+            "path": "$session_properties\tsystemDate",
+            "port": "out"
+          },
+          "target": {
+            "id": "27967e08-c971-489a-b2a2-68cb278f6b02",
+            "type": "$output",
+            "path": "im_repositoryEntityDataInsert1\trecordDate",
+            "port": "in"
+          }
+        }
+      ],
+      "size": {
+        "width": 400,
+        "height": 760
+      }
+    }
+  },
+  "optionMap": {
+    "title": "im_repositoryEntityDataInsert1",
+    "label": "エンティティデータの登録",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

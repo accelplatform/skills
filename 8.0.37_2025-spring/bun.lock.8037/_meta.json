@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": "8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "packageManager": "bun"
+      },
+      "from": "bun.lock",
+      "to": "bun.lock"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "regex",
+      "pattern": "\\{\\{ARTIFACT_ID\\}\\}",
+      "replacement": "{{$artifactId}}"
+    }
+  ]
+}

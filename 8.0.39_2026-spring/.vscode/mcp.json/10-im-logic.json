@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "im_logic": {
+      "type": "http",
+      "url": "{{$endpoint}}/copilot/mcp/development/im_logic",
+      "headers": {
+        "Authorization": "Bearer {{$apiKey}}"
+      }
+    }
+  }
+}

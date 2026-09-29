@@ -1,0 +1,491 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-rest",
+  "definitionType": "rest",
+  "flowElementSample": {
+    "executeId": "sample-rest",
+    "alias": "sample_rest",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-rest",
+      "version": null
+    },
+    "label": "サンプル REST-API 呼び出し定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-rest",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "rest",
+        "definitionName": "Sample REST-API Definition",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_httpclient",
+          "iconId": null,
+          "elementProperties": {
+            "endpointExpression": "http://example.org/",
+            "requestMethod": "GET",
+            "requestType": "x-www-form-urlencoded",
+            "requestHeaderNames": [
+              "User-Agent"
+            ],
+            "requestHeaderExpressions": [
+              "LOGIC-DESIGNER INTRAMART/8.0 Version/8.0.0"
+            ],
+            "requestEncoding": "UTF-8",
+            "requestFormKeys": [
+              "Param1",
+              "Param2"
+            ],
+            "requestFormValueExpressions": [
+              "${param1}",
+              "${param2}"
+            ],
+            "followRedirect": true,
+            "requestTimeoutInSeconds": 30,
+            "responseType": "text",
+            "responseEncoding": "UTF-8",
+            "checkStatusCode": true
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "param1",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "param2",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "im_logic_object_1",
+                    "name": "status",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": false
+                  },
+                  {
+                    "typeId": "map",
+                    "name": "headers",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "body",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "im_logic_object_1",
+                "properties": [
+                  {
+                    "typeId": "integer",
+                    "name": "statusCode",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "reasonPhrase",
+                    "description": null,
+                    "listingType": "none",
+                    "required": false,
+                    "basic": true
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              },
+              {
+                "id": "integer",
+                "properties": []
+              },
+              {
+                "id": "any",
+                "properties": []
+              },
+              {
+                "id": "map",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプル REST-API 定義",
+          "en": "Sample REST-API Definition",
+          "zh_CN": "示例 REST-API 定义"
+        }
+      },
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 280,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 330
+    },
+    "id": "92b98b5a-beb9-473d-b32a-6bff4b013e3c",
+    "z": 8,
+    "attrs": {
+      "rect.body": {
+        "width": 280
+      },
+      "rect.title": {
+        "width": 230
+      },
+      "rect.label": {
+        "width": 230
+      },
+      "text.title": {
+        "text": "sample_rest"
+      },
+      "text.label": {
+        "text": "サンプル REST-API 呼び出し定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-rest"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "param1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "param2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "im_logic_object_1",
+              "name": "status",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "map",
+              "name": "headers",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "body",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "im_logic_object_1",
+          "properties": [
+            {
+              "typeId": "integer",
+              "name": "statusCode",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "reasonPhrase",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "any",
+          "properties": []
+        },
+        {
+          "id": "map",
+          "properties": []
+        }
+      ]
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-rest",
+      "version": 1,
+      "definitionType": "rest",
+      "definitionName": "Sample REST-API Definition",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_httpclient",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "param1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "param2",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "status",
+                  "typeId": "im_logic_object_1",
+                  "listingType": "none",
+                  "basic": false
+                },
+                {
+                  "name": "headers",
+                  "typeId": "map",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "body",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "im_logic_object_1",
+              "properties": [
+                {
+                  "name": "statusCode",
+                  "typeId": "integer",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "reasonPhrase",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            },
+            {
+              "id": "integer",
+              "properties": []
+            },
+            {
+              "id": "map",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "endpointExpression": "http://example.org/",
+          "requestMethod": "GET",
+          "requestType": "x-www-form-urlencoded",
+          "requestHeaderNames": [
+            "User-Agent"
+          ],
+          "requestHeaderExpressions": [
+            "LOGIC-DESIGNER INTRAMART/8.0 Version/8.0.0"
+          ],
+          "requestEncoding": "UTF-8",
+          "requestFormKeys": [
+            "Param1",
+            "Param2"
+          ],
+          "requestFormValueExpressions": [
+            "${param1}",
+            "${param2}"
+          ],
+          "followRedirect": true,
+          "requestTimeoutInSeconds": 30,
+          "responseType": "text",
+          "responseEncoding": "UTF-8",
+          "checkStatusCode": true
+        }
+      },
+      "localize": {
+        "ja": "サンプル REST-API 定義",
+        "en": "Sample REST-API Definition",
+        "zh_CN": "示例 REST-API 定义"
+      }
+    },
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_rest",
+    "label": "サンプル REST-API 定義",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

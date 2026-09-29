@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "resolve_entity_schema Response",
+  "description": "エンティティIDに基づく、タスクの入出力フィールド定義。get_task_template で取得したテンプレートの dataMapMetadata.inputDataDefinition / outputDataDefinition を上書きして使用する。",
+  "type": "object",
+  "required": [
+    "keyId",
+    "entityId",
+    "inputDataDefinition",
+    "outputDataDefinition"
+  ],
+  "properties": {
+    "keyId": {
+      "type": "string",
+      "description": "タスク種別ID",
+      "examples": [
+        "im_repositorySearchEntityData"
+      ]
+    },
+    "entityId": {
+      "type": "string",
+      "description": "解決したエンティティID",
+      "examples": [
+        "imprtl_portlet_info_tables_imprtl_portlet_info"
+      ]
+    },
+    "inputDataDefinition": {
+      "$ref": "#/$defs/dataDefinition",
+      "description": "エンティティに基づくタスク入力フィールド定義。タスクの mappingRules.target で参照可能なフィールドを決定する"
+    },
+    "outputDataDefinition": {
+      "$ref": "#/$defs/dataDefinition",
+      "description": "エンティティに基づくタスク出力フィールド定義。下流タスクの source.path で参照可能なフィールドを決定する"
+    }
+  },
+  "$defs": {
+    "dataDefinition": {
+      "type": "object",
+      "required": [
+        "entrypoint",
+        "typeDefinitions"
+      ],
+      "properties": {
+        "entrypoint": {
+          "$ref": "#/$defs/typeReference",
+          "description": "ルート型の参照"
+        },
+        "typeDefinitions": {
+          "type": "array",
+          "description": "型定義の一覧。entrypoint.typeId から参照される",
+          "items": {
+            "$ref": "#/$defs/typeDefinitionEntry"
+          }
+        }
+      }
+    },
+    "typeReference": {
+      "type": "object",
+      "required": [
+        "typeId",
+        "basic",
+        "required",
+        "listingType"
+      ],
+      "properties": {
+        "typeId": {
+          "type": "string",
+          "description": "typeDefinitions[].id を参照する",
+          "examples": [
+            "imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info"
+          ]
+        },
+        "basic": {
+          "type": "boolean",
+          "description": "プリミティブ型なら true"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "listingType": {
+          "type": "string",
+          "enum": [
+            "none",
+            "list"
+          ],
+          "description": "none = 単一値, list = 配列"
+        }
+      }
+    },
+    "typeDefinitionEntry": {
+      "type": "object",
+      "required": [
+        "id",
+        "properties"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "型ID。エンティティ由来の型（imrepo_entity_*）またはプリミティブ（string/integer/boolean 等）",
+          "examples": [
+            "imrepo_entity_search_imprtl_portlet_info_tables_imprtl_portlet_info",
+            "string",
+            "integer"
+          ]
+        },
+        "properties": {
+          "type": "array",
+          "description": "この型が持つフィールド一覧。プリミティブ型の場合は空配列。エンティティ型の場合はエンティティのカラム定義に対応する",
+          "items": {
+            "type": "object",
+            "required": [
+              "typeId",
+              "name",
+              "listingType",
+              "required",
+              "basic"
+            ],
+            "properties": {
+              "typeId": {
+                "type": "string",
+                "description": "フィールドの型ID"
+              },
+              "name": {
+                "type": "string",
+                "description": "フィールド名（エンティティのカラム名に対応）",
+                "examples": [
+                  "portletId",
+                  "infoId",
+                  "userCd",
+                  "bookmarkedFlg"
+                ]
+              },
+              "description": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "フィールドの説明"
+              },
+              "listingType": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "list"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "basic": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

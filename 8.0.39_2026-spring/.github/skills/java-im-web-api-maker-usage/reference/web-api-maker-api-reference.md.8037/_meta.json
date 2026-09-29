@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "web-api-maker-api-reference_ja.md",
+      "to": "web-api-maker-api-reference.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "web-api-maker-api-reference_zh_CN.md",
+      "to": "web-api-maker-api-reference.md"
+    },
+    {
+      "from": "web-api-maker-api-reference_en.md",
+      "to": "web-api-maker-api-reference.md"
+    }
+  ]
+}

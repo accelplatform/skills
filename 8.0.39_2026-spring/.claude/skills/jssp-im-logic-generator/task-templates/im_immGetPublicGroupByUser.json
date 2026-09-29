@@ -1,0 +1,253 @@
+{
+  "kind": "task",
+  "keyId": "im_immGetPublicGroupByUser",
+  "flowElementSample": {
+    "executeId": "im_immGetPublicGroupByUser1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_immGetPublicGroupByUser",
+      "version": null
+    },
+    "label": "所属グループの取得",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 240,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 2040,
+      "y": 2190
+    },
+    "id": "5ea242c9-f89c-47dd-8087-cebb0ee77821",
+    "z": 372,
+    "attrs": {
+      "rect.body": {
+        "width": 240,
+        "fill": "#5d4037"
+      },
+      "rect.icon": {
+        "fill": "#5d4037"
+      },
+      "rect.title": {
+        "width": 190,
+        "fill": "#785447"
+      },
+      "rect.label": {
+        "width": 190,
+        "fill": "#8c6d62"
+      },
+      "text.title": {
+        "text": "im_immGetPublicGroupByUser1"
+      },
+      "text.label": {
+        "text": "所属グループの取得"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_immGetPublicGroupByUser"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_public_group_GetPublicGroupByUserTaskKey",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_public_group_GetPublicGroupByUserTaskKey",
+          "properties": [
+            {
+              "typeId": "date",
+              "name": "targetDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "locale",
+              "name": "targetLocale",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "userCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "locale",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_public_group_GetPublicGroupByUserTaskResult",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_public_group_GetPublicGroupByUserTaskResult$PublicGroupInfoResult",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "description",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "name",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "publicGroupCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "publicGroupSetCd",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "shortName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_public_group_GetPublicGroupByUserTaskResult",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_public_group_GetPublicGroupByUserTaskResult$PublicGroupInfoResult",
+              "name": "publicGroups",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_immGetPublicGroupByUser1",
+    "label": "所属グループの取得",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

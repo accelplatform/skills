@@ -1,0 +1,27 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sleep infinity
+    user: vscode
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETUID
+      - SETGID
+    pids_limit: 512
+    mem_limit: 8g
+    cpus: 4.0
+    volumes:
+      - ..:/workspace:cached
+    environment:
+      - NO_PROXY=localhost,127.0.0.1
+      - PW_PROXY_BYPASS=127.0.0.1,<-loopback>

@@ -1,0 +1,220 @@
+{
+  "kind": "task",
+  "keyId": "im_createBarcode",
+  "flowElementSample": {
+    "executeId": "im_createBarcode1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_createBarcode",
+      "version": null
+    },
+    "label": "バーコード生成",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "format": "EAN_8"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 410,
+      "y": 850
+    },
+    "id": "afa9faea-c218-490d-9d16-e305f632ebaf",
+    "z": 87,
+    "attrs": {
+      "text.title": {
+        "text": "im_createBarcode1"
+      },
+      "text.label": {
+        "text": "バーコード生成"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_createBarcode"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "format",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "defaultValue": "EAN_8",
+        "type": "pulldown",
+        "label": "フォーマット",
+        "options": [
+          {
+            "name": "EAN_8",
+            "label": "EAN_8",
+            "value": "EAN_8"
+          },
+          {
+            "name": "EAN_13",
+            "label": "EAN_13",
+            "value": "EAN_13"
+          },
+          {
+            "name": "CODE_39",
+            "label": "CODE_39",
+            "value": "CODE_39"
+          },
+          {
+            "name": "CODE_93",
+            "label": "CODE_93",
+            "value": "CODE_93"
+          },
+          {
+            "name": "CODE_128",
+            "label": "CODE_128",
+            "value": "CODE_128"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_barcode_CreateBarcodeTaskInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_barcode_CreateBarcodeTaskInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "contents",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "height",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "width",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "integer",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "binary",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "binary",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "format": "EAN_8"
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_createBarcode1",
+    "label": "バーコード生成",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

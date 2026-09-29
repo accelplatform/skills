@@ -1,0 +1,411 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-csv-output",
+  "definitionType": "csv_output",
+  "flowElementSample": {
+    "executeId": "sample-csv-output",
+    "alias": "sample_csv_output",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-csv-output",
+      "version": null
+    },
+    "label": "サンプル CSV 出力定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-csv-output",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "csv_output",
+        "definitionName": "Sample CSV Output",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_csvOutput",
+          "iconId": null,
+          "elementProperties": {
+            "encoding": "UTF-8",
+            "quoteCharacter": "\"",
+            "delimiterCharacter": ",",
+            "endOfLineSymbols": "\n",
+            "addHeader": true,
+            "withBom": false,
+            "cols": [
+              {
+                "paramName": "param1",
+                "labelName": "PARAM1",
+                "dataType": "STRING",
+                "format": ""
+              },
+              {
+                "paramName": "param2",
+                "labelName": "PARAM2",
+                "dataType": "STRING",
+                "format": ""
+              }
+            ]
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "storage",
+                    "name": "outputFile",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "timezone",
+                    "name": "targetTimezone",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "im_logic_object_1",
+                    "name": "records",
+                    "description": null,
+                    "listingType": "list",
+                    "basic": false,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "im_logic_object_1",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "param1",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "param2",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              },
+              {
+                "id": "timezone",
+                "properties": []
+              },
+              {
+                "id": "storage",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプル CSV 出力定義",
+          "en": "Sample CSV Output",
+          "zh_CN": "示例 CSV 输出定义"
+        }
+      },
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 90,
+      "y": 470
+    },
+    "id": "e7b2a330-3c4d-4e5f-9a6b-7c8d9e0f1a23",
+    "z": 11,
+    "attrs": {
+      "text.title": {
+        "text": "sample_csv_output"
+      },
+      "text.label": {
+        "text": "サンプル CSV 出力定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-csv-output"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "storage",
+              "name": "outputFile",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "timezone",
+              "name": "targetTimezone",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "im_logic_object_1",
+              "name": "records",
+              "listingType": "list",
+              "required": false,
+              "basic": false
+            }
+          ]
+        },
+        {
+          "id": "im_logic_object_1",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "param1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "param2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "timezone",
+          "properties": []
+        },
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": []
+        }
+      ]
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-csv-output",
+      "version": 1,
+      "definitionType": "csv_output",
+      "definitionName": "Sample CSV Output",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_csvOutput",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "outputFile",
+                  "typeId": "storage",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "targetTimezone",
+                  "typeId": "timezone",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "records",
+                  "typeId": "im_logic_object_1",
+                  "listingType": "list",
+                  "basic": false
+                }
+              ]
+            },
+            {
+              "id": "im_logic_object_1",
+              "properties": [
+                {
+                  "name": "param1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "param2",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            },
+            {
+              "id": "timezone",
+              "properties": []
+            },
+            {
+              "id": "storage",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "encoding": "UTF-8",
+          "quoteCharacter": "\"",
+          "delimiterCharacter": ",",
+          "endOfLineSymbols": "\n",
+          "addHeader": true,
+          "withBom": false,
+          "cols": [
+            {
+              "paramName": "param1",
+              "labelName": "PARAM1",
+              "dataType": "STRING",
+              "format": ""
+            },
+            {
+              "paramName": "param2",
+              "labelName": "PARAM2",
+              "dataType": "STRING",
+              "format": ""
+            }
+          ]
+        }
+      },
+      "localize": {
+        "ja": "サンプル CSV 出力定義",
+        "en": "Sample CSV Output",
+        "zh_CN": "示例 CSV 输出定义"
+      }
+    },
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_csv_output",
+    "label": "サンプル CSV 出力定義",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

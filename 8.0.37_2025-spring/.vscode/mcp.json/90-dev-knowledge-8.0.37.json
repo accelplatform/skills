@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "dev-knowledge-8.0.37": {
+      "type": "http",
+      "url": "https://dev-knowledge.intra-mart.jp/8.0.37/mcp"
+    }
+  }
+}

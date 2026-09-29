@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "account-basic-usage_ja.md",
+      "to": "account-basic-usage.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "account-basic-usage_zh_CN.md",
+      "to": "account-basic-usage.md"
+    },
+    {
+      "from": "account-basic-usage_en.md",
+      "to": "account-basic-usage.md"
+    }
+  ]
+}
