@@ -1,0 +1,188 @@
+{
+  "kind": "task",
+  "keyId": "im_callFlow",
+  "flowElementSample": {
+    "executeId": "im_callFlow1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_callFlow",
+      "version": null
+    },
+    "label": "フロー呼び出し",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "flowId": "8hz1u7fz17dsd",
+      "recursive": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.CallFlowModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 520
+    },
+    "id": "f7e34346-09aa-449b-a039-5dda12e6284a",
+    "z": 10,
+    "attrs": {
+      "text.title": {
+        "text": "im_callFlow1"
+      },
+      "text.label": {
+        "text": "フロー呼び出し"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_callFlow"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "flowId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "フローID",
+        "options": []
+      },
+      {
+        "propertyName": "recursive",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "再帰呼び出し",
+        "text": "再帰呼び出しを許可する",
+        "options": [
+          {
+            "name": "recursive",
+            "label": "recursive",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "version",
+        "enable": false,
+        "required": false,
+        "array": false,
+        "label": "version",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "flowId": "8hz1u7fz17dsd",
+    "recursive": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_callFlow1",
+    "label": "フロー呼び出し",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

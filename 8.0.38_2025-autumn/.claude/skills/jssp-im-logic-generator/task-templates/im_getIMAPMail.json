@@ -1,0 +1,588 @@
+{
+  "kind": "task",
+  "keyId": "im_getIMAPMail",
+  "flowElementSample": {
+    "executeId": "im_getIMAPMail1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_getIMAPMail",
+      "version": null
+    },
+    "label": "IMAPメッセージの取得[開始]",
+    "comment": "",
+    "properties": {
+      "endPoint": "im_getIMAPMailEnd1"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 280,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 20,
+      "y": 2110
+    },
+    "id": "e84c0c9a-6853-49b5-b096-19436773e7c6",
+    "z": 54,
+    "attrs": {
+      "rect.body": {
+        "width": 280
+      },
+      "rect.title": {
+        "width": 230
+      },
+      "rect.label": {
+        "width": 230
+      },
+      "text.title": {
+        "text": "im_getIMAPMail1"
+      },
+      "text.label": {
+        "text": "IMAPメッセージの取得[開始]"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_getIMAPMail"
+    },
+    "pairElementKey": {
+      "type": "application",
+      "id": "im_getIMAPMailEnd"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "clearVariables",
+        "enable": true,
+        "required": false,
+        "array": true,
+        "label": "初期化する変数名",
+        "options": []
+      },
+      {
+        "propertyName": "condition",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "繰り返し条件",
+        "options": []
+      },
+      {
+        "propertyName": "endPoint",
+        "enable": false,
+        "required": false,
+        "array": false,
+        "label": "endPoint",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_GetMessageInfo",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailSearchTerm",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "body",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "endDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "from",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "seen",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "startDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "subject",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_GetMessageInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "folder",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailSearchTerm",
+              "name": "searchCondition",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailServerSettings",
+              "name": "serverSetting",
+              "listingType": "none",
+              "required": true,
+              "basic": false
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailServerSettings",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "accessToken",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "authentification",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "debug",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "host",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "password",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "port",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "ssl",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "starttls",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "user",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "loopStatus",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "loopStatus",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_IMAPMessageInfo",
+              "name": "item",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "long",
+              "name": "index",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_IMAPMessageInfo",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailMessageInfo$AttachmentFile",
+              "name": "attachmentFiles",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "bcc",
+              "listingType": "array",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "body",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "cc",
+              "listingType": "array",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailContentInfo",
+              "name": "contents",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "folder",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "from",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "map",
+              "name": "headers",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "messageNumber",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "receivedDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "sentDate",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailMessageInfo$MailStatus",
+              "name": "status",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "subject",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "to",
+              "listingType": "array",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "long",
+              "name": "uid",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailMessageInfo$AttachmentFile",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "contentType",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "binary",
+              "name": "fileData",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "fileName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "binary",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailContentInfo",
+          "properties": [
+            {
+              "typeId": "any",
+              "name": "content",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "contentType",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "disposition",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "fileName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "any",
+          "properties": []
+        },
+        {
+          "id": "map",
+          "properties": []
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailMessageInfo$MailStatus",
+          "properties": [
+            {
+              "typeId": "boolean",
+              "name": "answered",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "deleted",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "draft",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "flagged",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "recent",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "seen",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "long",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {},
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_getIMAPMail1",
+    "label": "IMAPメッセージの取得[開始]",
+    "inNum": 1,
+    "outNum": 1,
+    "pairElementId": "b2856bb9-c5bd-49f3-aab1-809042801580"
+  }
+}

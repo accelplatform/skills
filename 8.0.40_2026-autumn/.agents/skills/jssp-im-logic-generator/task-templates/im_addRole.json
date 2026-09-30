@@ -1,0 +1,219 @@
+{
+  "kind": "task",
+  "keyId": "im_addRole",
+  "flowElementSample": {
+    "executeId": "im_addRole1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_addRole",
+      "version": null
+    },
+    "label": "ロールの追加",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 1260,
+      "y": 1900
+    },
+    "id": "2039e463-173c-441d-b965-801be9c0f8de",
+    "z": 240,
+    "attrs": {
+      "rect.body": {
+        "fill": "#303f9f"
+      },
+      "rect.icon": {
+        "fill": "#303f9f"
+      },
+      "rect.title": {
+        "fill": "#3e50b4"
+      },
+      "rect.label": {
+        "fill": "#5b6abf"
+      },
+      "text.title": {
+        "text": "im_addRole1"
+      },
+      "text.label": {
+        "text": "ロールの追加"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_addRole"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_role_AddRoleTaskInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_role_AddRoleTaskInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "category",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "defaultLocaleDisplayName",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "map",
+              "name": "displayName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "notes",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "roleId",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "roleName",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "map",
+          "properties": []
+        },
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_addRole1",
+    "label": "ロールの追加",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

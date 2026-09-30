@@ -1,0 +1,186 @@
+{
+  "kind": "task",
+  "keyId": "im_registerApplicationLicense",
+  "flowElementSample": {
+    "executeId": "im_registerApplicationLicense1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_registerApplicationLicense",
+      "version": null
+    },
+    "label": "アプリケーションライセンスの登録",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 320,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 1200,
+      "y": 410
+    },
+    "id": "c35eeebc-fed6-4573-a7cd-309435d1beb7",
+    "z": 206,
+    "attrs": {
+      "rect.body": {
+        "width": 320,
+        "fill": "#303f9f"
+      },
+      "rect.icon": {
+        "fill": "#303f9f"
+      },
+      "rect.title": {
+        "width": 270,
+        "fill": "#3e50b4"
+      },
+      "rect.label": {
+        "width": 270,
+        "fill": "#5b6abf"
+      },
+      "text.title": {
+        "text": "im_registerApplicationLicense1"
+      },
+      "text.label": {
+        "text": "アプリケーションライセンスの登録"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_registerApplicationLicense"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_account_RegisterApplicationLicenseTaskInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_account_RegisterApplicationLicenseTaskInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "applicationIds",
+              "listingType": "array",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "userCd",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_registerApplicationLicense1",
+    "label": "アプリケーションライセンスの登録",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

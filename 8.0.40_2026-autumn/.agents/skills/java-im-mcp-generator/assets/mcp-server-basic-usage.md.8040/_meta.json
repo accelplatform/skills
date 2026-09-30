@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.40"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "mcp-server-basic-usage_ja.md",
+      "to": "mcp-server-basic-usage.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "mcp-server-basic-usage_zh_CN.md",
+      "to": "mcp-server-basic-usage.md"
+    },
+    {
+      "from": "mcp-server-basic-usage_en.md",
+      "to": "mcp-server-basic-usage.md"
+    }
+  ]
+}

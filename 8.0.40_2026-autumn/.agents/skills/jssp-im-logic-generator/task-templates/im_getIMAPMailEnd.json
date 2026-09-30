@@ -1,0 +1,130 @@
+{
+  "kind": "task",
+  "keyId": "im_getIMAPMailEnd",
+  "flowElementSample": {
+    "executeId": "im_getIMAPMailEnd1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_getIMAPMailEnd",
+      "version": null
+    },
+    "label": "IMAPメッセージの取得[終了]",
+    "comment": "",
+    "properties": {
+      "startPoint": "im_getIMAPMail1"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 280,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 20,
+      "y": 2310
+    },
+    "id": "b2856bb9-c5bd-49f3-aab1-809042801580",
+    "z": 55,
+    "attrs": {
+      "rect.body": {
+        "width": 280
+      },
+      "rect.title": {
+        "width": 230
+      },
+      "rect.label": {
+        "width": 230
+      },
+      "text.title": {
+        "text": "im_getIMAPMailEnd1"
+      },
+      "text.label": {
+        "text": "IMAPメッセージの取得[終了]"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_getIMAPMailEnd"
+    },
+    "pairElementKey": {
+      "type": "application",
+      "id": "im_getIMAPMail"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "startPoint",
+        "enable": false,
+        "required": false,
+        "array": false,
+        "label": "startPoint",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": null,
+    "outputDataDefinition": null
+  },
+  "dataMapTypical": {},
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_getIMAPMailEnd1",
+    "label": "IMAPメッセージの取得[終了]",
+    "inNum": 1,
+    "outNum": 1,
+    "pairElementId": "e84c0c9a-6853-49b5-b096-19436773e7c6"
+  }
+}

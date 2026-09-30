@@ -1,0 +1,7 @@
+[mcp_servers.staging_log]
+url = "{{$endpoint}}/copilot/mcp/development/staging/logs"
+http_headers = { Authorization = "Bearer {{$apiKey}}" }
+
+[mcp_servers.frontend_fix]
+url = "{{$endpoint}}/copilot/mcp/development/staging/frontend-fix"
+http_headers = { Authorization = "Bearer {{$apiKey}}" }

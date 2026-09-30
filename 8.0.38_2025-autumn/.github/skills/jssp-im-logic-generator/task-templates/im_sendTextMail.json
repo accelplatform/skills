@@ -1,0 +1,292 @@
+{
+  "kind": "task",
+  "keyId": "im_sendTextMail",
+  "flowElementSample": {
+    "executeId": "im_sendTextMail1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_sendTextMail",
+      "version": null
+    },
+    "label": "テキストメール送信",
+    "comment": "",
+    "properties": {
+      "failOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 1300
+    },
+    "id": "63460ef8-64c9-425e-a010-6e961adbfa25",
+    "z": 35,
+    "attrs": {
+      "text.title": {
+        "text": "im_sendTextMail1"
+      },
+      "text.label": {
+        "text": "テキストメール送信"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_sendTextMail"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": false,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "failOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "送信失敗時にエラーとする",
+        "options": [
+          {
+            "name": "failOnError",
+            "label": "failOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_generic_TextMailInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "address",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "personal",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "binary",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAttachmentFile",
+          "properties": [
+            {
+              "typeId": "binary",
+              "name": "attachmentFile",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "fileName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_TextMailInfo",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAttachmentFile",
+              "name": "attachmentFiles",
+              "listingType": "list",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "bcc",
+              "listingType": "array",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+              "name": "bccAddresses",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "body",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "cc",
+              "listingType": "array",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+              "name": "ccAddresses",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "from",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+              "name": "fromAddress",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "subject",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "to",
+              "listingType": "array",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+              "name": "toAddresses",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            }
+          ]
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "failOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_sendTextMail1",
+    "label": "テキストメール送信",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

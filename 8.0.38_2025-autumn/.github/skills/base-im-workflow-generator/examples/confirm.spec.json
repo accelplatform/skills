@@ -1,0 +1,28 @@
+{
+  "_comment": "確認ノードのサンプル: 申請 → 承認1 → 承認2 → 終了。確認ノードを承認1にぶら下げる（終端枝・next なし）",
+  "workflowName": "wf_simple_apply",
+  "shortName": "wf_sap",
+  "names": {
+    "en": "Simple Apply",
+    "ja": "簡易申請ワークフロー",
+    "zh_CN": "简易申请工作流"
+  },
+  "screenBasePath": "sample/wf_simple_apply/workflow",
+  "pattern": "straight",
+  "generationDate": "2026/04/02",
+  "nodes": [
+    { "id": "start",    "type": "start" },
+    { "id": "apply",    "type": "apply",   "plugin": { "suffix": "role", "targetCode": "im_workflow_user" }, "actionProcess": "sample/wf_simple_apply/workflow/action/action_process" },
+    { "id": "approve1", "type": "approve", "name": "Approve 1", "plugin": { "suffix": "role", "targetCode": "im_workflow_user" } },
+    { "id": "approve2", "type": "approve", "name": "Approve 2", "plugin": { "suffix": "role", "targetCode": "im_workflow_user" } },
+    { "id": "confirm",  "type": "confirm", "name": "Confirm",   "plugin": { "suffix": "role", "targetCode": "im_workflow_user" } },
+    { "id": "end",      "type": "end" }
+  ],
+  "edges": [
+    { "from": "start",    "to": "apply" },
+    { "from": "apply",    "to": "approve1" },
+    { "from": "approve1", "to": "approve2" },
+    { "from": "approve2", "to": "end" },
+    { "from": "approve1", "to": "confirm" }
+  ]
+}

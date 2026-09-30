@@ -1,0 +1,325 @@
+{
+  "kind": "userDefinition",
+  "keyId": "sample-xml-parse",
+  "definitionType": "xmlparser",
+  "flowElementSample": {
+    "executeId": "sample-xml-parse",
+    "alias": "sample_xml_parse",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-xml-parse",
+      "version": null
+    },
+    "label": "サンプル XML 解析定義",
+    "comment": "",
+    "properties": {
+      "definition": {
+        "definitionId": "sample-xml-parse",
+        "version": 1,
+        "categoryId": "",
+        "definitionType": "xmlparser",
+        "definitionName": "Sample XML Parse",
+        "sortNumber": 100,
+        "definitionData": {
+          "elementId": "im_xmlparser",
+          "iconId": null,
+          "elementProperties": {
+            "paths": [
+              {
+                "paramName": "string1",
+                "xpath": "/root/string1"
+              },
+              {
+                "paramName": "string2",
+                "xpath": "//string2"
+              }
+            ]
+          },
+          "inputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "binary",
+                    "name": "xml",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "binary",
+                "properties": []
+              }
+            ]
+          },
+          "outputDataDefinition": {
+            "entrypoint": {
+              "typeId": "root",
+              "basic": false,
+              "required": false,
+              "listingType": "none"
+            },
+            "typeDefinitions": [
+              {
+                "id": "root",
+                "properties": [
+                  {
+                    "typeId": "string",
+                    "name": "string1",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  },
+                  {
+                    "typeId": "string",
+                    "name": "string2",
+                    "description": null,
+                    "listingType": "none",
+                    "basic": true,
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "id": "string",
+                "properties": []
+              }
+            ]
+          }
+        },
+        "localize": {
+          "ja": "サンプル XML 解析定義",
+          "en": "Sample XML Parse",
+          "zh_CN": "示例 XML 解析定义"
+        }
+      },
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 90,
+      "y": 470
+    },
+    "id": "b0e5d660-6f7a-4b8c-9d0e-1f2a3b4c5d56",
+    "z": 11,
+    "attrs": {
+      "text.title": {
+        "text": "sample_xml_parse"
+      },
+      "text.label": {
+        "text": "サンプル XML 解析定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "sample-xml-parse"
+    },
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "binary",
+              "name": "xml",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "binary",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "root",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "root",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "string1",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "string2",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {
+    "definition": {
+      "categoryId": "",
+      "definitionId": "sample-xml-parse",
+      "version": 1,
+      "definitionType": "xmlparser",
+      "definitionName": "Sample XML Parse",
+      "sortNumber": 100,
+      "definitionData": {
+        "elementId": "im_xmlparser",
+        "iconId": null,
+        "inputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "xml",
+                  "typeId": "binary",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "binary",
+              "properties": []
+            }
+          ]
+        },
+        "outputDataDefinition": {
+          "entrypoint": {
+            "typeId": "root",
+            "listingType": "none",
+            "basic": false
+          },
+          "typeDefinitions": [
+            {
+              "id": "root",
+              "properties": [
+                {
+                  "name": "string1",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                },
+                {
+                  "name": "string2",
+                  "typeId": "string",
+                  "listingType": "none",
+                  "basic": true
+                }
+              ]
+            },
+            {
+              "id": "string",
+              "properties": []
+            }
+          ]
+        },
+        "elementProperties": {
+          "paths": [
+            {
+              "paramName": "string1",
+              "xpath": "/root/string1"
+            },
+            {
+              "paramName": "string2",
+              "xpath": "//string2"
+            }
+          ]
+        }
+      },
+      "localize": {
+        "ja": "サンプル XML 解析定義",
+        "en": "Sample XML Parse",
+        "zh_CN": "示例 XML 解析定义"
+      }
+    },
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "sample_xml_parse",
+    "label": "サンプル XML 解析定義",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

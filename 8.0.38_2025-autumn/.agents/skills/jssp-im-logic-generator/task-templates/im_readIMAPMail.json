@@ -1,0 +1,267 @@
+{
+  "kind": "task",
+  "keyId": "im_readIMAPMail",
+  "flowElementSample": {
+    "executeId": "im_readIMAPMail1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_readIMAPMail",
+      "version": null
+    },
+    "label": "IMAPメッセージを既読にする",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 280,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 40,
+      "y": 2440
+    },
+    "id": "ee28498c-8b69-4909-b722-b4ff4c0e812f",
+    "z": 59,
+    "attrs": {
+      "rect.body": {
+        "width": 280
+      },
+      "rect.title": {
+        "width": 230
+      },
+      "rect.label": {
+        "width": 230
+      },
+      "text.title": {
+        "text": "im_readIMAPMail1"
+      },
+      "text.label": {
+        "text": "IMAPメッセージを既読にする"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_readIMAPMail"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_ReadIMAPMessageTaskInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_ReadIMAPMessageTaskInfo",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "folder",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailServerSettings",
+              "name": "serverSetting",
+              "listingType": "none",
+              "required": true,
+              "basic": false
+            },
+            {
+              "typeId": "long",
+              "name": "uid",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "boolean",
+          "properties": []
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "integer",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_mail_MailServerSettings",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "accessToken",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "authentification",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "debug",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "host",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "password",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "integer",
+              "name": "port",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "ssl",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "boolean",
+              "name": "starttls",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "user",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "long",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_readIMAPMail1",
+    "label": "IMAPメッセージを既読にする",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

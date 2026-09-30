@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "standard-listener-usage_ja.md",
+      "to": "standard-listener-usage.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "standard-listener-usage_zh_CN.md",
+      "to": "standard-listener-usage.md"
+    },
+    {
+      "from": "standard-listener-usage_en.md",
+      "to": "standard-listener-usage.md"
+    }
+  ]
+}

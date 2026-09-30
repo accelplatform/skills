@@ -1,0 +1,339 @@
+{
+  "kind": "task",
+  "keyId": "im_readFromExcelPropertiesTask",
+  "flowElementSample": {
+    "executeId": "im_readFromExcelPropertiesTask1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_readFromExcelPropertiesTask",
+      "version": null
+    },
+    "label": "Excelプロパティ情報読み込み",
+    "comment": "",
+    "properties": {
+      "continueOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 280,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 800,
+      "y": 800
+    },
+    "id": "7fb1e100-cd60-44aa-a9df-7651a4add0aa",
+    "z": 148,
+    "attrs": {
+      "rect.body": {
+        "width": 280,
+        "fill": "#0096a6"
+      },
+      "rect.icon": {
+        "fill": "#0096a6"
+      },
+      "rect.title": {
+        "width": 230,
+        "fill": "#00bbd3"
+      },
+      "rect.label": {
+        "width": 230,
+        "fill": "#25c5d9"
+      },
+      "text.title": {
+        "text": "im_readFromExcelPropertiesTask1"
+      },
+      "text.label": {
+        "text": "Excelプロパティ情報読み込み"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_readFromExcelPropertiesTask"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "storage",
+        "basic": true,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "storage",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_excel_element_ReadFromExcelPropertiesInfo",
+        "basic": false,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "date",
+          "properties": []
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_excel_element_ReadFromExcelPropertiesInfoContent",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "contentStatus",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "contentType",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_excel_element_ReadFromExcelPropertiesInfo",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_excel_element_ReadFromExcelPropertiesInfoContent",
+              "name": "content",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "map",
+              "name": "customProperties",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_excel_element_CommonExcelPropertiesInfoDescription",
+              "name": "description",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_excel_element_ReadFromExcelPropertiesInfoOrigin",
+              "name": "origin",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_excel_element_CommonExcelPropertiesInfoDescription",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "categories",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "comments",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "subject",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "tags",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "title",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_excel_element_ReadFromExcelPropertiesInfoOrigin",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "author",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "company",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "contentCreated",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "dateLastPrinted",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "date",
+              "name": "dateLastSaved",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "lastSavedBy",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "manager",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "revisionNumber",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "versionNumber",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "map",
+          "properties": []
+        },
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_readFromExcelPropertiesTask1",
+    "label": "Excelプロパティ情報読み込み",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

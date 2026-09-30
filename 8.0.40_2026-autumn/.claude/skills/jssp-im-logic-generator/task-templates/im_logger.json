@@ -1,0 +1,199 @@
+{
+  "kind": "task",
+  "keyId": "im_logger",
+  "flowElementSample": {
+    "executeId": "im_logger1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_logger",
+      "version": null
+    },
+    "label": "ログ出力",
+    "comment": "",
+    "properties": {
+      "continueOnError": false,
+      "level": "INFO"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 900
+    },
+    "id": "543031a9-db1f-45e7-b796-2c396bf00965",
+    "z": 26,
+    "attrs": {
+      "text.title": {
+        "text": "im_logger1"
+      },
+      "text.label": {
+        "text": "ログ出力"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_logger"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "level",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "defaultValue": "INFO",
+        "type": "pulldown",
+        "label": "ログレベル",
+        "options": [
+          {
+            "name": "ERROR",
+            "label": "ERROR",
+            "value": "ERROR"
+          },
+          {
+            "name": "WARN",
+            "label": "WARN",
+            "value": "WARN"
+          },
+          {
+            "name": "INFO",
+            "label": "INFO",
+            "value": "INFO"
+          },
+          {
+            "name": "DEBUG",
+            "label": "DEBUG",
+            "value": "DEBUG"
+          },
+          {
+            "name": "TRACE",
+            "label": "TRACE",
+            "value": "TRACE"
+          }
+        ]
+      },
+      {
+        "propertyName": "loggerName",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "ロガー名",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "string",
+        "basic": true,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "string",
+          "properties": []
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "continueOnError": false,
+    "level": "INFO",
+    "loggerName": null
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_logger1",
+    "label": "ログ出力",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

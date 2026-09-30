@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.40"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "toolcalling-api-reference_ja.md",
+      "to": "toolcalling-api-reference.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "toolcalling-api-reference_zh_CN.md",
+      "to": "toolcalling-api-reference.md"
+    },
+    {
+      "from": "toolcalling-api-reference_en.md",
+      "to": "toolcalling-api-reference.md"
+    }
+  ]
+}

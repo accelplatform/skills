@@ -1,0 +1,246 @@
+{
+  "key": "any_app",
+  "shortName": "app",
+  "displayNames": {
+    "ja": "Any App",
+    "en": "Any App",
+    "zh_CN": "Any App"
+  },
+
+  "roles": [
+    {
+      "id": "app_manager",
+      "name": "any_app_manager",
+      "category": "any_app",
+      "displayNames": {
+        "ja": "Any App 管理者",
+        "en": "Any App Manager",
+        "zh_CN": "Any App 管理者"
+      }
+    }
+  ],
+
+  "authzResourceGroups": [
+    {
+      "id": "any-app-content-root",
+      "displayNames": {
+        "ja": "Any App ルーティング設定",
+        "en": "Any App Routing Settings",
+        "zh_CN": "Any App 路由表设定"
+      }
+    },
+    {
+      "id": "any-app-import",
+      "displayNames": {
+        "ja": "Any App インポート",
+        "en": "Any App Import",
+        "zh_CN": "Any App 导入"
+      }
+    },
+    {
+      "id": "any-app-export",
+      "displayNames": {
+        "ja": "Any App エクスポート",
+        "en": "Any App Export",
+        "zh_CN": "Any App 导出"
+      }
+    },
+    {
+      "id": "any-app-http-services",
+      "parentGroup": "http-services",
+      "displayNames": {
+        "ja": "Any App",
+        "en": "Any App",
+        "zh_CN": "Any App"
+      }
+    }
+  ],
+
+  "authzResources": [
+    {
+      "id": "any-app-content-maintenance",
+      "uri": "service://any_app/maintenance/content",
+      "parentGroup": "any-app-http-services",
+      "displayNames": {
+        "ja": "Any App コンテンツ管理",
+        "en": "Any App Content Maintenance",
+        "zh_CN": "Any App 内容管理"
+      }
+    },
+    {
+      "id": "any-app-route-maintenance",
+      "uri": "service://any_app/maintenance/route",
+      "parentGroup": "any-app-http-services",
+      "displayNames": {
+        "ja": "Any App ルーティング定義",
+        "en": "Any App Routing definition",
+        "zh_CN": "Any App 路由表定义"
+      }
+    },
+    {
+      "id": "any-app-import-maintenance",
+      "uri": "service://any_app/import",
+      "parentGroup": "any-app-http-services",
+      "displayNames": {
+        "ja": "Any App インポート",
+        "en": "Any App Import",
+        "zh_CN": "Any App 导入"
+      }
+    },
+    {
+      "id": "any-app-export-maintenance",
+      "uri": "service://any_app/export",
+      "parentGroup": "any-app-http-services",
+      "displayNames": {
+        "ja": "Any App エクスポート",
+        "en": "Any App Export",
+        "zh_CN": "Any App 导出"
+      }
+    },
+    {
+      "id": "any-app-search-master",
+      "uri": "service://any_app/search/master",
+      "parentGroup": "any-app-http-services",
+      "displayNames": {
+        "ja": "Any App マスタ検索",
+        "en": "Any App Search Master Data",
+        "zh_CN": "Any App 主表搜索"
+      }
+    },
+    {
+      "id": "any-app-item_select",
+      "uri": "service://any_app/item_select",
+      "parentGroup": "any-app-http-services",
+      "displayNames": {
+        "ja": "Any App 一覧選択",
+        "en": "Any App Item select",
+        "zh_CN": "Any App 一览选择"
+      }
+    }
+  ],
+
+  "_comment_authzPolicies": "tenant_manager は全 service リソース・全メニューグループに自動付与されるため記述不要。それ以外の対象ロール／ユーザのみ記述する。",
+  "authzPolicies": [
+    { "resource": "any-app-content-maintenance",  "type": "service", "action": "execute", "subject": "S(b_m_role:app_manager)",    "effect": "PERMIT" },
+    { "resource": "any-app-route-maintenance",    "type": "service", "action": "execute", "subject": "S(b_m_role:app_manager)",    "effect": "PERMIT" },
+    { "resource": "any-app-import-maintenance",   "type": "service", "action": "execute", "subject": "S(b_m_role:app_manager)",    "effect": "PERMIT" },
+    { "resource": "any-app-export-maintenance",   "type": "service", "action": "execute", "subject": "S(b_m_role:app_manager)",    "effect": "PERMIT" },
+
+    { "resource": "any-app-search-master", "type": "service", "action": "execute", "subject": "S(im_authz_meta_subject:authenticated)", "effect": "PERMIT" },
+    { "resource": "any-app-item_select",   "type": "service", "action": "execute", "subject": "S(im_authz_meta_subject:authenticated)", "effect": "PERMIT" },
+
+    { "resource": "REPLACE_WITH_MENU_GROUP_HASH", "type": "im-menu-group", "action": "read", "subject": "S(b_m_role:app_manager)",    "effect": "PERMIT" }
+  ],
+
+  "authzSubjectGroups": [
+    {
+      "sortKey": 900,
+      "expression": "S(b_m_role:app_manager)",
+      "displayNames": {
+        "ja": "Any App 管理者",
+        "en": "Any App Manager",
+        "zh_CN": "Any App 管理者"
+      }
+    }
+  ],
+
+  "menuGroups": [
+    {
+      "id": "any_app_sm-pc",
+      "category": "im_sitemap_pc",
+      "sortNumber": 2000,
+      "displayNames": {
+        "ja": "Any App",
+        "en": "Any App",
+        "zh_CN": "Any App"
+      },
+      "items": [
+        {
+          "id": "any_app_home_sm-pc",
+          "sortNumber": 10,
+          "url": "any_app/home",
+          "displayNames": {
+            "ja": "ホーム",
+            "en": "Home",
+            "zh_CN": "首页"
+          }
+        },
+        {
+          "id": "any_app_admin_sm-pc",
+          "sortNumber": 100,
+          "type": "folder",
+          "displayNames": {
+            "ja": "管理",
+            "en": "Admin",
+            "zh_CN": "管理"
+          },
+          "items": [
+            {
+              "id": "any_app_admin_users_sm-pc",
+              "sortNumber": 10,
+              "url": "any_app/admin/users",
+              "displayNames": {
+                "ja": "ユーザ管理",
+                "en": "User Management",
+                "zh_CN": "用户管理"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "jobScheduler": {
+    "jobCategory": {
+      "id": "app-job-category",
+      "displayNames": {
+        "ja": "Any App",
+        "en": "Any App",
+        "zh_CN": "Any App"
+      }
+    },
+    "jobnetCategory": {
+      "id": "app-jobnet-category",
+      "displayNames": {
+        "ja": "Any App",
+        "en": "Any App",
+        "zh_CN": "Any App"
+      }
+    },
+    "jobs": [
+      {
+        "id": "app-job-sample-batch",
+        "type": "JAVA",
+        "path": "com.example.any_app.job.SampleBatchJob",
+        "displayNames": {
+          "ja": "サンプルバッチ",
+          "en": "Sample Batch",
+          "zh_CN": "示例批处理"
+        }
+      }
+    ],
+    "jobnets": [
+      {
+        "id": "app-jobnet-sample-batch",
+        "disallowConcurrent": true,
+        "jobs": ["app-job-sample-batch"],
+        "displayNames": {
+          "ja": "サンプルバッチ",
+          "en": "Sample Batch",
+          "zh_CN": "示例批处理"
+        }
+      }
+    ]
+  },
+
+  "_comment_database": "ddl:true はサンプルデータセットアップでしか使わないテーブルのみに指定する。モジュール本体のテーブルはテナント環境セットアップ側で作成するため ddl を指定せず、DML のスケルトンにだけ現れる。",
+  "database": {
+    "tables": [
+      { "name": "any_app_data", "comment": "サンプルデータ" },
+      { "name": "any_app_demo", "comment": "デモ用テーブル", "ddl": true }
+    ]
+  },
+
+  "extendsImport": true
+}

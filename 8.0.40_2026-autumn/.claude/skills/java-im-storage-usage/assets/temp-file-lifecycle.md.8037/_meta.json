@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "temp-file-lifecycle_ja.md",
+      "to": "temp-file-lifecycle.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "temp-file-lifecycle_zh_CN.md",
+      "to": "temp-file-lifecycle.md"
+    },
+    {
+      "from": "temp-file-lifecycle_en.md",
+      "to": "temp-file-lifecycle.md"
+    }
+  ]
+}

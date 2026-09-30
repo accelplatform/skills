@@ -1,0 +1,332 @@
+{
+  "kind": "task",
+  "keyId": "im_sendHtmlMail",
+  "flowElementSample": {
+    "executeId": "im_sendHtmlMail1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_sendHtmlMail",
+      "version": null
+    },
+    "label": "HTMLメール送信",
+    "comment": "",
+    "properties": {
+      "failOnError": false
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 50,
+      "y": 1820
+    },
+    "id": "bc0f8753-b020-4d36-9586-b08880c9f760",
+    "z": 47,
+    "attrs": {
+      "text.title": {
+        "text": "im_sendHtmlMail1"
+      },
+      "text.label": {
+        "text": "HTMLメール送信"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_sendHtmlMail"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "continueOnError",
+        "enable": false,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "エラーでも処理を継続する",
+        "options": [
+          {
+            "name": "continueOnError",
+            "label": "continueOnError",
+            "value": "true"
+          }
+        ]
+      },
+      {
+        "propertyName": "failOnError",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "type": "flag",
+        "label": "エラーハンドリング",
+        "text": "送信失敗時にエラーとする",
+        "options": [
+          {
+            "name": "failOnError",
+            "label": "failOnError",
+            "value": "true"
+          }
+        ]
+      }
+    ],
+    "inputDataDefinition": {
+      "entrypoint": {
+        "typeId": "jp_co_intra_mart_foundation_logic_element_generic_HtmlMailInfo",
+        "basic": false,
+        "required": true,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "address",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "personal",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_HtmlMailInfo",
+          "properties": [
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAttachmentFile",
+              "name": "attachmentFiles",
+              "listingType": "list",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "bcc",
+              "listingType": "array",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+              "name": "bccAddresses",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "cc",
+              "listingType": "array",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+              "name": "ccAddresses",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "from",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+              "name": "fromAddress",
+              "listingType": "none",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "html",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_HtmlMailImage",
+              "name": "htmlImages",
+              "listingType": "list",
+              "required": false,
+              "basic": false
+            },
+            {
+              "typeId": "string",
+              "name": "subject",
+              "listingType": "none",
+              "required": true,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "text",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "to",
+              "listingType": "array",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAddress",
+              "name": "toAddresses",
+              "listingType": "array",
+              "required": false,
+              "basic": false
+            }
+          ]
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_HtmlMailImage",
+          "properties": [
+            {
+              "typeId": "string",
+              "name": "contentId",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "fileName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "binary",
+              "name": "imageFile",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        },
+        {
+          "id": "string",
+          "properties": []
+        },
+        {
+          "id": "binary",
+          "properties": []
+        },
+        {
+          "id": "jp_co_intra_mart_foundation_logic_element_generic_SendMailAttachmentFile",
+          "properties": [
+            {
+              "typeId": "binary",
+              "name": "attachmentFile",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            },
+            {
+              "typeId": "string",
+              "name": "fileName",
+              "listingType": "none",
+              "required": false,
+              "basic": true
+            }
+          ]
+        }
+      ]
+    },
+    "outputDataDefinition": {
+      "entrypoint": {
+        "typeId": "any",
+        "basic": true,
+        "required": false,
+        "listingType": "none"
+      },
+      "typeDefinitions": [
+        {
+          "id": "any",
+          "properties": []
+        }
+      ]
+    }
+  },
+  "dataMapTypical": {
+    "failOnError": false
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_sendHtmlMail1",
+    "label": "HTMLメール送信",
+    "inNum": 1,
+    "outNum": 1
+  }
+}

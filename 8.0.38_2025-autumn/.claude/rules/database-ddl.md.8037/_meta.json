@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "database-ddl_ja.md",
+      "to": "database-ddl.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "database-ddl_zh_CN.md",
+      "to": "database-ddl.md"
+    },
+    {
+      "from": "database-ddl_en.md",
+      "to": "database-ddl.md"
+    }
+  ]
+}

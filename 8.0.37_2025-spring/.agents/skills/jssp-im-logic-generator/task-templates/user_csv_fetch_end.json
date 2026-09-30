@@ -1,0 +1,104 @@
+{
+  "kind": "userDefinitionEnd",
+  "keyId": "$sample-csv-fetch$",
+  "definitionType": "csv_fetch_end",
+  "flowElementSample": {
+    "executeId": "$sample-csv-fetch$",
+    "alias": "$sample_csv_fetch$",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "$sample-csv-fetch$",
+      "version": null
+    },
+    "label": "[終了]サンプル CSV フェッチ定義",
+    "comment": "",
+    "properties": {
+      "startPoint": "sample-csv-fetch"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 360,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 10,
+      "y": 920
+    },
+    "id": "d6a1f221-2b3c-4d4e-9f5a-6b7c8d9e0f12",
+    "z": 28,
+    "attrs": {
+      "rect.body": {
+        "width": 360
+      },
+      "rect.title": {
+        "width": 310
+      },
+      "rect.label": {
+        "width": 310
+      },
+      "text.title": {
+        "text": "$sample_csv_fetch$"
+      },
+      "text.label": {
+        "text": "[終了]サンプル CSV フェッチ定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "$sample-csv-fetch$"
+    },
+    "pairElementKey": {
+      "type": "localUserDefinition",
+      "id": "sample-csv-fetch"
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {},
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "$sample_csv_fetch$",
+    "label": "[終了]サンプル CSV フェッチ定義",
+    "inNum": 1,
+    "outNum": 1,
+    "pairElementId": "c5f0e110-1a2b-4c3d-8e4f-5a6b7c8d9e01"
+  }
+}

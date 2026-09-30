@@ -1,0 +1,78 @@
+{
+  "workflowName": "expense_report",
+  "shortName": "exp_rpt",
+  "names": {
+    "en": "Expense Report",
+    "ja": "経費精算申請",
+    "zh_CN": "费用报销申请"
+  },
+  "screenBasePath": "sample/expense_report/workflow",
+  "pattern": "branch",
+  "generationDate": "2026/04/10",
+  "nodes": [
+    { "id": "start", "type": "start" },
+    { "id": "apply", "type": "apply", "plugin": { "suffix": "role", "targetCode": "im_workflow_user" } },
+    { "id": "01", "type": "approve", "name": "Section Manager", "plugin": { "suffix": "apply_user_department_and_post", "targetCode": "ps003" } },
+    { "id": "brs1", "type": "branch_start", "name": "Start branch",
+      "branchMethod": "rule",
+      "paths": [
+        { "condition": { "ruleId": "01", "property": "amount", "operator": "<", "value": "20000" },
+          "nodes": [] },
+        { "condition": { "ruleId": "02", "property": "amount", "operator": ">=", "value": "20000" },
+          "nodes": ["02", "brs2"] }
+      ]
+    },
+    { "id": "02", "type": "approve", "name": "Department Manager", "plugin": { "suffix": "apply_user_department_and_post", "targetCode": "ps002" } },
+    { "id": "brs2", "type": "branch_start", "name": "Start branch",
+      "branchMethod": "rule",
+      "paths": [
+        { "condition": { "ruleId": "03", "property": "amount", "operator": "<", "value": "50000" },
+          "nodes": [] },
+        { "condition": { "ruleId": "04", "property": "amount", "operator": ">=", "value": "50000" },
+          "nodes": ["prs"] }
+      ]
+    },
+    { "id": "prs", "type": "approve", "name": "President", "plugin": { "suffix": "apply_user_department_and_post", "targetCode": "ps001" } },
+    { "id": "bre2", "type": "branch_end", "name": "End branch" },
+    { "id": "bre1", "type": "branch_end", "name": "End branch" },
+    { "id": "end", "type": "end" }
+  ],
+  "edges": [
+    { "from": "start", "to": "apply" },
+    { "from": "apply", "to": "01" },
+    { "from": "01", "to": "brs1" },
+    { "from": "brs1", "to": "bre1" },
+    { "from": "brs1", "to": "02" },
+    { "from": "02", "to": "brs2" },
+    { "from": "brs2", "to": "bre2" },
+    { "from": "brs2", "to": "prs" },
+    { "from": "prs", "to": "bre2" },
+    { "from": "bre2", "to": "bre1" },
+    { "from": "bre1", "to": "end" }
+  ],
+  "matterProperties": [
+    { "key": "amount",     "type": "numeric", "names": { "en": "Amount",      "ja": "金額",     "zh_CN": "金额" } },
+    { "key": "item_total", "type": "numeric", "names": { "en": "Item Total",  "ja": "合計金額", "zh_CN": "合计金额" } }
+  ],
+  "rules": [
+    { "id": "01", "property": "amount", "operator": "<", "value": "20000",
+      "names": { "en": "Amount Less Than 20000", "ja": "金額20000未満", "zh_CN": "金额不足20000" } },
+    {
+      "id": "02",
+      "unionCondition": "and",
+      "conditions": [
+        { "property": "amount",     "operator": ">=", "value": "20000" },
+        { "property": "item_total", "operator": ">=", "value": "100000" }
+      ],
+      "names": {
+        "en": "Amount 20000 Or More AND Item Total 100000 Or More",
+        "ja": "金額20000以上、かつ、合計金額100000以上",
+        "zh_CN": "金额20000以上且合计金额100000以上"
+      }
+    },
+    { "id": "03", "property": "amount", "operator": "<", "value": "50000",
+      "names": { "en": "Amount Less Than 50000", "ja": "金額50000未満", "zh_CN": "金额不足50000" } },
+    { "id": "04", "property": "amount", "operator": ">=", "value": "50000",
+      "names": { "en": "Amount 50000 Or More", "ja": "金額50000以上", "zh_CN": "金额50000以上" } }
+  ]
+}

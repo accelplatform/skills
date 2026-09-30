@@ -1,0 +1,104 @@
+{
+  "kind": "userDefinitionEnd",
+  "keyId": "$sample-db-fetch$",
+  "definitionType": "db_fetch_end",
+  "flowElementSample": {
+    "executeId": "$sample-db-fetch$",
+    "alias": "$sample_db_fetch$",
+    "key": {
+      "type": "localUserDefinition",
+      "id": "$sample-db-fetch$",
+      "version": null
+    },
+    "label": "[終了]サンプルデータベースフェッチ定義",
+    "comment": "",
+    "properties": {
+      "startPoint": "sample-db-fetch"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ProcModel",
+    "size": {
+      "width": 360,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 10,
+      "y": 920
+    },
+    "id": "b459e384-a164-4308-ae1a-7f861d30f01b",
+    "z": 28,
+    "attrs": {
+      "rect.body": {
+        "width": 360
+      },
+      "rect.title": {
+        "width": 310
+      },
+      "rect.label": {
+        "width": 310
+      },
+      "text.title": {
+        "text": "$sample_db_fetch$"
+      },
+      "text.label": {
+        "text": "[終了]サンプルデータベースフェッチ定義"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "localUserDefinition",
+      "id": "$sample-db-fetch$"
+    },
+    "pairElementKey": {
+      "type": "localUserDefinition",
+      "id": "sample-db-fetch"
+    },
+    "iconId": "im_generic"
+  },
+  "dataMapTypical": {},
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "$sample_db_fetch$",
+    "label": "[終了]サンプルデータベースフェッチ定義",
+    "inNum": 1,
+    "outNum": 1,
+    "pairElementId": "45fc6d69-e476-498f-91d2-26d4c06801ae"
+  }
+}

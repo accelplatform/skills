@@ -1,0 +1,3 @@
+[mcp_servers.im_workflow]
+url = "{{$endpoint}}/copilot/mcp/development/im_workflow"
+http_headers = { Authorization = "Bearer {{$apiKey}}" }

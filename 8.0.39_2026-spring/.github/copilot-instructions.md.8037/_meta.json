@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "copilot-instructions_ja.md",
+      "to": "copilot-instructions.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "copilot-instructions_zh_CN.md",
+      "to": "copilot-instructions.md"
+    },
+    {
+      "from": "copilot-instructions_en.md",
+      "to": "copilot-instructions.md"
+    }
+  ]
+}

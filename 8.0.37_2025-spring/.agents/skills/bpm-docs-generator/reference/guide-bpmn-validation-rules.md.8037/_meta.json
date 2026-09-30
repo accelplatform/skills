@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "and": [
+      {
+        "accelplatformVersion": ">=8.0.37"
+      },
+      {
+        "module": "im_activiti"
+      }
+    ]
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "guide-bpmn-validation-rules_ja.md",
+      "to": "guide-bpmn-validation-rules.md"
+    },
+    {
+      "condition": {
+        "locale": "en"
+      },
+      "from": "guide-bpmn-validation-rules_en.md",
+      "to": "guide-bpmn-validation-rules.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "guide-bpmn-validation-rules_zh_CN.md",
+      "to": "guide-bpmn-validation-rules.md"
+    }
+  ]
+}

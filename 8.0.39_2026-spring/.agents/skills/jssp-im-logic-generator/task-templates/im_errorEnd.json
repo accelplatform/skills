@@ -1,0 +1,121 @@
+{
+  "kind": "task",
+  "keyId": "im_errorEnd",
+  "flowElementSample": {
+    "executeId": "im_errorEnd1",
+    "alias": null,
+    "key": {
+      "type": "application",
+      "id": "im_errorEnd",
+      "version": null
+    },
+    "label": "エラー終了",
+    "comment": "",
+    "properties": {
+      "errorMessage": "error message"
+    },
+    "mappingDefinition": {
+      "mappingRules": []
+    }
+  },
+  "cellSample": {
+    "type": "devs.ErrorModel",
+    "size": {
+      "width": 200,
+      "height": 50
+    },
+    "inPorts": [
+      "in"
+    ],
+    "outPorts": [
+      "out"
+    ],
+    "position": {
+      "x": 2740,
+      "y": 320
+    },
+    "id": "39d77a8a-3623-4819-a1a9-3e21c76f1aa3",
+    "z": 400,
+    "attrs": {
+      "rect.title": {
+        "width": 150
+      },
+      "text.title": {
+        "text": "im_errorEnd1"
+      },
+      "text.label": {
+        "text": "エラー終了"
+      },
+      ".inPorts>.port0>.port-label": {
+        "text": "in"
+      },
+      ".inPorts>.port0>.port-body": {
+        "port": {
+          "id": "in",
+          "type": "in"
+        }
+      },
+      ".outPorts>.port0>.port-label": {
+        "text": "out"
+      },
+      ".outPorts>.port0>.port-body": {
+        "port": {
+          "id": "out",
+          "type": "out"
+        }
+      }
+    }
+  },
+  "dataMapMetadata": {
+    "key": {
+      "type": "application",
+      "id": "im_errorEnd"
+    },
+    "elementProperties": [
+      {
+        "propertyName": "executeId",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "executeId",
+        "options": []
+      },
+      {
+        "propertyName": "alias",
+        "enable": true,
+        "required": false,
+        "array": false,
+        "label": "alias",
+        "options": []
+      },
+      {
+        "propertyName": "errorMessage",
+        "enable": true,
+        "required": true,
+        "array": false,
+        "label": "エラーメッセージ",
+        "options": []
+      }
+    ],
+    "inputDataDefinition": null,
+    "outputDataDefinition": null
+  },
+  "dataMapTypical": {
+    "errorMessage": "error message"
+  },
+  "dataMapMappingDefaults": {
+    "inputKeys": [
+      "$input",
+      "$variable",
+      "$const"
+    ],
+    "additionalKeys": [],
+    "json": {}
+  },
+  "optionMap": {
+    "title": "im_errorEnd1",
+    "label": "エラー終了",
+    "inNum": 1,
+    "outNum": 1
+  }
+}
