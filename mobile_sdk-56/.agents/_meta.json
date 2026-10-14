@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "type": "directory",
+  "conditions": {
+    "or": [
+      {
+        "agent": "codex"
+      },
+      {
+        "agent": "github-copilot"
+      }
+    ]
+  }
+}

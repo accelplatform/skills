@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "type": "directory",
+  "conditions": {
+    "projectType": "mobile"
+  },
+  "mobile": {
+    "expoSdk": "56",
+    "createExpo": {
+      "package": "create-expo@4.0.4",
+      "template": "default@56"
+    },
+    "expoSkills": {
+      "package": "skills@1.7.2",
+      "source": "expo/skills",
+      "skills": [
+        "expo-overview",
+        "expo-project-structure",
+        "expo-router",
+        "expo-animation",
+        "expo-native-ui",
+        "expo-design-system",
+        "expo-ui",
+        "expo-data-fetching",
+        "expo-dom",
+        "expo-web-to-native",
+        "expo-module",
+        "expo-brownfield",
+        "expo-dev-client",
+        "expo-examples",
+        "expo-app-clip",
+        "expo-upgrade",
+        "eas-app-stores",
+        "eas-hosting",
+        "eas-workflows",
+        "eas-observe",
+        "eas-update",
+        "eas-update-insights",
+        "eas-simulator"
+      ]
+    }
+  }
+}

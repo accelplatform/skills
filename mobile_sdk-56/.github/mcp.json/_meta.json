@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "type": "mcp",
+  "conditions": {
+    "agent": "github-copilot"
+  },
+  "files": [
+    {
+      "file": "10-expo.json"
+    }
+  ]
+}
