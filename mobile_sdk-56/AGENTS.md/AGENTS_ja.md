@@ -35,9 +35,9 @@ smartlime を使う作業では、次のスキルを使うこと。
 | IM-Copilot のアシスタントとのチャット | `smartlime-assistant` |
 | smartlime を使うコードのテスト（Jest） | `smartlime-testing` |
 
-Expo そのものの作業（画面遷移、UI、ネイティブ機能、SDK のアップグレード、ビルドと配布）は Expo 公式スキルを使うこと。まず `expo-overview` を読み、そこから目的のスキルを選ぶ。Claude Code では Expo のプラグイン、Codex と GitHub Copilot では `.agents/skills/` に導入されている。
+Expo そのものの作業（画面遷移、UI、ネイティブ機能、SDK のアップグレード、ビルドと配布）は Expo 公式スキルを使うこと。まず `expo-overview` を読み、そこから目的のスキルを選ぶ。Claude Code では Expo のプラグイン、Codex では `.agents/skills/` に導入されている。
 
-Expo MCP サーバ（`https://mcp.expo.dev/mcp`）は、Expo アカウントでサインインすると使える。Claude Code は `/mcp`、Codex は `codex mcp login expo` でサインインする。GitHub Copilot はサーバの起動時にサインインを求められる。
+Expo MCP サーバ（`https://mcp.expo.dev/mcp`）は、Expo アカウントでサインインすると使える。Claude Code は `/mcp`、Codex は `codex mcp login expo` でサインインする。
 
 ## 共通のルール
 

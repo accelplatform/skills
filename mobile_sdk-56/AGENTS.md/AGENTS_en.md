@@ -35,9 +35,9 @@ For work that uses smartlime, use the following skills.
 | Chatting with the IM-Copilot assistant | `smartlime-assistant` |
 | Testing code that uses smartlime (Jest) | `smartlime-testing` |
 
-For work on Expo itself (navigation, UI, native features, SDK upgrades, building and distribution), use the official Expo skills. Read `expo-overview` first and choose the skill you need from there. In Claude Code they are installed as the Expo plugin; in Codex and GitHub Copilot they are installed in `.agents/skills/`.
+For work on Expo itself (navigation, UI, native features, SDK upgrades, building and distribution), use the official Expo skills. Read `expo-overview` first and choose the skill you need from there. In Claude Code they are installed as the Expo plugin; in Codex they are installed in `.agents/skills/`.
 
-The Expo MCP server (`https://mcp.expo.dev/mcp`) is available after signing in with an Expo account. Sign in with `/mcp` in Claude Code and with `codex mcp login expo` in Codex. GitHub Copilot prompts you to sign in when the server starts.
+The Expo MCP server (`https://mcp.expo.dev/mcp`) is available after signing in with an Expo account. Sign in with `/mcp` in Claude Code and with `codex mcp login expo` in Codex.
 
 ## Common rules
 

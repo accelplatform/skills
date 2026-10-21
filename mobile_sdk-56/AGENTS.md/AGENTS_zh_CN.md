@@ -35,9 +35,9 @@
 | 与 IM-Copilot 助手聊天 | `smartlime-assistant` |
 | 使用 smartlime 的代码的测试（Jest） | `smartlime-testing` |
 
-Expo 本身的工作（画面跳转、UI、原生功能、SDK 升级、构建与分发）请使用 Expo 官方技能。首先阅读 `expo-overview`，再从中选择目标技能。在 Claude Code 中这些技能以 Expo 插件的形式提供，在 Codex 和 GitHub Copilot 中则安装在 `.agents/skills/` 下。
+Expo 本身的工作（画面跳转、UI、原生功能、SDK 升级、构建与分发）请使用 Expo 官方技能。首先阅读 `expo-overview`，再从中选择目标技能。在 Claude Code 中这些技能以 Expo 插件的形式提供，在 Codex 中则安装在 `.agents/skills/` 下。
 
-使用 Expo 账户登录后即可使用 Expo MCP 服务器（`https://mcp.expo.dev/mcp`）。Claude Code 通过 `/mcp` 登录，Codex 通过 `codex mcp login expo` 登录。GitHub Copilot 会在服务器启动时要求登录。
+使用 Expo 账户登录后即可使用 Expo MCP 服务器（`https://mcp.expo.dev/mcp`）。Claude Code 通过 `/mcp` 登录，Codex 通过 `codex mcp login expo` 登录。
 
 ## 通用规则
 
