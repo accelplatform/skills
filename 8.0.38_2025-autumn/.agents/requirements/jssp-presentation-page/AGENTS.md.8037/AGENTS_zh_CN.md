@@ -2,6 +2,17 @@
 
 > **适用范围**: 🟢 **始终** — 生成展示页面（`.html`）时适用。HTML 结构、验证、id 命名规约等。
 
+## UI 主题的选择
+
+- 提示词或规格书中明确指定了 UI 主题（纯 HTML、自定义主题等）时，遵循该指定
+- 不使用 imds 主题时，根标签的处理方式参见「实现方针」
+
+### imds 主题（默认）
+
+- 未明确指定 UI 主题时，使用 imds 主题生成画面
+- 页面骨架参考 `.agents/skills/jssp-imds-theme/assets/` 中的整页模板，UI 组件参考同一技能的 `reference/`（详情参见 `jssp-imds-theme` 技能）
+- `imuiShowErrorMessage` / `imuiShowSuccessMessage` / `imuiShowWarningMessage` 等消息显示 API 以及 `imuiCalendar` 可与 imds 主题同时使用
+
 ## 展示页面的标准实现方针
 
 ### 基本结构

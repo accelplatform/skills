@@ -14,6 +14,12 @@ TextboxControl 是在文本框内放置图标时使用的组件。
 | imds-textbox-control | div 元素 | 文本框控件容器 | 必须 |
 | is-left | imds-textbox-control | 图标放置在左侧 | 可选 |
 | is-right | imds-textbox-control | 图标放置在右侧（默认） | 可选 |
+| is-static | input.imds-textbox（内侧） | 仅供查看的静态显示状态（与 `readonly` 并用，Textbox 侧的类） | 可选 |
+| is-x-small | input.imds-textbox（内侧） | 超小尺寸 | 可选 |
+| is-small | input.imds-textbox（内侧） | 小尺寸 | 可选 |
+| is-normal | input.imds-textbox（内侧） | 标准尺寸 | 可选 |
+| is-medium | input.imds-textbox（内侧） | 中等尺寸 | 可选 |
+| is-large | input.imds-textbox（内侧） | 大尺寸 | 可选 |
 
 ## HTML 代码片段
 
@@ -37,6 +43,36 @@ TextboxControl 是在文本框内放置图标时使用的组件。
 ```html
 <div class="imds-textbox-control is-left">   <!-- 图标左 -->
 <div class="imds-textbox-control is-right">  <!-- 图标右 -->
+```
+
+### is-static（仅供查看的静态显示，添加到内侧 input）
+
+不可编辑值，但可以选择和复制值的仅供查看状态。在 `input.imds-textbox` 上添加 `is-static` 类和 `readonly` 属性（不添加到容器 `imds-textbox-control` 本身）。
+
+```html
+<div class="imds-textbox-control">
+  <input
+    type="text"
+    class="imds-textbox is-static"
+    readonly
+    value="text" />
+  <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+</div>
+```
+
+### size（尺寸，添加到内侧 input）
+
+在 `input.imds-textbox` 上添加尺寸类。图标尺寸指定比输入框小一级的类可取得平衡（`is-large` 的输入框配 `is-medium` 的图标等）。
+
+```html
+<div class="imds-textbox-control">
+  <input type="text" class="imds-textbox is-x-small" value="" />
+  <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+</div>
+<div class="imds-textbox-control">
+  <input type="text" class="imds-textbox is-large" value="" />
+  <span class="imds-icon is-medium"><i class="fa-solid fa-magnifying-glass"></i></span>
+</div>
 ```
 
 ## 组合示例
@@ -82,7 +118,7 @@ TextboxControl 是在文本框内放置图标时使用的组件。
         <input type="text" placeholder="选择分类" class="imds-textbox" readonly value="" />
         <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
       </div>
-      <div id="imds-popover-todo-replace-:r1:" role="menu" class="imds-popover-menu">
+      <div id="todo-replace-popover" role="menu" class="imds-popover-menu">
         <div class="imds-popover-content">contents</div>
       </div>
     </div>
@@ -122,6 +158,7 @@ TextboxControl 是在文本框内放置图标时使用的组件。
 
 - 文本框控件使用 `div.imds-textbox-control > input.imds-textbox + span.imds-icon` 的结构编写
 - 图标位置默认为右侧（可省略 `is-right`）
+- `is-static` / 尺寸类（`is-x-small`～`is-large`）不添加到 `imds-textbox-control`，而是添加到内侧的 `input.imds-textbox`
 - 清除按钮在 `imds-field-control` 内与 `imds-textbox-control` 并列放置
 - 组合框是用 Popover（`imds-popover`）包裹 `imds-textbox-control`
 - 验证错误时，在 `imds-field` 上添加 `imds-validation-error`，并用 `imds-error-text` 显示消息

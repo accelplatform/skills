@@ -97,6 +97,26 @@ Add a size class to `div.imds-collapse-message`.
 <div class="imds-collapse-message is-large">    <!-- Large -->
 ```
 
+### No Icon
+
+When an icon is not needed or you want a simpler appearance, omit `span.imds-icon` inside `imds-message-title` and place only `<p>`.
+
+```html
+<div class="imds-collapse-message">
+  <input type="checkbox" id="todo-replace-:r1:" />
+  <label for="todo-replace-:r1:">
+    <div class="imds-message-title"><p>Configure notification features and methods.</p></div>
+    <span class="imds-icon imds-collapse-message-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+  </label>
+  <div class="imds-message-content">
+    <ul>
+      <li>In message notification settings, configure the media for receiving notifications for each feature.</li>
+      <li>In general notification settings, configure the email address for receiving general notifications.</li>
+    </ul>
+  </div>
+</div>
+```
+
 ## Implementation Notes
 
 - Open/close is controlled by CSS only through the `input[type="checkbox"]` and `label` combination (no JavaScript required)

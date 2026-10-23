@@ -26,10 +26,16 @@ Message is a component for presenting information that you want users to read.
 | is-danger | imds-message | Danger (red) | Optional |
 | is-success | imds-message | Success (green) | Optional |
 | is-error | imds-message | Error (red) | Optional |
+| is-x-small | imds-message | Extra small size | Optional |
+| is-small | imds-message | Small size | Optional |
+| is-normal | imds-message | Normal size (default) | Optional |
+| is-medium | imds-message | Medium size | Optional |
+| is-large | imds-message | Large size | Optional |
+| imds-message-content-only | imds-message | Shows only the detail (`imds-message-content`). Places the icon and body directly without `imds-message-title` | Optional |
 
 ## HTML Snippets
 
-### Basic message
+### Basic Message
 
 ```html
 <div class="imds-message">
@@ -47,7 +53,7 @@ The following sections show only the differences from the basic message.
 
 ## Variations
 
-### style
+### style (Style)
 
 Add a style class to `div.imds-message`.
 
@@ -56,7 +62,7 @@ Add a style class to `div.imds-message`.
 <div class="imds-message is-borderless">  <!-- Borderless -->
 ```
 
-### color
+### color (Color)
 
 Add a color class to `div.imds-message`.
 Change the icon according to the color.
@@ -69,7 +75,7 @@ Change the icon according to the color.
 <div class="imds-message is-error">    <!-- Error: fa-circle-xmark -->
 ```
 
-### Title only (no body)
+### Title Only (No Body)
 
 Omit `imds-message-content`.
 
@@ -82,7 +88,61 @@ Omit `imds-message-content`.
 </div>
 ```
 
-### Using a list in the body
+### No Icon
+
+Omit `span.imds-icon` inside `imds-message-title`. Use this when an icon is unnecessary or you want a simpler appearance. When combined with `imds-message-content-only`, omit the icon placed directly under the container.
+
+```html
+<div class="imds-message">
+  <div class="imds-message-title"><p>About Cache</p></div>
+  <div class="imds-message-content">
+    <p>Caches enumeration types, dictionary items, entities, and other information used in IM-Repository.</p>
+  </div>
+</div>
+```
+
+Title only, without an icon:
+
+```html
+<div class="imds-message">
+  <div class="imds-message-title"><p>About Cache</p></div>
+</div>
+```
+
+### Content Only
+
+Use this when the body is more important than the title, or to save space with long text. Add `imds-message-content-only` to `div.imds-message` and place the icon and `imds-message-content` directly without `imds-message-title`.
+
+```html
+<div class="imds-message imds-message-content-only">
+  <span class="imds-icon is-medium"><i class="fa-solid fa-circle-info"></i></span>
+  <div class="imds-message-content"><p>Defines the information for creating application screens using IM-BloomMaker.</p></div>
+</div>
+```
+
+When also omitting the icon:
+
+```html
+<div class="imds-message imds-message-content-only">
+  <div class="imds-message-content">
+    <p>Caches enumeration types, dictionary items, entities, and other information used in IM-Repository.</p>
+  </div>
+</div>
+```
+
+### size (Size)
+
+Add a size class to `div.imds-message`. Normally use `is-normal` (default) and choose others as needed.
+
+```html
+<div class="imds-message is-x-small">  <!-- Extra small -->
+<div class="imds-message is-small">    <!-- Small -->
+<div class="imds-message is-normal">   <!-- Normal (default) -->
+<div class="imds-message is-medium">   <!-- Medium -->
+<div class="imds-message is-large">    <!-- Large -->
+```
+
+### Using a List in the Body
 
 Place a `<ul>` inside `imds-message-content`.
 
@@ -101,3 +161,4 @@ Place a `<ul>` inside `imds-message-content`.
 - `imds-message-content` is optional. Omit the body if the title alone is sufficient
 - `is-outlined` and `is-borderless` are mutually exclusive (do not apply both simultaneously)
 - The body can freely combine `<p>` and `<ul>`
+- When using `imds-message-content-only`, do not use `imds-message-title`; place the icon (`span.imds-icon`, optional) and `imds-message-content` directly under `imds-message`

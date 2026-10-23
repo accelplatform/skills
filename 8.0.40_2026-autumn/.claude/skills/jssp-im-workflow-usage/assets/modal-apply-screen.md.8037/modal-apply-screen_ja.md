@@ -197,16 +197,40 @@ function transferErrorPage(code, message) {
 <!-- ヘッダ -->
 <imart type="head">
   <!-- タイトル -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- セキュアトークン（処理モーダル方式では http-equiv 形式を使用すること） -->
   <meta http-equiv="X-Intramart-Secure-Token" content="<imart type="imSecureToken" mode="value" />"/>
   <!-- 処理モーダル API（defer 必須） -->
   <script src="im_workflow/js/api_base.js" defer></script>
+  <!-- テーマごとに異なるコンテンツ表示領域の高さ・幅を制御する CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- プレゼンテーションページの独自スタイル -->
   <style>
-    .button-spacing {
+    /* レイアウト制御用スタイル */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
     }
   </style>
   <!-- プレゼンテーションページのスクリプト -->
@@ -330,6 +354,11 @@ function transferErrorPage(code, message) {
         };
       }
 
+      // フォームの暗黙送信（入力欄での Enter キー押下）によるページ再読み込みを防止する
+      document.getElementById('main-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+      });
+
       // 戻るボタン クリック時イベント
       document.getElementById('back-button').addEventListener('click', () => {
         imWorkflow.transition.returnTo();
@@ -375,8 +404,9 @@ function transferErrorPage(code, message) {
         // 申請/再申請完了後の処理
         if (result && result.isProcessDone) {
           imuiShowSuccessMessage(isReapply ? '再申請が完了しました。' : '申請が完了しました。');
-          imWorkflow.transition.afterProcess();
         }
+        // 処理モーダルを閉じた後のページ遷移（完了・キャンセルにかかわらず呼び出す）
+        imWorkflow.transition.afterProcess();
       });
 
       // 一時保存ボタン クリック時イベント（async 必須）
@@ -403,8 +433,9 @@ function transferErrorPage(code, message) {
         // 一時保存完了後の処理
         if (result && result.isProcessDone) {
           imuiShowSuccessMessage('一時保存が完了しました。');
-          imWorkflow.transition.afterProcess();
         }
+        // 処理モーダルを閉じた後のページ遷移（完了・キャンセルにかかわらず呼び出す）
+        imWorkflow.transition.afterProcess();
       });
 
       // エントリーポイント
@@ -420,10 +451,10 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="戻る">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="戻る" aria-label="戻る">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
       </button>
     </div>
@@ -437,8 +468,8 @@ function transferErrorPage(code, message) {
       <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
     </div>
   </header>
-  <main>
-    <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+  <main class="pgstyle-layout-main">
+    <form id="main-form" class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
       <!-- TODO: セクション・フィールドをここに実装する -->
       <!-- 以下はサンプル構造（フィールド実装例） -->
       <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
@@ -454,7 +485,7 @@ function transferErrorPage(code, message) {
                 <div class="imds-field-control">
                   <input type="text" id=":field1:" class="imds-textbox" value="" />
                 </div>
-                <span class="imds-error-text" for=":field1:" style="display:none;"></span>
+                <span class="imds-error-text" for=":field1:" id="error-field1" style="display:none;"></span>
               </div>
             </div>
           </div>
@@ -473,8 +504,8 @@ function transferErrorPage(code, message) {
           </div>
         </div>
       </section>
-    </div>
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+    </form>
+    <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
       <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">申請</button>
       <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">一時保存</button>
     </div>
@@ -505,15 +536,17 @@ function transferErrorPage(code, message) {
 - **`userParameter` のキー名をアクション処理の `userParam` と一致させること**
   - アクション処理（`action_process.js`）で `userParam.fieldName` として読み取るキー名と完全に一致させる
   - `buildUserParameter()` 関数にまとめることで申請・一時保存ボタン両方で同じデータを渡せる
-- **`showApply()` / `showTemporarySave()` ともに `isProcessDone` が true のときのみ `imWorkflow.transition.afterProcess()` を呼び出すこと**
-  - `showApply()`: 申請が完了した場合のみ呼び出す（申請完了後に申請一覧へ遷移）
-  - `showTemporarySave()`: 一時保存が完了した場合のみ呼び出す（失敗・キャンセル時は画面に留まりユーザが修正できるようにする）
+- **`showApply()` / `showTemporarySave()` ともに、完了・キャンセルにかかわらず `imWorkflow.transition.afterProcess()` を呼び出すこと**
+  - 完了時（`isProcessDone` が true）は完了メッセージを表示したうえで、呼び出し元画面へ遷移する
+  - キャンセル時は案件の処理が行われていないため `afterProcess()` は何もせず、画面に留まる（ユーザは入力内容を修正できる）
 - **セキュアトークンタグの形式に注意すること**
   - `<meta name="im_secure_token">` ではなく `<meta http-equiv="X-Intramart-Secure-Token">` を使用する
 - **`api_base.js` の `defer` 属性を省略しないこと**
 - **ヘッダに「戻る」ボタンを配置すること**
   - `imds-header-back-button` div + `back-button` id のボタンを `imds-header-icon` の前に配置する
   - クリック時は `imWorkflow.transition.returnTo()` を呼び出す
+- **入力欄は `<form id="main-form" class="imds-form">` で囲むこと**（`jssp-imds-theme` の `assets/imds-form-page.md` と同じ骨格）
+  - ボタンはすべて `type="button"` で処理モーダルを JS から開くため、フォームはネイティブ送信しない。入力欄での Enter キー押下による暗黙送信でページが再読み込みされないよう、`submit` イベントで `preventDefault()` する
 - **申請・一時保存ボタンのイベントリスナーは `async` 関数にすること**
 - **ルーティング XML の作成を忘れないこと**
   - 申請画面への URL が `routing-jssp-config` に登録されていないとアクセス不能になる

@@ -1,68 +1,68 @@
-# Flexbox & Grid（配置・グリッドユーティリティ）
+# Flexbox & Grid (Alignment and Grid Utility)
 
-## 基本情報
+## Overview
 
-Flexbox & Grid は、Flex / Grid コンテナ内の要素の整列（Align self）と、CSS Grid による行・列レイアウト（Grid）を提供する imds ヘルパークラス群である。これらは imds のユーティリティクラスであり、`imds-field` / `imds-field-group` 等のコンポーネント固有クラスと組み合わせて使う。単独のコンポーネントとして使うものではない。
+Flexbox & Grid is a set of imds helper classes that provide alignment of elements inside Flex / Grid containers (Align self) and row/column layouts using CSS Grid (Grid). These are imds utility classes used in combination with component-specific classes such as `imds-field` / `imds-field-group`. They are not used as standalone components.
 
-- 抽出元: `uiux-share/helper/Flexbox & Grid.md`（Align self）および `uiux-share/layout/Grid.md`（Grid）
-- 補足: `uiux-share/helper/Flexbox & Grid.md` 自体には Grid（`imds-grid` 等）の記述が無く、Grid 相当のクラス定義は `uiux-share/layout/Grid.md` にのみ存在する。本ファイルはその両方を統合したものである。
+- Source: `uiux-share/helper/Flexbox & Grid.md` (Align self) and `uiux-share/layout/Grid.md` (Grid)
+- Note: `uiux-share/helper/Flexbox & Grid.md` itself does not describe Grid (`imds-grid`, etc.); the Grid class definitions exist only in `uiux-share/layout/Grid.md`. This file merges both.
 
 ## CSS Classes Reference
 
 ### Align self
 
-| クラス名 | 付与先 | 用途 | 値（Property: Value） |
+| Class name | Applied to | Purpose | Value (Property: Value) |
 |----------|--------|------|----------------------|
-| `is-align-self-start` | Flex/Grid コンテナの子要素 | 上揃え | `align-self: start;` |
-| `is-align-self-center` | Flex/Grid コンテナの子要素 | 中央揃え | `align-self: center;` |
-| `is-align-self-end` | Flex/Grid コンテナの子要素 | 下揃え | `align-self: end;` |
+| `is-align-self-start` | Child element of a Flex/Grid container | Top alignment | `align-self: start;` |
+| `is-align-self-center` | Child element of a Flex/Grid container | Center alignment | `align-self: center;` |
+| `is-align-self-end` | Child element of a Flex/Grid container | Bottom alignment | `align-self: end;` |
 
-### Grid（基本構成）
+### Grid (Basic Structure)
 
-| クラス名 | 付与先 | 用途 | 必須/オプション |
+| Class name | Applied to | Purpose | Required/Optional |
 |----------|--------|------|----------------|
-| `imds-grid` | グリッドコンテナとなる要素 | CSS Grid コンテナを有効化する | 必須 |
-| `imds-grid-cell` | `imds-grid` の直下の子要素 | グリッドセルとして扱う | 必須 |
+| `imds-grid` | Element serving as the grid container | Enables a CSS Grid container | Required |
+| `imds-grid-cell` | Direct child of `imds-grid` | Treated as a grid cell | Required |
 
-### Grid（共通の列数指定 — 全画面サイズ共通）
+### Grid (Common Column Count — All Screen Sizes)
 
-| クラス名 | 用途 | 値 |
+| Class name | Purpose | Value |
 |----------|------|----|
-| `has-cols-1` 〜 `has-cols-12` | 全ての画面サイズで指定した列数を表示する | 列数: 1〜12（デフォルトは2列） |
+| `has-cols-1` to `has-cols-12` | Displays the specified number of columns at all screen sizes | Columns: 1 to 12 (default is 2 columns) |
 
-### Grid（ブレイクポイント別の列数指定）
+### Grid (Column Count per Breakpoint)
 
-| クラス名 | 用途 | 値 |
+| Class name | Purpose | Value |
 |----------|------|----|
-| `has-small-mobile-cols-N` | Small Mobile 以上のブレイクポイントで N 列にする（N=1〜12） | 列数: N |
-| `has-mobile-cols-N` | Mobile 以上のブレイクポイントで N 列にする（N=1〜12） | 列数: N |
-| `has-tablet-cols-N` | Tablet 以上のブレイクポイントで N 列にする（N=1〜12） | 列数: N |
+| `has-small-mobile-cols-N` | N columns at the Small Mobile breakpoint and above (N=1 to 12) | Columns: N |
+| `has-mobile-cols-N` | N columns at the Mobile breakpoint and above (N=1 to 12) | Columns: N |
+| `has-tablet-cols-N` | N columns at the Tablet breakpoint and above (N=1 to 12) | Columns: N |
 
-### Grid（固定の列結合指定 — 全画面サイズ共通）
+### Grid (Fixed Column Span — All Screen Sizes)
 
-| クラス名 | 付与先 | 用途 | 値 |
+| Class name | Applied to | Purpose | Value |
 |----------|--------|------|----|
-| `is-col-span-N`（N=1〜12） | `imds-grid-cell` | 全ての画面サイズで、要素が N 列分にまたがるように結合する | 結合列数: N |
+| `is-col-span-N` (N=1 to 12) | `imds-grid-cell` | Makes the element span N columns at all screen sizes | Spanned columns: N |
 
-### Grid（ブレイクポイント別の列結合指定）
+### Grid (Column Span per Breakpoint)
 
-| クラス名 | 付与先 | 用途 | 値 |
+| Class name | Applied to | Purpose | Value |
 |----------|--------|------|----|
-| `is-small-mobile-col-span-N` | `imds-grid-cell` | Small Mobile 以上のブレイクポイントで N 列分にまたがる | 結合列数: N |
-| `is-mobile-col-span-N` | `imds-grid-cell` | Mobile 以上のブレイクポイントで N 列分にまたがる | 結合列数: N |
-| `is-tablet-col-span-N` | `imds-grid-cell` | Tablet 以上のブレイクポイントで N 列分にまたがる | 結合列数: N |
+| `is-small-mobile-col-span-N` | `imds-grid-cell` | Spans N columns at the Small Mobile breakpoint and above | Spanned columns: N |
+| `is-mobile-col-span-N` | `imds-grid-cell` | Spans N columns at the Mobile breakpoint and above | Spanned columns: N |
+| `is-tablet-col-span-N` | `imds-grid-cell` | Spans N columns at the Tablet breakpoint and above | Spanned columns: N |
 
-## 使用例
+## Usage Examples
 
-### Align self: Field の縦位置を揃える
+### Align self: Aligning the vertical position of Fields
 
-適用前（上寄せのまま）
+Before (remains top-aligned)
 
 ```html
 <div class="imds-field-group">
   <div class="imds-field-group-control is-horizontal">
     <div class="imds-field">
-      <div class="imds-field-label"><label for=":r0:">メモリ容量</label></div>
+      <div class="imds-field-label"><label for=":r0:">Memory Capacity</label></div>
       <div class="imds-field-control">
         <input type="text" id=":r0:" class="imds-textbox" value="" />
       </div>
@@ -79,13 +79,13 @@ Flexbox & Grid は、Flex / Grid コンテナ内の要素の整列（Align self�
 </div>
 ```
 
-適用後（`is-align-self-end` を付与し、ラベルの無いフィールドを他フィールドの入力欄と縦位置を揃える）
+After (add `is-align-self-end` to vertically align the field without a label with the input of the other field)
 
 ```html
 <div class="imds-field-group">
   <div class="imds-field-group-control is-horizontal">
     <div class="imds-field">
-      <div class="imds-field-label"><label for=":r3:">メモリ容量</label></div>
+      <div class="imds-field-label"><label for=":r3:">Memory Capacity</label></div>
       <div class="imds-field-control">
         <input type="text" id=":r3:" class="imds-textbox" value="" />
       </div>
@@ -102,7 +102,7 @@ Flexbox & Grid は、Flex / Grid コンテナ内の要素の整列（Align self�
 </div>
 ```
 
-### Grid: 基本構成（デフォルト2列）
+### Grid: Basic structure (default 2 columns)
 
 ```html
 <div class="imds-grid">
@@ -113,17 +113,17 @@ Flexbox & Grid は、Flex / Grid コンテナ内の要素の整列（Align self�
 </div>
 ```
 
-### Grid: 共通の列数指定（12列）
+### Grid: Common column count (12 columns)
 
 ```html
 <div class="imds-grid has-cols-12">
   <div class="imds-grid-cell">cell 1</div>
   <div class="imds-grid-cell">cell 2</div>
-  <!-- ... cell 12 まで続く ... -->
+  <!-- ... continues up to cell 12 ... -->
 </div>
 ```
 
-### Grid: ブレイクポイント別の列数指定（基本3列、tablet 以上で6列）
+### Grid: Column count per breakpoint (3 columns by default, 6 columns at tablet and above)
 
 ```html
 <div class="imds-grid has-cols-3 has-tablet-cols-6">
@@ -133,7 +133,7 @@ Flexbox & Grid は、Flex / Grid コンテナ内の要素の整列（Align self�
 </div>
 ```
 
-### Grid: 固定の列結合（12列グリッドで2列目を3列分結合）
+### Grid: Fixed column span (the 2nd cell spans 3 columns in a 12-column grid)
 
 ```html
 <div class="imds-grid has-cols-12">
@@ -143,7 +143,7 @@ Flexbox & Grid は、Flex / Grid コンテナ内の要素の整列（Align self�
 </div>
 ```
 
-### Grid: ブレイクポイント別の列結合
+### Grid: Column span per breakpoint
 
 ```html
 <div class="imds-grid has-cols-4">
@@ -152,33 +152,33 @@ Flexbox & Grid は、Flex / Grid コンテナ内の要素の整列（Align self�
 </div>
 ```
 
-### Grid: FieldGroup への適用（重要な注意点あり）
+### Grid: Applying to FieldGroup (important caveat)
 
-FieldGroup に Grid を使用する場合、適用可能な範囲は `.imds-field-group-control` に対してのみである。`.imds-field-group-control` に `.imds-grid` クラスを指定し、直下の要素を `.imds-grid-cell` として扱う。
+When using Grid with FieldGroup, it can be applied only to `.imds-field-group-control`. Specify the `.imds-grid` class on `.imds-field-group-control` and treat its direct children as `.imds-grid-cell`.
 
-**✅ OK例（`.imds-field-group-control` に `imds-grid` を付与）**
+**✅ OK example (`imds-grid` on `.imds-field-group-control`)**
 
 ```html
 <div class="imds-field-container has-accent-color">
   <div class="imds-field-group is-horizontal">
-    <div class="imds-field-group-label"><span>購入情報</span></div>
+    <div class="imds-field-group-label"><span>Purchase Information</span></div>
     <div class="imds-field-group-control is-horizontal imds-grid has-cols-3">
       <div class="imds-field imds-grid-cell">
-        <div class="imds-field-label"><label for=":rb:">購入日</label></div>
+        <div class="imds-field-label"><label for=":rb:">Purchase Date</label></div>
         <div class="imds-field-control">
           <input type="date" id=":rb:" class="imds-textbox" value="" />
         </div>
       </div>
       <div class="imds-field imds-grid-cell">
-        <div class="imds-field-label"><label for=":rc:">購入金額</label></div>
+        <div class="imds-field-label"><label for=":rc:">Purchase Amount</label></div>
         <div class="imds-field-control">
           <input type="text" id=":rc:" class="imds-textbox has-text-end" value="" />
         </div>
       </div>
       <div class="imds-field imds-grid-cell">
-        <div class="imds-field-label"><label for=":rd:">決裁情報</label></div>
+        <div class="imds-field-label"><label for=":rd:">Approval Information</label></div>
         <div class="imds-field-control">
-          <input type="text" placeholder="決裁番号を選択" class="imds-textbox" readonly value="" />
+          <input type="text" placeholder="Select an approval number" class="imds-textbox" readonly value="" />
         </div>
       </div>
     </div>
@@ -186,15 +186,15 @@ FieldGroup に Grid を使用する場合、適用可能な範囲は `.imds-fiel
 </div>
 ```
 
-**❌ NG例（`.imds-field-group` 自体に `imds-grid` を付与し、`imds-field-group-label` / `imds-field-group-control` をセル化している）**
+**❌ NG example (`imds-grid` on `.imds-field-group` itself, turning `imds-field-group-label` / `imds-field-group-control` into cells)**
 
 ```html
 <div class="imds-field-container has-accent-color">
   <div class="imds-field-group is-horizontal imds-grid has-cols-3">
-    <div class="imds-field-group-label imds-grid-cell"><span>購入情報</span></div>
+    <div class="imds-field-group-label imds-grid-cell"><span>Purchase Information</span></div>
     <div class="imds-field-group-control is-horizontal imds-grid-cell is-col-span-2">
       <div class="imds-field">
-        <div class="imds-field-label"><label for=":re:">購入日</label></div>
+        <div class="imds-field-label"><label for=":re:">Purchase Date</label></div>
         <div class="imds-field-control">
           <input type="date" id=":re:" class="imds-textbox" value="" />
         </div>
@@ -204,9 +204,9 @@ FieldGroup に Grid を使用する場合、適用可能な範囲は `.imds-fiel
 </div>
 ```
 
-## 実装上の注意
+## Implementation Notes
 
-- **`is-col-span-N` は必ず `imds-field-group-control`（または `imds-field` 等、`imds-grid-cell` が付与された要素）にのみ付与し、`imds-field-group` 自体には付与しない。** `imds-field-group` は Label と Control のレイアウトを制御する仕組みを内部に持っており、`imds-field-group` 自体をグリッドコンテナ化して `imds-field-group-label` / `imds-field-group-control` をグリッドセルとして扱うと、レイアウトが崩れる。FieldGroup に Grid を指定する際は `.imds-field-group-control` にのみ `imds-grid` を指定すること。
-- `is-align-self-*` は Flex または Grid コンテナの子要素にのみ有効であり、通常のブロック要素では期待した効果は得られない。基本は親要素の `align-items` で全体を揃え、個別要素の位置補正が必要な場合にのみ使用する。
-- セルに列結合（`is-col-span-N` 等）を指定する場合、そのセルがまたがる列数が親グリッドで定義された列数（`has-cols-N`）を超えないように注意する。超えるとセルが意図せず次の行に折り返されたり、レイアウトが崩れる可能性がある。
-- 列内の要素の垂直配置を変更したい場合は、`imds-grid-cell` に `is-align-self-start` / `is-align-self-center` / `is-align-self-end` を付与する。
+- **Apply `is-col-span-N` only to `imds-field-group-control` (or other elements with `imds-grid-cell`, such as `imds-field`), never to `imds-field-group` itself.** `imds-field-group` has an internal mechanism that controls the layout of Label and Control; turning `imds-field-group` itself into a grid container and treating `imds-field-group-label` / `imds-field-group-control` as grid cells breaks the layout. When applying Grid to a FieldGroup, specify `imds-grid` only on `.imds-field-group-control`.
+- `is-align-self-*` is effective only on child elements of a Flex or Grid container; it has no expected effect on normal block elements. Align everything with the parent's `align-items` as the default, and use it only when an individual element's position needs adjustment.
+- When specifying a column span (`is-col-span-N`, etc.) on a cell, make sure the number of columns it spans does not exceed the column count defined on the parent grid (`has-cols-N`). Exceeding it can cause the cell to wrap to the next row unintentionally or break the layout.
+- To change the vertical alignment of elements within a column, add `is-align-self-start` / `is-align-self-center` / `is-align-self-end` to `imds-grid-cell`.

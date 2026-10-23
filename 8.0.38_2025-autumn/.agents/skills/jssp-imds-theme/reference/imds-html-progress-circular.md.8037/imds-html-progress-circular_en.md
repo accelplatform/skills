@@ -33,7 +33,7 @@ Using appropriate colors and icons to represent status makes it easier to unders
 
 ## HTML Snippets
 
-### Basic circular progress
+### Basic Circular Progress
 
 ```html
 <div
@@ -59,7 +59,7 @@ The following sections show only the differences from the basic circular progres
 
 ## Variations
 
-### color
+### color (Color)
 
 Add a color class to `div.imds-progress-circular`.
 
@@ -80,7 +80,7 @@ Add a color class to `div.imds-progress-circular`.
 <div class="imds-progress-circular is-white">    <!-- White -->
 ```
 
-### showProgressWithIcon (display progress with icon)
+### showProgressWithIcon (Display Progress with Icon)
 
 Display the progress state with an icon instead of text. Replace the `<span>` inside `imds-progress-circular-text` with `imds-icon`.
 
@@ -93,6 +93,39 @@ Display the progress state with an icon instead of text. Replace the `<span>` in
   </span>
 </div>
 ```
+
+#### Icon Mapping by Status
+
+The icon types differ from `ProgressBar` (the circular edge already represents progress, so simpler icons are used).
+
+| Status | Color class | Icon |
+|-----------|-------------|---------|
+| Success | is-success | fa-check |
+| Warning | is-warning | fa-triangle-exclamation |
+| Danger | is-danger | fa-triangle-exclamation |
+| Error | is-error | fa-xmark |
+
+```html
+<span class="imds-icon is-medium is-warning" title="Enter what the icon represents in the title attribute">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+</span>
+<span class="imds-icon is-medium is-error" title="Enter what the icon represents in the title attribute">
+  <i class="fa-solid fa-xmark"></i>
+</span>
+```
+
+### Size Presets
+
+Specify the circle size by keeping the following in sync: `width`/`height` (container), `font-size` (center text), SVG `width`/`height`/`viewBox`, the `circle` `r` (radius) and `stroke-width`, and `stroke-dasharray` (circumference). Representative size presets are shown below.
+
+| Size (px) | Container style | SVG width/height/viewBox | r | stroke-width | stroke-dasharray (circumference) |
+|------------|----------------|---------------------------|---|--------------|--------------------------|
+| 40 | `width: 4rem; height: 4rem; font-size: 1rem` | `40` / `40` / `0 0 40 40` | 18.5 | 3 | 116.24 |
+| 80 | `width: 8rem; height: 8rem; font-size: 2rem` | `80` / `80` / `0 0 80 80` | 37 | 6 | 232.48 |
+| 120 | `width: 12rem; height: 12rem; font-size: 3rem` | `120` / `120` / `0 0 120 120` | 55.5 | 9 | 348.72 |
+| 160 | `width: 16rem; height: 16rem; font-size: 4rem` | `160` / `160` / `0 0 160 160` | 74 | 12 | 464.96 |
+
+`cx` / `cy` are both half of the SVG `width`/`height` (e.g. for size 160, `cx="80" cy="80"`).
 
 ## Implementation Notes
 

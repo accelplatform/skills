@@ -30,6 +30,7 @@
  * 使い方:
  *   node validate-imds.js <ディレクトリまたはファイル>
  *   node validate-imds.js src/main/jssp/src/sample/
+ *   （パスは 1 個のみ。複数ファイルを検証する場合は共通の親ディレクトリを渡す）
  *
  * 他スクリプトからの利用:
  *   const { IMDS_RULES, validateImds } = require('./validate-imds.js');
@@ -37,7 +38,7 @@
  * 旧版:
  *   validate-imds.old.js（コンポーネント別 ID への移行前のバージョン）
  *
- * 終了コード: 0=OK, 1=エラーあり
+ * 終了コード: 0=OK, 1=エラーあり, 2=引数の誤り・パスが存在しない
  */
 'use strict';
 
@@ -1741,6 +1742,17 @@ if (require.main === module) {
   const targetPath = process.argv[2];
   if (!targetPath) {
     console.error('Usage: node validate-imds.js <directory-or-file>');
+    process.exit(2);
+  }
+  if (process.argv.length > 3) {
+    const ignoredArgs = process.argv.slice(3);
+    console.error('Error: このスクリプトは 1 個のパス（ディレクトリまたは単一ファイル）のみ受け付けます。');
+    console.error('  渡されたパス: ' + targetPath);
+    console.error('  無視される追加引数: ' + ignoredArgs.join(', '));
+    console.error('');
+    console.error('複数ファイルをまとめて検証する場合は、個々のファイルではなく共通の親ディレクトリを渡してください');
+    console.error('（例: src/main/jssp/src/{機能名}/view/xxx.html を個別に渡すのではなく、');
+    console.error('      src/main/jssp/src/{機能名}/ をディレクトリごと渡す）。');
     process.exit(2);
   }
   if (!fs.existsSync(targetPath)) {

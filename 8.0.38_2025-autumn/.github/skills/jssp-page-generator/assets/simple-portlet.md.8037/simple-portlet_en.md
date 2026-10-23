@@ -149,17 +149,30 @@ function transferErrorPage(code, message) {
         return div.innerHTML;
       }
 
+      // Root element of this screen (DOM operations are limited to descendants of this element)
+      const root = document.getElementById('app-portlet-{feature}-container');
+
       // Render the list table
       function renderTable(list) {
-        const tbody = document.getElementById('portlet-sample-table-body');
-        tbody.innerHTML = '';
+        const tbody = root.querySelector('#portlet-sample-table-body');
+        tbody.textContent = '';
 
+        // When there are 0 records, display the empty state UI (is-small) inside the table
         if (list.length === 0) {
           const tr = document.createElement('tr');
           const td = document.createElement('td');
           td.setAttribute('colspan', '3');
-          td.style.textAlign = 'center';
-          td.textContent = 'No data available.';
+          td.innerHTML =
+            '<div class="imds-empty-state-container">' +
+              '<div class="imds-empty-state is-small">' +
+                '<div class="imds-empty-state-message-wrapper">' +
+                  '<span class="imds-empty-state-icon">' +
+                    '<span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>' +
+                  '</span>' +
+                  '<div class="imds-empty-state-message"><p class="imds-empty-state-message-title">No data available.</p></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
           tr.appendChild(td);
           tbody.appendChild(tr);
           return;
@@ -189,7 +202,7 @@ function transferErrorPage(code, message) {
 <!-- Full-page container (no header or footer, since this is a portlet component. Since the same portal page may place multiple different portlets, id="app-portlet-{feature}-container" is added so that DOM operations can be scoped per screen) -->
 <div id="app-portlet-{feature}-container" class="imds-container">
   <main>
-    <div class="imds-table is-narrow" id="portlet-sample-table">
+    <div class="imds-table is-area-bordered is-hoverable is-narrow" id="portlet-sample-table">
       <div class="imds-table-inner">
         <table>
           <thead>

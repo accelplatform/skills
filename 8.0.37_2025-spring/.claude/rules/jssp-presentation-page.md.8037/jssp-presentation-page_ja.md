@@ -7,6 +7,17 @@ paths:
 
 > **適用範囲**: 🟢 **常時** — プレゼンテーションページ（`.html`）を生成する際に適用。HTML 構造、バリデーション、id 命名規約等。
 
+## UI テーマの選択
+
+- プロンプト・仕様書で UI テーマ（ピュア HTML、独自テーマ等）が明示されている場合は、その指定に従う
+- imds テーマを使わない場合のルートタグの扱いは「実装方針」を参照する
+
+### imds テーマ（既定）
+
+- UI テーマの明示指定が無い場合は、imds テーマで画面を生成する
+- 画面骨格は `.claude/skills/jssp-imds-theme/assets/` のページ全体テンプレート、UI 部品は同 `reference/` を参照する（詳細は `jssp-imds-theme` スキル）
+- `imuiShowErrorMessage` / `imuiShowSuccessMessage` / `imuiShowWarningMessage` 等のメッセージ表示 API と `imuiCalendar` は imds テーマと併用してよい
+
 ## プレゼンテーションページの標準実装方針
 
 ### 基本構造

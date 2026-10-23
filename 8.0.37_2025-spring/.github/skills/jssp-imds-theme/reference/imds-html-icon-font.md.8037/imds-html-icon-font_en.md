@@ -107,6 +107,29 @@ Add a size class to `span.imds-icon`.
 </button>
 ```
 
+### Combination with Minimum Width and Button Spacing
+
+In toolbars and action areas, combine with a minimum width (inline `style="min-width: 8em;"`) and button spacing. See [imds-html-button.md](imds-html-button.md) for details.
+
+```html
+<div style="display: flex; gap: 1em;">
+  <button type="button" class="imds-button is-primary" style="min-width: 8em;">
+    <span class="imds-icon"><i class="fa-solid fa-add"></i></span>
+    <span class="imds-button-text">Create New</span>
+  </button>
+  <button type="button" class="imds-button is-danger" style="min-width: 8em;">
+    <span class="imds-icon"><i class="fa-solid fa-trash-can"></i></span>
+    <span class="imds-button-text">Delete</span>
+  </button>
+  <button type="button" class="imds-button is-outlined is-primary" aria-label="Add">
+    <span class="imds-icon is-primary"><i class="fa-solid fa-add"></i></span>
+  </button>
+  <button type="button" class="imds-button is-outlined is-danger" aria-label="Delete">
+    <span class="imds-icon is-danger"><i class="fa-solid fa-trash-can"></i></span>
+  </button>
+</div>
+```
+
 ### Combination with Tag
 
 ```html

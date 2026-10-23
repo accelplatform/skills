@@ -33,7 +33,7 @@ Each convention file states its **application scope** at the top. Use the **scop
 | `.agents/requirements/jssp-code-style/AGENTS.md` | `let` / string literals / operators | 🟢 Always (when generating `.js`) |
 | `.agents/requirements/jssp-naming/AGENTS.md` | File / function / variable names | 🟢 Always |
 | `.agents/requirements/jssp-function-container/AGENTS.md` | `init()` structure / validation / IM Common Master API | 🟢 When generating function containers (`.js`) |
-| `.agents/requirements/jssp-presentation-page/AGENTS.md` | Presentation page (`.html`) structure / validation / `id` naming rules | 🟢 When generating presentation pages (`.html`) |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | UI theme selection / presentation page (`.html`) structure / validation / `id` naming rules | 🟢 When generating presentation pages (`.html`) |
 | `.agents/requirements/jssp-error-handling/AGENTS.md` | try-catch / response shape / error codes | 🟢 Always |
 | `.agents/requirements/jssp-security/AGENTS.md` | XSS / CSRF / input validation | 🟢 Always (whenever user input is handled) |
 | `.agents/requirements/jssp-logging/AGENTS.md` | Log levels / masking secrets / placeholders | 🟡 When implementing logging |

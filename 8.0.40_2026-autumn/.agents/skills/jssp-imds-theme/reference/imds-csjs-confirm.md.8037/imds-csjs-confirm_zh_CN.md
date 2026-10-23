@@ -141,9 +141,70 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
 imdsConfirm._active = false;
 ```
 
+## HTML/CSS 结构参考（imdsConfirm 生成的 DOM）
+
+调用 `imdsConfirm` 函数后，与以下内容等价的 `<dialog class="imds-confirm-wrapper">` 会被动态插入到 `document.body`，并通过 `showModal()` 显示。不要修改函数定义本身（上述 JavaScript 代码）。以下仅作为所生成 HTML/CSS 的结构・变体的参考信息。
+
+```html
+<dialog class="imds-confirm-wrapper" style="max-width: 800px; min-width: 400px; max-height: 500px; min-height: 100px">
+  <div class="imds-confirm is-info">
+    <div class="imds-confirm-content-wrapper">
+      <button class="imds-confirm-close imds-button is-ghost">
+        <span class="imds-icon"><i class="fa-solid fa-xmark"></i></span>
+      </button>
+      <div class="imds-confirm-content">
+        <div class="imds-confirm-message-wrapper">
+          <div class="imds-confirm-icon">
+            <span class="imds-icon is-x-small is-info"><i class="fa-solid fa-circle-question"></i></span>
+          </div>
+          <div class="imds-confirm-message">
+            <p class="imds-confirm-message-title">Confirm 的标题</p>
+            <div class="imds-confirm-message-content">这是 Confirm 的确认消息。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="imds-confirm-footer">
+      <div class="imds-confirm-footer-content">
+        <button type="button" class="imds-button">取消</button>
+        <button type="button" class="imds-button is-primary">执行</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+```
+
+### 各 mode 的图标・按钮颜色
+
+| mode | 图标 | 确定按钮 |
+|------|---------|-----------|
+| `is-info` | `fa-circle-question` | `imds-button is-primary` |
+| `is-warning` | `fa-triangle-exclamation` | `imds-button is-primary` |
+| `is-danger` | `fa-triangle-exclamation` | `imds-button is-danger` |
+
+### `is-vertical`（页脚按钮纵向堆叠）
+
+将页脚按钮从默认的横向排列改为纵向堆叠时，在 `imds-confirm-footer-content` 上添加 `is-vertical`。按钮文字较长或提供 3 个以上选项时考虑使用。`imdsConfirm` 函数本身不生成 `is-vertical`，需要纵向堆叠时请单独实现静态的 `<dialog>`。
+
+```html
+<div class="imds-confirm-footer">
+  <div class="imds-confirm-footer-content is-vertical">
+    <button type="button" class="imds-button">取消</button>
+    <button type="button" class="imds-button is-primary">注册</button>
+  </div>
+</div>
+```
+
 ## 使用指南
 
 显示确认消息时，请使用此 `imdsConfirm()`，而不是 `window.confirm()` 或 `imuiConfirm()`。
+
+### 文案指南
+
+- **标题（`imds-confirm-message-title` / `title` 参数）**：简洁表示要执行的操作。例：「是否注册定义信息？」「是否删除定义信息？」
+- **消息（`imds-confirm-message-content` / `message` 参数）**：补充标题的说明文字。简洁记载操作影响范围等用户判断所需的信息。例：「更新可能会影响现有的运行。」「删除定义信息后，○○也将被删除。」
+- **按钮标题（`okButton.text`）**：使用能明确表示点击后会发生什么的文字。避免「确定」「OK」等看不出操作内容的标题，使用「注册」「更新」「删除」等实际处理名称（默认为「执行」）。
+- **默认选项**：对于无法挽回的操作（删除等），不要将焦点置于取消以外的按钮上。`imdsConfirm` 的实现将取消按钮置于首位并作为默认焦点，因此遵循此原则。
 
 ### mode 的使用区别
 

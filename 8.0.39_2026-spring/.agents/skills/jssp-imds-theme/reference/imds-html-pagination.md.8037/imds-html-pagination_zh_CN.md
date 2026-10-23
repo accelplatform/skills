@@ -152,11 +152,54 @@ nav.imds-pagination                       # 整个分页（附加尺寸类）
 </nav>
 ```
 
+### rangeLength（当前页前后的显示数）与页码省略规则
+
+当前页前后显示的页码按钮数量称为 `rangeLength`。未特别指定时，`rangeLength` 默认设置为 **3**。应根据放置 Pagination 区域的宽度设置合适的值。
+
+- `rangeLength=3` 时，**总页数为 12 页及以上**时使用省略表示（`imds-pagination-page-ellipsis`）。
+- **不省略仅 1 页的内容**（例如：禁止「1, … , 3, 4,」这种 1 个省略号仅隐藏 1 页的显示）。总页数为 11 页及以下（`rangeLength=3` 时）不使用省略号，直接排列全部页码按钮。
+
+```html
+<!-- 总计9页・总计10页・总计11页: 不使用省略号，显示全部页码 -->
+<div class="imds-pagination-page-number">
+  <button type="button" class="imds-button is-ghost">1</button>
+  <button type="button" class="imds-button is-ghost">2</button>
+  <button type="button" class="imds-button is-ghost">3</button>
+  <button type="button" class="imds-button is-ghost">4</button>
+  <button type="button" class="imds-button is-ghost">5</button>
+  <button type="button" class="imds-button is-primary">6</button>
+  <button type="button" class="imds-button is-ghost">7</button>
+  <button type="button" class="imds-button is-ghost">8</button>
+  <button type="button" class="imds-button is-ghost">9</button>
+  <!-- 总计10・11页时，此处继续放置 10、11 的按钮（无省略号） -->
+</div>
+
+<!-- 总计12页及以上: 使用省略号，仅显示末页 -->
+<div class="imds-pagination-page-number">
+  <button type="button" class="imds-button is-ghost">1</button>
+  <button type="button" class="imds-button is-ghost">2</button>
+  <button type="button" class="imds-button is-ghost">3</button>
+  <button type="button" class="imds-button is-ghost">4</button>
+  <button type="button" class="imds-button is-ghost">5</button>
+  <button type="button" class="imds-button is-primary">6</button>
+  <button type="button" class="imds-button is-ghost">7</button>
+  <button type="button" class="imds-button is-ghost">8</button>
+  <button type="button" class="imds-button is-ghost">9</button>
+  <div class="imds-pagination-page-ellipsis"><span>…</span></div>
+  <button type="button" class="imds-button is-ghost">12</button>
+</div>
+```
+
+### 切换到 PaginationCompact 的标准
+
+画面尺寸为平板宽度（769px ～ 小于 1023px）时，使用 PaginationCompact（imds-html-pagination-compact.md）而非 Pagination。画面尺寸的划分标准请参阅 Breakpoint 页面。基本使用 Pagination，仅在较窄的画面宽度下切换为 PaginationCompact。
+
 ## 实现注意事项
 
 - 当前页按钮使用 `is-primary`，其他页码按钮使用 `is-ghost`
-- 页数较多时，使用 `imds-pagination-page-ellipsis`（…）进行省略
+- 页数较多时，使用 `imds-pagination-page-ellipsis`（…）进行省略。但 **不省略仅 1 页的内容**（详见「rangeLength（当前页前后的显示数）与页码省略规则」）
 - 前后按钮须添加 `title` 属性以确保无障碍性
 - 在首页/末页时，为前后按钮添加 `disabled` 属性
 - 将 `select` 的 `id` 和 `label` 的 `for` 替换为唯一值（`todo-replace-:r1:` 为占位符）
 - 页面切换和每页条数变更需通过 JavaScript 控制
+- 画面宽度变为平板宽度（769px～小于1023px）时，考虑切换为 PaginationCompact（详见「切换到 PaginationCompact 的标准」）

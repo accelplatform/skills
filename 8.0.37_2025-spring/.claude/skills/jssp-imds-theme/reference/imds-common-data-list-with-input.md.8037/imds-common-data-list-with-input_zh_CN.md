@@ -3,74 +3,74 @@ paths:
   - "src/main/jssp/**/*.html"
 ---
 
-# データリストと入力要素の組み合わせ（common-parts）
+# 数据列表与输入元素的组合（common-parts）
 
-## 基本情報
+## 基本信息
 
-入力欄に候補リストを表示し、選択または自由入力の両方を許容したい場合に使用する複合パターンである。
-`<input list="...">` と `<datalist>` を組み合わせ、ネイティブブラウザのオートコンプリート UI を利用する。
+在输入框中显示候选列表，同时允许选择和自由输入时使用的复合模式。
+组合使用 `<input list="...">` 与 `<datalist>`，利用浏览器原生的自动补全 UI。
 
-- 選択肢が少なく（〜20件程度）かつ自由入力も認めたい場面に適する。
-- 選択肢が多い場合や、自由入力を許さず必須選択とする場合は `<select>` + `imds-select`（[imds-html-select.md](imds-html-select.md)）を使うこと。本パターンは使わない。
-- 抽出元: `uiux-share/common-parts/データリストと入力要素の組み合わせ.md`
+- 适用于选项较少（约 20 项以内）且允许自由输入的场景。
+- 选项较多，或不允许自由输入而要求必须选择时，应使用 `<select>` + `imds-select`（[imds-html-select.md](imds-html-select.md)）。不使用本模式。
+- 来源: `uiux-share/common-parts/データリストと入力要素の組み合わせ.md`
 
-## 構成コンポーネント
+## 构成组件
 
-| 使用する基本コンポーネント | 対応 reference |
+| 使用的基础组件 | 对应 reference |
 |---|---|
 | Textbox（`imds-textbox`） | [imds-html-textbox.md](imds-html-textbox.md) |
 | Field（`imds-field`） | [imds-html-field.md](imds-html-field.md) |
 
-`<datalist>` 自体は imds 独自のクラスを持たない標準 HTML 要素であり、imds のコンポーネント体系には含まれない。
+`<datalist>` 本身是不带 imds 专有类的标准 HTML 元素，不属于 imds 的组件体系。
 
-## HTML スニペット
+## HTML 代码片段
 
-### 単体（Field なし）
+### 单独使用（无 Field）
 
 ```html
 <div>
   <input
     type="text"
     id="[REPLACE: input-id]"
-    placeholder="入力または選択してください"
+    placeholder="请输入或选择"
     class="imds-textbox"
     list="[REPLACE: datalist-id]"
     value="" />
   <datalist id="[REPLACE: datalist-id]">
-    <option value="[REPLACE: 選択肢1]"></option>
-    <option value="[REPLACE: 選択肢2]"></option>
-    <option value="[REPLACE: 選択肢3]"></option>
+    <option value="[REPLACE: 选项1]"></option>
+    <option value="[REPLACE: 选项2]"></option>
+    <option value="[REPLACE: 选项3]"></option>
   </datalist>
 </div>
 ```
 
-### Field と組み合わせる場合
+### 与 Field 组合使用
 
-`<input>` と `<datalist>` は `imds-field-control` 内に配置する。Field 自体の構造は [imds-html-field.md](imds-html-field.md) を参照すること。
+将 `<input>` 和 `<datalist>` 放置在 `imds-field-control` 内。Field 本身的结构请参考 [imds-html-field.md](imds-html-field.md)。
 
 ```html
 <div class="imds-field">
   <div class="imds-field-label">
-    <label for="[REPLACE: input-id]">[REPLACE: ラベル]</label>
+    <label for="[REPLACE: input-id]">[REPLACE: 标签]</label>
   </div>
   <div class="imds-field-control">
     <input
       type="text"
       id="[REPLACE: input-id]"
-      placeholder="入力または選択してください"
+      placeholder="请输入或选择"
       class="imds-textbox"
       list="[REPLACE: datalist-id]" />
     <datalist id="[REPLACE: datalist-id]">
-      <option value="[REPLACE: 選択肢1]"></option>
-      <option value="[REPLACE: 選択肢2]"></option>
+      <option value="[REPLACE: 选项1]"></option>
+      <option value="[REPLACE: 选项2]"></option>
     </datalist>
   </div>
 </div>
 ```
 
-## 実装上の注意
+## 实现注意事项
 
-- `<input>` の `list` 属性と `<datalist>` の `id` を必ず一致させること。
-- `id`（`input-id` / `datalist-id`）は画面内で一意になるよう置換すること。
-- `<input>` のクラスは通常の `imds-textbox` と同一であり、データリスト専用のクラスは存在しない。
-- ブラウザネイティブのオートコンプリート UI を使うため、候補の見た目（フォント・配色）は imds でカスタマイズできない点に留意する。
+- `<input>` 的 `list` 属性必须与 `<datalist>` 的 `id` 一致。
+- 替换 `id`（`input-id` / `datalist-id`）时，应确保其在画面内唯一。
+- `<input>` 的类与普通 `imds-textbox` 相同，不存在数据列表专用的类。
+- 由于使用浏览器原生的自动补全 UI，候选项的外观（字体、配色）无法通过 imds 自定义。

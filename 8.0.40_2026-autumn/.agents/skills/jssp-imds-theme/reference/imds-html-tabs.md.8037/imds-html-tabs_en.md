@@ -12,15 +12,15 @@ Tabs is a component for switching between and displaying multiple pieces of info
 ```
 imds-tabs                                 # Tabs container (apply size / alignment / style classes)
 ├── ul                                    # Tab list
-│   └── li.imds-tabs-tab                  # Each tab (apply is-active / has-tab-close etc.)
+│   └── li.imds-tabs-tab                  # Each tab (apply is-active / has-tab-close, etc.)
 │       ├── button                        # Tab body (label + optional imds-icon)
-│       └── button.is-tab-close-button    # Close button (only when has-tab-close)
-└── imds-tabs-actions                     # Right-side actions area (optional)
-    ├── label.imds-checkbox / button, etc. # Place checkboxes, buttons, etc.
+│       └── button.is-tab-close-button    # Close button (only with has-tab-close)
+└── imds-tabs-actions                     # Right-side action area (optional)
+    ├── label.imds-checkbox / button etc. # Place checkboxes, buttons, etc.
     └── ...
 ```
 
-The content panels switched by the tabs are placed outside `imds-tabs` and controlled via JavaScript.
+The content (panels) shown on tab switch is placed separately outside `imds-tabs` and its display is controlled via JavaScript.
 
 ## CSS Classes Reference
 
@@ -47,7 +47,7 @@ The content panels switched by the tabs are placed outside `imds-tabs` and contr
 
 ## HTML Snippets
 
-### Basic tabs
+### Basic Tabs
 
 ```html
 <div class="imds-tabs">
@@ -69,7 +69,7 @@ The following sections show only the differences from the basic tabs.
 
 ## Variations
 
-### tabsStyle (style)
+### tabsStyle (Style)
 
 Add a style class to `div.imds-tabs`.
 
@@ -77,7 +77,7 @@ Add a style class to `div.imds-tabs`.
 <div class="imds-tabs is-bordered">  <!-- Bordered -->
 ```
 
-### position (alignment)
+### position (Alignment)
 
 Add an alignment class to `div.imds-tabs`.
 
@@ -87,7 +87,7 @@ Add an alignment class to `div.imds-tabs`.
 <div class="imds-tabs is-left">      <!-- Left-aligned -->
 ```
 
-### fullWidth (equal width)
+### fullWidth (Equal Width)
 
 Add `is-full-width` to `div.imds-tabs`.
 Tabs expand to equal width across the full width.
@@ -96,7 +96,7 @@ Tabs expand to equal width across the full width.
 <div class="imds-tabs is-full-width">
 ```
 
-### size
+### size (Size)
 
 Add a size class to `div.imds-tabs`.
 
@@ -116,10 +116,11 @@ Add the `disabled` attribute to the tab `button`.
 <button disabled><span>disabled</span></button>
 ```
 
-### lineClamp (text truncation)
+### lineClamp (Text Truncation)
 
 Truncate long labels.
-Add `imds-line-clamp-1` (1 line) or `imds-line-clamp-2` (2 lines) to `span`, set the full text in `button`'s `title`, and limit width via `span`'s `style`.
+Add `imds-line-clamp-1` (1 line) or `imds-line-clamp-2` (2 lines) to `span`, and set the full text in the `title` of `button`.
+Limit the width via the `style` of `span`.
 
 ```html
 <button title="Enter the full tab name here">
@@ -127,7 +128,7 @@ Add `imds-line-clamp-1` (1 line) or `imds-line-clamp-2` (2 lines) to `span`, set
 </button>
 ```
 
-### closeButton (close button)
+### closeButton (Close Button)
 
 Add `has-tab-close` to `li` and add a close button after the tab button.
 

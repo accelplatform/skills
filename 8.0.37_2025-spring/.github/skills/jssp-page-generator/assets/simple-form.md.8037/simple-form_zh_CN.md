@@ -9,11 +9,11 @@
 ## 文件结构
 
 ```
-src/main/jssp/src/simple_form/view/
+src/main/jssp/src/sample/simple_form/view/
   ├── index.js              # 功能容器
   └── index.html            # 呈现页面
 
-src/main/jssp/src/simple_form/api/
+src/main/jssp/src/sample/simple_form/api/
   └── register.js           # 注册API
 
 src/main/conf/routing-jssp-config/
@@ -22,7 +22,7 @@ src/main/conf/routing-jssp-config/
 
 ---
 
-## 功能容器（simple_form/view/index.js）
+## 功能容器（sample/simple_form/view/index.js）
 
 ```javascript
 /**
@@ -157,7 +157,7 @@ function transferErrorPage(code, message) {
 
 ---
 
-## 呈现页面（simple_form/view/index.html）
+## 呈现页面（sample/simple_form/view/index.html）
 
 ```html
 <!-- 头部 -->
@@ -166,11 +166,35 @@ function transferErrorPage(code, message) {
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- 安全令牌 -->
   <meta name="im_secure_token" content="<imart type="imSecureToken" mode="value" />">
+  <!-- 用于控制各主题不同的内容显示区域高度和宽度的 CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- 呈现页面自定义样式 -->
   <style>
-    .button-spacing {
+    /* 布局控制样式 */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
     }
   </style>
   <!-- 呈现页面脚本（将 $data 通过 IIFE 作用域化，而不放入全局作用域） -->
@@ -181,8 +205,21 @@ function transferErrorPage(code, message) {
       let activeValidation = false;
 
       // 显示确认对话框
+      /**
+       * 显示确认对话框并返回用户的选择结果。
+       *
+       * @param {string} message - 正文
+       * @param {string} [title='确认'] - 标题
+       * @param {Function} [onOk] - 按下确定按钮时的回调
+       * @param {Function} [onCancel] - 按下取消按钮时的回调
+       * @param {Object} [options]
+       * @param {'info'|'danger'|'warning'} [options.mode='info'] - 对话框类型
+       * @param {{text?: string}} [options.okButton] - 确定按钮的选项
+       * @param {{text?: string}} [options.cancelButton] - 取消按钮的选项
+       * @returns {Promise<boolean>} 按下确定按钮时返回 true，按下取消时返回 false
+       */
       function imdsConfirm(message, title, onOk, onCancel, options) {
-        // 已显示中时立即返回false
+        // 如果已在显示中，立即返回 false
         if (imdsConfirm._active) {
           return Promise.resolve(false);
         }
@@ -196,19 +233,19 @@ function transferErrorPage(code, message) {
         const cancelText = (options && options.cancelButton && options.cancelButton.text) || '取消';
         const dialogTitle = title || '确认';
 
-        // 按模式设置
+        // 各模式的配置
         const iconClass = mode === 'info' ? 'fa-circle-question' : 'fa-triangle-exclamation';
         const okButtonClass = mode === 'danger' ? 'imds-button is-danger' : 'imds-button is-primary';
 
-        // 生成dialog元素
+        // 生成 dialog 元素
         const dialog = document.createElement('dialog');
         dialog.className = 'imds-confirm-wrapper';
 
         dialog.innerHTML =
           '<div class="imds-confirm is-' + mode + '">' +
             '<div class="imds-confirm-content-wrapper">' +
-              '<button class="imds-confirm-close imds-button is-ghost" aria-label="关闭">' +
-                '<span class="imds-icon" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>' +
+              '<button class="imds-confirm-close imds-button is-ghost">' +
+                '<span class="imds-icon"><i class="fa-solid fa-xmark"></i></span>' +
               '</button>' +
               '<div class="imds-confirm-content">' +
                 '<div class="imds-confirm-message-wrapper">' +
@@ -232,28 +269,18 @@ function transferErrorPage(code, message) {
             '</div>' +
           '</div>';
 
-        // 通过textContent安全地插入用户输入（XSS对策）
+        // 使用 textContent 安全插入用户输入（XSS 防护）
         dialog.querySelector('.imds-confirm-message-title').textContent = dialogTitle;
         dialog.querySelector('.imds-confirm-cancel-button').textContent = cancelText;
         dialog.querySelector('.imds-confirm-ok-button').textContent = okText;
 
-        // 使消息支持换行符换行
-        const contentEl = dialog.querySelector('.imds-confirm-message-content');
+        // 使 message 中的换行符可以换行显示
+        const contentElement = dialog.querySelector('.imds-confirm-message-content');
         const lines = String(message).split('\n');
         for (let i = 0; i < lines.length; i++) {
-          if (i > 0) contentEl.appendChild(document.createElement('br'));
-          contentEl.appendChild(document.createTextNode(lines[i]));
+          if (i > 0) contentElement.appendChild(document.createElement('br'));
+          contentElement.appendChild(document.createTextNode(lines[i]));
         }
-
-        // 打开对话框前记住触发元素（关闭后返回焦点用）
-        const triggerElement = document.activeElement;
-
-        // ARIA属性
-        dialog.setAttribute('role', 'dialog');
-        dialog.setAttribute('aria-modal', 'true');
-        const titleId = 'imds-confirm-title-' + Date.now();
-        dialog.setAttribute('aria-labelledby', titleId);
-        dialog.querySelector('.imds-confirm-message-title').id = titleId;
 
         document.body.appendChild(dialog);
 
@@ -264,73 +291,37 @@ function transferErrorPage(code, message) {
             if (settled) return;
             settled = true;
             imdsConfirm._active = false;
-            dialog.removeEventListener('keydown', onKeyDown);
             dialog.close();
             document.body.removeChild(dialog);
-            // 将焦点返回触发元素
-            if (triggerElement && typeof triggerElement.focus === 'function') {
-              triggerElement.focus();
-            }
             resolve(result);
           }
 
-          const okButton = dialog.querySelector('.imds-confirm-ok-button');
-          const cancelButton = dialog.querySelector('.imds-confirm-cancel-button');
-          const closeButton = dialog.querySelector('.imds-confirm-close');
-
           // 确定按钮
-          okButton.addEventListener('click', function() {
+          dialog.querySelector('.imds-confirm-ok-button').addEventListener('click', function() {
             if (typeof onOk === 'function') onOk();
             close(true);
           });
 
           // 取消按钮
-          cancelButton.addEventListener('click', function() {
+          dialog.querySelector('.imds-confirm-cancel-button').addEventListener('click', function() {
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
 
-          // ×按钮（视为取消）
-          closeButton.addEventListener('click', function() {
+          // × 按钮（视为取消）
+          dialog.querySelector('.imds-confirm-close').addEventListener('click', function() {
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
 
-          // 通过Escape键关闭（视为取消）
+          // 通过 Escape 键关闭（视为取消）
           dialog.addEventListener('cancel', function(e) {
             e.preventDefault();
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
 
-          // 键盘操作
-          // - Enter:  作为OK按钮确定（取消/×有焦点时优先执行该按钮的操作）
-          // - Tab:    原生dialog提供焦点陷阱，无需额外实现
-          // - Escape: 已通过cancel事件处理
-          function onKeyDown(e) {
-            if (e.key === 'Enter') {
-              const focused = document.activeElement;
-              if (focused === cancelButton || focused === closeButton) {
-                return;
-              }
-              e.preventDefault();
-              okButton.click();
-            }
-          }
-          dialog.addEventListener('keydown', onKeyDown);
-
           dialog.showModal();
-
-          // 初始焦点
-          // - danger模式: 防止误操作，聚焦到取消按钮
-          // - 其他:       聚焦到OK按钮
-          setTimeout(function() {
-            if (mode === 'danger') {
-              cancelButton.focus();
-            } else {
-              okButton.focus();
-            }
-          }, 0);
         });
       }
 
@@ -489,13 +480,16 @@ function transferErrorPage(code, message) {
         imdsConfirm(
           '确定要注册吗？',
           '注册',
-          async () => {
-            const isSuccess = await register(request);
-            if (isSuccess) {
-              clearValidationError();
-            }
+          null,
+          null,
+          { mode: 'info', okButton: { text: '注册' } }
+        ).then(async (result) => {
+          if (!result) return;
+          const isSuccess = await register(request);
+          if (isSuccess) {
+            clearValidationError();
           }
-        );
+        });
       });
 
       // 入口点
@@ -511,11 +505,11 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- 页面整体容器（配置在intra-mart主题的imui-container内部，因此不附加id） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <!-- 头部 -->
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" class="imds-button is-ghost is-large">
+      <button type="button" class="imds-button is-ghost is-large" title="返回">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
       </button>
     </div>
@@ -531,8 +525,8 @@ function transferErrorPage(code, message) {
   </header>
 
   <!-- 主要内容 -->
-  <main>
-    <form id="main-form" class="imds-form has-background-color-gray imds-scrollbar imds-py-4 imds-px-6">
+  <main class="pgstyle-layout-main">
+    <form id="main-form" class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
       <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
         <h2 class="imds-heading is-bordered is-size-2 is-cyan">基本信息</h2>
         <div class="imds-field-container has-accent-color">
@@ -545,7 +539,7 @@ function transferErrorPage(code, message) {
                 <div class="imds-field-control">
                   <input type="text" id=":userCode:" class="imds-textbox" name="userCode" value="" />
                 </div>
-                <span class="imds-error-text" for=":userCode:">错误消息显示在这里。</span>
+                <span class="imds-error-text" for=":userCode:" id="error-userCode" style="display:none;"></span>
               </div>
             </div>
           </div>
@@ -563,7 +557,7 @@ function transferErrorPage(code, message) {
                     <div class="imds-field-control">
                       <input type="text" id=":userLastName:" class="imds-textbox" name="userLastName" value="" />
                     </div>
-                    <span class="imds-error-text" for=":userLastName:">错误消息显示在这里。</span>
+                    <span class="imds-error-text" for=":userLastName:" id="error-userLastName" style="display:none;"></span>
                   </div>
                   <div class="imds-field" for=":userFirstName:">
                     <div class="imds-field-label">
@@ -572,7 +566,7 @@ function transferErrorPage(code, message) {
                     <div class="imds-field-control">
                       <input type="text" id=":userFirstName:" class="imds-textbox" name="userFirstName" value="" />
                     </div>
-                    <span class="imds-error-text" for=":userFirstName:">错误消息显示在这里。</span>
+                    <span class="imds-error-text" for=":userFirstName:" id="error-userFirstName" style="display:none;"></span>
                   </div>
                 </div>
               </div>
@@ -586,7 +580,7 @@ function transferErrorPage(code, message) {
                   <label for=":age:">年龄</label>
                 </div>
                 <div class="imds-field-control">
-                  <select id=":age:" class="imds-select" name="age">
+                  <select id=":age:" class="imds-select" name="age" style="max-width: 15em;">
                     <option value="">请选择</option>
                     <option value="10">10多岁</option>
                     <option value="20">20多岁</option>
@@ -602,7 +596,7 @@ function transferErrorPage(code, message) {
         </div>
       </section>
     </form>
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+    <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
       <button type="button" id="register-button" class="imds-button is-primary" style="min-width: 8em;">注册</button>
       <button type="button" id="temporary-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">临时保存</button>
       <button type="button" id="delete-button" class="imds-button is-outlined is-danger" style="min-width: 8em;">删除</button>
@@ -613,7 +607,7 @@ function transferErrorPage(code, message) {
 
 ---
 
-## 注册API（simple_form/api/register.js）
+## 注册API（sample/simple_form/api/register.js）
 
 ```javascript
 /**
@@ -793,7 +787,7 @@ function processBusinessLogic(request) {
   };
 
   // 获取请求参数
-  let request = {
+  let parameter = {
     userCode: request['userCode'],
     userFirstName: request['userFirstName'],
     userLastName: request['userLastName'],
