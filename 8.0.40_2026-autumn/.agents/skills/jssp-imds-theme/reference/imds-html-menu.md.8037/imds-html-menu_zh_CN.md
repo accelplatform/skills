@@ -167,6 +167,51 @@ Menu 是将功能选择和画面导航操作以列表形式组织成菜单的组
 </div>
 ```
 
+### 嵌套（层级）菜单
+
+在 `li` 的 `a` 之后紧接放置 `ul.imds-menu-list`，即可创建层级菜单。没有子项的 `li` 也保留空的 `ul.imds-menu-list`，这是实际 DOM 中的标准模式（为保持 DOM 结构一致）。
+
+```html
+<nav class="imds-menu is-borderless">
+  <div class="imds-menu-title">Menu Title</div>
+  <ul class="imds-menu-list">
+    <li>
+      <a><span>Menu 1</span></a>
+      <ul class="imds-menu-list">
+        <li>
+          <a><span>Menu 1-1</span></a>
+          <ul class="imds-menu-list">
+            <li>
+              <a><span>Menu 1-1-1</span></a>
+              <ul class="imds-menu-list"></ul>
+            </li>
+            <li>
+              <a><span>Menu 1-1-2</span></a>
+              <ul class="imds-menu-list"></ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a><span>Menu 1-2</span></a>
+          <ul class="imds-menu-list">
+            <li>
+              <a><span>Menu 1-2-1</span></a>
+              <ul class="imds-menu-list"></ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a><span>Menu 2</span></a>
+      <ul class="imds-menu-list"></ul>
+    </li>
+  </ul>
+</nav>
+```
+
+- 推荐的层级深度以 3 层左右为限（上例中到 `Menu 1-1-1` 为止）。4 层及以上会降低操作性，应避免。
+
 ## 无障碍支持
 
 ### 子级菜单

@@ -33,7 +33,7 @@
 | `jssp-code-style.md` | `let` / 字符串字面量 / 运算符 | 🟢 始终（`.js` 生成时） |
 | `jssp-naming.md` | 文件名・函数名・变量名 | 🟢 始终 |
 | `jssp-function-container.md` | `init()` 结构・验证・IM 通用主数据 API | 🟢 函数容器（`.js`）生成时 |
-| `jssp-presentation-page.md` | 展示页面（`.html`）结构・验证・id 命名规约 | 🟢 展示页面（`.html`）生成时 |
+| `jssp-presentation-page.md` | UI 主题选择・展示页面（`.html`）结构・验证・id 命名规约 | 🟢 展示页面（`.html`）生成时 |
 | `jssp-error-handling.md` | try-catch / 响应结构 / 错误代码 | 🟢 始终 |
 | `jssp-security.md` | XSS / CSRF / 输入验证 | 🟢 始终（处理用户输入时） |
 | `jssp-logging.md` | 日志级别 / 敏感信息脱敏 / 占位符 | 🟡 实现日志时 |

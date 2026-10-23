@@ -7,6 +7,17 @@ description: "プレゼンテーションページの実装方針"
 
 > **适用范围**: 🟢 **始终** — 生成展示页面（`.html`）时适用。HTML 结构、验证、id 命名规约等。
 
+## UI 主题的选择
+
+- 提示词或规格书中明确指定了 UI 主题（纯 HTML、自定义主题等）时，遵循该指定
+- 不使用 imds 主题时，根标签的处理方式参见「实现方针」
+
+### imds 主题（默认）
+
+- 未明确指定 UI 主题时，使用 imds 主题生成画面
+- 页面骨架参考 `.github/skills/jssp-imds-theme/assets/` 中的整页模板，UI 组件参考同一技能的 `reference/`（详情参见 `jssp-imds-theme` 技能）
+- `imuiShowErrorMessage` / `imuiShowSuccessMessage` / `imuiShowWarningMessage` 等消息显示 API 以及 `imuiCalendar` 可与 imds 主题同时使用
+
 ## 展示页面的标准实现方针
 
 ### 基本结构
@@ -185,6 +196,25 @@ var participants = [];                  // 不使用 var
 ```html
 <imart type="string" value=$data escapeXml="false" escapeJs="false" />    <!-- 可以 -->
 ```
+
+#### 3. 即使写在 HTML 注释或 JavaScript 注释中也会被处理
+
+`<imart>` 标签与 JSP 标签一样在服务器端处理，因此即使写在 HTML 注释（`<!-- -->`）或 `<script>` 内的 JavaScript 注释（`//`・`/* */`）中也不会失效，而是会被替换为处理结果（替换后的字符串）。替换结果不会显示在画面上，但会输出到 HTML 源代码中。
+
+不好的示例（均会执行 `<imart>` 标签，`$data.foo` 的值会输出到注释中）:
+```html
+<!--
+<imart type="string" value=$data.foo />
+-->
+```
+```html
+<script>
+  // <imart type="string" value=$data.foo />
+  /* <imart type="string" value=$data.foo /> */
+</script>
+```
+
+如需使 `<imart>` 标签失效，请删除标签本身，而不要用注释括起来。
 
 ## 绑定变量的使用方法
 

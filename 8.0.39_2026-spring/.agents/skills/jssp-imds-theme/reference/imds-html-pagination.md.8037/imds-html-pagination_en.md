@@ -25,7 +25,7 @@ nav.imds-pagination                       # Whole pagination (apply size class)
     └── span                              # Count display (e.g., "501 - 600 / 2000")
 ```
 
-On the first/last page, mark the corresponding prev/next buttons with `disabled`. Page switching and per-page changes are controlled via JavaScript.
+On the first/last page, add `disabled` to the prev/next buttons. Page switching and per-page changes are controlled via JavaScript.
 
 ## CSS Classes Reference
 
@@ -45,7 +45,7 @@ On the first/last page, mark the corresponding prev/next buttons with `disabled`
 
 ## HTML Snippets
 
-### Basic pagination
+### Basic Pagination
 
 ```html
 <nav class="imds-pagination">
@@ -84,7 +84,7 @@ The following sections show only the differences from the basic pagination.
 
 ## Variations
 
-### size
+### size (Size)
 
 Add a size class to `nav.imds-pagination`.
 
@@ -96,7 +96,7 @@ Add a size class to `nav.imds-pagination`.
 <nav class="imds-pagination is-large">    <!-- Large -->
 ```
 
-### hideRecordsPerPage (hide records per page select)
+### hideRecordsPerPage (Hide Records Per Page Select)
 
 Omit `imds-pagination-records-per-page`.
 
@@ -106,7 +106,7 @@ Omit `imds-pagination-records-per-page`.
 </div>
 ```
 
-### compact
+### compact (Compact)
 
 Select the current page with a select box instead of page number buttons.
 First/last page buttons are also added.
@@ -152,11 +152,54 @@ First/last page buttons are also added.
 </nav>
 ```
 
+### rangeLength (Pages Shown Around the Current Page) and Page Truncation Rules
+
+The number of page number buttons shown before and after the current page is called `rangeLength`. Unless specified otherwise, `rangeLength` defaults to **3**. Set an appropriate value for the width of the area where the Pagination is placed.
+
+- With `rangeLength=3`, truncation (`imds-pagination-page-ellipsis`) is used when **the total number of pages is 12 or more**.
+- **Do not truncate just one page** (e.g. a display like "1, … , 3, 4," where a single ellipsis hides only one page is prohibited). When the total number of pages is 11 or fewer (with `rangeLength=3`), do not use an ellipsis; list all page number buttons as they are.
+
+```html
+<!-- 9, 10, or 11 pages in total: show all pages without an ellipsis -->
+<div class="imds-pagination-page-number">
+  <button type="button" class="imds-button is-ghost">1</button>
+  <button type="button" class="imds-button is-ghost">2</button>
+  <button type="button" class="imds-button is-ghost">3</button>
+  <button type="button" class="imds-button is-ghost">4</button>
+  <button type="button" class="imds-button is-ghost">5</button>
+  <button type="button" class="imds-button is-primary">6</button>
+  <button type="button" class="imds-button is-ghost">7</button>
+  <button type="button" class="imds-button is-ghost">8</button>
+  <button type="button" class="imds-button is-ghost">9</button>
+  <!-- For 10 or 11 pages in total, buttons 10 and 11 follow here (no ellipsis) -->
+</div>
+
+<!-- 12 or more pages in total: use an ellipsis and show only the last page -->
+<div class="imds-pagination-page-number">
+  <button type="button" class="imds-button is-ghost">1</button>
+  <button type="button" class="imds-button is-ghost">2</button>
+  <button type="button" class="imds-button is-ghost">3</button>
+  <button type="button" class="imds-button is-ghost">4</button>
+  <button type="button" class="imds-button is-ghost">5</button>
+  <button type="button" class="imds-button is-primary">6</button>
+  <button type="button" class="imds-button is-ghost">7</button>
+  <button type="button" class="imds-button is-ghost">8</button>
+  <button type="button" class="imds-button is-ghost">9</button>
+  <div class="imds-pagination-page-ellipsis"><span>…</span></div>
+  <button type="button" class="imds-button is-ghost">12</button>
+</div>
+```
+
+### Criteria for Switching to PaginationCompact
+
+When the screen size is tablet width (769px to less than 1023px), use PaginationCompact (imds-html-pagination-compact.md) instead of Pagination. For screen size breakpoints, refer to the Breakpoint page. Use Pagination by default and switch to PaginationCompact only for narrow screen widths.
+
 ## Implementation Notes
 
 - Apply `is-primary` to the current page button and `is-ghost` to all others
-- Use `imds-pagination-page-ellipsis` (…) to truncate when there are many pages
-- Add `title` attribute to prev/next buttons for accessibility
-- Add `disabled` attribute to prev/next buttons on the first/last page
+- Use `imds-pagination-page-ellipsis` (…) to truncate when there are many pages. However, **do not truncate just one page** (see "rangeLength (Pages Shown Around the Current Page) and Page Truncation Rules" for details)
+- Add a `title` attribute to prev/next buttons for accessibility
+- Add the `disabled` attribute to prev/next buttons on the first/last page
 - Replace the `select` `id` and `label` `for` with unique values (`todo-replace-:r1:` is a placeholder)
 - Page switching and records-per-page changes must be controlled with JavaScript
+- When the screen width becomes tablet width (769px to less than 1023px), consider switching to PaginationCompact (see "Criteria for Switching to PaginationCompact" for details)

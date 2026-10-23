@@ -71,5 +71,5 @@ Checkbox 是从选项列表中选择项目时使用的组件。
 
 - 复选框使用 `label.imds-checkbox > input[type="checkbox"] + span` 结构编写
 - `disabled` 和 `checked` 可以组合使用（例如：已选中且禁用）
-- 将多个复选框分组时，使用 `fieldset` 和 `legend`
+- 将多个复选框分组时不使用 `fieldset`/`legend`。用 `imds-field`（+ `imds-field-label`）包裹，并汇总到 `div.imds-checkbox-group` 中（详情参见 `imds-html-checkbox-group.md`）
 - 通过 JavaScript 控制选中状态的变化

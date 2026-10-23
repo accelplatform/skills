@@ -61,6 +61,12 @@ Add a size class to `span.imds-icon`.
   <span class="imds-button-text">Add Existing Resources</span>
 </button>
 
+<!-- Open-in-new-tab button (is-outlined) -->
+<button type="button" class="imds-button is-outlined">
+  <span class="imds-icon"><img src="img/url.svg" /></span>
+  <span class="imds-button-text">Open in New Tab</span>
+</button>
+
 <!-- Icon-only button -->
 <button type="button" class="imds-button is-ghost">
   <span class="imds-icon"><img src="img/addition.svg" /></span>

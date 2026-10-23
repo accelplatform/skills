@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "type": "mcp",
+  "files": [
+    {
+      "file": "10-expo.toml"
+    }
+  ]
+}

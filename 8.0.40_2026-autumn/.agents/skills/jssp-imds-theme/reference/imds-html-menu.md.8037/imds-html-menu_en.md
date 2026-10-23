@@ -27,7 +27,7 @@ Menu is a component that organizes feature selections and screen navigation acti
 
 ## HTML Snippets
 
-### Basic menu
+### Basic Menu
 
 ```html
 <nav class="imds-menu">
@@ -44,7 +44,7 @@ The following sections show only the differences from the basic menu.
 
 ## Variations
 
-### lineStyle (divider style)
+### lineStyle (Divider Style)
 
 Add a class to `nav.imds-menu`.
 
@@ -53,7 +53,7 @@ Add a class to `nav.imds-menu`.
 <nav class="imds-menu is-last-child-borderless">  <!-- No divider on last item -->
 ```
 
-### size
+### size (Size)
 
 Add a size class to `nav.imds-menu`.
 
@@ -64,7 +64,7 @@ Add a size class to `nav.imds-menu`.
 <nav class="imds-menu is-large">   <!-- Large -->
 ```
 
-### disabled
+### disabled (Disabled State)
 
 Add `is-disabled` to the `li` element.
 
@@ -74,7 +74,7 @@ Add `is-disabled` to the `li` element.
 </li>
 ```
 
-### active
+### active (Active State)
 
 Add `is-active` to the `li` element.
 
@@ -167,19 +167,64 @@ Used for side menus, etc. Adding `is-last-child-borderless` removes the divider 
 </div>
 ```
 
+### Nested (Hierarchical) Menu
+
+Placing a `ul.imds-menu-list` immediately after the `a` of an `li` creates a hierarchical menu. The standard pattern in the actual DOM keeps an empty `ul.imds-menu-list` even in an `li` without children (for a consistent DOM structure).
+
+```html
+<nav class="imds-menu is-borderless">
+  <div class="imds-menu-title">Menu Title</div>
+  <ul class="imds-menu-list">
+    <li>
+      <a><span>Menu 1</span></a>
+      <ul class="imds-menu-list">
+        <li>
+          <a><span>Menu 1-1</span></a>
+          <ul class="imds-menu-list">
+            <li>
+              <a><span>Menu 1-1-1</span></a>
+              <ul class="imds-menu-list"></ul>
+            </li>
+            <li>
+              <a><span>Menu 1-1-2</span></a>
+              <ul class="imds-menu-list"></ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a><span>Menu 1-2</span></a>
+          <ul class="imds-menu-list">
+            <li>
+              <a><span>Menu 1-2-1</span></a>
+              <ul class="imds-menu-list"></ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a><span>Menu 2</span></a>
+      <ul class="imds-menu-list"></ul>
+    </li>
+  </ul>
+</nav>
+```
+
+- The recommended depth is up to about 3 levels (down to `Menu 1-1-1` in the example above). Avoid 4 or more levels, as usability degrades.
+
 ## Accessibility
 
-### Child-level menu
+### Child-Level Menu
 
 - Child-level menus are used for hierarchical tables of contents and navigation
 - Nesting Menu elements within list items creates a hierarchical menu
 - However, deeper hierarchies may reduce usability, so design with care
 
-### Child-level menu inside Popover
+### Child Levels Inside Popover
 
-- Generally, avoid using child-level menus inside Popovers
+- Generally, use Popovers without child levels
 - Popover content often has limited display area and is not always visible, making child-level menus unsuitable
-- Use MenuTitle to group menu items instead
+- Use MenuTitle to group menu items
 
 ## Implementation Notes
 

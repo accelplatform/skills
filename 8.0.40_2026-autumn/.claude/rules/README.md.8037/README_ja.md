@@ -33,7 +33,7 @@
 | `jssp-code-style.md` | `let` / 文字列リテラル / 演算子 | 🟢 常時（`.js` 生成時） |
 | `jssp-naming.md` | ファイル名・関数名・変数名 | 🟢 常時 |
 | `jssp-function-container.md` | `init()` 関数構造・バリデーション・IM-共通マスタ API | 🟢 ファンクションコンテナ（`.js`）生成時 |
-| `jssp-presentation-page.md` | プレゼンテーションページ（`.html`）構造・バリデーション・id 命名規約 | 🟢 プレゼンテーションページ（`.html`）生成時 |
+| `jssp-presentation-page.md` | UI テーマ選択・プレゼンテーションページ（`.html`）構造・バリデーション・id 命名規約 | 🟢 プレゼンテーションページ（`.html`）生成時 |
 | `jssp-error-handling.md` | try-catch / レスポンス構造 / エラーコード | 🟢 常時 |
 | `jssp-security.md` | XSS / CSRF / 入力検証 | 🟢 常時（ユーザ入力扱う場面） |
 | `jssp-logging.md` | ログレベル / 機密情報マスク / プレースホルダ | 🟡 ログ実装時 |

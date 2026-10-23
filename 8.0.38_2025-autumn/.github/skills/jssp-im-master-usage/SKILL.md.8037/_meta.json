@@ -23,5 +23,28 @@
       "from": "SKILL_en.md",
       "to": "SKILL.md"
     }
+  ],
+  "replacements": [
+    {
+      "type": "section",
+      "heading": "imds テーマで生成する場合",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "When Generating with the imds Theme",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "使用 imds 主题生成时",
+      "condition": {
+        "feature": "imds"
+      }
+    }
   ]
 }

@@ -51,6 +51,29 @@ For common usage and notes about Button, refer to Button.
 
 Left icon and right icon can each be omitted. All subsequent snippets show only the differences from the basic icon button.
 
+## Combination Examples
+
+### Popover Trigger
+
+Use as a trigger button for displaying Popover content.
+
+```html
+<button type="button" class="imds-button">
+  <span class="imds-button-text">Search Target</span>
+  <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
+</button>
+```
+
+### Overflow Menu (ellipsis)
+
+Use as a button that displays an overflow menu. For icon-only buttons, set the `title` attribute to help users understand the action.
+
+```html
+<button type="button" class="imds-button is-outlined" title="More Actions">
+  <span class="imds-icon"><i class="fa-solid fa-ellipsis"></i></span>
+</button>
+```
+
 ## Variations
 
 ### title (Tooltip)
@@ -104,3 +127,7 @@ Add the `disabled` attribute to the `button` element. Not clickable; visually gr
 ```html
 <button type="button" class="imds-button" disabled>
 ```
+
+## Implementation Notes
+
+- For icon-only buttons (without text), always set the `title` attribute (or `aria-label`) to help users understand the action

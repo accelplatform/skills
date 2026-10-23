@@ -44,6 +44,18 @@ node .agents/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 
 **注意：** 这些脚本每次调用只接受 1 个路径（目录或单个文件）。如果需要一并验证多个文件，不要逐个列出文件，而应传入它们共同的父目录（传入多个路径会导致脚本报错并停止）。
 
+### imds 结构验证
+
+对于 imds 主题的画面，与上述工具同时执行以下命令，并一并收集输出。明确指定了 imds 以外主题（纯 HTML 等）的画面不执行（`<main>` 位于 `imds-container` 之外时会产生 `IMDS-CONTAINER-100` 错误）。
+
+```bash
+node .agents/skills/jssp-imds-theme/scripts/validate-imds.js src/main/jssp/src/{功能名}/
+```
+
+- 检测内容：imds 组件的父子关系、必需子孙类、附加目标元素的错误（`IMDS-<COMPONENT>-NNN`），以及 reference 中未记载的 `imds-*` 类（`IMDS-UNKNOWN-001` 警告）。规则一览参见 `jssp-imds-theme` 技能的「验证规则」
+- 也包含在后述「一并修正 → 只重新验证一次」的重新执行中
+- 在完成后报告的表格中追加「imds 结构」行，并记载结果（X 件检出 → 已修正 / 0 件（无问题））
+
 ### 检测模式：validate-jssp-code.js（JSSP 代码验证）
 
 - `db.select()` / `db.execute()` 的参数未用 `DbParameter` 包裹
@@ -112,7 +124,7 @@ echo "[SQL 文件]"; find "$TARGET" -name "*.sql" | head -5
 echo "[DB 访问]"; grep -rlE "db\.(select|execute)\(|executeByTemplate|fetchByTemplate" "$TARGET" --include=*.js
 echo "[Date 变量解析]"; grep -rnE "new Date\([a-zA-Z_]" "$TARGET" --include=*.js
 echo "[imACMSearch]"; grep -rl "imACMSearch" "$TARGET" --include=*.html
-echo "[画面间参数传递]"; grep -rlE "location\.href.*\?|<a[^>]+href=\"[^\"]*\?" "$TARGET" --include=*.html
+echo "[画面间参数传递]"; grep -rlE "location\.href.*\?|<a[^>]+href=\"[^\"]*\?|setAttribute\(.href.,[^)]*\?|\.href *= *[^;]*\?" "$TARGET" --include=*.html
 echo "[IM-Workflow]"; find "$TARGET" -maxdepth 1 -type d -name workflow
 ```
 

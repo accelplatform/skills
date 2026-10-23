@@ -23,5 +23,28 @@
       "from": "SKILL_en.md",
       "to": "SKILL.md"
     }
+  ],
+  "replacements": [
+    {
+      "type": "section",
+      "heading": "imds 構造検証",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "imds Structure Validation",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "imds 结构验证",
+      "condition": {
+        "feature": "imds"
+      }
+    }
   ]
 }

@@ -6,7 +6,7 @@ FieldGroup is a component for grouping multiple Fields together.
 
 - Source URL: https://document.intra-mart.jp/design/?path=/docs/components-field-fieldgroup--documentation
 - Base class: imds-field-group
-- For details on individual fields, see [field](imds-html-field.md)
+- For details on individual fields, see [imds-html-field.md](imds-html-field.md)
 
 ## Overall Structure
 
@@ -48,6 +48,7 @@ Place `imds-help-text` / `imds-error-text` **after `imds-field-group-control`** 
 | imds-help-text | span element | Help text | Optional |
 | imds-error-text | span element | Error message | Optional |
 | imds-validation-error | imds-field | Validation error state (applied to individual Field) | Optional |
+| imds-field-container | Outer div | Container that stacks FieldGroups vertically (required at the first level) | Required (when placed at the first level) |
 
 ## HTML Snippets
 
@@ -147,12 +148,75 @@ Add `imds-validation-error` to individual `div.imds-field` and add `imds-error-t
 </div>
 ```
 
+### Width of Horizontally Arranged Fields and Error Display
+
+As a rule, specify the width of an input directly on the `input` / `select` with `style="max-width: …"`. Only when arranging Fields horizontally with `imds-field-group-control is-horizontal`, specify the width on each `div.imds-field` instead (specifying it on the input elements creates unnatural gaps between the inputs).
+
+If the width of `div.imds-field` is less than 10em, display the error message (`imds-error-text`) after `imds-field-group-control` (at the end of the group) rather than per field (with a narrow width, the message wraps many times and becomes hard to read). Even at 10em or more, it may be displayed at the end of the group if the message is long and hard to read. When listing errors for multiple fields, place one `imds-error-text` per field. Apply `imds-validation-error` to the individual `imds-field` as usual.
+
+```html
+<div class="imds-field-group is-horizontal imds-w-15">
+  <div class="imds-field-group-label"><span>Quantity</span></div>
+  <div class="imds-field-group-control is-horizontal">
+    <div class="imds-field" style="max-width: 8em;">
+      <div class="imds-field-label"><label for=":r10:">Unit Price</label></div>
+      <div class="imds-field-control">
+        <input type="text" id=":r10:" class="imds-textbox" value="" />
+      </div>
+    </div>
+    <div class="imds-field imds-validation-error" style="max-width: 8em;">
+      <div class="imds-field-label"><label for=":r11:">Stock Quantity</label></div>
+      <div class="imds-field-control">
+        <input type="text" id=":r11:" class="imds-textbox" value="" />
+      </div>
+    </div>
+  </div>
+  <span class="imds-error-text">Enter a number of 0 or more for Stock Quantity.</span>
+</div>
+```
+
+### Wrapping with field-container
+
+When placing a FieldGroup at the first level of a form, wrap it with `imds-field-container`, as with Field. For details on `imds-field-container` (`has-divider` / `has-accent-color` / automatic vertical stacking below 768px), see the "Field Container" section of [imds-html-field.md](imds-html-field.md).
+
+```html
+<form class="imds-form">
+  <div class="imds-field-container">
+    <div class="imds-field-group is-horizontal imds-w-15">
+      <div class="imds-field-group-label"><span>Address</span></div>
+      <div class="imds-field-group-control">
+        <div class="imds-field">
+          <div class="imds-field-label">
+            <label class="imds-required-label-required-asterisk" for=":r8:">Prefecture</label>
+          </div>
+          <div class="imds-field-control">
+            <input type="text" id=":r8:" class="imds-textbox" value="" />
+          </div>
+        </div>
+        <div class="imds-field">
+          <div class="imds-field-label">
+            <label class="imds-required-label-required-asterisk" for=":r9:">City</label>
+          </div>
+          <div class="imds-field-control">
+            <input type="text" id=":r9:" class="imds-textbox" value="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+```
+
 ## Implementation Notes
 
 - Assign unique values to each Field's `id` within the group (`:r1:` etc. are placeholders)
 - Place `imds-help-text` and `imds-error-text` after `imds-field-group-control`
 - Apply `imds-validation-error` to individual `imds-field`, not to the group
+- Only when arranging Fields horizontally with `imds-field-group-control is-horizontal`, specify the width on `div.imds-field` rather than on the input elements (see "Width of Horizontally Arranged Fields and Error Display")
 - When placing multiple `imds-field` inside `imds-field-group-control is-horizontal`, keep the presence/absence of `imds-field-label` consistent within the group. Mixing labeled and non-labeled fields will break the layout
   - If all fields have labels, set the group heading in `imds-field-group-label`
   - If unified without labels, set a representative item name in `imds-field-group-label`
-- For detailed usage of Field, see [field](imds-html-field.md)
+- **One input component principle**: A FieldGroup consists of Fields (each Field holds only a single input component). Do not nest FieldGroups
+- **field-container required principle**: When placing a FieldGroup at the first level of a form, always wrap it with `imds-field-container`, as with Field
+- A FieldGroup directly under `imds-field-container` automatically stacks its label and control vertically at a viewport width of 768px or less, even if `is-horizontal` is specified. This does not apply at the second level or below, or when used standalone
+- For detailed usage of Field, see [imds-html-field.md](imds-html-field.md)

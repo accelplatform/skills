@@ -52,13 +52,13 @@ imds-popover                              # コンテナ（is-right / is-left / 
 <div class="imds-popover">
   <button
     aria-haspopup="true"
-    aria-controls="imds-popover-:r1:"
+    aria-controls="sample-popover-1"
     class="imds-button is-outlined">
     <span>Popover</span>
     <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
   </button>
   <div
-    id="imds-popover-:r1:"
+    id="sample-popover-1"
     role="menu"
     class="imds-popover-menu">
     <div class="imds-popover-content"><div>Contents</div></div>
@@ -112,25 +112,25 @@ imds-popover                              # コンテナ（is-right / is-left / 
 
 ```html
 <!-- ラベル + シェブロン（標準） -->
-<button aria-haspopup="true" aria-controls="imds-popover-:r1:" class="imds-button is-outlined">
+<button aria-haspopup="true" aria-controls="sample-popover-1" class="imds-button is-outlined">
   <span>Popover</span>
   <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
 </button>
 
 <!-- アイコンのみ・is-ghost（ヘッダーナビ等でよく使われる） -->
-<button type="button" class="imds-button is-ghost is-large" aria-haspopup="true" aria-controls="imds-popover-:r6:">
+<button type="button" class="imds-button is-ghost is-large" aria-haspopup="true" aria-controls="sample-popover-6">
   <span class="imds-icon is-medium is-primary"><i class="imds-iconfont imds-application"></i></span>
   <span class="imds-icon is-x-small is-primary"><i class="fa-solid fa-caret-down"></i></span>
 </button>
 
 <!-- 省略メニュー（ellipsis）・アイコンのみ、開閉インジケータなし -->
-<button class="imds-button is-ghost" title="その他の操作" aria-haspopup="true" aria-controls="imds-popover-:r8:">
+<button class="imds-button is-ghost" title="その他の操作" aria-haspopup="true" aria-controls="sample-popover-8">
   <span class="imds-icon is-small is-gray"><i class="fa-solid fa-ellipsis"></i></span>
 </button>
 
 <!-- 適用済み（Applied）: アイコン + ラベル + is-applied、開いている間は is-active -->
 <div class="imds-popover is-active">
-  <button aria-haspopup="true" aria-controls="imds-popover-:r0:" class="imds-button is-outlined is-applied">
+  <button aria-haspopup="true" aria-controls="sample-popover-0" class="imds-button is-outlined is-applied">
     <span class="imds-icon is-small"><i class="fa-solid fa-sliders"></i></span>
     <span>Popover</span>
     <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
@@ -171,7 +171,7 @@ Popover の中身に `nav.imds-menu` を配置し、`li` の中に `ul.imds-menu
 
 ## 実装上の注意
 
-- トリガーボタンの `aria-controls` とパネルの `id` を一致させること（`:r1:` は一意の値に置き換える）
+- トリガーボタンの `aria-controls` とパネルの `id` を一致させること（`sample-popover-N` はプレースホルダー。機能に合わせた一意な名前にし、入力要素ではないためコロンは付けない）
 - パネルの開閉制御は JavaScript で実装する必要がある（`is-hoverable` の場合は CSS のみで動作）。開閉は `div.imds-popover` への `is-active` クラスの付け外しで表現するのが標準実装であり、ドキュメント外クリックで `is-active` を除去する
 - `aria-haspopup="true"` をトリガーボタンに必ず付与する。パネル本体には `role="menu"` を必ず付与する
 - トリガーボタンの見た目は `imds-button is-outlined` + `fa-chevron-down` に限らない。`is-ghost`（アイコンのみ）や `fa-caret-down` を使う例も実DOMに存在する正当なバリエーション。用途（ラベル有無・設置場所）に応じて選択する

@@ -38,6 +38,7 @@ The three-layer structure `div.imds-table > div.imds-table-inner > table` is **r
 | is-sticky | th / td element | Fix column (on horizontal scroll) | Optional |
 | is-border-right | th / td element | Show border on right side of fixed column | Optional |
 | is-sortable | th element | Sortable column | Optional |
+| is-max-content | imds-table | Recommended for horizontal scroll (column width based on content width) | Optional |
 | is-active | tr / td element | Active (selected) highlight | Optional |
 | has-content-only | th / td element | Remove cell padding (for buttons/checkboxes) | Optional |
 | has-text-right | td element | Right-align text (for numeric columns) | Optional |
@@ -129,9 +130,25 @@ Add `is-stripe` to `div.imds-table`. The background color of even rows changes.
 <div class="imds-table is-stripe" ...>
 ```
 
+### isMaxContent (recommended for horizontal scroll)
+
+For tables likely to scroll horizontally, such as those with many columns or long text in each cell, add `is-max-content` to `div.imds-table`.
+Column widths are based on content width, which avoids wrapping within cells.
+
+```html
+<div class="imds-table is-hoverable is-sticky is-area-bordered is-max-content" ...>
+```
+
+Conversely, if there are few columns and you want to display all columns without horizontal scrolling, do not add `is-max-content`. In this case, long strings are wrapped.
+
+```html
+<!-- Without horizontal scrolling (no is-max-content) -->
+<div class="imds-table is-hoverable is-sticky is-area-bordered" ...>
+```
+
 ### isNarrow (compact)
 
-Add `is-narrow` to `div.imds-table` to apply to the entire table, or to `tr` to apply to specific rows only.
+Add `is-narrow` to `div.imds-table` to apply to the entire table, or to `tr` to apply to specific rows only. For list tables with many rows, applying it to the entire table is recommended (see "Implementation Notes" for the criteria).
 
 ```html
 <!-- Entire table -->
@@ -178,19 +195,18 @@ Add `is-border-right` to the last fixed column to show a boundary line.
 
 Add a checkbox column.
 Add `has-content-only` to `th` / `td` to remove cell padding.
+In a table context, place only `input` inside `label.imds-checkbox` and do not add `span` (note that this differs from a standalone form checkbox).
 
 ```html
 <th class="has-content-only">
   <label class="imds-checkbox">
-    <input type="checkbox" />
-    <span></span>
+    <input type="checkbox" id="checkbox-all-xxxxx" />
   </label>
 </th>
 <!-- Add the same td structure to each row in tbody -->
 <td class="has-content-only">
   <label class="imds-checkbox">
-    <input type="checkbox" />
-    <span></span>
+    <input type="checkbox" id="checkbox-child-0-xxxxx" />
   </label>
 </td>
 ```
@@ -212,16 +228,25 @@ The `th` contains only header text, so add `has-text-centered` to center it. The
 
 ### isSortable (sortable)
 
-Add `is-sortable` to the target `th` and add a sort icon.
+Add `is-sortable` to the target `th`, and add a sort button with the structure `imds-table-column-actions > button.imds-table-sorter > span.imds-table-sort-label + span.imds-icon`.
+Inside `span.imds-icon`, always write both `<i>` elements, `fa-sort-up` (ascending icon) and `fa-sort-down` (descending icon); CSS switches their display according to the sort state (the implementation does not dynamically swap a single icon).
+Add a `title` attribute describing the current action to `button.imds-table-sorter` (e.g. `"Sort ascending"` / `"Sort descending"` / `"Clear sorting"`).
 
 ```html
 <th class="is-sortable">
-  <span>Header 2</span>
-  <span class="imds-icon"><i class="fa-solid fa-sort-up"></i></span>
+  <div class="imds-table-column-actions">
+    <button class="imds-table-sorter" title="Sort ascending">
+      <span class="imds-table-sort-label">Header 2</span>
+      <span class="imds-icon">
+        <i class="fa-solid fa-sort-up"></i>
+        <i class="fa-solid fa-sort-down"></i>
+      </span>
+    </button>
+  </div>
 </th>
 ```
 
-Switch the icon according to sort direction: `fa-sort-up` (ascending) / `fa-sort-down` (descending) / `fa-sort` (unsorted).
+The sort state cycles in the order "ascending -> descending -> not applied". The `title` text describes the action that occurs on the next click at that point.
 
 ### hasTextRight (right-align text)
 
@@ -264,6 +289,34 @@ Add a color class to `tr` or `td`. Can be combined with `is-active`.
 <td class="is-warning is-active"> <!-- Color + active combination -->
 ```
 
+### Vertical layout (item names and values side by side)
+
+A table that shows item names and values side by side, used to display summary information on detail/reference screens and dialogs.
+When placing headings in table rows, use `th` (do not use `thead`; alternate `th`/`td` inside `tbody`).
+
+```html
+<div class="imds-table is-bordered is-area-bordered">
+  <div class="imds-table-inner">
+    <table>
+      <tbody>
+        <tr>
+          <th><span>Application Name</span></th>
+          <td><span>Application 1</span></td>
+          <th><span>Application ID</span></th>
+          <td><span>sample_app_1</span></td>
+        </tr>
+        <tr>
+          <th><span>Category Name</span></th>
+          <td><span>Category 1</span></td>
+          <th><span>Category ID</span></th>
+          <td><span>ct_1</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+```
+
 ## Accessibility
 
 ### Header labels
@@ -298,8 +351,15 @@ Add a color class to `tr` or `td`. Can be combined with `is-active`.
 - `is-sticky` (whole table) and `is-sticky` (th/td) serve different purposes: the former fixes the header row, the latter fixes columns
 - Manually calculate the `left` value for fixed columns based on the width of the preceding fixed columns
 - Apply a background color class (such as `is-cyan`) to fixed column `td` elements to prevent the background from becoming transparent on scroll
-- Implement sorting with JavaScript (icon switching and data reordering)
+- Implement sorting with JavaScript (toggling the `is-sortable` state class and reordering data). Always write both sort icons, `fa-sort-up` / `fa-sort-down`, in the header, and switch their display with state classes on the CSS side
+- Add `is-max-content` to tables likely to scroll horizontally (many columns or long text). Do not add it if there are few columns and you do not want horizontal scrolling
 - Use `has-content-only` when cell padding is not needed for buttons, checkboxes, etc.
 - Do not add `has-content-only` to a `th` that has header text (e.g. `<span>Edit</span>`). Use `has-text-centered` if center alignment is desired. `has-content-only` is only for a `th` that itself contains just a component such as a checkbox, with no header text
 - Multiple variations can be combined (e.g. `is-sticky is-hoverable is-stripe`)
+- Criteria for applying variation classes:
+  - As a rule, apply `is-area-bordered` (to make the table area clear) and `is-hoverable` (to make rows easy to follow; especially recommended for wide tables)
+  - Apply `is-sticky` to tables that may scroll vertically (to keep each column's label always visible)
+  - If there are right-aligned columns with `has-text-right` on `td`, applying `is-bordered` is recommended to make column boundaries clear (its role differs from `is-area-bordered`, and both can be used together)
+  - For list tables with many rows, `is-narrow` is recommended to show more rows at once and increase information density (list screens apply it by default). Tables with input components such as text boxes inside `td` also get `is-narrow` to keep row height low
+- For tables with few columns and little text that are hard to read when stretched to 100% width across the screen, consider specifying `width: fit-content;` in the `style` of `div.imds-table` (optional). To right-align a total or similar value with the right edge of the table, wrap the table and the target element together in `<div style="width: fit-content;">` (`has-text-end` right-aligns based on the element's own width)
 - **Do not use a custom class for row/cell background colors**. imds applies its background color at the `td` level, so setting a custom `background-color` on `tr` gets overridden by the `td` background and never actually shows (the class is applied but the appearance does not change — an easy-to-miss defect). Use `is-active` ([isActive (Active Row / Cell)](#isactive-active-row--cell)) for highlighting a selected row, and status color classes such as `is-danger` / `is-warning` / `is-success` ([color (Cell Background Color)](#color-cell-background-color)) for status-based coloring. `is-active` can be combined with a color class

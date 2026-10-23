@@ -1,42 +1,46 @@
-# エクスポート画面の実装例
+# Export Screen Implementation Example
 
-imds テーマのコンポーネントを組み合わせた、業務エクスポート画面の実装例。
-「アシスタント定義」画面を題材に、ヘッダ・ステッパー・エクスポート方法選択・対象選択（一覧）・実行確認の構成パターンを示す。
+An implementation example of a business export screen that combines imds theme components.
+Using the "Assistant Definition" screen as the subject, this shows the composition pattern for the header, stepper, export method selection, target selection (list), and execution confirmation.
 
-## 使用コンポーネント一覧
+This page keeps the header fixed and scrolls only the content of each stepper step vertically. It uses the layout control pattern based on the fixed class names `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` / `pgstyle-layout-footer` (because it is based on `height: 100%`, loading `theme-conditional-layout.css` in `<imart type="head">` is mandatory; see "Implementation Notes" for details). For an explanation of the older approach that uses a different placeholder prefix for each feature, see [imds-common-fixed-header-layout.md](../reference/imds-common-fixed-header-layout.md).
 
-| コンポーネント | reference | 本例での用途 |
+## Components Used
+
+| Component | reference | Usage in this example |
 |---------------|-----------|-------------|
-| Header | [imds-html-header.md](../reference/imds-html-header.md) | 関連画面メニュー付きページヘッダ |
-| Stepper | [imds-html-stepper.md](../reference/imds-html-stepper.md) | エクスポート工程の進捗表示 |
-| Message | [imds-html-message.md](../reference/imds-html-message.md) | エクスポート内容の補足説明 |
-| Radio | [imds-html-radio.md](../reference/imds-html-radio.md) | エクスポート方法の選択 |
-| Button | [imds-html-button.md](../reference/imds-html-button.md) | エクスポート実行ボタン・次へボタン |
-| EmptyState | [imds-html-empty-state.md](../reference/imds-html-empty-state.md) | 対象選択エリアが空のときの表示 |
-| Table | [imds-html-table.md](../reference/imds-html-table.md) | エクスポート対象一覧テーブル |
-| Confirm | [imds-csjs-confirm.md](../reference/imds-csjs-confirm.md) | エクスポート実行前の確認ダイアログ |
+| Header | [imds-html-header.md](../reference/imds-html-header.md) | Page header with related-screen menu |
+| Stepper | [imds-html-stepper.md](../reference/imds-html-stepper.md) | Progress display for the export process |
+| Message | [imds-html-message.md](../reference/imds-html-message.md) | Supplementary explanation of the export |
+| Radio | [imds-html-radio.md](../reference/imds-html-radio.md) | Export method selection |
+| Button | [imds-html-button.md](../reference/imds-html-button.md) | Export execute button / Next button |
+| EmptyState | [imds-html-empty-state.md](../reference/imds-html-empty-state.md) | Display when the target selection area is empty |
+| Table | [imds-html-table.md](../reference/imds-html-table.md) | Export target list table |
+| Confirm | [imds-csjs-confirm.md](../reference/imds-csjs-confirm.md) | Confirmation dialog before executing the export |
 
-## 全体構成
+## Overall Structure
+
+Add `pgstyle-layout-container` (2-row grid) to `imds-container`, `pgstyle-layout-main` (vertical flex) to `<main>`, `pgstyle-layout-content` (`flex:1 0 0; overflow:auto`) to the scroll area of the step content, and `pgstyle-layout-footer` (`flex:0 0 auto`) to the fixed footer.
 
 ```
-div.imds-container                   ... ルート div（intra-mart テーマの imui-container の内側に配置されるため id は付与しない、中間ラッパーも挟まない）
-├── header.imds-header              ... ページヘッダ（関連画面メニュー・タイトル）
-└── main
-    ├── div.imds-stepper             ... 進捗ステッパー（2 ステップ）
-    └── section（ステップごとに切替）
-        ├── ステップ1: エクスポート方法選択
-        │   ├── imds-message         ... 補足メッセージ（任意）
-        │   ├── imds-radio × 2        ... 「すべて」/「選択して」の選択肢
-        │   └── button                ... エクスポート実行 or 次へ
-        └── ステップ2: エクスポート対象選択（一覧画面に準拠）
-            ├── button-area           ... 検索欄
-            ├── imds-table            ... 対象一覧（チェックボックス列あり）
-            └── フッタ                 ... 戻る・エクスポートボタン
+div.imds-container.pgstyle-layout-container    ... root div (placed inside the intra-mart theme's imui-container, so no id is assigned and no intermediate wrapper is inserted)
+├── header.imds-header               ... page header (related-screen menu, title; fixed)
+└── main.pgstyle-layout-main (vertical flex container)
+    ├── div.imds-stepper              ... progress stepper (2 steps; fixed, flex:0 0 auto)
+    └── section.pgstyle-layout-content (switched per step; has imds-scrollbar, flex:1 0 0; overflow:auto)
+        ├── Step 1: Select Export Method
+        │   ├── imds-message         ... supplementary message (optional)
+        │   ├── imds-radio × 2        ... "All" / "Select" choices
+        │   └── button                ... execute export or Next
+        └── Step 2: Select Export Targets (follows the list screen; the section also has pgstyle-table-wrapper)
+            ├── form > div.pgstyle-toolbar ... search field (server-side search; type="submit" + preventDefault())
+            ├── imds-table            ... target list (with checkbox column)
+            └── div.pgstyle-layout-footer (directly under main, outside the scroll area; flex:0 0 auto) ... Back / Export buttons
 ```
 
-## 1. ページヘッダ
+## 1. Page Header
 
-エクスポート画面は他の関連画面（インポート画面・一覧画面等）への切り替えメニューを持つことが多いため、`imds-header-nav`（Popover 併用）パターンを使用する。単独画面で関連画面メニューが不要な場合は、一覧画面と同様に `imds-header-icon` パターンでもよい。
+Export screens often have a menu for switching to related screens (import screen, list screen, etc.), so use the `imds-header-nav` (with Popover) pattern. For a standalone screen that does not need a related-screen menu, the `imds-header-icon` pattern, as on the list screen, is also acceptable.
 
 ```html
 <header class="imds-header">
@@ -53,8 +57,8 @@ div.imds-container                   ... ルート div（intra-mart テーマの
       <div class="imds-popover-content">
         <nav class="imds-menu">
           <ul class="imds-menu-list">
-            <li><a href="#"><span>アシスタント定義一覧</span></a></li>
-            <li><a href="#"><span>アシスタント定義インポート</span></a></li>
+            <li><a href="#"><span>Assistant Definition List</span></a></li>
+            <li><a href="#"><span>Assistant Definition Import</span></a></li>
           </ul>
         </nav>
       </div>
@@ -67,107 +71,110 @@ div.imds-container                   ... ルート div（intra-mart テーマの
 </header>
 ```
 
-**ポイント:**
-- ヘッダには `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` のいずれか 1 つを必ず配置する（SKILL.md の必須ルールに準拠）。関連画面への遷移が必要な場合は `imds-header-nav` を選ぶ
-- `imds-header-actions` にエクスポート実行ボタンは置かない（業務操作ボタンはヘッダに置かない原則はエクスポート画面にも適用される）
+**Points:**
+- Always place exactly one of `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` in the header (per the mandatory rule in SKILL.md). Choose `imds-header-nav` when navigation to related screens is needed
+- Do not place the export execute button in `imds-header-actions` (the principle of not placing business operation buttons in the header also applies to export screens)
 
-## 2. ステッパー
+## 2. Stepper
 
-エクスポート画面は「エクスポート方法を選択」→「エクスポート対象を選択」の 2 ステップで構成する。
+The export screen consists of 2 steps: "Select Export Method" → "Select Export Targets".
 
 ```html
 <div class="imds-stepper">
   <ul>
     <li class="imds-stepper-step is-active">
-      <button disabled><span>1.エクスポート方法を選択</span></button>
+      <button disabled><span>1.Select Export Method</span></button>
     </li>
     <li class="imds-stepper-step">
-      <button disabled><span>2.エクスポート対象を選択</span></button>
+      <button disabled><span>2.Select Export Targets</span></button>
     </li>
   </ul>
 </div>
 ```
 
-**ポイント:**
-- `is-active` クラスを JavaScript で付け替え、現在のステップを表示する
-- 各 `<button>` は `disabled` のままにする（ステッパーは進捗表示専用であり、クリックでのステップ間ジャンプは提供しない）
+**Points:**
+- Move the `is-active` class with JavaScript to indicate the current step
+- Keep each `<button>` `disabled` (the stepper is for progress display only and does not provide jumping between steps by clicking)
 
-## 3. ステップ1: エクスポート方法を選択
+## 3. Step 1: Select Export Method
 
-補足メッセージ（任意）+ ラジオボタン（すべて / 選択して）+ アクションボタンで構成する。
+Consists of a supplementary message (optional) + radio buttons (All / Select) + an action button.
 
 ```html
-<section class="imds-py-6 imds-px-8 imds-scrollbar" data-mode="new">
-  <div class="imds-message is-outlined is-info imds-mb-5">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar" data-mode="new">
+  <div class="imds-message is-outlined is-info imds-mb-4">
     <div class="imds-message-title">
       <span class="imds-icon is-medium"><i class="fa-solid fa-circle-info"></i></span>
-      <p>アシスタント定義のエクスポート</p>
+      <p>Export Assistant Definitions</p>
     </div>
     <div class="imds-message-content">
-      <p>アシスタント定義をエクスポートします。</p>
-      <p>エクスポート方法を選択し、エクスポートボタンをクリックしてください。</p>
+      <p>Exports assistant definitions.</p>
+      <p>Select an export method and click the Export button.</p>
     </div>
   </div>
-  <h2 class="imds-heading is-size-4">エクスポート方法</h2>
+  <h2 class="imds-heading is-size-4 has-text-weight-bold">Export Method</h2>
   <div>
     <div>
       <label class="imds-radio is-medium has-text-weight-bold">
         <input type="radio" name="export-method" value="all" checked="">
-        <span>すべてエクスポート</span>
+        <span>Export All</span>
       </label>
-      <span class="imds-help-text imds-ml-7">すべてのアシスタント定義をエクスポートします。</span>
+      <span class="imds-help-text imds-ml-7">Exports all assistant definitions.</span>
     </div>
     <div>
       <label class="imds-radio is-medium has-text-weight-bold">
         <input type="radio" name="export-method" value="select">
-        <span>任意のアシスタント定義を選択してエクスポート</span>
+        <span>Select Assistant Definitions to Export</span>
       </label>
-      <span class="imds-help-text imds-ml-7">一覧から選択したアシスタント定義をエクスポートします。</span>
+      <span class="imds-help-text imds-ml-7">Exports the assistant definitions selected from the list.</span>
     </div>
   </div>
-  <button type="button" id="export-action-button" class="imds-button is-normal is-primary imds-mt-6" style="min-width:8em;">
-    エクスポート
+  <button type="button" id="export-action-button" class="imds-button is-normal is-primary imds-mt-7" style="min-width: 8em;">
+    Export
   </button>
 </section>
 ```
 
-**ポイント:**
-- 初期表示では「すべてエクスポート」を選択状態にする
-- ラジオボタンの選択に応じて、下部ボタンのキャプションと動作を切り替える
-  - 「すべてエクスポート」選択時: ボタンキャプションは「エクスポート」、押下でそのままエクスポート処理を実行
-  - 「任意を選択してエクスポート」選択時: ボタンキャプションは「次へ」、押下でステップ2（対象選択）に遷移
-- メッセージ（`imds-message`）の表示は必須ではなく、補足が必要な場合のみ配置する
+**Points:**
+- Select "Export All" on initial display
+- Switch the caption and behavior of the bottom button according to the radio button selection
+  - When "Export All" is selected: the button caption is "Export", and clicking it executes the export directly
+  - When "Select to Export" is selected: the button caption is "Next", and clicking it moves to Step 2 (target selection)
+- Displaying the message (`imds-message`) is not required; place it only when supplementary information is needed
+- Because Step 1 has little content, place the button directly below the content instead of in a fixed footer (this falls under the exception in "Implementation Notes" of [imds-html-stepper.md](../reference/imds-html-stepper.md)). In Step 2, which has more content, place the Back and execute buttons in the fixed footer (`pgstyle-layout-footer`)
 
-## 4. ステップ2: エクスポート対象を選択
+## 4. Step 2: Select Export Targets
 
-**レイアウトは一覧画面（`imds-list-page.md`）に準拠する。** 検索欄・チェックボックス列付きテーブル・「選択済みのみ表示」チェックボックスで構成する。
+**The layout follows the list screen (`imds-list-page.md`).** It consists of a search field, a table with a checkbox column, and a "Show selected only" checkbox.
 
 ```html
-<section class="imds-py-6 imds-px-8 imds-scrollbar">
-  <div class="button-area imds-mb-3">
-    <div class="imds-input-group">
-      <input type="search" class="imds-textbox" placeholder="アシスタント定義名を検索" aria-label="アシスタント定義名を検索">
-      <button type="button" title="検索" class="imds-button is-outlined">
-        <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
-      </button>
+<section class="imds-py-4 imds-px-6 pgstyle-table-wrapper pgstyle-layout-content imds-scrollbar">
+  <form id="search-form" class="imds-form">
+    <div class="pgstyle-toolbar imds-mb-2">
+      <div class="imds-input-group">
+        <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="Search by assistant definition name" aria-label="Search by assistant definition name">
+        <button type="submit" title="Search" class="imds-button is-outlined">
+          <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+        </button>
+      </div>
     </div>
-  </div>
-  <label class="imds-checkbox imds-mb-3">
+  </form>
+  <label class="imds-checkbox imds-mb-2">
     <input type="checkbox" id="show-selected-only">
-    <span>選択済みのみ表示</span>
+    <span>Show selected only</span>
   </label>
-  <div class="imds-table is-sticky" style="max-height: 420px;">
+  <div class="imds-table is-area-bordered is-sticky is-narrow is-hoverable" style="height: 100%">
     <div class="imds-table-inner">
       <table>
         <thead>
           <tr>
-            <th class="has-text-centered"><label class="imds-checkbox"><input type="checkbox" id="select-all"></label></th>
-            <th><span>アシスタント定義名</span></th>
-            <th><span>更新者</span></th>
+            <th class="has-content-only"><label class="imds-checkbox"><input type="checkbox" id="select-all"></label></th>
+            <th><span>Assistant Definition Name</span></th>
+            <th><span>Updated By</span></th>
             <th>
               <div class="imds-table-column-actions">
-                <button type="button" class="imds-table-sorter" title="更新日時でソート">
-                  <span class="imds-table-sort-label">更新日時</span>
+                <button type="button" class="imds-table-sorter" title="Sort by updated date/time">
+                  <span class="imds-table-sort-label">Updated Date/Time</span>
                   <span class="imds-icon"><i class="fa-solid fa-sort-up"></i><i class="fa-solid fa-sort-down"></i></span>
                 </button>
               </div>
@@ -179,27 +186,31 @@ div.imds-container                   ... ルート div（intra-mart テーマの
     </div>
   </div>
 </section>
-<div class="sample-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
-  <button type="button" id="back-button" class="imds-button is-outlined" style="min-width:8em;">戻る</button>
-  <button type="button" id="export-execute-button" class="imds-button is-primary" style="min-width:8em;" disabled>エクスポート</button>
+<!-- Place the footer directly under main, outside the scroll area (section), and fix it with pgstyle-layout-footer (flex:0 0 auto) -->
+<div class="pgstyle-layout-footer imds-py-2 imds-px-6 imds-border-t-1">
+  <button type="button" id="back-button" class="imds-button is-outlined" style="min-width: 8em;">Back</button>
+  <button type="button" id="export-execute-button" class="imds-button is-primary" style="min-width: 8em;" disabled>Export</button>
 </div>
 ```
 
-**ポイント:**
-- 検索部品はツリー/リスト側と詳細一覧側の両方に配置する場合、カテゴリ間を移動しても入力内容を保持する
-- キーワード検索の対象が詳細検索の項目と連動する場合は、検索実行時に詳細検索の Popover に `is-applied` クラスを付与する
-- 「更新者」「更新日時」列を必ず含め、更新日時列はソート可能にする（実 DOM 構造は `th > div.imds-table-column-actions > button.imds-table-sorter[title] > span.imds-table-sort-label + span.imds-icon`。`fa-sort-up` と `fa-sort-down` の 2 アイコンを両方配置する）
-- チェックボックス列のヘッダには「すべて選択」チェックボックスを配置する。テーブル内のチェックボックスは `label.imds-checkbox > input` のみで、余分な `<span>` は付けない
-- データ取得負荷が高い場合は、初期表示でツリー未選択・一覧空とし、カテゴリ選択後のみ一覧を取得する。一覧が空の間は `reference/imds-html-empty-state.md` の EmptyState（例:「ツリーからカテゴリを選択してください。」）を表示する
-- フッタの「エクスポート」ボタンは、対象が 1 件も選択されていない間は `disabled` にする
-- 「戻る」ボタン押下でステップ1に戻る
+**Points:**
+- As on the list screen, compose the search field and table with `pgstyle-toolbar` / `is-area-bordered is-sticky is-narrow is-hoverable` + `style="height: 100%"`, and add `pgstyle-table-wrapper` to the section so the table fills the scroll area. Execute the search via `<form>` submit, and always call `event.preventDefault()` in the `submit` event handler
+- Add `has-content-only` to the `th` / `td` of the checkbox column (not `has-text-centered`, because it has no header text)
+- Match the footer's horizontal padding (`imds-px-6`) to the section's horizontal padding
+- When search components are placed on both the tree/list side and the detail list side, keep the entered value when moving between categories
+- When the keyword search target is linked to advanced search items, add the `is-applied` class to the advanced search Popover when the search is executed
+- Always include the "Updated By" and "Updated Date/Time" columns, and make the updated date/time column sortable (the actual DOM structure is `th > div.imds-table-column-actions > button.imds-table-sorter[title] > span.imds-table-sort-label + span.imds-icon`; place both the `fa-sort-up` and `fa-sort-down` icons)
+- Place a "Select all" checkbox in the header of the checkbox column. Checkboxes in the table consist only of `label.imds-checkbox > input`, with no extra `<span>`
+- When data retrieval is expensive, show no tree selection and an empty list on initial display, and fetch the list only after a category is selected. While the list is empty, display the EmptyState from `reference/imds-html-empty-state.md` (e.g., "Select a category from the tree.")
+- Keep the footer "Export" button `disabled` while no target is selected
+- Clicking the "Back" button returns to Step 1
 
-## 5. エクスポート実行確認ダイアログ
+## 5. Export Execution Confirmation Dialog
 
-エクスポート実行前に、対象件数を明示した確認ダイアログを表示する。
+Before executing the export, display a confirmation dialog that states the number of targets. Display the confirmation dialog with the `imdsConfirm` function (the following is the generated HTML structure).
 
 ```html
-<dialog class="imds-dialog-wrapper">
+<dialog class="imds-confirm-wrapper">
   <div class="imds-confirm is-info">
     <div class="imds-confirm-content-wrapper">
       <button type="button" class="imds-confirm-close imds-button is-ghost">
@@ -211,32 +222,32 @@ div.imds-container                   ... ルート div（intra-mart テーマの
             <span class="imds-icon is-x-small is-info"><i class="fa-solid fa-circle-question"></i></span>
           </div>
           <div class="imds-confirm-message">
-            <p class="imds-confirm-message-title">アシスタント定義をエクスポートしますか？</p>
-            <div class="imds-confirm-message-content">エクスポート対象：10件</div>
+            <p class="imds-confirm-message-title">Export the assistant definitions?</p>
+            <div class="imds-confirm-message-content">Export targets: 10</div>
           </div>
         </div>
       </div>
     </div>
     <div class="imds-confirm-footer">
       <div class="imds-confirm-footer-content">
-        <button type="button" class="imds-button">キャンセル</button>
-        <button type="button" class="imds-button is-primary">エクスポート</button>
+        <button type="button" class="imds-button">Cancel</button>
+        <button type="button" class="imds-button is-primary">Export</button>
       </div>
     </div>
   </div>
 </dialog>
 ```
 
-**ポイント:**
-- 選択件数（例:「エクスポート対象：10件」）を必ず表示し、ユーザーが意図した対象を選択できているか事前確認できるようにする
-- ダイアログのルート要素は `<dialog class="imds-dialog-wrapper">` を基本とする（`reference/imds-html-dialog.md` を参照）
+**Points:**
+- Always display the number of selected items (e.g., "Export targets: 10") so users can confirm beforehand that they selected the intended targets
+- The root element of the confirmation dialog is `<dialog class="imds-confirm-wrapper">` (generated by the `imdsConfirm` function; see `reference/imds-csjs-confirm.md`). It differs from `imds-dialog-wrapper` of the generic dialog
 
-## 全体コード（ステップ1）
+## Full Code (Step 1)
 
-ルート `<div>` には id を付与せず `class="imds-container ..."` のみを付与し、中間ラッパーを作らない。
+Do not assign an id to the root `<div>`; assign only `class="imds-container ..."` and do not create an intermediate wrapper. Apply `pgstyle-layout-container` (2-row grid) to `imds-container`, `pgstyle-layout-main` (vertical flex) to `<main>`, and `pgstyle-layout-content` (`flex: 1 0 0; overflow: auto;`) to the step content (with `imds-scrollbar`) (see "Implementation Notes" for the CSS definitions).
 
 ```html
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <header class="imds-header">
     <div class="imds-popover is-left imds-header-nav">
       <button
@@ -251,7 +262,7 @@ div.imds-container                   ... ルート div（intra-mart テーマの
         <div class="imds-popover-content">
           <nav class="imds-menu">
             <ul class="imds-menu-list">
-              <li><a href="#"><span>アシスタント定義一覧</span></a></li>
+              <li><a href="#"><span>Assistant Definition List</span></a></li>
             </ul>
           </nav>
         </div>
@@ -262,57 +273,111 @@ div.imds-container                   ... ルート div（intra-mart テーマの
       <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
     </div>
   </header>
-  <main>
+  <main class="pgstyle-layout-main">
     <div class="imds-stepper">
       <ul>
         <li class="imds-stepper-step is-active">
-          <button disabled><span>1.エクスポート方法を選択</span></button>
+          <button disabled><span>1.Select Export Method</span></button>
         </li>
         <li class="imds-stepper-step">
-          <button disabled><span>2.エクスポート対象を選択</span></button>
+          <button disabled><span>2.Select Export Targets</span></button>
         </li>
       </ul>
     </div>
-    <section class="imds-py-6 imds-px-8 imds-scrollbar" data-mode="new">
-      <div class="imds-message is-outlined is-info imds-mb-5">
+    <section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar" data-mode="new">
+      <div class="imds-message is-outlined is-info imds-mb-4">
         <div class="imds-message-title">
           <span class="imds-icon is-medium"><i class="fa-solid fa-circle-info"></i></span>
-          <p>アシスタント定義のエクスポート</p>
+          <p>Export Assistant Definitions</p>
         </div>
         <div class="imds-message-content">
-          <p>アシスタント定義をエクスポートします。</p>
-          <p>エクスポート方法を選択し、エクスポートボタンをクリックしてください。</p>
+          <p>Exports assistant definitions.</p>
+          <p>Select an export method and click the Export button.</p>
         </div>
       </div>
-      <h2 class="imds-heading is-size-4">エクスポート方法</h2>
+      <h2 class="imds-heading is-size-4 has-text-weight-bold">Export Method</h2>
       <div>
         <div>
           <label class="imds-radio is-medium has-text-weight-bold">
             <input type="radio" name="export-method" value="all" checked="">
-            <span>すべてエクスポート</span>
+            <span>Export All</span>
           </label>
-          <span class="imds-help-text imds-ml-7">すべてのアシスタント定義をエクスポートします。</span>
+          <span class="imds-help-text imds-ml-7">Exports all assistant definitions.</span>
         </div>
         <div>
           <label class="imds-radio is-medium has-text-weight-bold">
             <input type="radio" name="export-method" value="select">
-            <span>任意のアシスタント定義を選択してエクスポート</span>
+            <span>Select Assistant Definitions to Export</span>
           </label>
-          <span class="imds-help-text imds-ml-7">一覧から選択したアシスタント定義をエクスポートします。</span>
+          <span class="imds-help-text imds-ml-7">Exports the assistant definitions selected from the list.</span>
         </div>
       </div>
-      <button type="button" id="export-action-button" class="imds-button is-normal is-primary imds-mt-6" style="min-width:8em;">
-        エクスポート
+      <button type="button" id="export-action-button" class="imds-button is-normal is-primary imds-mt-7" style="min-width: 8em;">
+        Export
       </button>
     </section>
   </main>
 </div>
 ```
 
-## 実装上の注意
+## Implementation Notes
 
-- ステップの切り替え（`is-active` の付け替え、表示するセクションの切り替え）は JavaScript で制御する
-- `${サンプル}` に相当する箇所（データ種別名）は、実装対象のデータ種別名に置き換えること
-- ステップ2 のテーブル・検索・ページネーションは `imds-list-page.md` の一覧画面パターンをそのまま踏襲する（重複を避けるため、詳細は一覧画面テンプレートを参照すること）
-- エクスポート対象のチェックボックス列は、データ取得負荷が低い場合はツリー側にも配置し連動させる。負荷が高い場合はテーブル側のみに配置する
-- インポート画面と対になる構成のため、ヘッダの `imds-header-nav` メニューにインポート画面・一覧画面への導線を含めることが多い
+- Control step switching (moving `is-active` and switching the displayed section) with JavaScript
+- Replace the parts corresponding to `${sample}` (data type name) with the data type name being implemented
+- The Step 2 table, search, and pagination follow the list screen pattern in `imds-list-page.md` as is (to avoid duplication, see the list screen template for details)
+- When data retrieval is inexpensive, also place the export target checkbox column on the tree side and link them. When it is expensive, place it only on the table side
+- Because this screen pairs with the import screen, the header's `imds-header-nav` menu often includes links to the import screen and list screen
+- `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` / `pgstyle-layout-footer` / `pgstyle-table-wrapper` / `pgstyle-toolbar` are fixed class names, **not** placeholders to be replaced per feature. Do not change these class names when generating (likewise, do not change standard classes starting with `imds-`)
+- Because this template covers only the HTML part, define the following layout control styles in the `<style>` of `<imart type="head">` (only the classes used in this file are listed)
+
+  ```css
+  /* Layout control styles */
+  .pgstyle-layout-container {
+    grid-template-rows: 5rem minmax(0, 1fr);
+    grid-template-columns: 100%;
+    height: 100%;
+    display: grid;
+  }
+  .pgstyle-layout-container > .imds-header {
+    grid-row: 1 / 2;
+  }
+  .pgstyle-layout-main {
+    flex-direction: column;
+    grid-row: 2 / 3;
+    height: 100%;
+    display: flex;
+  }
+  .pgstyle-layout-content {
+    flex: 1 0 0;
+    overflow: auto;
+  }
+  .pgstyle-table-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  .pgstyle-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5em 1em;
+  }
+  .pgstyle-toolbar > .imds-input-group {
+    max-width: 30em;
+    flex: 1 0 20em;
+  }
+  .pgstyle-layout-footer {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: left;
+    gap: 2em;
+  }
+  ```
+
+- In addition, `<imart type="head">` must load `im_design_system/theme/css/theme-conditional-layout.css` (CSS that controls the height and width of the content display area, which differ by theme). Without it, the height of `.imds-container` is not determined, `flex: 1 0 0` of `pgstyle-layout-content` has nothing to grow into, and the content area collapses to a height of 0.
+
+  ```html
+  <!-- CSS that controls the height and width of the content display area, which differ by theme -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
+  ```

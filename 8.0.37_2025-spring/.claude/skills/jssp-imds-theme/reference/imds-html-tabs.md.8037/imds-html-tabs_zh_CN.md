@@ -124,7 +124,8 @@ imds-tabs                                 # 选项卡容器（附加尺寸 / 对
 ### lineClamp（文字省略）
 
 对较长的标签进行省略显示。
-在 `span` 上添加 `imds-line-clamp-1`（1行）或 `imds-line-clamp-2`（2行），在 `button` 的 `title` 中设置完整文字，并通过 `span` 的 `style` 限制宽度。
+在 `span` 上添加 `imds-line-clamp-1`（1行）或 `imds-line-clamp-2`（2行），在 `button` 的 `title` 中设置完整文字。
+通过 `span` 的 `style` 限制宽度。
 
 ```html
 <button title="在此处填写较长的选项卡名完整文字">

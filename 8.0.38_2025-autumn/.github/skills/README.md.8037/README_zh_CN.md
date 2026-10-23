@@ -142,6 +142,13 @@
   - ⇒ `test-spec-generator`
     - 根据规格书文件，生成 xlsx（使用 officecli）或 HTML 格式的测试观点一览表・测试项目书
 
+### 想从 JSSP 调用 Java 处理
+
+- 想从 JSSP（脚本开发模型）调用自行编写的 Java 处理（不使用 `Packages`，而是作为 JSSP API 公开）
+  - ⇒ `jssp-im-java-wrapper`
+    - 提供继承 `ScriptableObject` 的包装类（静态函数型・实例型）的实现、通过 `conf/products/initializer/initializer-<模块ID>.xml` 向 JSSP 注册、以及 d.ts 类型定义的创建步骤
+    - 包装类所调用的 Java 端业务处理，请使用 `java-im-architecture` 等 Java 技能实现
+
 ### 想在 JavaEE 开发模型中使用 intra-mart 专有功能
 
 - 想用 Java（JavaEE 开发模型）通过 PublicStorage / SessionScopeStorage / SystemStorage 实现文件操作处理

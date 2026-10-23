@@ -1,51 +1,51 @@
-# 不確定状態のチェックボックス（common-parts）
+# Indeterminate Checkbox (common-parts)
 
-## 基本情報
+## Overview
 
-複数の選択肢のうち一部が選択された状態（不確定状態）を表す際に使用する複合パターンである。
-「全選択/全解除」チェックボックスと個別選択肢を組み合わせる場面で必要になる。テーブルの全行選択・チェックボックスリストの全選択どちらにも適用できる。
+A composite pattern used to represent a state where only some of multiple options are selected (indeterminate state).
+It is needed when combining a "Select all / Deselect all" checkbox with individual options. It applies both to selecting all rows of a table and to selecting all items of a checkbox list.
 
-- 抽出元: `uiux-share/common-parts/不確定状態のチェックボックス.md`
-- 子チェックボックスがすべて選択 → 親は `checked`
-- 子チェックボックスがすべて未選択 → 親は `unchecked`
-- 子チェックボックスが一部選択 → 親は `indeterminate`（三状態）
+- Source: `uiux-share/common-parts/不確定状態のチェックボックス.md`
+- All child checkboxes selected → parent is `checked`
+- All child checkboxes unselected → parent is `unchecked`
+- Some child checkboxes selected → parent is `indeterminate` (tri-state)
 
-## 構成コンポーネント
+## Components Used
 
-| 使用する基本コンポーネント | 対応 reference |
+| Base component used | Reference |
 |---|---|
-| Checkbox（`imds-checkbox`） | [imds-html-checkbox.md](imds-html-checkbox.md) |
-| Divider（`imds-divider`） | [imds-html-divider.md](imds-html-divider.md) |
+| Checkbox (`imds-checkbox`) | [imds-html-checkbox.md](imds-html-checkbox.md) |
+| Divider (`imds-divider`) | [imds-html-divider.md](imds-html-divider.md) |
 
-## HTML スニペット
+## HTML Snippets
 
-`data-type="overall"` が親（全選択）、`data-type="ingredient"` が子（個別選択肢）を表す。
-`imds-divider` で親と子を視覚的に区切る。
+`data-type="overall"` represents the parent (select all), and `data-type="ingredient"` represents the children (individual options).
+`imds-divider` visually separates the parent from the children.
 
 ```html
 <label class="imds-checkbox">
   <input type="checkbox" data-type="overall" />
-  <span>すべて</span>
+  <span>All</span>
 </label>
 <hr class="imds-divider" />
 <label class="imds-checkbox">
   <input type="checkbox" data-type="ingredient" />
-  <span>[REPLACE: 選択肢1]</span>
+  <span>[REPLACE: Option 1]</span>
 </label>
 <label class="imds-checkbox">
   <input type="checkbox" data-type="ingredient" />
-  <span>[REPLACE: 選択肢2]</span>
+  <span>[REPLACE: Option 2]</span>
 </label>
 <label class="imds-checkbox">
   <input type="checkbox" data-type="ingredient" />
-  <span>[REPLACE: 選択肢3]</span>
+  <span>[REPLACE: Option 3]</span>
 </label>
 ```
 
-## JS 制御
+## JS Control
 
-`indeterminate` プロパティは HTML 属性では設定できないため、JavaScript で制御する。
-複数のグループが同一画面に存在する場合は、`data-type` の取得対象を適切なコンテナ（親要素）に限定してスコープを絞ること。
+The `indeterminate` property cannot be set via an HTML attribute, so control it with JavaScript.
+When multiple groups exist on the same screen, narrow the scope by limiting the `data-type` lookup to the appropriate container (parent element).
 
 ```javascript
 const initialize = () => {
@@ -79,8 +79,8 @@ const initialize = () => {
 document.addEventListener('DOMContentLoaded', initialize);
 ```
 
-## 実装上の注意
+## Implementation Notes
 
-- テーブルのヘッダチェックボックス（全行選択）に適用する場合、`label.imds-checkbox` 内に不要な `<span></span>` を追加しないこと（テーブル文脈では `input` のみで `span` を付けない。詳細は [imds-html-table.md](imds-html-table.md) を参照）。本パターンの `<label class="imds-checkbox"><input/><span>...</span></label>` はテーブル外（チェックボックスリスト等）での標準形である。
-- チェックボックスのグルーピングに `fieldset`/`legend` は使わない。imds の実パターンは `label.imds-checkbox` の並びのみで構成する。
-- `indeterminate` は JavaScript でのみ設定可能なプロパティであり、HTML 属性として `<input indeterminate>` と書いても効果がない点に注意する。
+- When applying this to a table header checkbox (select all rows), do not add an unnecessary `<span></span>` inside `label.imds-checkbox` (in a table context, use only the `input` without a `span`; see [imds-html-table.md](imds-html-table.md) for details). The `<label class="imds-checkbox"><input/><span>...</span></label>` form in this pattern is the standard form outside tables (checkbox lists, etc.).
+- Do not use `fieldset`/`legend` to group checkboxes. The actual imds pattern consists only of a sequence of `label.imds-checkbox` elements.
+- `indeterminate` is a property that can be set only via JavaScript; writing `<input indeterminate>` as an HTML attribute has no effect.

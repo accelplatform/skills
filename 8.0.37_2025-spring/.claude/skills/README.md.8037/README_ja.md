@@ -142,6 +142,13 @@
   - ⇒ `test-spec-generator`
     - 仕様書ファイルから、xlsx（officecli 使用）または HTML の試験観点一覧・試験項目書を生成
 
+### JSSP から Java の処理を呼び出したい
+
+- JSSP（スクリプト開発モデル）から自作の Java 処理を呼び出したい（`Packages` を使わずに JSSP API として公開したい）
+  - ⇒ `jssp-im-java-wrapper`
+    - `ScriptableObject` を継承したラッパークラス（静的関数型・インスタンス型）の実装、`conf/products/initializer/initializer-<モジュールID>.xml` による JSSP への登録、d.ts 型定義の作成手順を提供
+    - ラッパーから呼び出す Java 側の業務処理は `java-im-architecture` 等の Java スキルで実装
+
 ### JavaEE 開発モデルで intra-mart 固有機能を使いたい
 
 - Java（JavaEE 開発モデル）で PublicStorage / SessionScopeStorage / SystemStorage を使ったファイル操作処理を作りたい

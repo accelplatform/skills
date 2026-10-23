@@ -80,9 +80,17 @@ InlineMessage 是以内联方式展示您希望用户阅读的信息的组件。
 <div class="imds-inline-message is-large">    <!-- 大 -->
 ```
 
+### 无图标（No Icon）
+
+不需要图标或希望简化外观时，省略 `imds-icon`，仅放置 `<p>`。
+
+```html
+<div class="imds-inline-message"><p>通过拖放对日程显示集进行排序。</p></div>
+```
+
 ## 实现注意事项
 
 - InlineMessage 是不使用 `imds-message-title` / `imds-message-content`，直接放置图标和文本的简单结构
-- 根据颜色类使用适当的图标（参见上面的颜色部分）
+- 根据颜色类使用适当的图标（参见上方 color 部分）
 - `is-outlined` 和 `is-borderless` 互斥使用（不同时添加）
 - 适用于紧凑场景，例如在表单输入框正下方显示验证消息

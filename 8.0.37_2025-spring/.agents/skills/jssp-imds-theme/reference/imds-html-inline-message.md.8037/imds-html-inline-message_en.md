@@ -75,6 +75,14 @@ Add a size class to `div.imds-inline-message`.
 <div class="imds-inline-message is-large">    <!-- Large -->
 ```
 
+### No Icon
+
+When an icon is unnecessary or you want a simpler appearance, omit `imds-icon` and place only the `<p>`.
+
+```html
+<div class="imds-inline-message"><p>Drag and drop to reorder the schedule display sets.</p></div>
+```
+
 ## Implementation Notes
 
 - InlineMessage has a simple structure where icons and text are placed directly without using `imds-message-title` / `imds-message-content`

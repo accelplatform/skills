@@ -23,7 +23,7 @@ paths:
 |---|---|
 | IconFont（`imds-icon`） | [imds-html-icon-font.md](imds-html-icon-font.md) |
 
-`imds-line-clamp-*` は helper 系のユーティリティクラス（LineClamp）であり、単独の reference ファイルは未整備。本パターンでは `imds-line-clamp-1`（1行省略）をトリガー要素内の `<p>` に付与する形で使用する。
+`imds-line-clamp-*` は helper 系のユーティリティクラス（LineClamp）である（詳細は [imds-helper-line-clamp.md](imds-helper-line-clamp.md) を参照）。本パターンでは `imds-line-clamp-1`（1行省略）をトリガー要素内の `<p>` に付与する形で使用する。
 
 ## HTML スニペット
 

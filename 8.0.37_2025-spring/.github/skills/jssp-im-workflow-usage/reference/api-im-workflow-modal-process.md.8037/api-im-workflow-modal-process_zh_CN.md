@@ -29,23 +29,23 @@ IM-Workflow 的处理模态框 API。在客户端启动 IM-Workflow 的标准处
 ```javascript
 imWorkflow.modal.showProcess({
   processParameter: {
-    systemMatterId:        '',   // システム案件 ID
-    nodeId:                '',   // ノード ID
-    processType:           [],   // 処理種別の配列（省略時は自動決定）
+    systemMatterId:        '',   // 系统案件 ID
+    nodeId:                '',   // 节点 ID
+    processType:           [],   // 处理种别的数组（省略时自动确定）
     matterName:            '',   // 案件名
-    authUserDepartmentInfo: {},  // 権限者所属組織情報
-    priorityLevel:         '',   // 優先度
-    processComment:        '',   // 処理コメントの初期値
-    branchSelects:         [],   // 分岐選択情報
-    sendBackNodeIds:       [],   // 差戻し先ノード ID
-    dynamicNodeConfigs:    [],   // 動的ノード設定
-    confirmNodeConfigs:    [],   // 確認ノード設定
-    horizontalNodeConfigs: [],   // 水平ノード設定
-    verticalNodeConfigs:   [],   // 垂直ノード設定
-    interfaceControl:      {}    // フィールド表示・編集制御
+    authUserDepartmentInfo: {},  // 权限者所属组织信息
+    priorityLevel:         '',   // 优先级
+    processComment:        '',   // 处理注释的初始值
+    branchSelects:         [],   // 分支选择信息
+    sendBackNodeIds:       [],   // 退回目标节点 ID
+    dynamicNodeConfigs:    [],   // 动态节点设置
+    confirmNodeConfigs:    [],   // 确认节点设置
+    horizontalNodeConfigs: [],   // 水平节点设置
+    verticalNodeConfigs:   [],   // 垂直节点设置
+    interfaceControl:      {}    // 字段显示・编辑控制
   },
   optionalParameter: {
-    userParameter: {}            // アクション処理に渡す業務データ
+    userParameter: {}            // 传递给动作处理的业务数据
   },
   rebootModal: false
 });
@@ -128,7 +128,7 @@ document.getElementById('process-button').addEventListener('click', async () => 
     rebootModal: false
   });
 
-  // 処理完了後のページ遷移（完了・キャンセルどちらの場合も呼び出す）
+  // 处理完成后的页面跳转（完成・取消两种情况下都调用）
   imWorkflow.transition.afterProcess();
 });
 ```
@@ -142,4 +142,4 @@ document.getElementById('process-button').addEventListener('click', async () => 
 - `imWorkflow.modal.showProcess()` 是客户端 API。无法在服务器端（SSJS / Rhino）使用
 - `systemMatterId` 和 `nodeId` 需要从 URL 参数等处获取
 - 省略 `processType` 时，流程定义中允许的所有处理种别都会显示在模态框内
-- 请勿在处理画面上放置自定义的「返回」按钮。应将跳转委托给 `imWorkflow.transition.afterProcess()`
+- 在处理画面的页头放置「返回」按钮，点击时通过 `imWorkflow.transition.returnTo()` 返回调用方画面。关闭处理模态框后的跳转委托给 `imWorkflow.transition.afterProcess()`

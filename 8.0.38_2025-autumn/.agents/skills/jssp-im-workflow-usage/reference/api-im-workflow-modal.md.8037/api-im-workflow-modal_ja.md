@@ -84,6 +84,9 @@ document.getElementById('apply-button').addEventListener('click', async () => {
     imuiShowSuccessMessage('申請が完了しました。案件番号: ' + result.data.matterNumber);
     clearForm();
   }
+
+  // 処理モーダルを閉じた後のページ遷移（完了・キャンセルにかかわらず呼び出す）
+  imWorkflow.transition.afterProcess();
 });
 ```
 
@@ -106,6 +109,7 @@ function apply(parameter, userParam) {
 - `imWorkflow.modal.showApply()` はクライアントサイド（ブラウザ）の API であり、サーバサイド（SSJS / Rhino）では使用できない
 - モーダルが表示中はページ操作がブロックされる（`await` で JS の実行が停止する）
 - モーダルを閉じても例外は発生しない。`isProcessDone: false` が返るだけ
+- モーダルを閉じた後は、完了・キャンセルにかかわらず `imWorkflow.transition.afterProcess()` を呼び出す（案件の処理前に呼び出した場合は何もしない）
 - ユーザが一時保存した場合は `isProcessDone: false` が返る（一時保存完了は `false`、申請完了のみ `true`）
 - セキュアトークンのメタタグには `<meta name="im_secure_token">` 形式ではなく `<meta http-equiv="X-Intramart-Secure-Token">` 形式を使うこと
 - 処理モーダル方式の申請画面は URL から直接アクセスされるスタンドアローン画面であるため、`routing-jssp-config` XML でのルーティング登録が必要

@@ -21,20 +21,20 @@ You can combine Textbox, Select, Popover, IconButton, etc. to build search field
 
 ## HTML Snippets
 
-### Basic input group (Popover + Textbox + IconButton)
+### Basic Input Group (Popover + Textbox + IconButton)
 
 ```html
 <div class="imds-input-group">
   <div class="imds-popover">
     <button
       aria-haspopup="true"
-      aria-controls="imds-popover-:r1:"
+      aria-controls="sample-popover-1"
       class="imds-button is-outlined">
       <span>popover</span>
       <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
     </button>
     <div
-      id="imds-popover-:r1:"
+      id="sample-popover-1"
       role="menu"
       class="imds-popover-menu">
       <div class="imds-popover-content">contents</div>
@@ -55,7 +55,7 @@ You can combine Textbox, Select, Popover, IconButton, etc. to build search field
 
 ## Combination Examples
 
-### Search field (Textbox + Popover + IconButton)
+### Search Field (Textbox + Popover + IconButton)
 
 Example placing a menu inside the Popover to switch search conditions.
 
@@ -69,14 +69,14 @@ Example placing a menu inside the Popover to switch search conditions.
   <div class="imds-popover">
     <button
       aria-haspopup="true"
-      aria-controls="imds-popover-:r1:"
+      aria-controls="sample-popover-1"
       class="imds-button is-outlined">
       <span class="imds-icon is-small"><i class="fa-solid fa-sliders"></i></span>
       <span></span>
       <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
     </button>
     <div
-      id="imds-popover-:r1:"
+      id="sample-popover-1"
       role="menu"
       class="imds-popover-menu">
       <div class="imds-popover-content">
@@ -97,7 +97,7 @@ Example placing a menu inside the Popover to switch search conditions.
 </div>
 ```
 
-### Search field (Select + Textbox + IconButton)
+### Search Field (Select + Textbox + IconButton)
 
 ```html
 <div class="imds-input-group">
@@ -175,10 +175,105 @@ Example placing an icon inside the textbox using `imds-textbox-control`.
 </div>
 ```
 
+## UI Patterns (Element Combinations)
+
+InputGroup can form various layouts by changing the order of the elements placed in it. Representative combination patterns are shown below.
+
+### Popover First (Popover + Textbox)
+
+A pattern that places the Popover first so the user selects a search condition before entering a search term.
+
+```html
+<div class="imds-input-group">
+  <div class="imds-popover">
+    <button
+      aria-haspopup="true"
+      aria-controls="sample-popover-0"
+      class="imds-button is-outlined">
+      <span>popover</span>
+      <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
+    </button>
+    <div id="sample-popover-0" role="menu" class="imds-popover-menu">
+      <div class="imds-popover-content">contents</div>
+    </div>
+  </div>
+  <input type="search" placeholder="Search" class="imds-textbox" value="" />
+</div>
+```
+
+### Textbox First (Textbox + Popover)
+
+A pattern that places the Textbox first so the user enters a search term and then specifies filter conditions in the Popover.
+
+```html
+<div class="imds-input-group">
+  <input type="search" placeholder="Search" class="imds-textbox" value="" />
+  <div class="imds-popover">
+    <button
+      aria-haspopup="true"
+      aria-controls="sample-popover-1"
+      class="imds-button is-outlined">
+      <span>popover</span>
+      <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
+    </button>
+    <div id="sample-popover-1" role="menu" class="imds-popover-menu">
+      <div class="imds-popover-content">contents</div>
+    </div>
+  </div>
+</div>
+```
+
+Both orders are valid patterns; choose according to the UI intent (whether the user should pick the condition first or enter the term first).
+
+### Select + Textbox (Two Elements, No Button)
+
+A simple two-element layout that only switches the search target and has no execute button (filters as the user types).
+
+```html
+<div class="imds-input-group">
+  <select class="imds-select">
+    <option>Select-1</option>
+    <option>Select-2</option>
+    <option>Select-3</option>
+  </select>
+  <input type="search" placeholder="Search" class="imds-textbox" value="" />
+</div>
+```
+
+### Select + Textbox + Popover + Button (Four Elements)
+
+The maximum layout combining a Select for the search target, a Textbox for the search term, a Popover for detailed conditions, and a Button to execute the search.
+
+```html
+<div class="imds-input-group">
+  <select class="imds-select">
+    <option>Select-1</option>
+    <option>Select-2</option>
+    <option>Select-3</option>
+  </select>
+  <input type="search" placeholder="Search" class="imds-textbox" value="" />
+  <div class="imds-popover">
+    <button
+      aria-haspopup="true"
+      aria-controls="sample-popover-2"
+      class="imds-button is-outlined">
+      <span>popover</span>
+      <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
+    </button>
+    <div id="sample-popover-2" role="menu" class="imds-popover-menu">
+      <div class="imds-popover-content">contents</div>
+    </div>
+  </div>
+  <button type="button" class="imds-button">
+    <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+  </button>
+</div>
+```
+
 ## Implementation Notes
 
 - Elements inside `imds-input-group` are automatically placed side by side and joined
-- Replace Popover `id` / `aria-controls` with unique values (`:r1:` is a placeholder)
+- Replace Popover `id` / `aria-controls` with unique values (`sample-popover-N` is a placeholder; use a unique name that fits the feature, without colons since it is not an input element)
 - Popover open/close must be controlled with JavaScript
 - Icon-only buttons should have a `title` attribute or `aria-label` for accessibility
-- Changing the order of elements allows free layout configuration (e.g. Popover + Textbox, Textbox + Popover)
+- Changing the order of elements allows free layout configuration (e.g. Popover + Textbox, Textbox + Popover, Select + Textbox, Select + Textbox + Popover + Button)
