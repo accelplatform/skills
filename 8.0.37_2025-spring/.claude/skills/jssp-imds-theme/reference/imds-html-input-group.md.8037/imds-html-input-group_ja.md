@@ -28,13 +28,13 @@ Textbox、Select、Popover、IconButton 等を組み合わせて、検索欄や�
   <div class="imds-popover">
     <button
       aria-haspopup="true"
-      aria-controls="imds-popover-:r1:"
+      aria-controls="sample-popover-1"
       class="imds-button is-outlined">
       <span>popover</span>
       <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
     </button>
     <div
-      id="imds-popover-:r1:"
+      id="sample-popover-1"
       role="menu"
       class="imds-popover-menu">
       <div class="imds-popover-content">contents</div>
@@ -69,14 +69,14 @@ Popover 内にメニューを配置し、検索条件を切り替える例。
   <div class="imds-popover">
     <button
       aria-haspopup="true"
-      aria-controls="imds-popover-:r1:"
+      aria-controls="sample-popover-1"
       class="imds-button is-outlined">
       <span class="imds-icon is-small"><i class="fa-solid fa-sliders"></i></span>
       <span></span>
       <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
     </button>
     <div
-      id="imds-popover-:r1:"
+      id="sample-popover-1"
       role="menu"
       class="imds-popover-menu">
       <div class="imds-popover-content">
@@ -188,12 +188,12 @@ Popover を先頭に配置し、検索条件を選んでから検索語を入力
   <div class="imds-popover">
     <button
       aria-haspopup="true"
-      aria-controls="imds-popover-:r0:"
+      aria-controls="sample-popover-0"
       class="imds-button is-outlined">
       <span>popover</span>
       <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
     </button>
-    <div id="imds-popover-:r0:" role="menu" class="imds-popover-menu">
+    <div id="sample-popover-0" role="menu" class="imds-popover-menu">
       <div class="imds-popover-content">contents</div>
     </div>
   </div>
@@ -211,12 +211,12 @@ Textbox を先頭に配置し、検索語を入力してから絞り込み条件
   <div class="imds-popover">
     <button
       aria-haspopup="true"
-      aria-controls="imds-popover-:r1:"
+      aria-controls="sample-popover-1"
       class="imds-button is-outlined">
       <span>popover</span>
       <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
     </button>
-    <div id="imds-popover-:r1:" role="menu" class="imds-popover-menu">
+    <div id="sample-popover-1" role="menu" class="imds-popover-menu">
       <div class="imds-popover-content">contents</div>
     </div>
   </div>
@@ -255,12 +255,12 @@ Textbox を先頭に配置し、検索語を入力してから絞り込み条件
   <div class="imds-popover">
     <button
       aria-haspopup="true"
-      aria-controls="imds-popover-:r2:"
+      aria-controls="sample-popover-2"
       class="imds-button is-outlined">
       <span>popover</span>
       <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
     </button>
-    <div id="imds-popover-:r2:" role="menu" class="imds-popover-menu">
+    <div id="sample-popover-2" role="menu" class="imds-popover-menu">
       <div class="imds-popover-content">contents</div>
     </div>
   </div>
@@ -273,7 +273,7 @@ Textbox を先頭に配置し、検索語を入力してから絞り込み条件
 ## 実装上の注意
 
 - `imds-input-group` 内の要素は自動的に横並びに結合される
-- Popover の `id` / `aria-controls` は一意の値に置き換えること（`:r1:` はプレースホルダー）
+- Popover の `id` / `aria-controls` は一意の値に置き換えること（`sample-popover-N` はプレースホルダー。機能に合わせた一意な名前にし、入力要素ではないためコロンは付けない）
 - Popover の開閉は JavaScript で制御する必要がある
 - アイコンのみのボタンには `title` 属性または `aria-label` を付与してアクセシビリティを確保する
 - 配置する要素の順序を変えることで、レイアウトを自由に構成できる（例: Popover + Textbox、Textbox + Popover、Select + Textbox、Select + Textbox + Popover + Button）

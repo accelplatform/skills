@@ -35,7 +35,7 @@ arg最多可以指定16个。
 
 ```javascript
 // 字符串转换
-let result = Format.get('名前は「%4s」です。', 'intra-mart');
+let result = Format.get('名字是「%4s」。', 'intra-mart');
 
 // 10进制转换（整数7位、小数3位）
 let result = Format.get('金额：%7.3d 元', 1234567.89123);

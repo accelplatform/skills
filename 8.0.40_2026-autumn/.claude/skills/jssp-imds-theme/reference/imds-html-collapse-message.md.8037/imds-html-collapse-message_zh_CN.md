@@ -97,6 +97,26 @@ CollapseMessage 是始终显示标题、同时将详细信息折叠起来的组�
 <div class="imds-collapse-message is-large">    <!-- 大 -->
 ```
 
+### 无图标（No Icon）
+
+不需要图标或希望简化外观时，省略 `imds-message-title` 内的 `span.imds-icon`，仅放置 `<p>`。
+
+```html
+<div class="imds-collapse-message">
+  <input type="checkbox" id="todo-replace-:r1:" />
+  <label for="todo-replace-:r1:">
+    <div class="imds-message-title"><p>配置通知功能和方法。</p></div>
+    <span class="imds-icon imds-collapse-message-chevron"><i class="fa-solid fa-chevron-down"></i></span>
+  </label>
+  <div class="imds-message-content">
+    <ul>
+      <li>在消息通知设置中，为各功能配置接收通知的媒介。</li>
+      <li>在常规通知设置中，配置接收常规通知的电子邮件地址。</li>
+    </ul>
+  </div>
+</div>
+```
+
 ## 实现注意事项
 
 - 开关通过 `input[type="checkbox"]` 与 `label` 的配合仅用 CSS 控制（不需要 JavaScript）

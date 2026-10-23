@@ -135,5 +135,5 @@ document.getElementById('confirm-button').addEventListener('click', async () => 
 
 - `imWorkflow.modal.showConfirm()` 是客户端的 API。无法在服务端（SSJS / Rhino）中使用
 - `systemMatterId` 和 `nodeId` 需要从 URL 参数等处获取
-- 请勿在确认画面上放置自己的「返回」按钮。请将跳转委托给 `imWorkflow.transition.afterProcess()`
+- 在确认画面的页头放置「返回」按钮，点击时通过 `imWorkflow.transition.returnTo()` 返回调用方画面。关闭确认模态框后的跳转委托给 `imWorkflow.transition.afterProcess()`
 - 与 `showProcess()` 不同，没有 `processType` 的指定（确认处理是单一操作）

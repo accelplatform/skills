@@ -41,7 +41,7 @@ By embedding SVG directly into HTML, color and size can be controlled via CSS.
 
 ## HTML Snippets
 
-### Basic inline SVG icon
+### Basic Inline SVG Icon
 
 ```html
 <span class="imds-icon">
@@ -57,7 +57,7 @@ The following sections show only the differences from the basic icon.
 
 ## Variations
 
-### size
+### size (Size)
 
 Add a size class to `span.imds-icon`.
 
@@ -69,9 +69,9 @@ Add a size class to `span.imds-icon`.
 <span class="imds-icon is-large">    <!-- Large -->
 ```
 
-### color
+### color (Color)
 
-Add a color class to `span.imds-icon`. For single-color SVGs, use `fill="currentColor"` so that color classes (e.g. `is-primary`) are applied.
+Add a color class to `span.imds-icon`. For single-color SVGs, use `fill="currentColor"` so that the color class is applied.
 
 ```html
 <span class="imds-icon is-primary">   <!-- Primary -->
@@ -97,6 +97,20 @@ Others: `is-blue`, `is-green`, `is-red`, `is-yellow`, `is-orange`, `is-cyan`, `i
 </button>
 ```
 
+### is-ghost Icon-Only Button
+
+An `is-ghost` button consisting only of an inline SVG icon, without text.
+
+```html
+<button type="button" class="imds-button is-ghost">
+  <span class="imds-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <!-- SVG path data -->
+    </svg>
+  </span>
+</button>
+```
+
 ### Combined with Tag
 
 ```html
@@ -110,9 +124,33 @@ Others: `is-blue`, `is-green`, `is-red`, `is-yellow`, `is-orange`, `is-cyan`, `i
 </span>
 ```
 
+### is-yellow Tag
+
+```html
+<span class="imds-tag is-yellow">
+  <span class="imds-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+      <!-- SVG path data (specify a fill such as fill="#fff" that is visible against the tag background color) -->
+    </svg>
+  </span>
+  <span>Comment</span>
+</span>
+```
+
 ## Implementation Notes
 
-- Specifying `fill="currentColor"` on the SVG causes color classes (such as `is-primary`) to be applied
+- Specifying `fill="currentColor"` on the SVG causes the color of the color class (such as `is-primary`) to be applied
 - Multi-color SVGs specify colors directly via the `fill` attribute, so color classes have no effect
 - Accessibility: add `aria-label` to `span.imds-icon` for meaningful icons; add `aria-hidden="true"` for decorative icons
 - The SVG `width` / `height` attributes are overridden by size classes, but `viewBox` must always be specified
+- An `is-white` (white) icon becomes invisible on a light background. Always place it inside a container with a dark background color (e.g. a dark-background wrapper element such as `white-icon-background`)
+
+```html
+<div class="white-icon-background">
+  <span class="imds-icon is-white">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
+      <!-- SVG path data -->
+    </svg>
+  </span>
+</div>
+```

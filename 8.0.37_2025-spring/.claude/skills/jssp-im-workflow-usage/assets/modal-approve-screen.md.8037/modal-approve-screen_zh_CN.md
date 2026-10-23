@@ -180,16 +180,40 @@ function transferErrorPage(code, message) {
 <!-- 头部 -->
 <imart type="head">
   <!-- 标题 -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- 安全令牌（处理模态方式中使用 http-equiv 形式） -->
   <meta http-equiv="X-Intramart-Secure-Token" content="<imart type="imSecureToken" mode="value" />"/>
   <!-- 处理模态 API（defer 必须） -->
   <script src="im_workflow/js/api_base.js" defer></script>
+  <!-- 用于控制各主题不同的内容显示区域高度和宽度的 CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- 表现页面的自定义样式 -->
   <style>
-    .button-spacing {
+    /* 布局控制样式 */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
     }
   </style>
   <!-- 表现页面的脚本 -->
@@ -235,8 +259,9 @@ function transferErrorPage(code, message) {
         // 处理完成后的处理
         if (result && result.isProcessDone) {
           imuiShowSuccessMessage('处理已完成。');
-          imWorkflow.transition.afterProcess();
         }
+        // 关闭模态后的页面跳转（无论完成还是取消都调用）
+        imWorkflow.transition.afterProcess();
       });
 
       // 入口点
@@ -251,10 +276,10 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- 页面整体容器（因会被放置在 intra-mart 主题的 imui-container 内部，所以不附加 id） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="返回">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="返回" aria-label="返回">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
       </button>
     </div>
@@ -268,8 +293,8 @@ function transferErrorPage(code, message) {
       <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
     </div>
   </header>
-  <main>
-    <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+  <main class="pgstyle-layout-main">
+    <form id="main-form" class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
       <!-- TODO: 在此实现以只读方式显示申请内容的区块 -->
       <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
         <h2 class="imds-heading is-bordered is-size-2 is-cyan">{区块标题}</h2>
@@ -283,16 +308,16 @@ function transferErrorPage(code, message) {
               <div class="imds-field">
                 <div class="imds-field-control">
                   <!-- 因只读故以 span 显示（id 从 initializeView 引用） -->
-                  <span id=":field1:" class="imds-text"></span>
+                  <span id=":field1:"></span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-    </div>
+    </form>
     <!-- 处理按钮（审批/否决/退回等在模态内选择） -->
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+    <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
       <button type="button" id="process-button" class="imds-button is-primary" style="min-width: 8em;">处理</button>
     </div>
   </main>
@@ -310,9 +335,9 @@ function transferErrorPage(code, message) {
   - `imwParameter`：传递给 IM-Workflow 引擎的参数（`systemMatterId`、`nodeId`）
   - `formParameter`：处理画面上显示的申请内容（从案件属性获取的只读数据）
   - 分离可防止业务字段误混入 `processParameter`
-- **`showProcess()` 完成后，仅在 `isProcessDone` 为 true 时调用 `imWorkflow.transition.afterProcess()`**
-  - 仅在处理完成时跳转（同时显示完成消息）
-  - 取消时（`isProcessDone` 为 false）停留在画面，使处理者可再次打开模态
+- **无论 `showProcess()` 是完成还是取消，都在 `then()` / `await` 之后调用 `imWorkflow.transition.afterProcess()`**
+  - 完成时（`isProcessDone` 为 true）显示完成消息后，跳转到下一个案件或调用方画面
+  - 取消时由于未执行案件处理，`afterProcess()` 不执行任何操作，停留在画面（处理者可再次打开模态）
 - **`processType` 参数的指定**
   - 未指定（空数组或省略）时，自动确定用户在模态内可选择的处理种别
   - 如需仅允许特定处理种别，则指定 `processType` 数组

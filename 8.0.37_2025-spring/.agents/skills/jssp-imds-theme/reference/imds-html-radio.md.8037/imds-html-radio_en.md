@@ -21,7 +21,7 @@ Unlike Checkbox, exactly one item must always be selected.
 
 ## HTML Snippets
 
-### Basic radio button
+### Basic Radio Button
 
 ```html
 <label class="imds-radio">
@@ -42,7 +42,7 @@ Add the `disabled` attribute to `input`.
 <input type="radio" value="" disabled />
 ```
 
-### checked (selected)
+### checked (Selected)
 
 Add the `checked` attribute to `input`.
 
@@ -50,7 +50,7 @@ Add the `checked` attribute to `input`.
 <input type="radio" value="" checked />
 ```
 
-### size
+### size (Size)
 
 Add a size class to `label.imds-radio`.
 
@@ -70,6 +70,16 @@ Add a size class to `label.imds-radio`.
 ## Implementation Notes
 
 - Describe radio buttons with the structure `label.imds-radio > input[type="radio"] + span`
-- Set the same `name` attribute for all radio buttons in the same group
+- **Always use the same `name` attribute within a group**. If `name` is missing or differs within the group, the browser does not enforce exclusive selection (only one selectable). This is an easy implementation mistake, so treat it as mandatory
+  ```html
+  <label class="imds-radio">
+    <input type="radio" name="status" value="active" />
+    <span>Active</span>
+  </label>
+  <label class="imds-radio">
+    <input type="radio" name="status" value="inactive" />
+    <span>Inactive</span>
+  </label>
+  ```
 - `disabled` and `checked` can be combined (e.g. selected and disabled)
-- When grouping multiple radio buttons, use RadioGroup
+- When grouping multiple radio buttons, use RadioGroup (`imds-radio-group`). See [imds-html-radio-group.md](imds-html-radio-group.md) for details

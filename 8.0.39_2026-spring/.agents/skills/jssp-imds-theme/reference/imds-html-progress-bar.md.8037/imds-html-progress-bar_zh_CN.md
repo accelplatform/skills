@@ -103,6 +103,29 @@ ProgressBar 是以条形直观地显示正在执行的处理进度的组件。
 </div>
 ```
 
+### 按状态的图标对应
+
+`showProgressWithIcon` 中使用的图标根据状态（颜色类）按下表区分使用。
+
+| 状态 | 颜色类 | 图标 | 含义示例 |
+|-----------|-------------|---------|---------|
+| 成功 | is-success | fa-circle-check | 已完成 |
+| 警告 | is-warning | fa-triangle-exclamation | 进度出现延迟 |
+| 危险 | is-danger | fa-triangle-exclamation | 进度出现严重延迟 |
+| 错误 | is-error | fa-circle-xmark | 发生错误 |
+
+```html
+<span class="imds-icon is-warning" title="进度出现延迟">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+</span>
+<span class="imds-icon is-danger" title="进度出现严重延迟">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+</span>
+<span class="imds-icon is-error" title="发生错误">
+  <i class="fa-solid fa-circle-xmark"></i>
+</span>
+```
+
 ## 实现注意事项
 
 - 通过 `imds-progress-bar-fill` 的 `style="width: XX%;"` 控制进度百分比（0～100%）

@@ -7,6 +7,17 @@ description: "プレゼンテーションページの実装方針"
 
 > **Application Scope**: 🟢 **Always** — Applies when generating presentation pages (`.html`): HTML structure, validation, `id` naming rules, etc.
 
+## Choosing the UI Theme
+
+- If the prompt or specification explicitly names a UI theme (plain HTML, a custom theme, etc.), follow it
+- When not using the imds theme, see "Implementation Policy" for how to handle the root tag
+
+### imds Theme (Default)
+
+- If no UI theme is explicitly specified, generate screens with the imds theme
+- Use the full-page templates in `.github/skills/jssp-imds-theme/assets/` for the page skeleton and the same skill's `reference/` for UI components (see the `jssp-imds-theme` skill for details)
+- Message display APIs such as `imuiShowErrorMessage` / `imuiShowSuccessMessage` / `imuiShowWarningMessage` and `imuiCalendar` may be used together with the imds theme
+
 ## Standard Implementation Policy for Presentation Pages
 
 ### Basic Structure

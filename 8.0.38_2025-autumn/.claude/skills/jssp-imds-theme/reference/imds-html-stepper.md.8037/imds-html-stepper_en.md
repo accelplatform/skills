@@ -114,6 +114,9 @@ Can be placed before or after the label.
 - Connecting lines between steps are drawn automatically by CSS (no HTML markup required)
 - Step click navigation is controlled with JavaScript
 - When using `imds-line-clamp-*`, set the full text in the `button`'s `title` attribute so it can be checked on hover
-- If content (forms, etc.) follows below the stepper, set bottom padding (e.g. `imds-pb-4`) on the stepper's parent element to ensure sufficient spacing
-- Do not add left/right margins to the stepper (the stepper should be displayed at full screen width)
-- If the stepper is directly below a header (`imds-header`), do not add top margin either
+- In real DOM examples (import screens, etc.), `imds-stepper` is placed as-is directly below the header (`imds-header`) and immediately before the following content, with no spacing utility on `imds-stepper` itself. Spacing is provided by the following `section` (`imds-py-6 imds-px-8`, etc.). There is no fixed rule to add a specific spacing class (`imds-pb-4`, etc.) to the stepper itself, so follow the uiux-share examples and adjust spacing outside the stepper (in the following section, etc.)
+- In wizard-style screens using a stepper, place step navigation buttons such as "Back" and "Next" in a fixed footer outside the scroll area (`pgstyle-layout-footer`; see "5. Footer (Action Buttons)" in [imds-form-page.md](../assets/imds-form-page.md)) as a rule (navigation buttons are easier to find in a fixed position; placed inside the content, they may not be visible without scrolling)
+  - If the button set differs per step, prepare a footer for each step and show only the footer of the displayed step
+  - Match the footer's horizontal padding to that of the following section (e.g. if the section uses `imds-px-6`, the footer also uses `imds-px-6`). This aligns the left edge of the buttons with the left edge of the content
+  - Implement the footer with `<div>`, not `<footer>` (to avoid duplicating the platform-provided landmark)
+  - Exception: for steps with little content, such as a file-upload-only step, or for buttons that are not wizard navigation, such as on the completion step, the buttons may be placed directly below the content instead of in a footer

@@ -236,6 +236,8 @@ Fields additionally specified in the `prop` parameter are also included in `data
 
 ## Usage Examples
 
+Scripts inside `<imart type="head">` run before the body elements exist, so reference elements (`getElementById`, etc.) inside `DOMContentLoaded`. Define the callback function in the global scope and reflect the values into the form via the reflect function exposed as `window._functionName` inside `DOMContentLoaded` (see "Global Scope Callback Functions (imACMSearch, etc.)" in `.agents/requirements/jssp-presentation-page/AGENTS.md`).
+
 ### User Search (Keyword only, single selection)
 
 ```html
@@ -244,39 +246,55 @@ Fields additionally specified in the `prop` parameter are also included in `data
   <imart type="imACMSearch" />
 
   <script>
-    // User name click event
-    document.getElementById(':userName:').addEventListener('click', () => {
-      const parameter = {
-        tabs: [{
-          id   : 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
-          title: 'Keyword'
-        }],
-        prop: {
-          'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
-        },
-        callback_function           : 'callbackFromImMaster',
-        wnd_title                   : 'User Search',
-        message                     : 'User Search',
-        wnd_close                   : true,
-        type                        : 'single'
-      };
-
-      // Open the search screen
-      imACMSearch.open(parameter);
-    });
-
-    // Callback function
+    // Callback function (defined in the global scope because imACMSearch calls it by name)
     function callbackFromImMaster(result) {
-      if (result.length > 0) {
-        console.log(result[0].data.user_code, result[0].data.user_name);
-      } else {
-        console.log('No user selected');
+      // Do nothing when nothing is selected (keep the current value)
+      if (!result || result.length === 0) {
+        return;
+      }
+      if (typeof window._setSelectedUser === 'function') {
+        window._setSelectedUser(result[0].data.user_cd, result[0].data.user_name);
       }
     }
     // Place function in global scope
     window.callbackFromImMaster = callbackFromImMaster;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Reflect the selection into the form
+      function setSelectedUser(userCode, userName) {
+        document.getElementById(':userCode:').value = userCode;
+        document.getElementById(':userName:').value = userName;
+      }
+      // Expose it so that the global-scope callback function can call it
+      window._setSelectedUser = setSelectedUser;
+
+      // User name click event
+      document.getElementById(':userName:').addEventListener('click', () => {
+        const parameter = {
+          tabs: [{
+            id   : 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
+            title: 'Keyword'
+          }],
+          prop: {
+            'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
+          },
+          callback_function           : 'callbackFromImMaster',
+          wnd_title                   : 'User Search',
+          message                     : 'User Search',
+          wnd_close                   : true,
+          type                        : 'single'
+        };
+
+        // Open the search screen
+        imACMSearch.open(parameter);
+      });
+    });
   </script>
 </imart>
+
+<!-- Body (form elements) -->
+<input type="hidden" id=":userCode:" value="">
+<input type="text" id=":userName:" readonly value="">
 ```
 
 ### User Search (Keyword + Department Tree, multiple selection)
@@ -287,46 +305,73 @@ Fields additionally specified in the `prop` parameter are also included in `data
   <imart type="imACMSearch" />
 
   <script>
-    // User name click event
-    document.getElementById(':userName:').addEventListener('click', () => {
-      const parameter = {
-        tabs: [{
-          id: 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
-          title: 'Keyword'
-        }, {
-          id: 'jp.co.intra_mart.master.app.search.tabs.department.tree',
-          title: 'Department (Tree)'
-        }],
-        prop: {
-          'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
-        },
-        default_tab_id    : 'jp.co.intra_mart.master.app.search.tabs.department.tree',
-        callback_function : 'callbackFromImMaster',
-        wnd_title         : 'User Search',
-        wnd_close         : true,
-        type              : 'multiple'
-      };
-
-      // Open the search screen
-      imACMSearch.open(parameter);
-    });
-
-    // Callback function
+    // Callback function (defined in the global scope because imACMSearch calls it by name)
     function callbackFromImMaster(result) {
-      for (let i = 0; i < result.length; i++) {
-        console.log(result[i].data.user_cd, result[i].data.user_name);
+      // Do nothing when nothing is selected (keep the current value)
+      if (!result || result.length === 0) {
+        return;
+      }
+      if (typeof window._setSelectedUsers === 'function') {
+        window._setSelectedUsers(result);
       }
     }
     // Place function in global scope
     window.callbackFromImMaster = callbackFromImMaster;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Reflect the selections (multiple) into the form
+      function setSelectedUsers(result) {
+        const userCodes = [];
+        const userNames = [];
+        for (let i = 0; i < result.length; i++) {
+          userCodes.push(result[i].data.user_cd);
+          userNames.push(result[i].data.user_name);
+        }
+        document.getElementById(':userCodes:').value = userCodes.join(',');
+        document.getElementById(':userNames:').value = userNames.join(', ');
+      }
+      // Expose it so that the global-scope callback function can call it
+      window._setSelectedUsers = setSelectedUsers;
+
+      // User name click event
+      document.getElementById(':userNames:').addEventListener('click', () => {
+        const parameter = {
+          tabs: [{
+            id: 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
+            title: 'Keyword'
+          }, {
+            id: 'jp.co.intra_mart.master.app.search.tabs.department.tree',
+            title: 'Department (Tree)'
+          }],
+          prop: {
+            'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
+          },
+          default_tab_id    : 'jp.co.intra_mart.master.app.search.tabs.department.tree',
+          callback_function : 'callbackFromImMaster',
+          wnd_title         : 'User Search',
+          wnd_close         : true,
+          type              : 'multiple'
+        };
+
+        // Open the search screen
+        imACMSearch.open(parameter);
+      });
+    });
   </script>
 </imart>
+
+<!-- Body (form elements) -->
+<input type="hidden" id=":userCodes:" value="">
+<input type="text" id=":userNames:" readonly value="">
 ```
 
 ## Notes
 
 - The `<imart type="imACMSearch" />` tag must be placed inside the HTML `<head>` tag
 - The callback function must be defined in the global scope (it cannot be referenced inside immediately invoked functions)
+- Because the callback function cannot directly reference functions inside `DOMContentLoaded`, reflect the values into the form via a function exposed as `window._functionName`. Reference elements (`getElementById`, etc.) inside `DOMContentLoaded`, not when the script inside `<imart type="head">` is loaded
+- When the callback `result` is empty (nothing selected), do nothing and keep the current value
 - Specifying `target` enables all tabs associated with that target. To show only specific tabs, omit `target` and use `tabs` to specify them
 - Setting `target` incorrectly may cause a parseJSON error
 - Field names passed to `prop` must match the keys returned by the tab implementation
+- `target_locale` is the display locale of the search screen. To display it in the logged-in user's locale, do not hard-code `'ja'` etc.; bind `$targetLocale = Contexts.getAccountContext().locale;` in the function container and output it as `target_locale: '<imart type="string" value=$targetLocale escapeXml="false" escapeJs="true"></imart>'` (see "When Used as a JavaScript String Literal" in `.agents/requirements/jssp-presentation-page/AGENTS.md`)

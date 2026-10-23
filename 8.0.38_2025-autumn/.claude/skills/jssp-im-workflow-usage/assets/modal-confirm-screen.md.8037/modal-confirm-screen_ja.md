@@ -45,7 +45,7 @@ src/main/conf/routing-jssp-config/
  *
  * @file index.js
  * @description {機能名}の確認画面を構成します。
- *              処理モーダル（imWorkflow.modal.showProcess）を使用して確認処理を行います。
+ *              処理モーダル（imWorkflow.modal.showConfirm）を使用して確認処理を行います。
  *              IM-Workflow パラメータ: imwSystemMatterId（システム案件ID）, imwNodeId（ノードID）
  */
 
@@ -180,16 +180,40 @@ function transferErrorPage(code, message) {
 <!-- ヘッダ -->
 <imart type="head">
   <!-- タイトル -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- セキュアトークン（処理モーダル方式では http-equiv 形式を使用すること） -->
   <meta http-equiv="X-Intramart-Secure-Token" content="<imart type="imSecureToken" mode="value" />"/>
   <!-- 処理モーダル API（defer 必須） -->
   <script src="im_workflow/js/api_base.js" defer></script>
+  <!-- テーマごとに異なるコンテンツ表示領域の高さ・幅を制御する CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- プレゼンテーションページの独自スタイル -->
   <style>
-    .button-spacing {
+    /* レイアウト制御用スタイル */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
     }
   </style>
   <!-- プレゼンテーションページのスクリプト -->
@@ -236,8 +260,9 @@ function transferErrorPage(code, message) {
         // 確認完了後の処理
         if (result && result.isProcessDone) {
           imuiShowSuccessMessage('確認が完了しました。');
-          imWorkflow.transition.afterProcess();
         }
+        // 処理モーダルを閉じた後のページ遷移（完了・キャンセルにかかわらず呼び出す）
+        imWorkflow.transition.afterProcess();
       });
 
       // エントリーポイント
@@ -252,10 +277,10 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="戻る">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="戻る" aria-label="戻る">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
       </button>
     </div>
@@ -269,8 +294,8 @@ function transferErrorPage(code, message) {
       <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
     </div>
   </header>
-  <main>
-    <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+  <main class="pgstyle-layout-main">
+    <form id="main-form" class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
       <!-- TODO: 申請内容を読み取り専用で表示するセクションをここに実装する -->
       <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
         <h2 class="imds-heading is-bordered is-size-2 is-cyan">{セクションタイトル}</h2>
@@ -284,16 +309,16 @@ function transferErrorPage(code, message) {
               <div class="imds-field">
                 <div class="imds-field-control">
                   <!-- 読み取り専用のため span で表示（id は initializeView から参照） -->
-                  <span id=":field1:" class="imds-text"></span>
+                  <span id=":field1:"></span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-    </div>
+    </form>
     <!-- 確認ボタン（確認処理はモーダル内で実行） -->
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+    <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
       <button type="button" id="confirm-button" class="imds-button is-primary" style="min-width: 8em;">確認</button>
     </div>
   </main>
@@ -311,9 +336,9 @@ function transferErrorPage(code, message) {
   - `imwParameter`: IM-Workflow エンジンへ渡すパラメータ（`systemMatterId`, `nodeId`）
   - `formParameter`: 確認画面に表示する申請内容（案件プロパティから取得した読み取り専用データ）
   - 分離することで `processParameter` に誤って業務フィールドが混入することを防ぐ
-- **`showConfirm()` 完了後は `isProcessDone` が true のときのみ `imWorkflow.transition.afterProcess()` を呼び出すこと**
-  - 確認が完了した場合のみ遷移する（完了メッセージも表示する）
-  - キャンセル時（`isProcessDone` が false）は画面に留まり、確認者が再度モーダルを開けるようにする
+- **`showConfirm()` の完了・キャンセルにかかわらず、`then()` / `await` の後で `imWorkflow.transition.afterProcess()` を呼び出すこと**
+  - 完了時（`isProcessDone` が true）は完了メッセージを表示したうえで、次の案件または呼び出し元画面へ遷移する
+  - キャンセル時は案件の処理が行われていないため `afterProcess()` は何もせず、画面に留まる（確認者は再度モーダルを開ける）
 - **`authUserDepartmentInfo` の指定**
   - 権限者所属組織情報を指定する場合に設定する（任意）
 - **`confirmComment` の初期値設定**

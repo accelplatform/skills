@@ -217,6 +217,6 @@ node .claude/skills/jssp-im-logic-generator/scripts/validate-flow.js \
 
 ## 注意事项
 
-- **通过引戻し·差戻し·案件操作引起节点移动**而到达该节点时，逻辑流不会执行，而是将最后一位处理者作为权限者采用（2023 Autumn 及以后的规范）
+- **通过撤回·退回·案件操作引起节点移动**而到达该节点时，逻辑流不会执行，而是将最后一位处理者作为权限者采用（2023 Autumn 及以后的规范）
 - 流程输出 `userCds` 返回 `null` 时，被视为"无权限者"（不展开）
 - `version: null` 始终使用最新发布版本。如需固定到特定版本，请将 `version` 设为整数并将 `versionDecide` 设为 `true`

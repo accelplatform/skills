@@ -92,6 +92,20 @@ InlineSvg 使用内联 SVG 显示图标。
 </button>
 ```
 
+### is-ghost 仅图标按钮
+
+不带文本、仅由内联 SVG 图标构成的 `is-ghost` 按钮。
+
+```html
+<button type="button" class="imds-button is-ghost">
+  <span class="imds-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <!-- SVG 路径数据 -->
+    </svg>
+  </span>
+</button>
+```
+
 ### 与 Tag 组合
 
 ```html
@@ -105,9 +119,33 @@ InlineSvg 使用内联 SVG 显示图标。
 </span>
 ```
 
+### is-yellow 标签
+
+```html
+<span class="imds-tag is-yellow">
+  <span class="imds-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+      <!-- SVG 路径数据（填充色指定为 fill="#fff" 等相对标签背景色可辨识的颜色） -->
+    </svg>
+  </span>
+  <span>评论</span>
+</span>
+```
+
 ## 实现注意事项
 
 - 在 SVG 中指定 `fill="currentColor"` 后，颜色类（如 `is-primary`）的颜色将被应用
 - 多色 SVG 通过 `fill` 属性直接指定颜色，因此颜色类无效
 - 无障碍：对于有意义的图标，在 `span.imds-icon` 上添加 `aria-label`；对于装饰性图标，添加 `aria-hidden="true"`
 - SVG 的 `width` / `height` 属性会被尺寸类覆盖，但必须始终指定 `viewBox`
+- `is-white`（白色）图标在明亮背景上不可见。必须将其放置在具有深色背景的容器内（例如 `white-icon-background` 这类深色背景的包装元素）
+
+```html
+<div class="white-icon-background">
+  <span class="imds-icon is-white">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
+      <!-- SVG 路径数据 -->
+    </svg>
+  </span>
+</div>
+```

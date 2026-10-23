@@ -18,10 +18,11 @@ When choices are few or sufficient space is available, use Radio, which allows a
 | is-normal | imds-select | Normal size | Optional |
 | is-medium | imds-select | Medium size | Optional |
 | is-large | imds-select | Large size | Optional |
+| is-static | imds-select | Read-only static display state (used with `disabled`) | Optional |
 
 ## HTML Snippets
 
-### Basic select box
+### Basic Select Box
 
 ```html
 <select class="imds-select">
@@ -43,7 +44,7 @@ Add the `disabled` attribute to `select`.
 <select class="imds-select" disabled>
 ```
 
-### size
+### size (Size)
 
 Add a size class to `select.imds-select`.
 
@@ -55,12 +56,32 @@ Add a size class to `select.imds-select`.
 <select class="imds-select is-large">    <!-- Large -->
 ```
 
-### multiple (multiple selection)
+### multiple (Multiple Selection)
 
 Add the `multiple` attribute to `select`.
 
 ```html
 <select class="imds-select" multiple>
+```
+
+### is-static (Read-Only Static Display)
+
+A state where the value cannot be edited but is displayed for reference only. The HTML specification defines no `readonly` attribute for `<select>`, so combine the `is-static` class with the `disabled` attribute to achieve the read-only appearance (note that this differs from Textbox / Textarea, which use `readonly`).
+
+```html
+<!-- Single selection -->
+<select class="imds-select is-static" disabled>
+  <option>Select-1</option>
+  <option>Select-2</option>
+  <option>Select-3</option>
+</select>
+
+<!-- Multiple selection -->
+<select multiple class="imds-select is-static" disabled>
+  <option>Select-1</option>
+  <option>Select-2</option>
+  <option>Select-3</option>
+</select>
 ```
 
 ## Accessibility
@@ -73,3 +94,4 @@ Add the `multiple` attribute to `select`.
 - Add `disabled` to the `select` element (can also be applied to individual `option` elements)
 - When using `multiple`, it shows a list display and allows selecting multiple items
 - When used in an input form, wrap with Field (`imds-field`)
+- Use the read-only display (`is-static`) together with the `disabled` attribute. `readonly` cannot be specified on `<select>`

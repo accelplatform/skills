@@ -45,7 +45,7 @@ src/main/conf/routing-jssp-config/
  *
  * @file index.js
  * @description 构成{功能名}的确认画面。
- *              使用处理模态（imWorkflow.modal.showProcess）进行确认处理。
+ *              使用处理模态（imWorkflow.modal.showConfirm）进行确认处理。
  *              IM-Workflow 参数：imwSystemMatterId（系统案件ID）, imwNodeId（节点ID）
  */
 
@@ -180,16 +180,40 @@ function transferErrorPage(code, message) {
 <!-- 头部 -->
 <imart type="head">
   <!-- 标题 -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- 安全令牌（处理模态方式中使用 http-equiv 形式） -->
   <meta http-equiv="X-Intramart-Secure-Token" content="<imart type="imSecureToken" mode="value" />"/>
   <!-- 处理模态 API（defer 必须） -->
   <script src="im_workflow/js/api_base.js" defer></script>
+  <!-- 用于控制各主题不同的内容显示区域高度和宽度的 CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- 表现页面的自定义样式 -->
   <style>
-    .button-spacing {
+    /* 布局控制样式 */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
     }
   </style>
   <!-- 表现页面的脚本 -->
@@ -236,8 +260,9 @@ function transferErrorPage(code, message) {
         // 确认完成后的处理
         if (result && result.isProcessDone) {
           imuiShowSuccessMessage('确认已完成。');
-          imWorkflow.transition.afterProcess();
         }
+        // 关闭模态后的页面跳转（无论完成还是取消都调用）
+        imWorkflow.transition.afterProcess();
       });
 
       // 入口点
@@ -252,10 +277,10 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- 页面整体容器（因位于 intra-mart 主题 imui-container 内部，故不附加 id） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="返回">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="返回" aria-label="返回">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
       </button>
     </div>
@@ -269,8 +294,8 @@ function transferErrorPage(code, message) {
       <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
     </div>
   </header>
-  <main>
-    <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+  <main class="pgstyle-layout-main">
+    <form id="main-form" class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
       <!-- TODO: 在此实现以只读方式显示申请内容的区块 -->
       <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
         <h2 class="imds-heading is-bordered is-size-2 is-cyan">{区块标题}</h2>
@@ -284,16 +309,16 @@ function transferErrorPage(code, message) {
               <div class="imds-field">
                 <div class="imds-field-control">
                   <!-- 因只读故以 span 显示（id 从 initializeView 引用） -->
-                  <span id=":field1:" class="imds-text"></span>
+                  <span id=":field1:"></span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-    </div>
+    </form>
     <!-- 确认按钮（确认处理在模态内执行） -->
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+    <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
       <button type="button" id="confirm-button" class="imds-button is-primary" style="min-width: 8em;">确认</button>
     </div>
   </main>
@@ -311,9 +336,9 @@ function transferErrorPage(code, message) {
   - `imwParameter`：传递给 IM-Workflow 引擎的参数（`systemMatterId`、`nodeId`）
   - `formParameter`：确认画面上显示的申请内容（从案件属性获取的只读数据）
   - 分离可防止业务字段误混入 `processParameter`
-- **`showConfirm()` 完成后，仅在 `isProcessDone` 为 true 时调用 `imWorkflow.transition.afterProcess()`**
-  - 仅在确认完成时跳转（同时显示完成消息）
-  - 取消时（`isProcessDone` 为 false）停留在画面，使确认者可再次打开模态
+- **无论 `showConfirm()` 是完成还是取消，都在 `then()` / `await` 之后调用 `imWorkflow.transition.afterProcess()`**
+  - 完成时（`isProcessDone` 为 true）显示完成消息后，跳转到下一个案件或调用方画面
+  - 取消时由于未执行案件处理，`afterProcess()` 不执行任何操作，停留在画面（确认者可再次打开模态）
 - **`authUserDepartmentInfo` 的指定**
   - 如需指定权限者所属组织信息则设置（可选）
 - **`confirmComment` 的初始值设置**

@@ -3,74 +3,74 @@ paths:
   - "src/main/jssp/**/*.html"
 ---
 
-# データリストと入力要素の組み合わせ（common-parts）
+# Data List Combined with Input Element (common-parts)
 
-## 基本情報
+## Overview
 
-入力欄に候補リストを表示し、選択または自由入力の両方を許容したい場合に使用する複合パターンである。
-`<input list="...">` と `<datalist>` を組み合わせ、ネイティブブラウザのオートコンプリート UI を利用する。
+A composite pattern used when you want to show a list of suggestions in an input field and allow both selecting a suggestion and entering free text.
+It combines `<input list="...">` with `<datalist>` and uses the browser's native autocomplete UI.
 
-- 選択肢が少なく（〜20件程度）かつ自由入力も認めたい場面に適する。
-- 選択肢が多い場合や、自由入力を許さず必須選択とする場合は `<select>` + `imds-select`（[imds-html-select.md](imds-html-select.md)）を使うこと。本パターンは使わない。
-- 抽出元: `uiux-share/common-parts/データリストと入力要素の組み合わせ.md`
+- Suited to cases with few options (up to about 20) where free text input is also allowed.
+- When there are many options, or when free text is not allowed and a selection is mandatory, use `<select>` + `imds-select` ([imds-html-select.md](imds-html-select.md)). Do not use this pattern.
+- Source: `uiux-share/common-parts/データリストと入力要素の組み合わせ.md`
 
-## 構成コンポーネント
+## Components Used
 
-| 使用する基本コンポーネント | 対応 reference |
+| Base component used | Reference |
 |---|---|
-| Textbox（`imds-textbox`） | [imds-html-textbox.md](imds-html-textbox.md) |
-| Field（`imds-field`） | [imds-html-field.md](imds-html-field.md) |
+| Textbox (`imds-textbox`) | [imds-html-textbox.md](imds-html-textbox.md) |
+| Field (`imds-field`) | [imds-html-field.md](imds-html-field.md) |
 
-`<datalist>` 自体は imds 独自のクラスを持たない標準 HTML 要素であり、imds のコンポーネント体系には含まれない。
+`<datalist>` itself is a standard HTML element with no imds-specific class, and it is not part of the imds component system.
 
-## HTML スニペット
+## HTML Snippets
 
-### 単体（Field なし）
+### Standalone (Without Field)
 
 ```html
 <div>
   <input
     type="text"
     id="[REPLACE: input-id]"
-    placeholder="入力または選択してください"
+    placeholder="Enter or select a value"
     class="imds-textbox"
     list="[REPLACE: datalist-id]"
     value="" />
   <datalist id="[REPLACE: datalist-id]">
-    <option value="[REPLACE: 選択肢1]"></option>
-    <option value="[REPLACE: 選択肢2]"></option>
-    <option value="[REPLACE: 選択肢3]"></option>
+    <option value="[REPLACE: Option 1]"></option>
+    <option value="[REPLACE: Option 2]"></option>
+    <option value="[REPLACE: Option 3]"></option>
   </datalist>
 </div>
 ```
 
-### Field と組み合わせる場合
+### Combined with Field
 
-`<input>` と `<datalist>` は `imds-field-control` 内に配置する。Field 自体の構造は [imds-html-field.md](imds-html-field.md) を参照すること。
+Place `<input>` and `<datalist>` inside `imds-field-control`. For the structure of Field itself, see [imds-html-field.md](imds-html-field.md).
 
 ```html
 <div class="imds-field">
   <div class="imds-field-label">
-    <label for="[REPLACE: input-id]">[REPLACE: ラベル]</label>
+    <label for="[REPLACE: input-id]">[REPLACE: Label]</label>
   </div>
   <div class="imds-field-control">
     <input
       type="text"
       id="[REPLACE: input-id]"
-      placeholder="入力または選択してください"
+      placeholder="Enter or select a value"
       class="imds-textbox"
       list="[REPLACE: datalist-id]" />
     <datalist id="[REPLACE: datalist-id]">
-      <option value="[REPLACE: 選択肢1]"></option>
-      <option value="[REPLACE: 選択肢2]"></option>
+      <option value="[REPLACE: Option 1]"></option>
+      <option value="[REPLACE: Option 2]"></option>
     </datalist>
   </div>
 </div>
 ```
 
-## 実装上の注意
+## Implementation Notes
 
-- `<input>` の `list` 属性と `<datalist>` の `id` を必ず一致させること。
-- `id`（`input-id` / `datalist-id`）は画面内で一意になるよう置換すること。
-- `<input>` のクラスは通常の `imds-textbox` と同一であり、データリスト専用のクラスは存在しない。
-- ブラウザネイティブのオートコンプリート UI を使うため、候補の見た目（フォント・配色）は imds でカスタマイズできない点に留意する。
+- The `list` attribute of `<input>` must always match the `id` of `<datalist>`.
+- Replace the `id`s (`input-id` / `datalist-id`) so that they are unique within the screen.
+- The class of `<input>` is the same as the regular `imds-textbox`; there is no class dedicated to data lists.
+- Because the browser's native autocomplete UI is used, the appearance of the suggestions (font, colors) cannot be customized with imds.

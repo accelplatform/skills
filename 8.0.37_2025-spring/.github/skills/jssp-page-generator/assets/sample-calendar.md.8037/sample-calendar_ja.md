@@ -9,11 +9,16 @@
 - 祝日名・休日名をカレンダーセルに表示（i18n ロケール対応）
 - 曜日ごとの色設定を凡例として表示
 
+### imds テンプレートとの対応
+
+- ページ骨格は `jssp-imds-theme` スキルの一覧画面テンプレート `assets/imds-list-page.md` のレイアウト制御パターンに準拠する
+- セル背景の装飾色クラス（`is-gray` / `is-red`）は `jssp-imds-theme` スキルの `reference/imds-html-table.md` を参照する
+
 ## ファイル構成
 
 ```
-src/main/jssp/src/sample_calendar/view/
-  └── index.js              # ファンクションコンテナ
+src/main/jssp/src/sample/sample_calendar/view/
+  ├── index.js              # ファンクションコンテナ
   └── index.html            # プレゼンテーションページ
 
 src/main/conf/routing-jssp-config/
@@ -22,7 +27,7 @@ src/main/conf/routing-jssp-config/
 
 ---
 
-## ファンクションコンテナ（sample_calendar/view/index.js）
+## ファンクションコンテナ（sample/sample_calendar/view/index.js）
 
 ```javascript
 /**
@@ -269,15 +274,15 @@ function getMonthDays(calendarId, year, month, firstDayOfWeek, today, locale) {
 
   // グリッド開始日: firstDayOfWeek の曜日まで前月に遡る
   let firstOfMonth = new Date(year, month - 1, 1);
-  let startDow = firstOfMonth.getDay();
-  let startOffset = (startDow - firstDayOfWeek + 7) % 7;
+  let startDayOfWeek = firstOfMonth.getDay();
+  let startOffset = (startDayOfWeek - firstDayOfWeek + 7) % 7;
   let gridStart = new Date(year, month - 1, 1 - startOffset);
 
   // グリッド終了日: グリッドの最終曜日（firstDayOfWeek の前日）まで翌月に延ばす
   let lastOfMonth = new Date(year, month, 0);
-  let endDow = lastOfMonth.getDay();
+  let endDayOfWeek = lastOfMonth.getDay();
   let lastDayOfWeek = (firstDayOfWeek + 6) % 7;
-  let endOffset = (lastDayOfWeek - endDow + 7) % 7;
+  let endOffset = (lastDayOfWeek - endDayOfWeek + 7) % 7;
   let gridEnd = new Date(year, month - 1, lastOfMonth.getDate() + endOffset);
 
   let result = manager.getDayInfoSummariesOnTerm(calendarId, gridStart, gridEnd);
@@ -292,21 +297,21 @@ function getMonthDays(calendarId, year, month, firstDayOfWeek, today, locale) {
   let dayList = [];
   for (let i = 0; i < result.data.length; i++) {
     let summary = result.data[i];
-    let d = summary.currentDate;
-    let dYear = d.getFullYear();
-    let dMonth = d.getMonth() + 1;
-    let dDay = d.getDate();
+    let currentDate = summary.currentDate;
+    let dateYear = currentDate.getFullYear();
+    let dateMonth = currentDate.getMonth() + 1;
+    let dateDay = currentDate.getDate();
 
     // dayInfos から i18n 対応の名称を抽出し、dayInfoNames をフォールバックとする
     let dayInfoNames = resolveDayInfoNames(summary, locale);
 
     dayList.push({
-      year: dYear,
-      month: dMonth,
-      day: dDay,
-      dayOfWeek: d.getDay(),
-      isCurrentMonth: (dYear === year && dMonth === month),
-      isToday: (dYear === todayYear && dMonth === todayMonth && dDay === todayDay),
+      year: dateYear,
+      month: dateMonth,
+      day: dateDay,
+      dayOfWeek: currentDate.getDay(),
+      isCurrentMonth: (dateYear === year && dateMonth === month),
+      isToday: (dateYear === todayYear && dateMonth === todayMonth && dateDay === todayDay),
       isHoliday: summary.isHoliday,
       color: summary.color || '',
       dayInfoNames: dayInfoNames
@@ -372,86 +377,54 @@ function transferErrorPage(code, message) {
 
 ---
 
-## プレゼンテーションページ（sample_calendar/view/index.html）
+## プレゼンテーションページ（sample/sample_calendar/view/index.html）
 
 ```html
 <!-- ヘッダ -->
 <imart type="head">
   <!-- タイトル -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
-  <!-- スタイル -->
+  <!-- テーマごとに異なるコンテンツ表示領域の高さ・幅を制御する CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
+  <!-- プレゼンテーションページの独自スタイル -->
   <style>
-    /* ===== カレンダーナビゲーション ===== */
-    .calendar-nav {
+    /* レイアウト制御用スタイル */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      align-items: center;
-      gap: 0.75em;
-      margin-bottom: 1em;
     }
-    .calendar-nav-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      min-width: 9em;
-      text-align: center;
-      letter-spacing: 0.03em;
-      color: var(--imds-color-text, #1a1a2e);
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
     }
-    /* ===== カレンダー名バッジ ===== */
-    .calendar-name-badge {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 500;
-      padding: 0.25em 0.9em;
-      border-radius: 2em;
-      background: var(--imds-color-primary, #005BAC);
-      color: #fff;
-      margin-left: 0.6em;
-      vertical-align: middle;
-      letter-spacing: 0.04em;
+    .pgstyle-table-wrapper {
+      display: flex;
+      flex-direction: column;
     }
-    /* ===== カレンダーグリッド ===== */
-    .calendar-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
+    /* 月次カレンダーグリッド（imds に該当コンポーネントが無いため日付セルの描画のみ独自に定義する） */
+    #calendar-table {
       table-layout: fixed;
-      /* ビューポート高さからヘッダ・ナビ・凡例分を引いてテーブルを画面いっぱいに広げる */
-      height: calc(100vh - 160px);
-      min-height: 400px;
+      height: 100%;
     }
-    .calendar-table th {
-      padding: 0.65em 0;
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      letter-spacing: 0.06em;
-      background: #f0f4f8;
-      border-bottom: 2px solid var(--imds-color-primary, #005BAC);
-    }
-    .calendar-table td {
+    #calendar-table td {
       vertical-align: top;
-      border-right: 1px solid var(--imds-color-border, #e4e8ed);
-      border-bottom: 1px solid var(--imds-color-border, #e4e8ed);
       /* height: 1% にすることでテーブルの高さを行数で均等分配する */
       height: 1%;
-      min-height: 4em;
-      padding: 0.5em 0.6em;
-      cursor: default;
-      transition: background 0.12s ease;
-    }
-    .calendar-table td:first-child {
-      border-left: 1px solid var(--imds-color-border, #e4e8ed);
-    }
-    .calendar-table tbody tr:last-child td {
-      border-bottom: 2px solid var(--imds-color-border, #e4e8ed);
-    }
-    .calendar-table td:not(.is-other-month):hover {
-      background: rgba(0, 91, 172, 0.05);
     }
     /* 日付番号 */
     .calendar-cell-day {
       font-size: 2rem;
-      font-weight: 600;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -459,56 +432,27 @@ function transferErrorPage(code, message) {
       height: 1.4em;
       border-radius: 50%;
       line-height: 1;
-      transition: background 0.12s ease, color 0.12s ease;
     }
-    .calendar-cell-day.is-today {
-      background: var(--imds-color-primary, #005BAC);
+    /* 今日の日付（丸背景の色は画面ごとに調整してよい） */
+    .calendar-cell-day-today {
+      background: #005BAC;
       color: #fff;
+    }
+    /* 当月以外の日付は文字を薄く表示する */
+    .calendar-cell-muted {
+      opacity: 0.55;
     }
     /* 祝日名・休日名 */
     .calendar-cell-info {
       font-size: 1rem;
-      font-weight: 500;
-      margin-top: 0.15em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
-    /* 当月以外のセル */
-    .calendar-table td.is-other-month {
-      background: #f7f8fa;
-      opacity: 0.55;
-    }
-    /* 休日セル */
-    .calendar-table td.is-holiday {
-      background: linear-gradient(160deg, #fff4f4 0%, #fff 80%);
-    }
-    /* ===== 凡例 ===== */
-    .calendar-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5em 1.25em;
-      margin-bottom: 0.75em;
-      font-size: 0.85rem;
-      padding: 0.5em 0.85em;
-      background: #fafbfc;
-      border: 1px solid var(--imds-color-border, #e4e8ed);
-      border-radius: 6px;
-    }
-    .calendar-legend:empty {
-      display: none;
-    }
-    .calendar-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.4em;
-    }
+    /* 凡例の色見本（曜日ごとの色を動的に設定する） */
     .calendar-legend-dot {
       width: 0.75em;
       height: 0.75em;
       border-radius: 50%;
       display: inline-block;
-      border: 1px solid rgba(0,0,0,0.12);
+      border: 1px solid rgba(0, 0, 0, 0.12);
       flex-shrink: 0;
     }
   </style>
@@ -532,20 +476,20 @@ function transferErrorPage(code, message) {
 
     // 曜日情報マップ（dayOfWeek -> {color, holiday}）
     const weekDayMap = {};
-    (data.weekDays || []).forEach((wd) => {
-      weekDayMap[wd.dayOfWeek] = wd;
+    (data.weekDays || []).forEach((weekDay) => {
+      weekDayMap[weekDay.dayOfWeek] = weekDay;
     });
 
     // 週の開始曜日に合わせた曜日順序リスト
     function getOrderedWeekDays(firstDayOfWeek) {
       const ordered = [];
       for (let i = 0; i < 7; i++) {
-        const dow = (firstDayOfWeek + i) % 7;
+        const dayOfWeek = (firstDayOfWeek + i) % 7;
         ordered.push({
-          dayOfWeek: dow,
-          name: WEEK_DAY_NAMES[dow],
-          color: weekDayMap[dow] ? (weekDayMap[dow].color || '') : '',
-          holiday: weekDayMap[dow] ? weekDayMap[dow].holiday : false
+          dayOfWeek: dayOfWeek,
+          name: WEEK_DAY_NAMES[dayOfWeek],
+          color: weekDayMap[dayOfWeek] ? (weekDayMap[dayOfWeek].color || '') : '',
+          holiday: weekDayMap[dayOfWeek] ? weekDayMap[dayOfWeek].holiday : false
         });
       }
       return ordered;
@@ -553,15 +497,15 @@ function transferErrorPage(code, message) {
 
     // 曜日ヘッダ描画
     function renderWeekDayHeaders(orderedWeekDays) {
-      const thead = document.querySelector('#calendar-table thead tr');
-      if (!thead) { return; }
-      thead.innerHTML = '';
-      orderedWeekDays.forEach((wd) => {
+      const headerRow = document.querySelector('#calendar-table thead tr');
+      if (!headerRow) { return; }
+      headerRow.textContent = '';
+      orderedWeekDays.forEach((weekDay) => {
         const th = document.createElement('th');
         th.scope = 'col';
-        th.style.color = wd.color || '';
-        th.textContent = wd.name;
-        thead.appendChild(th);
+        th.style.color = weekDay.color || '';
+        th.textContent = weekDay.name;
+        headerRow.appendChild(th);
       });
     }
 
@@ -569,32 +513,33 @@ function transferErrorPage(code, message) {
     function renderDays(calendarData, orderedWeekDays) {
       const tbody = document.querySelector('#calendar-table tbody');
       if (!tbody) { return; }
-      tbody.innerHTML = '';
+      tbody.textContent = '';
 
       const days = calendarData.days || [];
-      const colCount = orderedWeekDays.length;
-      const rowCount = Math.ceil(days.length / colCount);
+      const columnCount = orderedWeekDays.length;
+      const rowCount = Math.ceil(days.length / columnCount);
 
-      for (let r = 0; r < rowCount; r++) {
+      for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         const tr = document.createElement('tr');
-        for (let c = 0; c < colCount; c++) {
-          const idx = r * colCount + c;
-          if (idx >= days.length) {
+        for (let columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+          const dayIndex = rowIndex * columnCount + columnIndex;
+          if (dayIndex >= days.length) {
             tr.appendChild(document.createElement('td'));
             continue;
           }
-          const day = days[idx];
+          const day = days[dayIndex];
           const td = document.createElement('td');
 
+          // セル背景色は imds テーブルの装飾色クラスで指定する（当月以外: グレー、休日: 赤）
           if (!day.isCurrentMonth) {
-            td.className = 'is-other-month';
+            td.className = 'is-gray';
           } else if (day.isHoliday) {
-            td.className = 'is-holiday';
+            td.className = 'is-red';
           }
 
           // 日付番号のスパン
           const daySpan = document.createElement('span');
-          daySpan.className = 'calendar-cell-day' + (day.isToday ? ' is-today' : '');
+          daySpan.className = 'calendar-cell-day has-text-weight-bold' + (day.isToday ? ' calendar-cell-day-today' : '') + (day.isCurrentMonth ? '' : ' calendar-cell-muted');
 
           // 色の決定: DayInfoSummary.color → 曜日色 の優先順
           let cellColor = day.color;
@@ -611,7 +556,7 @@ function transferErrorPage(code, message) {
           // 日付情報名（休日名・祝日名）
           if (day.dayInfoNames && day.dayInfoNames.length > 0) {
             const infoDiv = document.createElement('div');
-            infoDiv.className = 'calendar-cell-info';
+            infoDiv.className = 'calendar-cell-info imds-line-clamp-1 imds-mt-1' + (day.isCurrentMonth ? '' : ' calendar-cell-muted');
             infoDiv.style.color = cellColor || '';
             infoDiv.title = day.dayInfoNames.join('、');
             infoDiv.textContent = day.dayInfoNames[0];
@@ -626,13 +571,13 @@ function transferErrorPage(code, message) {
 
     // ナビゲーションタイトル描画
     function renderNavTitle(calendarData) {
-      const titleEl = document.getElementById('nav-title');
-      if (titleEl) {
-        titleEl.textContent = calendarData.year + '年' + calendarData.month + '月';
+      const titleElement = document.getElementById('nav-title');
+      if (titleElement) {
+        titleElement.textContent = calendarData.year + '年' + calendarData.month + '月';
       }
-      const nameEl = document.getElementById('calendar-name');
-      if (nameEl) {
-        nameEl.textContent = calendarData.calendarName || calendarData.calendarId || '';
+      const nameElement = document.getElementById('calendar-name');
+      if (nameElement) {
+        nameElement.textContent = calendarData.calendarName || calendarData.calendarId || '';
       }
     }
 
@@ -643,28 +588,28 @@ function transferErrorPage(code, message) {
 
     // ナビゲーションボタンイベント
     function setupNavigation(calendarData) {
-      const prevBtn = document.getElementById('btn-prev-month');
-      const nextBtn = document.getElementById('btn-next-month');
-      const todayBtn = document.getElementById('btn-today');
+      const prevButton = document.getElementById('prev-month-button');
+      const nextButton = document.getElementById('next-month-button');
+      const todayButton = document.getElementById('this-month-button');
 
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          let y = calendarData.year;
-          let m = calendarData.month - 1;
-          if (m < 1) { m = 12; y -= 1; }
-          location.href = buildMonthUrl(y, m);
+      if (prevButton) {
+        prevButton.addEventListener('click', () => {
+          let year = calendarData.year;
+          let month = calendarData.month - 1;
+          if (month < 1) { month = 12; year -= 1; }
+          location.href = buildMonthUrl(year, month);
         });
       }
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          let y = calendarData.year;
-          let m = calendarData.month + 1;
-          if (m > 12) { m = 1; y += 1; }
-          location.href = buildMonthUrl(y, m);
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          let year = calendarData.year;
+          let month = calendarData.month + 1;
+          if (month > 12) { month = 1; year += 1; }
+          location.href = buildMonthUrl(year, month);
         });
       }
-      if (todayBtn) {
-        todayBtn.addEventListener('click', () => {
+      if (todayButton) {
+        todayButton.addEventListener('click', () => {
           // クエリパラメータなしで遷移 → サーバ側でシステム日付の年月を使用
           location.href = 'sample/sample_calendar';
         });
@@ -673,27 +618,32 @@ function transferErrorPage(code, message) {
 
     // 凡例描画（曜日ごとの色）
     function renderLegend(orderedWeekDays) {
-      const legendEl = document.getElementById('calendar-legend');
-      if (!legendEl) { return; }
-      legendEl.innerHTML = '';
+      const legendElement = document.getElementById('calendar-legend');
+      if (!legendElement) { return; }
+      legendElement.textContent = '';
 
-      orderedWeekDays.forEach((wd) => {
-        if (!wd.color) { return; }
+      orderedWeekDays.forEach((weekDay) => {
+        if (!weekDay.color) { return; }
         const item = document.createElement('span');
-        item.className = 'calendar-legend-item';
+        item.style.display = 'flex';
+        item.style.alignItems = 'center';
+        item.style.gap = '0.4em';
 
         const dot = document.createElement('span');
         dot.className = 'calendar-legend-dot';
-        dot.style.background = wd.color;
+        dot.style.background = weekDay.color;
 
         const label = document.createElement('span');
-        label.textContent = wd.name + '曜日' + (wd.holiday ? '（休日）' : '');
-        label.style.color = wd.color;
+        label.textContent = weekDay.name + '曜日' + (weekDay.holiday ? '（休日）' : '');
+        label.style.color = weekDay.color;
 
         item.appendChild(dot);
         item.appendChild(label);
-        legendEl.appendChild(item);
+        legendElement.appendChild(item);
       });
+
+      // 色設定のある曜日が 1 つも無い場合は凡例を非表示のままにする
+      legendElement.style.display = legendElement.hasChildNodes() ? 'flex' : 'none';
     }
 
     // エントリーポイント
@@ -711,7 +661,7 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <!-- ヘッダ -->
   <header class="imds-header">
     <div class="imds-header-icon">
@@ -721,46 +671,41 @@ function transferErrorPage(code, message) {
     </div>
     <div class="imds-header-title">
       <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1>
-        <imart type="string" value=$title escapeXml="true" escapeJs="false"></imart>
-        <span id="calendar-name" class="calendar-name-badge"></span>
-      </h1>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+    <!-- カレンダー名（ヘッダの Tag） -->
+    <div class="imds-header-additional">
+      <span class="imds-tag is-blue is-rounded"><span id="calendar-name"></span></span>
     </div>
   </header>
 
   <!-- メインコンテンツ -->
-  <main>
-    <div class="imds-py-3">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
-
-        <!-- 月ナビゲーション -->
-        <div class="calendar-nav imds-mb-3">
-          <button type="button" id="btn-prev-month" class="imds-button is-ghost" title="前月">
-            <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
-          </button>
-          <span id="nav-title" class="calendar-nav-title"></span>
-          <button type="button" id="btn-next-month" class="imds-button is-ghost" title="翌月">
-            <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
-          </button>
-          <button type="button" id="btn-today" class="imds-button is-outlined">今月</button>
+  <main class="pgstyle-layout-main">
+    <div class="imds-px-3 imds-py-2 pgstyle-table-wrapper pgstyle-layout-content imds-scrollbar">
+      <!-- 月ナビゲーション -->
+      <div class="imds-mb-2" style="display: flex; align-items: center; gap: 0.75em;">
+        <button type="button" id="prev-month-button" class="imds-button is-ghost" title="前月" aria-label="前月">
+          <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
+        </button>
+        <span id="nav-title" class="has-text-weight-bold has-text-centered" style="font-size: 1.6rem; min-width: 9em;"></span>
+        <button type="button" id="next-month-button" class="imds-button is-ghost" title="翌月" aria-label="翌月">
+          <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </button>
+        <button type="button" id="this-month-button" class="imds-button is-outlined">今月</button>
+      </div>
+      <!-- 凡例（色設定のある曜日が無い場合は非表示のまま） -->
+      <div id="calendar-legend" class="imds-mb-2 imds-px-3 imds-py-2 imds-border-1 has-background-color-gray" style="display: none; flex-wrap: wrap; gap: 0.5em 1.25em; font-size: 0.85rem;"></div>
+      <!-- カレンダーグリッド -->
+      <div class="imds-table is-area-bordered is-bordered is-sticky" style="height: 100%">
+        <div class="imds-table-inner">
+          <table id="calendar-table" aria-label="カレンダー">
+            <thead>
+              <tr></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
-
-        <!-- 凡例 -->
-        <div id="calendar-legend" class="calendar-legend imds-mb-2"></div>
-
-        <!-- カレンダーグリッド -->
-        <div class="imds-table">
-          <div class="imds-table-inner">
-            <table id="calendar-table" class="calendar-table" aria-label="カレンダー">
-              <thead>
-                <tr></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-
-      </section>
+      </div>
     </div>
   </main>
 </div>
@@ -778,7 +723,7 @@ function transferErrorPage(code, message) {
     xsi:schemaLocation="http://www.intra-mart.jp/router/routing-jssp-config routing-jssp-config.xsd">
 
   <!-- カレンダー画面 -->
-  <file-mapping path="/sample/sample_calendar" page="sample_calendar/view/index">
+  <file-mapping path="/sample/sample_calendar" page="sample/sample_calendar/view/index">
     <authz uri="service://sample/sample_calendar" action="execute" />
   </file-mapping>
 
@@ -814,15 +759,15 @@ for (let i = 0; i < result.data.length; i++) {
 ```javascript
 // グリッド開始日：firstDayOfWeek の曜日まで前月に遡る
 let firstOfMonth = new Date(year, month - 1, 1);
-let startDow = firstOfMonth.getDay();
-let startOffset = (startDow - firstDayOfWeek + 7) % 7;
+let startDayOfWeek = firstOfMonth.getDay();
+let startOffset = (startDayOfWeek - firstDayOfWeek + 7) % 7;
 let gridStart = new Date(year, month - 1, 1 - startOffset);
 
 // グリッド終了日：最終曜日（firstDayOfWeek の前日）まで翌月に延ばす
 let lastOfMonth = new Date(year, month, 0);
-let endDow = lastOfMonth.getDay();
+let endDayOfWeek = lastOfMonth.getDay();
 let lastDayOfWeek = (firstDayOfWeek + 6) % 7;
-let endOffset = (lastDayOfWeek - endDow + 7) % 7;
+let endOffset = (lastDayOfWeek - endDayOfWeek + 7) % 7;
 let gridEnd = new Date(year, month - 1, lastOfMonth.getDate() + endOffset);
 
 let result = manager.getDayInfoSummariesOnTerm(calendarId, gridStart, gridEnd);
@@ -890,7 +835,8 @@ function resolveDayInfoNames(summary, locale) {
 1. `DayInfoSummary.color`（特定日付の色設定）
 2. 曜日ごとの色（`weekDayMap[dayOfWeek].color`）
 
-今日の日付（`isToday`）の場合は色設定を無視し、プライマリカラーの背景＋白文字を使用する。
+今日の日付（`isToday`）の場合は色設定を無視し、丸背景＋白文字（`calendar-cell-day-today`）で表示する。
+セルの背景色は独自 CSS ではなく imds テーブルの装飾色クラス（当月以外: `is-gray`、休日: `is-red`）で指定する。
 
 ### 7. 参照する d.ts
 

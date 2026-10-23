@@ -241,6 +241,8 @@ paths:
 
 ## 使用例
 
+`<imart type="head">` 内のスクリプトは本文の要素より先に実行されるため、要素の参照（`getElementById` 等）は `DOMContentLoaded` 内で行う。コールバック関数はグローバルスコープに定義し、`DOMContentLoaded` 内で `window._関数名` として公開した反映関数を経由してフォームに反映する（`jssp-presentation-page.md`「グローバルスコープのコールバック関数（imACMSearch 等）」）。
+
 ### ユーザ検索（キーワードのみ、単数選択）
 
 ```html
@@ -249,39 +251,55 @@ paths:
   <imart type="imACMSearch" />
 
   <script>
-    // ユーザ名 クリック時イベント
-    document.getElementById(':userName:').addEventListener('click', () => {
-      const parameter = {
-        tabs: [{
-          id   : 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
-          title: 'キーワード'
-        }],
-        prop: {
-          'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
-        },
-        callback_function           : 'callbackFromImMaster',
-        wnd_title                   : 'ユーザ検索',
-        message                     : 'ユーザ検索',
-        wnd_close                   : true,
-        type                        : 'single'
-      };
-
-      // 検索画面を開く
-      imACMSearch.open(parameter);
-    });
-
-    // コールバック関数
+    // コールバック関数（imACMSearch から関数名で呼び出されるため、グローバルスコープに定義する）
     function callbackFromImMaster(result) {
-      if (result.length > 0) {
-        console.log(result[0].data.user_code, result[0].data.user_name);
-      } else {
-        console.log('ユーザ未選択');
+      // 未選択の場合は何もしない（現在の値を保持する）
+      if (!result || result.length === 0) {
+        return;
+      }
+      if (typeof window._setSelectedUser === 'function') {
+        window._setSelectedUser(result[0].data.user_cd, result[0].data.user_name);
       }
     }
     // グローバルに関数を置く
     window.callbackFromImMaster = callbackFromImMaster;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 選択結果をフォームに反映する
+      function setSelectedUser(userCode, userName) {
+        document.getElementById(':userCode:').value = userCode;
+        document.getElementById(':userName:').value = userName;
+      }
+      // グローバルスコープのコールバック関数から呼び出せるように公開する
+      window._setSelectedUser = setSelectedUser;
+
+      // ユーザ名 クリック時イベント
+      document.getElementById(':userName:').addEventListener('click', () => {
+        const parameter = {
+          tabs: [{
+            id   : 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
+            title: 'キーワード'
+          }],
+          prop: {
+            'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
+          },
+          callback_function           : 'callbackFromImMaster',
+          wnd_title                   : 'ユーザ検索',
+          message                     : 'ユーザ検索',
+          wnd_close                   : true,
+          type                        : 'single'
+        };
+
+        // 検索画面を開く
+        imACMSearch.open(parameter);
+      });
+    });
   </script>
 </imart>
+
+<!-- 本文（フォーム要素） -->
+<input type="hidden" id=":userCode:" value="">
+<input type="text" id=":userName:" readonly value="">
 ```
 
 ### ユーザ検索（キーワード＋組織ツリー、複数選択）
@@ -292,46 +310,73 @@ paths:
   <imart type="imACMSearch" />
 
   <script>
-    // ユーザ名 クリック時イベント
-    document.getElementById(':userName:').addEventListener('click', () => {
-      const parameter = {
-        tabs: [{
-          id: 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
-          title: 'キーワード'
-        }, {
-          id: 'jp.co.intra_mart.master.app.search.tabs.department.tree',
-          title: '組織（ツリー）'
-        }],
-        prop: {
-          'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
-        },
-        default_tab_id    : 'jp.co.intra_mart.master.app.search.tabs.department.tree',
-        callback_function : 'callbackFromImMaster',
-        wnd_title         : 'ユーザ検索',
-        wnd_close         : true,
-        type              : 'multiple'
-      };
-
-      // 検索画面を開く
-      imACMSearch.open(parameter);
-    });
-
-    // コールバック関数
+    // コールバック関数（imACMSearch から関数名で呼び出されるため、グローバルスコープに定義する）
     function callbackFromImMaster(result) {
-      for (let i = 0; i < result.length; i++) {
-        console.log(result[i].data.user_cd, result[i].data.user_name);
+      // 未選択の場合は何もしない（現在の値を保持する）
+      if (!result || result.length === 0) {
+        return;
+      }
+      if (typeof window._setSelectedUsers === 'function') {
+        window._setSelectedUsers(result);
       }
     }
     // グローバルに関数を置く
     window.callbackFromImMaster = callbackFromImMaster;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 選択結果（複数）をフォームに反映する
+      function setSelectedUsers(result) {
+        const userCodes = [];
+        const userNames = [];
+        for (let i = 0; i < result.length; i++) {
+          userCodes.push(result[i].data.user_cd);
+          userNames.push(result[i].data.user_name);
+        }
+        document.getElementById(':userCodes:').value = userCodes.join(',');
+        document.getElementById(':userNames:').value = userNames.join(', ');
+      }
+      // グローバルスコープのコールバック関数から呼び出せるように公開する
+      window._setSelectedUsers = setSelectedUsers;
+
+      // ユーザ名 クリック時イベント
+      document.getElementById(':userNames:').addEventListener('click', () => {
+        const parameter = {
+          tabs: [{
+            id: 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
+            title: 'キーワード'
+          }, {
+            id: 'jp.co.intra_mart.master.app.search.tabs.department.tree',
+            title: '組織（ツリー）'
+          }],
+          prop: {
+            'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
+          },
+          default_tab_id    : 'jp.co.intra_mart.master.app.search.tabs.department.tree',
+          callback_function : 'callbackFromImMaster',
+          wnd_title         : 'ユーザ検索',
+          wnd_close         : true,
+          type              : 'multiple'
+        };
+
+        // 検索画面を開く
+        imACMSearch.open(parameter);
+      });
+    });
   </script>
 </imart>
+
+<!-- 本文（フォーム要素） -->
+<input type="hidden" id=":userCodes:" value="">
+<input type="text" id=":userNames:" readonly value="">
 ```
 
 ## 注意事項
 
 - `<imart type="imACMSearch" />` タグは HTML の `<head>` タグ内に配置すること
 - コールバック関数はグローバルスコープで定義すること（即時関数内では参照できない）
+- コールバック関数から `DOMContentLoaded` 内の関数は直接参照できないため、`window._関数名` として公開した関数を経由してフォームに反映すること。要素の参照（`getElementById` 等）は `<imart type="head">` 内のスクリプトの読み込み時ではなく `DOMContentLoaded` 内で行うこと
+- コールバック関数の `result` が空（未選択）の場合は何もせず、現在の値を保持すること
 - `target` を指定すると、その対象に紐づくタブが全て有効になる。特定タブのみ表示したい場合は `target` を省略して `tabs` で指定する
 - `target` を不適切に設定すると parseJSON エラーが発生する場合がある
 - `prop` に渡すフィールド名はタブ実装が返すキーと一致している必要がある
+- `target_locale` は検索画面の表示ロケールである。ログインユーザのロケールで表示する場合は `'ja'` 等を直書きせず、ファンクションコンテナで `$targetLocale = Contexts.getAccountContext().locale;` をバインドし、`target_locale: '<imart type="string" value=$targetLocale escapeXml="false" escapeJs="true"></imart>'` として出力すること（`jssp-presentation-page.md`「JavaScript の文字列リテラルとして使用する場合」）

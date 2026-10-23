@@ -99,6 +99,39 @@ ProgressCircular 以圆形直观地显示正在执行的处理进度。
 </div>
 ```
 
+#### 按状态的图标对应
+
+图标种类与 `ProgressBar` 不同（圆形边缘已表示进度，因此使用更简洁的图标）。
+
+| 状态 | 颜色类 | 图标 |
+|-----------|-------------|---------|
+| 成功 | is-success | fa-check |
+| 警告 | is-warning | fa-triangle-exclamation |
+| 危险 | is-danger | fa-triangle-exclamation |
+| 错误 | is-error | fa-xmark |
+
+```html
+<span class="imds-icon is-medium is-warning" title="在 title 属性中输入图标所代表的含义">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+</span>
+<span class="imds-icon is-medium is-error" title="在 title 属性中输入图标所代表的含义">
+  <i class="fa-solid fa-xmark"></i>
+</span>
+```
+
+### 尺寸预设
+
+圆的尺寸需联动指定 `width`/`height`（容器）、`font-size`（中央文字）、SVG 的 `width`/`height`/`viewBox`、`circle` 的 `r`（半径）・`stroke-width` 以及 `stroke-dasharray`（周长）。以下为代表性的尺寸预设。
+
+| 尺寸 (px) | 容器 style | SVG width/height/viewBox | r | stroke-width | stroke-dasharray（周长） |
+|------------|----------------|---------------------------|---|--------------|--------------------------|
+| 40 | `width: 4rem; height: 4rem; font-size: 1rem` | `40` / `40` / `0 0 40 40` | 18.5 | 3 | 116.24 |
+| 80 | `width: 8rem; height: 8rem; font-size: 2rem` | `80` / `80` / `0 0 80 80` | 37 | 6 | 232.48 |
+| 120 | `width: 12rem; height: 12rem; font-size: 3rem` | `120` / `120` / `0 0 120 120` | 55.5 | 9 | 348.72 |
+| 160 | `width: 16rem; height: 16rem; font-size: 4rem` | `160` / `160` / `0 0 160 160` | 74 | 12 | 464.96 |
+
+`cx` / `cy` 均为 SVG `width`/`height` 的一半（例如：尺寸 160 时为 `cx="80" cy="80"`）。
+
 ## 实现注意事项
 
 - 通过 `imds-progress-circular` 的 `style` 属性（`width`、`height`、`font-size`）控制尺寸

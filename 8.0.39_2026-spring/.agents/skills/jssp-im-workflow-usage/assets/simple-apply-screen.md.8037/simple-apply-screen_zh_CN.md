@@ -255,14 +255,42 @@ function transferErrorPage(code, message) {
 <!-- 头部 -->
 <imart type="head">
   <!-- 标题 -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- 工作流画面跳转用 CSJS -->
   <imart type="workflowOpenPageCsjs" />
+  <!-- 用于控制各主题不同的内容显示区域高度和宽度的 CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- 表现页面的自定义样式 -->
   <style>
-    .button-spacing {
+    /* 布局控制样式 */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
+    }
+    /* workflowOpenPage 标签输出的 <form> 本身不生成盒子，使内侧的内容区域和页脚作为 pgstyle-layout-main 的 flex 项目进行布局 */
+    .pgstyle-layout-main > form {
+      display: contents;
     }
   </style>
   <!-- 表现页面的脚本 -->
@@ -447,55 +475,55 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- 工作流画面调用用表单 -->
-<imart type="workflowOpenPage"
-    name="workflowOpenPageForm"
-    method="POST"
-    target="_top"
-    imwAuthUserCode=$imwAuthUserCode
-    imwSystemMatterId=$imwSystemMatterId
-    imwUserDataId=$imwUserDataId
-    imwNodeId=$imwNodeId
-    imwApplyBaseDate=$imwApplyBaseDate
-    imwFlowId=$imwFlowId
-    imwCallOriginalParams=$imwCallOriginalParams
-    imwNextPagePath=$imwNextPagePath
-    imwNextScriptPath=$imwNextScriptPath
-    imwNextApplicationId=$imwNextApplicationId
-    imwNextServiceId=$imwNextServiceId>
+<!-- 页面整体容器（因会被放置在 intra-mart 主题的 imui-container 内部，所以不附加 id） -->
+<div class="imds-container pgstyle-layout-container">
+  <header class="imds-header">
+    <div class="imds-header-back-button">
+      <button type="button" id="imw-back-button" class="imds-button is-ghost is-large" title="返回">
+        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+      </button>
+    </div>
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+  </header>
+  <main class="pgstyle-layout-main">
+    <!-- 工作流画面调用用表单 -->
+    <imart type="workflowOpenPage"
+        name="workflowOpenPageForm"
+        method="POST"
+        target="_top"
+        imwAuthUserCode=$imwAuthUserCode
+        imwSystemMatterId=$imwSystemMatterId
+        imwUserDataId=$imwUserDataId
+        imwNodeId=$imwNodeId
+        imwApplyBaseDate=$imwApplyBaseDate
+        imwFlowId=$imwFlowId
+        imwCallOriginalParams=$imwCallOriginalParams
+        imwNextPagePath=$imwNextPagePath
+        imwNextScriptPath=$imwNextScriptPath
+        imwNextApplicationId=$imwNextApplicationId
+        imwNextServiceId=$imwNextServiceId>
 
-  <!-- 案件名称（申请按钮按下时由 JavaScript 设置） -->
-  <input type="hidden" id="imwMatterName" name="imwMatterName" value="" />
+      <!-- 案件名称（申请按钮按下时由 JavaScript 设置） -->
+      <input type="hidden" id="imwMatterName" name="imwMatterName" value="" />
 
-  <!-- 业务数据提交用 hidden 字段。显示用 input 不附 name，
-       在提交前通过 setUserDataToHidden() 复制值（带 name 的字段作为 userParam 传递）。 -->
-  <input type="hidden" id="hidden-partCode" name="partCode" value="" />
-  <input type="hidden" id="hidden-partName" name="partName" value="" />
-  <input type="hidden" id="hidden-unitPrice" name="unitPrice" value="" />
-  <input type="hidden" id="hidden-quantity" name="quantity" value="" />
-  <input type="hidden" id="hidden-totalAmount" name="totalAmount" value="" />
-  <input type="hidden" id="hidden-reason" name="reason" value="" />
+      <!-- 业务数据提交用 hidden 字段。显示用 input 不附 name，
+           在提交前通过 setUserDataToHidden() 复制值（带 name 的字段作为 userParam 传递）。 -->
+      <input type="hidden" id="hidden-partCode" name="partCode" value="" />
+      <input type="hidden" id="hidden-partName" name="partName" value="" />
+      <input type="hidden" id="hidden-unitPrice" name="unitPrice" value="" />
+      <input type="hidden" id="hidden-quantity" name="quantity" value="" />
+      <input type="hidden" id="hidden-totalAmount" name="totalAmount" value="" />
+      <input type="hidden" id="hidden-reason" name="reason" value="" />
 
-  <!-- 页面整体容器（因会被放置在 intra-mart 主题的 imui-container 内部，所以不附加 id） -->
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-back-button">
-        <button type="button" id="imw-back-button" class="imds-button is-ghost is-large">
-          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-        </button>
-      </div>
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-      </div>
-    </header>
-    <main>
-      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+      <div class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
         <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
           <h2 class="imds-heading is-bordered is-size-2 is-cyan">发注信息</h2>
           <div class="imds-field-container has-accent-color">
@@ -508,7 +536,7 @@ function transferErrorPage(code, message) {
                   <div class="imds-field-control">
                     <input type="text" id=":partCode:" class="imds-textbox" value="" />
                   </div>
-                  <span class="imds-error-text" for=":partCode:" style="display:none;"></span>
+                  <span class="imds-error-text" for=":partCode:" id="error-partCode" style="display:none;"></span>
                 </div>
               </div>
             </div>
@@ -580,25 +608,25 @@ function transferErrorPage(code, message) {
           </div>
         </section>
       </div>
-      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+      <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
         <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">申请</button>
         <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">临时保存</button>
       </div>
-    </main>
-  </div>
-</imart>
+    </imart>
 
-<!-- 工作流页面跳转用表单 -->
-<imart type="tag" tagname="form" id="imw-back-form" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
-  <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
-</imart>
+    <!-- 工作流页面跳转用表单 -->
+    <imart type="tag" tagname="form" id="imw-back-form" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
+      <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
+    </imart>
+  </main>
+</div>
 ```
 
 ---
 
 ## 可用模板
 
-- **申请画面**：[assets/simple-apply.md](assets/simple-apply.md)
+- **申请画面**：[simple-apply-screen.md](simple-apply-screen.md)
   - IM-Workflow 的申请画面（使用 workflowOpenPage 标签）
   - 工作流参数的传递模式
   - 表单内的输入项目传递给动作处理的 `userParameter`
@@ -615,17 +643,21 @@ function transferErrorPage(code, message) {
   - 处理模态方式（`showTemporarySave`）在内部自动采番，但 **workflowOpenPage 方式没有自动采番**，因此在 `init` 中如 `request['imwUserDataId'] || Identifier.get()` 这样采番。
   - 若不采番，新规临时保存时键保持为空，即使在申请画面重新显示也无法恢复输入内容。
 - **不得在 `<imart type="workflowOpenPage">` 标签上添加 `id` 属性**。
-  - `workflowOpenPage` 标签不支持 `id` 属性，生成的 `<form>` 元素不会附 `id`。`document.getElementById('workflowOpenPageForm')` 返回 `null`
+  - 生成的 `<form>` 元素的 `id` 属性由标签自动添加，因此不要在标签上指定 `id` 属性
   - 从 JS 引用表单元素时，使用 `name` 属性，通过 `document.forms['workflowOpenPageForm']` 访问
 - **不得在 `workflowOpenPage` 表单内的输入字段添加 `name` 属性**。
   - 表单内存在 `<input type="hidden" name="vendorId">` 和 `<select name="vendorId">` 等相同 `name` 时，表单提交时 `userParam.vendorId` 变成数组（NativeArray），在动作处理中产生 `Cannot convert NativeArray` 错误。
   - 从输入字段（`select`、`input[type=text]`、`input[type=number]`、`textarea`）中去掉 `name`，申请按钮按下时通过 JS 将值复制到 hidden 字段。
   - **单选按钮**分组需要 `name`，但要与 hidden 字段使用不同名称（例：输入用 `name="urgencyTypeInput"` / hidden `name="urgencyType"`）
+- **将 `<imart type="workflowOpenPage">` 置于 `<main class="pgstyle-layout-main">` 的正下方，并在其内侧放置内容区域（`<div class="imds-form">`）和页脚（`pgstyle-layout-footer`）**。
+  - 该标签在运行时输出 `<form>`，若在其内侧编写 `<form class="imds-form">` 会导致表单嵌套，HTML5 解析器会忽略内侧的 `<form>` 开始标签（`imds-form` 类也不会被应用）。因此内容区域使用 `div.imds-form`
+  - 根 `div.imds-container.pgstyle-layout-container` 与 `jssp-imds-theme` 的 `assets/imds-form-page.md` 一样置于最外侧，并通过 `.pgstyle-layout-main > form { display: contents; }` 使标签输出的 `<form>` 在布局上透明（以固定头部和页脚，仅使内容区域滚动）
+  - 返回用表单（`imw-back-form`）也置于根 `div` 之下（`<main>` 内）
 - **`<imart>` 标签不存在 `filter` 属性**。
   - 要在 HTML 中显示 JSON 内的个别值（用户名、部门名等），请放置 `<span id="..."></span>`，并在 JavaScript 的 `initializeView` 中用 `element.textContent = result.xxx` 进行设置。
   - `<imart type="string" value=$data filter="json:result.xxx" />` 这样的写法不起作用
 - **图标与文字并用的按钮**中，文字必须用 `<span class="imds-button-text">` 括起。直接放置文字节点会导致布局混乱（参考 imds-html-icon-button.md）
-- **仅图标的按钮**（无文字，如删除垃圾桶图标）使用普通大小。使用 `is-small` / `is-x-small` 会使图标过小而难以操作
+- **仅图标的按钮**（无文字，如删除垃圾桶图标）使用普通大小。使用 `is-small` / `is-x-small` 会使图标过小而难以操作。须附加表示操作内容的 `title` 属性（例：头部返回按钮 `title="返回"`）
 - 必填输入项目的标签必须附加必填标记（`imds-required-label-required` 类 + `data-required-label="必须"`）
 - 日期输入使用 `imuiCalendar`（必须指定 `floatable="true"`），而非 `<input type="date">`。不使用内联显示（未指定 `floatable`）
 - **验证的实现请遵守 `.agents/requirements/jssp-presentation-page/AGENTS.md` 的规范**（以下为主要规则）：
@@ -634,7 +666,7 @@ function transferErrorPage(code, message) {
   - `showValidationError` 通过 `errorElement.closest('.imds-field')` 获取父元素，末尾设置 `activeValidation = true`
   - 初次验证错误后，输入值变更时进行实时再验证（`activeValidation` 标志 + `input`/`change` 事件监听器）
   - 在入口点调用 `clearValidationError()`
-  - 为必填字段的 `imds-field` 标签附加 `for=":fieldName:"` 属性，并在其直下放置 `<span class="imds-error-text" for=":fieldName:" style="display:none;"></span>`
+  - 为必填字段的 `imds-field` 标签附加 `for=":fieldName:"` 属性，并在其直下放置 `<span class="imds-error-text" for=":fieldName:" id="error-fieldName" style="display:none;"></span>`
   - 按钮事件通过 `addEventListener` 注册，而非 `onclick` 属性
 - **imuiCalendar（altField）与实时再验证并用时的注意**：imuiCalendar 的 `altField` 通过 jQuery 的 `.val()` 直接设置 DOM 属性，原生 `change` 事件不触发。通过 `Object.defineProperty` 覆盖 `value` 属性的 setter，发出 `change` 事件：
   ```javascript

@@ -302,9 +302,8 @@ function sendJsonResponse(response, statusCode) {
  * File Download REST-API
  *
  * @file download_file.js
- * @description Receives the query parameter fileKey and returns the target
- *              file under public storage as binary content.
- *              On error, returns a JSON error response.
+ * @description Receives the query parameter fileKey and returns the target file under public storage
+ *              as binary content. On error, returns a JSON error response.
  */
 
 // ========================================
@@ -452,8 +451,7 @@ function sendJsonResponse(response, statusCode) {
  * File Upload / Download Test Screen
  *
  * @file file_upload_test.js
- * @description Test screen for verifying /sample_api/api/upload_file and
- *              /sample_api/api/download_file.
+ * @description Test screen for verifying /sample_api/api/upload_file and /sample_api/api/download_file.
  */
 
 let $title = 'File Upload / Download Test';
@@ -476,7 +474,8 @@ function init(request) {
 
 ## Test Screen Presentation Page (sample_api/view/file_upload_test.html)
 
-A sample that implements the flow: file selection → upload → fileKey display → automatically populate the download key field.
+A sample that implements the flow: select a file with the FileUpload component (drag & drop or the "Select File" button) → list the selected file → upload → show the result (fileKey, etc.) in a detail table → automatically populate the download key field.
+`input[type="file"]` is hidden with the `hidden` attribute, and clicking the "Select File" button calls its `click()`. Dropped files are received in the `drop` event.
 For downloads, use `fetch` to retrieve the response, convert it to a Blob, and save via `URL.createObjectURL`.
 This approach allows secure-token-protected GET downloads to work.
 
@@ -484,29 +483,6 @@ This approach allows secure-token-protected GET downloads to work.
 <imart type="head">
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <meta name="im_secure_token" content="<imart type="imSecureToken" mode="value" />">
-  <style>
-    .upload-result-card {
-      background-color: var(--imds-color-background-secondary, #f5f7fa);
-      border: 1px solid var(--imds-color-border, #d0d7de);
-      border-radius: 0.5em;
-      padding: 1em 1.5em;
-      margin-top: 1em;
-    }
-    .upload-result-card dt {
-      font-weight: bold;
-      margin-top: 0.5em;
-    }
-    .upload-result-card dd {
-      margin: 0.25em 0 0.75em 0;
-      word-break: break-all;
-    }
-    .file-upload-actions {
-      display: flex;
-      gap: 0.75em;
-      align-items: center;
-      margin-top: 0.5em;
-    }
-  </style>
   <!-- Scope $data via an IIFE instead of leaving it in the global scope -->
   <script>
   (function($data) {
@@ -514,12 +490,29 @@ This approach allows secure-token-protected GET downloads to work.
       const UPLOAD_API_PATH = 'sample_api/api/upload_file';
       const DOWNLOAD_API_PATH = 'sample_api/api/download_file';
 
+      // Currently selected file (updated by both the "Select File" button and drag & drop)
+      let selectedFile = null;
+
       function getSecureToken() {
         return document.querySelector('meta[name=im_secure_token]').content;
       }
 
       function getElement(id) {
         return document.getElementById(id);
+      }
+
+      function selectFile(file) {
+        selectedFile = file;
+        if (file) {
+          getElement('upload-file-name').textContent = file.name;
+          getElement('upload-file-size').textContent = String(file.size) + ' bytes';
+          getElement('upload-file-list').style.display = '';
+        } else {
+          getElement(':uploadFile:').value = '';
+          getElement('upload-file-name').textContent = '';
+          getElement('upload-file-size').textContent = '';
+          getElement('upload-file-list').style.display = 'none';
+        }
       }
 
       function showUploadResult(data) {
@@ -621,16 +614,42 @@ This approach allows secure-token-protected GET downloads to work.
         return true;
       }
 
+      // Open the hidden input[type=file] from the "Select File" button
+      getElement('upload-select-button').addEventListener('click', () => {
+        getElement(':uploadFile:').click();
+      });
+
+      getElement(':uploadFile:').addEventListener('change', () => {
+        const files = getElement(':uploadFile:').files;
+        if (files && files.length > 0) {
+          selectFile(files[0]);
+        }
+      });
+
+      // Drag & drop (drop does not fire unless the default action of dragover is prevented)
+      const dropArea = getElement('upload-drop-area');
+      dropArea.addEventListener('dragover', (event) => {
+        event.preventDefault();
+      });
+      dropArea.addEventListener('drop', (event) => {
+        event.preventDefault();
+        const files = event.dataTransfer ? event.dataTransfer.files : null;
+        if (files && files.length > 0) {
+          selectFile(files[0]);
+        }
+      });
+
+      getElement('upload-file-remove-button').addEventListener('click', () => {
+        selectFile(null);
+      });
+
       getElement('upload-button').addEventListener('click', () => {
-        const input = getElement(':uploadFile:');
-        const files = input.files;
-        if (!files || files.length === 0) {
+        if (!selectedFile) {
           imuiShowWarningMessage('Please select a file to upload.');
           return;
         }
-        const file = files[0];
         clearUploadResult();
-        uploadFile(file);
+        uploadFile(selectedFile);
       });
 
       getElement('download-button').addEventListener('click', () => {
@@ -668,39 +687,85 @@ This approach allows secure-token-protected GET downloads to work.
     <imart type="imSecureToken" />
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="upload-section-title">
-      <h2 id="upload-section-title" class="imds-mb-3">Upload</h2>
+      <h2 id="upload-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">Upload</h2>
       <div class="imds-field" for=":uploadFile:">
         <div class="imds-field-label">
           <label for=":uploadFile:" class="has-text-weight-bold">File</label>
         </div>
         <div class="imds-field-control">
-          <div class="file-upload-actions">
-            <input type="file" id=":uploadFile:" name="uploadFile" />
-            <button type="button" class="imds-button is-primary" id="upload-button">
-              <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></span>
-              <span class="imds-button-text">Upload</span>
-            </button>
+          <div class="imds-file-upload">
+            <div class="imds-file-upload-drop-area" id="upload-drop-area">
+              <input type="file" id=":uploadFile:" name="uploadFile" hidden />
+              <span class="imds-icon"><i class="fa-solid fa-file-arrow-up"></i></span>
+              <p class="imds-file-upload-message">Please drag & drop files here</p>
+              <p class="imds-file-upload-text">or</p>
+              <button type="button" class="imds-button is-outlined is-small is-primary" id="upload-select-button">
+                Select File
+              </button>
+            </div>
+          </div>
+          <!-- Selected (not yet uploaded) file. Shown by JavaScript when a file is selected -->
+          <div class="imds-file-upload-list" id="upload-file-list" style="display:none;">
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <span>
+                      <span class="imds-icon is-gray-light imds-file-upload-file-icon"><i class="fa-regular fa-file"></i></span>
+                      <span class="imds-file-upload-name" id="upload-file-name"></span>
+                    </span>
+                  </td>
+                  <td class="imds-file-upload-size"><span id="upload-file-size"></span></td>
+                  <td>
+                    <button type="button" class="imds-button is-ghost" id="upload-file-remove-button" title="Delete">
+                      <span class="imds-icon"><i class="fa-regular fa-circle-xmark"></i></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+        <span class="imds-help-text">Files up to 10MB (10485760 bytes) can be uploaded.</span>
+      </div>
+      <div class="imds-mt-2">
+        <button type="button" class="imds-button is-primary" id="upload-button" style="min-width: 8em;">
+          <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></span>
+          <span class="imds-button-text">Upload</span>
+        </button>
       </div>
 
-      <div id="upload-result" class="upload-result-card" style="display:none;" role="status" aria-live="polite">
-        <h3 class="imds-mb-2">Upload Result</h3>
-        <dl>
-          <dt>File Key (fileKey)</dt>
-          <dd id=":resultFileKey:"></dd>
-          <dt>Saved File Name</dt>
-          <dd id=":resultFileName:"></dd>
-          <dt>Original File Name</dt>
-          <dd id=":resultOriginalFileName:"></dd>
-          <dt>Size</dt>
-          <dd id=":resultSize:"></dd>
-        </dl>
+      <div id="upload-result" class="has-background-color-gray imds-border-1 imds-p-4 imds-mt-4" style="display:none;" role="status" aria-live="polite">
+        <h3 class="imds-heading is-size-4 has-text-weight-bold imds-mt-0">Upload Result</h3>
+        <div class="imds-table is-area-bordered is-bordered">
+          <div class="imds-table-inner">
+            <table>
+              <tbody>
+                <tr>
+                  <th style="width: 30%;"><span>File Key (fileKey)</span></th>
+                  <td><span id=":resultFileKey:" style="word-break: break-all;"></span></td>
+                </tr>
+                <tr>
+                  <th><span>Saved File Name</span></th>
+                  <td><span id=":resultFileName:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>Original File Name</span></th>
+                  <td><span id=":resultOriginalFileName:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>Size</span></th>
+                  <td><span id=":resultSize:"></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="download-section-title">
-      <h2 id="download-section-title" class="imds-mb-3">Download</h2>
+      <h2 id="download-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">Download</h2>
       <div class="imds-field" for=":downloadFileKey:">
         <div class="imds-field-label">
           <label for=":downloadFileKey:" class="has-text-weight-bold">File Key (fileKey)</label>
@@ -709,8 +774,8 @@ This approach allows secure-token-protected GET downloads to work.
           <input type="text" id=":downloadFileKey:" name="downloadFileKey" class="imds-textbox" placeholder="uploads/yyyymmdd_hhmmss_xxxxxxxx/filename.ext" />
         </div>
       </div>
-      <div class="file-upload-actions">
-        <button type="button" class="imds-button is-primary" id="download-button">
+      <div class="imds-mt-2">
+        <button type="button" class="imds-button is-primary" id="download-button" style="min-width: 8em;">
           <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i></span>
           <span class="imds-button-text">Download</span>
         </button>
@@ -723,6 +788,8 @@ This approach allows secure-token-protected GET downloads to work.
 ---
 
 ## Routing Configuration (sample_api.xml)
+
+The routing of both `file-upload-download-api.md` and `post-json-api.md` is defined in `sample_api.xml`. When using both in the same project, merge their `file-mapping` entries into the same `sample_api.xml`.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -761,8 +828,7 @@ For transfers, always use `reader.transferTo(writer, chunkSize)`. See `reference
 
 ### Preserving the Original File Name
 
-By **ensuring uniqueness via the directory** as in `uploads/{unique directory}/{safeFileName}`, the file name can preserve the sanitized original.
-The download response can return the original name via `Content-Disposition: attachment; filename="..."`, which gives users a natural download experience.
+By **ensuring uniqueness via the directory** as in `uploads/{unique directory}/{safeFileName}`, the file name can preserve the sanitized original. The download response can return the original name via `Content-Disposition: attachment; filename="..."`, which gives users a natural download experience.
 
 ### Download Error Response
 

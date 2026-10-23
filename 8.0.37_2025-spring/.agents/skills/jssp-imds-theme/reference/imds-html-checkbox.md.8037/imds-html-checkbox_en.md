@@ -71,5 +71,5 @@ Add a size class to `label.imds-checkbox`.
 
 - Write checkboxes in the structure `label.imds-checkbox > input[type="checkbox"] + span`
 - `disabled` and `checked` can be combined (e.g., checked and disabled)
-- When grouping multiple checkboxes, use `fieldset` and `legend`
+- Do not use `fieldset`/`legend` to group multiple checkboxes. Wrap them in `imds-field` (+ `imds-field-label`) and gather them in `div.imds-checkbox-group` (see `imds-html-checkbox-group.md` for details)
 - Control checked state changes with JavaScript
