@@ -44,6 +44,18 @@ node .agents/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 
 **注意:** これらのスクリプトは 1 回の呼び出しにつき 1 個のパス（ディレクトリまたは単一ファイル）のみ受け付ける。複数ファイルをまとめて検証したい場合は、個々のファイルを列挙せず共通の親ディレクトリを渡すこと（複数パスを渡すとエラーで停止する）。
 
+### imds 構造検証
+
+imds テーマの画面では、上記と同時に以下も実行し、出力をまとめて集める。ピュア HTML 等、imds 以外のテーマを明示指定された画面では実行しない（`<main>` が `imds-container` 外にあると `IMDS-CONTAINER-100` エラーになるため）。
+
+```bash
+node .agents/skills/jssp-imds-theme/scripts/validate-imds.js src/main/jssp/src/{機能名}/
+```
+
+- 検出内容: imds コンポーネントの親子関係・必須子孫クラス・付与先要素の誤り（`IMDS-<COMPONENT>-NNN`）、reference に記載のない `imds-*` クラス（`IMDS-UNKNOWN-001` 警告）。ルール一覧は `jssp-imds-theme` スキルの「検証対象のルール」を参照
+- 後述の「一括修正 → 1回だけ再検証」の再実行にも含める
+- 完了後の報告の表に「imds 構造」行を追加し、結果（X 件検出 → 修正済み / 0 件（クリーン））を記載する
+
 ### 検出パターン: validate-jssp-code.js（JSSP コード検証）
 
 - `db.select()` / `db.execute()` のパラメータが `DbParameter` でラップされていない
@@ -88,7 +100,7 @@ node .agents/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 
 ### ステップ 4-0: 自動検出済み項目のスキップ
 
-`post-generation-verification.md` の各項目のうち、「`validate-jssp-code.js` の `JSSP-XXX-NNN` が自動検出する」と明記されている項目は、**ステップ1が0件（クリーン）であれば再確認不要**。該当項目は以下（2026年時点の対応表、doc側の記載が優先）:
+`post-generation-verification.md` の各項目のうち、「`validate-jssp-code.js` の `JSSP-XXX-NNN` が自動検出する」と明記されている項目は、**ステップ1が0件（クリーン）であれば再確認不要**。該当項目は以下（doc側の記載が優先）:
 
 | 自動検出ルール | 対応する doc セクション |
 |---|---|
@@ -112,7 +124,7 @@ echo "[SQLファイル]"; find "$TARGET" -name "*.sql" | head -5
 echo "[DBアクセス]"; grep -rlE "db\.(select|execute)\(|executeByTemplate|fetchByTemplate" "$TARGET" --include=*.js
 echo "[Date変数パース]"; grep -rnE "new Date\([a-zA-Z_]" "$TARGET" --include=*.js
 echo "[imACMSearch]"; grep -rl "imACMSearch" "$TARGET" --include=*.html
-echo "[画面間パラメータ渡し]"; grep -rlE "location\.href.*\?|<a[^>]+href=\"[^\"]*\?" "$TARGET" --include=*.html
+echo "[画面間パラメータ渡し]"; grep -rlE "location\.href.*\?|<a[^>]+href=\"[^\"]*\?|setAttribute\(.href.,[^)]*\?|\.href *= *[^;]*\?" "$TARGET" --include=*.html
 echo "[IM-Workflow]"; find "$TARGET" -maxdepth 1 -type d -name workflow
 ```
 

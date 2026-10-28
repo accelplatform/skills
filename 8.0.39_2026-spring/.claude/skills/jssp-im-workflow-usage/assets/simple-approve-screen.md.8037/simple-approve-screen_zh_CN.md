@@ -257,14 +257,42 @@ function transferErrorPage(code, message) {
 <!-- 头部 -->
 <imart type="head">
   <!-- 标题 -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- 工作流画面跳转用 CSJS -->
   <imart type="workflowOpenPageCsjs" />
+  <!-- 用于控制各主题不同的内容显示区域高度和宽度的 CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- 表现页面的自定义样式 -->
   <style>
-    .button-spacing {
+    /* 布局控制样式 */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
+    }
+    /* workflowOpenPage 标签输出的 <form> 本身不生成盒子，使内侧的内容区域和页脚作为 pgstyle-layout-main 的 flex 项目进行布局 */
+    .pgstyle-layout-main > form {
+      display: contents;
     }
   </style>
   <!-- 表现页面的脚本 -->
@@ -306,43 +334,43 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- 工作流画面调用用表单 -->
-<imart type="workflowOpenPage"
-    name="workflowOpenPageForm"
-    method="POST"
-    target="_top"
-    imwAuthUserCode=$imwAuthUserCode
-    imwSystemMatterId=$imwSystemMatterId
-    imwUserDataId=$imwUserDataId
-    imwNodeId=$imwNodeId
-    imwApplyBaseDate=$imwApplyBaseDate
-    imwFlowId=$imwFlowId
-    imwCallOriginalParams=$imwCallOriginalParams
-    imwNextPagePath=$imwNextPagePath
-    imwNextScriptPath=$imwNextScriptPath
-    imwNextApplicationId=$imwNextApplicationId
-    imwNextServiceId=$imwNextServiceId>
+<!-- 页面整体容器（因会被放置在 intra-mart 主题的 imui-container 内部，所以不附加 id） -->
+<div class="imds-container pgstyle-layout-container">
+  <header class="imds-header">
+    <div class="imds-header-back-button">
+      <button type="button" id="imw-back-button" class="imds-button is-ghost is-large" title="返回">
+        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+      </button>
+    </div>
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+  </header>
+  <main class="pgstyle-layout-main">
+    <!-- 工作流画面调用用表单 -->
+    <imart type="workflowOpenPage"
+        name="workflowOpenPageForm"
+        method="POST"
+        target="_top"
+        imwAuthUserCode=$imwAuthUserCode
+        imwSystemMatterId=$imwSystemMatterId
+        imwUserDataId=$imwUserDataId
+        imwNodeId=$imwNodeId
+        imwApplyBaseDate=$imwApplyBaseDate
+        imwFlowId=$imwFlowId
+        imwCallOriginalParams=$imwCallOriginalParams
+        imwNextPagePath=$imwNextPagePath
+        imwNextScriptPath=$imwNextScriptPath
+        imwNextApplicationId=$imwNextApplicationId
+        imwNextServiceId=$imwNextServiceId>
 
-  <!-- 页面整体容器（因会被放置在 intra-mart 主题的 imui-container 内部，所以不附加 id） -->
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-back-button">
-        <button type="button" id="imw-back-button" class="imds-button is-ghost is-large">
-          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-        </button>
-      </div>
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-      </div>
-    </header>
-    <main>
-      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+      <div class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
         <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
           <h2 class="imds-heading is-bordered is-size-2 is-cyan">发注信息</h2>
           <div class="imds-field-container has-accent-color">
@@ -353,7 +381,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":partCode:" class="imds-text"></span>
+                    <span id=":partCode:"></span>
                   </div>
                 </div>
               </div>
@@ -365,7 +393,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":partName:" class="imds-text"></span>
+                    <span id=":partName:"></span>
                   </div>
                 </div>
               </div>
@@ -377,7 +405,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":unitPrice:" class="imds-text"></span>
+                    <span id=":unitPrice:"></span>
                   </div>
                 </div>
               </div>
@@ -389,7 +417,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":quantity:" class="imds-text"></span>
+                    <span id=":quantity:"></span>
                   </div>
                 </div>
               </div>
@@ -401,7 +429,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":totalAmount:" class="imds-text"></span>
+                    <span id=":totalAmount:"></span>
                   </div>
                 </div>
               </div>
@@ -418,7 +446,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":reason:" class="imds-text"></span>
+                    <span id=":reason:"></span>
                   </div>
                 </div>
               </div>
@@ -426,17 +454,17 @@ function transferErrorPage(code, message) {
           </div>
         </section>
       </div>
-      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+      <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
         <button type="button" id="process-button" class="imds-button is-primary" style="min-width: 8em;">处理</button>
       </div>
-    </main>
-  </div>
-</imart>
+    </imart>
 
-<!-- 工作流页面跳转用表单 -->
-<imart type="tag" tagname="form" name="imwBackForm" id="imwBackForm" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
-  <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
-</imart>
+    <!-- 工作流页面跳转用表单 -->
+    <imart type="tag" tagname="form" id="imw-back-form" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
+      <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
+    </imart>
+  </main>
+</div>
 ```
 
 ---
@@ -460,10 +488,11 @@ function transferErrorPage(code, message) {
 
 ## 可用模板
 
-- **审批画面**：[assets/simple-approve.md](assets/simple-approve.md)
+- **审批画面**：[simple-approve-screen.md](simple-approve-screen.md)
   - IM-Workflow 的审批画面（使用 workflowOpenPage 标签）
   - 以只读方式显示已申请数据
   - 处理按钮：`workflowOpenPage('4')`
+  - HTML 骨架（`<imart type="workflowOpenPage">` 的放置位置、`display: contents`）与 `simple-apply-screen.md` 的「生成时的注意事项」相同
 
 ### 生成时的指示示例
 

@@ -191,6 +191,52 @@ Accordion 是在不需要始终显示的区域保持折叠状态时使用的组�
 - `fa-solid fa-triangle-exclamation` - 警告
 - `fa-solid fa-circle-info` - 信息・补充
 
+### `is-outlined` + `imui-table`（显示详细信息・附迁移说明）
+
+用于将详细信息隐藏、仅在需要时查看的场景。在 `div.imds-accordion` 上添加 `is-outlined`，并在 `imds-accordion-content` 内放置 `table.imui-table`（旧主题的 imui 组件）的结构。
+
+> **迁移说明**: 计划将来将 `imui-table` 迁移为使用 `imds-table` 的方式。由于 `imds-table` 不完全支持本模式（使用 `th`/`td` 以表格形式显示项目名・值，并混用 `rowspan`/`colspan`），因此暂时提供与 `imui-table` 组合的示例。迁移到 `imds-table` 后，此 `imds-accordion is-outlined` 的结构本身仍可直接使用。
+
+```html
+<div class="imds-accordion is-outlined">
+  <input type="checkbox" id="todo-replace-:r6:" />
+  <label for="todo-replace-:r6:" class="imds-accordion-title">
+    <span class="imds-accordion-title-inner">
+      <span>工作流名称</span>
+      <span class="imds-accordion-caption">workflow-id</span>
+    </span>
+    <span class="imds-icon is-small imds-accordion-chevron"><i class="fa-solid fa-angle-down"></i></span>
+  </label>
+  <div class="imds-accordion-content">
+    <div class="imds-px-4 imds-pt-3 imds-pb-1">
+      <table class="imui-table">
+        <tbody>
+          <tr>
+            <th colspan="2"><label>应用程序名称</label></th>
+            <td>AccelStudio应用程序名称</td>
+          </tr>
+          <tr>
+            <th rowspan="2" class="wd-15"><label>工作流信息</label></th>
+            <th class="wd-15"><label>定义名称</label></th>
+            <td>工作流名称 （ ID: workflow-id ）</td>
+          </tr>
+          <tr>
+            <th><label>备注</label></th>
+            <td>
+              <p>
+                「工作流名称」的流程定义。
+                <br />
+                此流程定义为示例。
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+```
+
 ## 无障碍支持
 
 - 使 `input[type="checkbox"]` 与 `label` 的 `id` / `for` 属性匹配，以便通过点击进行开关操作

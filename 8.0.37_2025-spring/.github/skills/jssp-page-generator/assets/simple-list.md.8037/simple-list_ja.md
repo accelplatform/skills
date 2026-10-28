@@ -3,14 +3,18 @@
 ## 概要
 
 シンプルなテーブル一覧とページネーションを使用した画面構成のテンプレート。
-画面初期表示時はサーバ側で取得した値をプレゼンテーションページに表示し、テーブルの描画・ページ送りはクライアント側 JavaScript で行う。
-一覧の各行には編集リンクがあり、編集画面への遷移が可能。
+画面初期表示時はサーバ側で取得した値をプレゼンテーションページに表示し、テーブルの描画・検索キーワードによる絞り込み・ページ送りはクライアント側 JavaScript で行う。
+一覧の先頭列（商品名）は編集画面へのリンクになっている。データが 0 件の場合は空状態 UI を表示する。
+
+### imds テンプレートとの対応
+
+- 画面構成は `jssp-imds-theme` スキルの一覧画面テンプレート `assets/imds-list-page.md` に準拠する
 
 ## ファイル構成
 
 ```
-src/main/jssp/src/simple_list/view/
-  └── index.js              # ファンクションコンテナ
+src/main/jssp/src/sample/simple_list/view/
+  ├── index.js              # ファンクションコンテナ
   └── index.html            # プレゼンテーションページ
 
 src/main/conf/routing-jssp-config/
@@ -19,7 +23,7 @@ src/main/conf/routing-jssp-config/
 
 ---
 
-## ファンクションコンテナ（simple_list/view/index.js）
+## ファンクションコンテナ（sample/simple_list/view/index.js）
 
 ```javascript
 /**
@@ -148,17 +152,42 @@ function transferErrorPage(code, message) {
 
 ---
 
-## プレゼンテーションページ（simple_list/view/index.html）
+## プレゼンテーションページ（sample/simple_list/view/index.html）
 
 ```html
 <!-- ヘッダ -->
 <imart type="head">
   <!-- タイトル -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
+  <!-- テーマごとに異なるコンテンツ表示領域の高さ・幅を制御する CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- プレゼンテーションページの独自スタイル -->
   <style>
-    /* テーブル上部のエリアはフレックスで配置 */
-    .button-area {
+    /* レイアウト制御用スタイル */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
+      display: flex;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-table-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+    .pgstyle-toolbar {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -166,19 +195,10 @@ function transferErrorPage(code, message) {
       justify-content: space-between;
       gap: 0.5em 1em;
     }
-    /* TODO: 以下のテーブル用レイアウトは、用途によって適宜変更する */
-    #stock-table th,
-    #stock-table td {
-      white-space: nowrap;
-    }
-    #stock-table .col-remarks {
-      white-space: normal;
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .col-edit {
-      width: 4em;
+    /* 検索欄の幅（値は画面ごとに調整してよい） */
+    .pgstyle-toolbar > .imds-input-group {
+      max-width: 30em;
+      flex: 1 0 20em;
     }
   </style>
   <!-- プレゼンテーションページのスクリプト（$data をグローバル領域に置かず IIFE でスコープ化する） -->
@@ -187,10 +207,16 @@ function transferErrorPage(code, message) {
   document.addEventListener('DOMContentLoaded', () => {
     // 定数
     const STORAGE_KEY = 'product_stock_data';
-    const PAGE_SIZE = 10;
+    const COLUMN_COUNT = 6;
+    const RANGE_LENGTH = 3;
+    const RECORDS_PER_PAGE_OPTIONS = [100, 125, 150, 175, 200];
 
+    // 表示件数（初期値 100 件）
+    let pageSize = 100;
     // 現在のページ
     let currentPage = 1;
+    // 検索キーワード
+    let keyword = '';
 
     // セッションストレージにダミーデータを初期化
     function initializeData() {
@@ -205,175 +231,279 @@ function transferErrorPage(code, message) {
       return data ? JSON.parse(data) : [];
     }
 
-    // HTML エスケープ
-    function escapeHtml(str) {
-      let div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
+    // 検索キーワードで絞り込んだデータを取得（商品名・商品コード・倉庫番号・備考の部分一致）
+    function getFilteredData(allData) {
+      if (!keyword) {
+        return allData;
+      }
+      let lowerKeyword = keyword.toLowerCase();
+      return allData.filter((item) => {
+        return [item.productName, item.productCode, item.warehouseNumber, item.remarks].some((value) => {
+          return String(value || '').toLowerCase().indexOf(lowerKeyword) !== -1;
+        });
+      });
+    }
+
+    // テキストのみを持つセルを生成
+    function createTextCell(text, className) {
+      let td = document.createElement('td');
+      if (className) {
+        td.className = className;
+      }
+      let span = document.createElement('span');
+      span.textContent = text;
+      td.appendChild(span);
+      return td;
+    }
+
+    // データ行を生成（先頭列の商品名を編集画面へのリンクにする）
+    function createRow(item) {
+      let tr = document.createElement('tr');
+
+      // TODO: 編集画面（sample/simple_list/edit）を実装すること。productCode パラメータがあれば編集、なければ新規登録として扱う
+      let link = document.createElement('a');
+      link.textContent = item.productName;
+      link.setAttribute('href', 'sample/simple_list/edit?productCode=' + encodeURIComponent(item.productCode));
+      let linkSpan = document.createElement('span');
+      linkSpan.appendChild(link);
+      let linkCell = document.createElement('td');
+      linkCell.appendChild(linkSpan);
+      tr.appendChild(linkCell);
+
+      tr.appendChild(createTextCell(item.productCode));
+      tr.appendChild(createTextCell(Number(item.unitPrice).toLocaleString(), 'has-text-right'));
+      tr.appendChild(createTextCell(String(item.stockQuantity), 'has-text-right'));
+      tr.appendChild(createTextCell(item.warehouseNumber || ''));
+
+      // 備考は 1 行で省略表示し、全文は title で確認できるようにする
+      let remarksCell = createTextCell(item.remarks || '');
+      let remarksSpan = remarksCell.firstChild;
+      remarksSpan.className = 'imds-line-clamp-1';
+      remarksSpan.setAttribute('title', item.remarks || '');
+      tr.appendChild(remarksCell);
+
+      return tr;
+    }
+
+    // 検索結果 0 件の行を生成（テーブル内に配置する空状態 UI: is-small）
+    function createEmptyRow() {
+      let tr = document.createElement('tr');
+      let td = document.createElement('td');
+      td.setAttribute('colspan', String(COLUMN_COUNT));
+      td.innerHTML =
+        '<div class="imds-empty-state-container">' +
+          '<div class="imds-empty-state is-small">' +
+            '<div class="imds-empty-state-message-wrapper">' +
+              '<span class="imds-empty-state-icon">' +
+                '<span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>' +
+              '</span>' +
+              '<div class="imds-empty-state-message"><p class="imds-empty-state-message-title">該当するデータが見つかりませんでした。検索キーワードを見直してください。</p></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      tr.appendChild(td);
+      return tr;
+    }
+
+    // データ未登録時は操作エリア・テーブル・ページネーションを非表示にし、空状態 UI のみを表示する
+    function toggleNoDataState(hasData) {
+      document.getElementById('search-form').style.display = hasData ? '' : 'none';
+      document.getElementById('stock-table').style.display = hasData ? '' : 'none';
+      document.getElementById('no-data-state').style.display = hasData ? 'none' : '';
     }
 
     // テーブル描画
     function renderTable() {
       let allData = getAllData();
-      let totalItems = allData.length;
-      let totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+      let pagination = document.getElementById('pagination');
+
+      if (allData.length === 0) {
+        toggleNoDataState(false);
+        pagination.style.display = 'none';
+        return;
+      }
+      toggleNoDataState(true);
+
+      let filteredData = getFilteredData(allData);
+      let totalItems = filteredData.length;
+      let totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
       if (currentPage > totalPages) {
         currentPage = totalPages;
       }
 
-      let startIndex = (currentPage - 1) * PAGE_SIZE;
-      let endIndex = Math.min(startIndex + PAGE_SIZE, totalItems);
-      let pageData = allData.slice(startIndex, endIndex);
+      let startIndex = (currentPage - 1) * pageSize;
+      let endIndex = Math.min(startIndex + pageSize, totalItems);
+      let pageData = filteredData.slice(startIndex, endIndex);
 
       let tbody = document.getElementById('stock-table-body');
-      tbody.innerHTML = '';
+      tbody.textContent = '';
 
       if (pageData.length === 0) {
-        let tr = document.createElement('tr');
-        let td = document.createElement('td');
-        td.setAttribute('colspan', '7');
-        td.style.textAlign = 'center';
-        td.style.padding = '2em';
-        td.textContent = 'データがありません。';
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-      } else {
-        pageData.forEach((item) => {
-          let tr = document.createElement('tr');
-          tr.innerHTML =
-            '<td class="col-edit has-content-only">' +
-            '<button type="button" class="imds-button is-ghost is-small" data-edit-code="' + escapeHtml(item.productCode) + '">' +
-            '<span class="imds-icon"><i class="fa-regular fa-file-lines"></i></span></button></td>' +
-            '<td><span>' + escapeHtml(item.productCode) + '</span></td>' +
-            '<td><span>' + escapeHtml(item.productName) + '</span></td>' +
-            '<td class="has-text-right"><span>' + Number(item.unitPrice).toLocaleString() + '</span></td>' +
-            '<td class="has-text-right"><span>' + item.stockQuantity + '</span></td>' +
-            '<td><span>' + escapeHtml(item.warehouseNumber || '') + '</span></td>' +
-            '<td class="col-remarks"><span>' + escapeHtml(item.remarks || '') + '</span></td>';
-          tbody.appendChild(tr);
-        });
+        tbody.appendChild(createEmptyRow());
+        pagination.style.display = 'none';
+        return;
       }
 
-      // 編集ボタンイベント
-      tbody.querySelectorAll('[data-edit-code]').forEach((button) => {
-        button.addEventListener('click', () => {
-          location.href = 'product_stock/edit?productCode=' + encodeURIComponent(button.getAttribute('data-edit-code'));
-        });
+      pageData.forEach((item) => {
+        tbody.appendChild(createRow(item));
       });
 
+      pagination.style.display = '';
       renderPagination(totalPages, totalItems, startIndex + 1, endIndex);
     }
 
     // ページネーションのページ番号リストを算出
+    // 現在ページの前後 RANGE_LENGTH ページを表示し、1 ページ分だけの省略は行わない
     function getPageNumbers(current, total) {
       let pages = [];
-      let delta = 2;
 
-      for (let i = 1; i <= total; i++) {
-        if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+      if (total <= RANGE_LENGTH * 2 + 5) {
+        for (let i = 1; i <= total; i++) {
           pages.push(i);
-        } else if (pages[pages.length - 1]  !== '...') {
-          pages.push('...');
         }
+        return pages;
       }
 
+      let start = Math.max(Math.min(current - RANGE_LENGTH, total - RANGE_LENGTH * 2 - 2), 3);
+      let end = Math.min(Math.max(current + RANGE_LENGTH, RANGE_LENGTH * 2 + 3), total - 2);
+
+      pages.push(1);
+      pages.push(start > 3 ? '...' : 2);
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      pages.push(end < total - 2 ? '...' : total - 1);
+      pages.push(total);
+
       return pages;
+    }
+
+    // 前へ・次へボタンを生成
+    function createMoveButton(title, iconClass, disabled, targetPage) {
+      let button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'imds-button is-ghost';
+      button.title = title;
+      button.disabled = disabled;
+      button.innerHTML = '<span class="imds-icon"><i class="fa-solid ' + iconClass + '"></i></span>';
+      button.addEventListener('click', () => {
+        currentPage = targetPage;
+        renderTable();
+      });
+      return button;
+    }
+
+    // ページ番号ボタン（または省略記号）を生成
+    function createPageNumberItem(page) {
+      if (page === '...') {
+        let ellipsis = document.createElement('div');
+        ellipsis.className = 'imds-pagination-page-ellipsis';
+        ellipsis.innerHTML = '<span>…</span>';
+        return ellipsis;
+      }
+      let pageButton = document.createElement('button');
+      pageButton.type = 'button';
+      pageButton.className = 'imds-button ' + (page === currentPage ? 'is-primary' : 'is-ghost');
+      pageButton.textContent = String(page);
+      pageButton.addEventListener('click', () => {
+        if (page !== currentPage) {
+          currentPage = page;
+          renderTable();
+        }
+      });
+      return pageButton;
+    }
+
+    // ページ送りボタン群を生成
+    function createPaginationControls(totalPages) {
+      let controls = document.createElement('div');
+      controls.className = 'imds-pagination-controls';
+
+      // 前へボタン
+      controls.appendChild(createMoveButton('前へ', 'fa-angle-left', currentPage <= 1, currentPage - 1));
+
+      // ページ番号
+      let pageNumberContainer = document.createElement('div');
+      pageNumberContainer.className = 'imds-pagination-page-number';
+      getPageNumbers(currentPage, totalPages).forEach((page) => {
+        pageNumberContainer.appendChild(createPageNumberItem(page));
+      });
+      controls.appendChild(pageNumberContainer);
+
+      // 次へボタン
+      controls.appendChild(createMoveButton('次へ', 'fa-angle-right', currentPage >= totalPages, currentPage + 1));
+
+      return controls;
+    }
+
+    // オプション領域（表示件数 + 件数情報）を生成
+    function createPaginationOptions(totalItems, startNum, endNum) {
+      let options = document.createElement('div');
+      options.className = 'imds-pagination-options';
+
+      // 表示件数
+      let recordsPerPage = document.createElement('div');
+      recordsPerPage.className = 'imds-pagination-records-per-page';
+      let label = document.createElement('label');
+      label.setAttribute('for', 'records-per-page');
+      label.textContent = '表示件数';
+      recordsPerPage.appendChild(label);
+      let select = document.createElement('select');
+      select.id = 'records-per-page';
+      select.className = 'imds-select';
+      RECORDS_PER_PAGE_OPTIONS.forEach((value) => {
+        let option = document.createElement('option');
+        option.value = String(value);
+        option.textContent = String(value);
+        option.selected = (value === pageSize);
+        select.appendChild(option);
+      });
+      select.addEventListener('change', () => {
+        pageSize = Number(select.value);
+        currentPage = 1;
+        renderTable();
+      });
+      recordsPerPage.appendChild(select);
+      options.appendChild(recordsPerPage);
+
+      // 件数情報
+      let info = document.createElement('span');
+      info.textContent = startNum + ' - ' + endNum + ' / ' + totalItems;
+      options.appendChild(info);
+
+      return options;
     }
 
     // ページネーション描画
     function renderPagination(totalPages, totalItems, startNum, endNum) {
       let container = document.getElementById('pagination');
-      container.innerHTML = '';
-
-      if (totalItems === 0) {
-        return;
-      }
+      container.textContent = '';
 
       let nav = document.createElement('nav');
-      nav.className = 'imds-pagination';
-
-      // ページ送りボタン群
-      let controls = document.createElement('div');
-      controls.className = 'imds-pagination-controls';
-
-      // 前へボタン
-      let prevButton = document.createElement('button');
-      prevButton.type = 'button';
-      prevButton.className = 'imds-button is-ghost';
-      prevButton.title = '前へ';
-      prevButton.disabled = (currentPage <= 1);
-      prevButton.innerHTML = '<span class="imds-icon"><i class="fa-solid fa-angle-left"></i></span>';
-      prevButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-          currentPage--;
-          renderTable();
-        }
-      });
-      controls.appendChild(prevButton);
-
-      // ページ番号
-      let pageNumberContainer = document.createElement('div');
-      pageNumberContainer.className = 'imds-pagination-page-number';
-
-      let pageNumbers = getPageNumbers(currentPage, totalPages);
-      pageNumbers.forEach((page) => {
-        if (page === '...') {
-          let ellipsis = document.createElement('div');
-          ellipsis.className = 'imds-pagination-page-ellipsis';
-          ellipsis.innerHTML = '<span>…</span>';
-          pageNumberContainer.appendChild(ellipsis);
-        } else {
-          let pageButton = document.createElement('button');
-          pageButton.type = 'button';
-          pageButton.className = 'imds-button ' + (page === currentPage ? 'is-primary' : 'is-ghost');
-          pageButton.textContent = String(page);
-          pageButton.addEventListener('click', (function(p) {
-            return function() {
-              if (p !== currentPage) {
-                currentPage = p;
-                renderTable();
-              }
-            };
-          })(page));
-          pageNumberContainer.appendChild(pageButton);
-        }
-      });
-
-      controls.appendChild(pageNumberContainer);
-
-      // 次へボタン
-      let nextButton = document.createElement('button');
-      nextButton.type = 'button';
-      nextButton.className = 'imds-button is-ghost';
-      nextButton.title = '次へ';
-      nextButton.disabled = (currentPage >= totalPages);
-      nextButton.innerHTML = '<span class="imds-icon"><i class="fa-solid fa-angle-right"></i></span>';
-      nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-          currentPage++;
-          renderTable();
-        }
-      });
-      controls.appendChild(nextButton);
-
-      nav.appendChild(controls);
-
-      // 件数情報
-      let options = document.createElement('div');
-      options.className = 'imds-pagination-options';
-      let info = document.createElement('span');
-      info.textContent = startNum + ' - ' + endNum + ' / ' + totalItems;
-      options.appendChild(info);
-      nav.appendChild(options);
+      nav.className = 'imds-pagination is-small';
+      nav.appendChild(createPaginationControls(totalPages));
+      nav.appendChild(createPaginationOptions(totalItems, startNum, endNum));
 
       container.appendChild(nav);
     }
 
-    // 新規作成ボタン クリック時イベント
-    document.getElementById('create-button').addEventListener('click', () => {
+    // 新規作成画面へ遷移
+    function moveToCreate() {
       location.href = 'sample/simple_list/edit';
+    }
+
+    // 検索フォーム submit 時イベント（Enter キーと検索ボタンの経路を 1 本化する）
+    document.getElementById('search-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      keyword = document.getElementById(':searchKeywords:').value.trim();
+      currentPage = 1;
+      renderTable();
     });
+
+    // 新規作成ボタン クリック時イベント
+    document.getElementById('create-button').addEventListener('click', moveToCreate);
+    document.getElementById('no-data-create-button').addEventListener('click', moveToCreate);
 
     // エントリーポイント
     if ($data.error.code) {
@@ -388,7 +518,7 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <!-- ヘッダ -->
   <header class="imds-header">
     <div class="imds-header-icon">
@@ -403,38 +533,57 @@ function transferErrorPage(code, message) {
   </header>
 
   <!-- メインコンテンツ -->
-  <main>
-    <div class="imds-py-3">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
-        <div class="button-area imds-mb-3">
+  <main class="pgstyle-layout-main">
+    <div class="imds-px-3 imds-py-2 pgstyle-table-wrapper pgstyle-layout-content imds-scrollbar">
+      <!-- 操作エリア（検索欄 + 新規作成ボタン） -->
+      <form id="search-form" class="imds-form">
+        <div class="pgstyle-toolbar imds-mb-2">
           <div class="imds-input-group">
-            <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="検索キーワード">
-            <button type="button" title="検索" class="imds-button">
+            <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="検索キーワード" aria-label="検索キーワード">
+            <button type="submit" title="検索" class="imds-button is-outlined">
               <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
             </button>
           </div>
-          <button type="button" id="create-button" class="imds-button is-primary">新規作成</button>
+          <button type="button" id="create-button" class="imds-button is-primary" style="min-width: 8em;">新規作成</button>
         </div>
-        <div class="imds-table" id="stock-table">
-          <div class="imds-table-inner">
-            <table>
-              <thead>
-                <tr>
-                  <th class="col-edit has-text-centered"><span>編集</span></th>
-                  <th><span>商品コード</span></th>
-                  <th><span>商品名</span></th>
-                  <th><span>単価</span></th>
-                  <th><span>在庫数</span></th>
-                  <th><span>倉庫番号</span></th>
-                  <th><span>備考</span></th>
-                </tr>
-              </thead>
-              <tbody id="stock-table-body"></tbody>
-            </table>
+      </form>
+      <!-- 一覧テーブル -->
+      <div class="imds-table is-area-bordered is-bordered is-sticky is-narrow is-hoverable" id="stock-table" style="height: 100%">
+        <div class="imds-table-inner">
+          <table>
+            <thead>
+              <tr>
+                <th><span>商品名</span></th>
+                <th><span>商品コード</span></th>
+                <th><span>単価</span></th>
+                <th><span>在庫数</span></th>
+                <th><span>倉庫番号</span></th>
+                <th><span>備考</span></th>
+              </tr>
+            </thead>
+            <tbody id="stock-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- ページネーション -->
+      <div class="imds-mt-2" id="pagination"></div>
+      <!-- データ未登録時の空状態 UI（データが 1 件も無い場合のみ表示） -->
+      <div class="imds-empty-state-container" id="no-data-state" style="display: none;">
+        <div class="imds-empty-state">
+          <div class="imds-empty-state-message-wrapper">
+            <span class="imds-empty-state-icon">
+              <span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>
+            </span>
+            <div class="imds-empty-state-message">
+              <p class="imds-empty-state-message-title">まだデータが登録されていません</p>
+              <p class="imds-empty-state-message-content">新規作成ボタンからデータを登録してください。</p>
+            </div>
+          </div>
+          <div class="imds-empty-state-content imds-mt-7">
+            <button type="button" id="no-data-create-button" class="imds-button is-large is-primary">新規作成</button>
           </div>
         </div>
-        <div class="imds-py-3" id="pagination"></div>
-      </section>
+      </div>
     </div>
   </main>
 </div>
@@ -465,9 +614,11 @@ function transferErrorPage(code, message) {
 
 - **シンプル一覧**: [assets/simple-list.md](assets/simple-list.md)
   - intra-mart Design System（imds）のテーマを適用した画面
-  - テーブル一覧表示とページネーション
-  - 検索キーワード入力と新規作成ボタン
-  - 各行に編集リンクを配置
+  - テーブル一覧表示とページネーション（表示件数選択付き）
+  - 検索キーワードと新規作成ボタン（検索は `<form>` の submit で実行し、初期表示で取得済みの一覧をクライアント側で絞り込む）
+  - 先頭列（商品名）に編集画面へのリンクを配置
+  - データ未登録時・検索結果 0 件時の空状態 UI
+  - データ量が多くクライアント側で全件を保持できない場合は、検索・ページ送りをサーバサイド（API での再取得）に置き換える
 
 ### 生成時の指示例
 

@@ -385,8 +385,8 @@ function init(request) {
 
 ## テスト画面 プレゼンテーションページ（sample_api/view/post_json_test.html）
 
-リクエストボディ用のテキストエリアと、レスポンス表示用のテキストエリアを並べた検証画面。
-「サンプル読み込み」で動作確認用 JSON を流し込み、「送信」で `fetch` し、HTTP ステータス・受信タイプ・サマリ・レスポンスボディを表示する。
+リクエストボディ用のテキストエリアと、レスポンス表示領域（HTTP ステータス・受信タイプ・サマリの詳細テーブルと、レスポンスボディの参照専用テキストエリア）を縦に配置した検証画面。
+「サンプル読み込み」で動作確認用 JSON を流し込み、「送信」で `fetch` してレスポンスを表示する。
 
 ```html
 <imart type="head">
@@ -397,40 +397,6 @@ function init(request) {
       display: flex;
       gap: 0.75em;
       align-items: center;
-      margin-top: 0.5em;
-    }
-    .post-json-response {
-      background-color: var(--imds-color-background-secondary, #f5f7fa);
-      border: 1px solid var(--imds-color-border, #d0d7de);
-      border-radius: 0.5em;
-      padding: 1em 1.5em;
-      margin-top: 1em;
-    }
-    .post-json-response-meta {
-      display: flex;
-      gap: 1.5em;
-      flex-wrap: wrap;
-      margin-bottom: 0.75em;
-      font-size: 0.875em;
-    }
-    .post-json-response-meta dt {
-      font-weight: bold;
-      display: inline;
-      margin-right: 0.5em;
-    }
-    .post-json-response-meta dd {
-      display: inline;
-      margin: 0;
-    }
-    .post-json-response-body {
-      width: 100%;
-      min-height: 12em;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.875em;
-    }
-    .post-json-request-body {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.875em;
     }
   </style>
   <!-- $data をグローバル領域に置かず IIFE でスコープ化する -->
@@ -568,7 +534,7 @@ function init(request) {
     <imart type="imSecureToken" />
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="request-section-title">
-      <h2 id="request-section-title" class="imds-mb-3">リクエスト</h2>
+      <h2 id="request-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">リクエスト</h2>
       <div class="imds-field" for=":requestBody:">
         <div class="imds-field-label">
           <label for=":requestBody:" class="has-text-weight-bold">JSON ボディ</label>
@@ -577,13 +543,14 @@ function init(request) {
           <textarea
             id=":requestBody:"
             name="requestBody"
-            class="imds-textarea post-json-request-body"
+            class="imds-textarea is-small"
             rows="10"
+            style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"
             placeholder='{ "key": "value" }'></textarea>
-          <span class="imds-help-text">POST メソッドで Content-Type: application/json として送信されます。</span>
         </div>
+        <span class="imds-help-text">POST メソッドで Content-Type: application/json として送信されます。</span>
       </div>
-      <div class="post-json-actions">
+      <div class="post-json-actions imds-mt-2">
         <button type="button" class="imds-button is-primary" id="send-button">
           <span class="imds-icon"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></span>
           <span class="imds-button-text">送信</span>
@@ -598,23 +565,29 @@ function init(request) {
     </section>
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="response-section-title">
-      <h2 id="response-section-title" class="imds-mb-3">レスポンス</h2>
-      <div id="post-json-response" class="post-json-response" style="display:none;" role="status" aria-live="polite">
-        <dl class="post-json-response-meta">
-          <div>
-            <dt>HTTP ステータス</dt>
-            <dd id=":responseStatus:"></dd>
+      <h2 id="response-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">レスポンス</h2>
+      <div id="post-json-response" class="has-background-color-gray imds-border-1 imds-p-4" style="display:none;" role="status" aria-live="polite">
+        <div class="imds-table is-area-bordered is-bordered is-narrow" style="width: fit-content;">
+          <div class="imds-table-inner">
+            <table>
+              <tbody>
+                <tr>
+                  <th><span>HTTP ステータス</span></th>
+                  <td><span id=":responseStatus:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>受信タイプ</span></th>
+                  <td><span id=":responseValueType:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>サマリ</span></th>
+                  <td><span id=":responseSummary:"></span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div>
-            <dt>受信タイプ</dt>
-            <dd id=":responseValueType:"></dd>
-          </div>
-          <div>
-            <dt>サマリ</dt>
-            <dd id=":responseSummary:"></dd>
-          </div>
-        </dl>
-        <div class="imds-field" for=":responseBody:">
+        </div>
+        <div class="imds-field imds-mt-4" for=":responseBody:">
           <div class="imds-field-label">
             <label for=":responseBody:" class="has-text-weight-bold">レスポンスボディ</label>
           </div>
@@ -622,8 +595,9 @@ function init(request) {
             <textarea
               id=":responseBody:"
               name="responseBody"
-              class="imds-textarea post-json-response-body"
+              class="imds-textarea is-small is-static"
               rows="15"
+              style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"
               readonly></textarea>
           </div>
         </div>
@@ -636,6 +610,8 @@ function init(request) {
 ---
 
 ## ルーティング設定（sample_api.xml）
+
+`file-upload-download-api.md` / `post-json-api.md` のルーティングはいずれも `sample_api.xml` に定義する。両方を同じプロジェクトで使う場合は、`file-mapping` を同じ `sample_api.xml` にマージすること。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

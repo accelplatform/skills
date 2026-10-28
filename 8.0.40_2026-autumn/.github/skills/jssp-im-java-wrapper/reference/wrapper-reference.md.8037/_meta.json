@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "wrapper-reference_ja.md",
+      "to": "wrapper-reference.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "wrapper-reference_zh_CN.md",
+      "to": "wrapper-reference.md"
+    },
+    {
+      "from": "wrapper-reference_en.md",
+      "to": "wrapper-reference.md"
+    }
+  ]
+}

@@ -126,6 +126,21 @@ Add `imds-dialog-title-bread-crumbs-warp` before `imds-dialog-title` inside `imd
 </div>
 ```
 
+### No Title
+
+A pattern without a title. Do not place `imds-dialog-title-wrapper` inside `imds-dialog-header`; keep only the close button.
+
+```html
+<div class="imds-dialog-header">
+  <button
+    type="button"
+    class="imds-button is-ghost is-small imds-dialog-header-close"
+    aria-label="Close">
+    <span class="imds-icon"><i class="fa-solid fa-times"></i></span>
+  </button>
+</div>
+```
+
 ### `<div>` Root (Non-Modal / Special Use Only)
 
 Use `<div>` as the root **only** when modalization (blocking background interaction) is **not needed**, or in special environments where the `<dialog>` element cannot be used. Treat it as a **sub-option**, not the basic pattern.
@@ -166,3 +181,37 @@ Implementing these correctly is difficult, and missing pieces become bug sources
 - Padding in the content area is adjusted with `imds-p-4`. Can be changed to fit the content
 - Adding `imds-scrollbar` displays a scrollbar when content overflows
 - The breadcrumb class name is `imds-dialog-title-bread-crumbs-warp` (this is the official class name, not a typo)
+
+### Recommended Size
+
+When specifying a fixed size (px), the following are the recommended values so the dialog displays properly even when the screen is reduced to 1280px × 720px.
+
+- `width`: 1080px or less
+- `height`: 520px or less
+
+For dialogs that should be as large as the screen allows, such as list-selection dialogs, specify `width` / `height` in %. If the dialog becomes too large with % values, also set `max-width` / `max-height` as upper limits.
+
+### Matching Trigger Button and Title Names
+
+Make the label of the trigger button that opens the dialog match the title displayed in the dialog's `imds-dialog-title`.
+
+- For registration/edit dialogs, set the title in the "feature name - operation name" form to make the dialog's purpose clear (e.g., trigger button "Create Category" → title "Create Category").
+
+```html
+<!-- Trigger button -->
+<button type="button" class="imds-button is-primary" onclick="showDialog('category-create-dialog')">
+  Create Category
+</button>
+
+<!-- Dialog title (match the button label) -->
+<div class="imds-dialog-title"><h1 title="Create Category">Create Category</h1></div>
+```
+
+### No Stacked Dialogs
+
+As a rule, avoid displaying a dialog on top of another dialog. It becomes unclear which dialog an operation applies to, leading to overlooked content and mistaken operations.
+
+- Ways to avoid stacked dialogs:
+  - Consider using a [Popover](imds-html-popover.md) instead of a dialog (e.g., search using a Popover).
+  - When the dialog needs to switch views, consider switching in a wizard format ([Stepper](imds-html-stepper.md), etc.).
+- When stacking dialogs is unavoidable (such as a dialog for selecting specific information), clearly indicate the target and content of the operation using the title or breadcrumbs (`imds-dialog-title-bread-crumbs-warp`).

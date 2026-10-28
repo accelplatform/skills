@@ -23,5 +23,28 @@
       "from": "jssp-presentation-page_en.md",
       "to": "jssp-presentation-page.md"
     }
+  ],
+  "replacements": [
+    {
+      "type": "section",
+      "heading": "imds テーマ（既定）",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "imds Theme (Default)",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "imds 主题（默认）",
+      "condition": {
+        "feature": "imds"
+      }
+    }
   ]
 }

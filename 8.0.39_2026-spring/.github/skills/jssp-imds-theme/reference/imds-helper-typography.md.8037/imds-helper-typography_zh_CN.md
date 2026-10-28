@@ -3,39 +3,39 @@ paths:
   - "src/main/jssp/**/*.html"
 ---
 
-# Typography（文字表現ユーティリティ）
+# Typography（文字表现工具类）
 
-## 基本情報
+## 基本信息
 
-Typography は、フォントサイズ・太さ・スタイル等のプロパティに加え、`text-align` や `text-transform` によってテキストの見た目や配置を制御する imds ヘルパークラス群である。これらは imds のユーティリティクラスであり、`imds-textbox` や `imds-heading` 等のコンポーネント固有クラスと組み合わせて使う。単独のコンポーネントとして使うものではない。
+Typography 是除字体大小、粗细、样式等属性外，还通过 `text-align` 或 `text-transform` 控制文本外观与位置的 imds 辅助类组。它们是 imds 的工具类，与 `imds-textbox` 或 `imds-heading` 等组件专用类组合使用。不作为独立组件使用。
 
-- 抽出元: `uiux-share/helper/Typography.md`
+- 提取来源: `uiux-share/helper/Typography.md`
 
 ## CSS Classes Reference
 
-| クラス名 | 用途 | 値（Property: Value） |
+| 类名 | 用途 | 值（Property: Value） |
 |----------|------|----------------------|
-| `is-capitalized` | 先頭文字のみを大文字に変換 | `text-transform: capitalize;` |
-| `is-lowercase` | 小文字に変換 | `text-transform: lowercase;` |
-| `is-uppercase` | 大文字に変換 | `text-transform: uppercase;` |
-| `is-italic` | イタリック体にする | `font-style: italic;` |
-| `is-underlined` | 下線を付ける | `text-decoration: underline;` |
-| `has-text-weight-normal` | 標準の太さ | `font-weight: 400;` |
-| `has-text-weight-bold` | 太字 | `font-weight: 700;` |
-| `has-text-centered` | 中央揃え | `text-align: center;` |
-| `has-text-justified` | 均等割り付け | `text-align: justify;` |
-| `has-text-start` | 開始位置揃え | `text-align: start;` |
-| `has-text-end` | 終了位置揃え | `text-align: end;` |
+| `is-capitalized` | 仅将首字母转换为大写 | `text-transform: capitalize;` |
+| `is-lowercase` | 转换为小写 | `text-transform: lowercase;` |
+| `is-uppercase` | 转换为大写 | `text-transform: uppercase;` |
+| `is-italic` | 设为斜体 | `font-style: italic;` |
+| `is-underlined` | 添加下划线 | `text-decoration: underline;` |
+| `has-text-weight-normal` | 标准粗细 | `font-weight: 400;` |
+| `has-text-weight-bold` | 粗体 | `font-weight: 700;` |
+| `has-text-centered` | 居中对齐 | `text-align: center;` |
+| `has-text-justified` | 两端对齐 | `text-align: justify;` |
+| `has-text-start` | 起始位置对齐 | `text-align: start;` |
+| `has-text-end` | 结束位置对齐 | `text-align: end;` |
 
-## 使用例
+## 使用示例
 
-### 購入金額入力欄（右揃え）
+### 购买金额输入框（右对齐）
 
-Textbox に `has-text-end` を付与し、入力値を右揃えにする。
+为 Textbox 添加 `has-text-end`，使输入值右对齐。
 
 ```html
 <div class="imds-field">
-  <div class="imds-field-label"><label for=":r0:">購入金額</label></div>
+  <div class="imds-field-label"><label for=":r0:">购买金额</label></div>
   <div class="imds-field-control">
     <input
       type="text"
@@ -47,21 +47,21 @@ Textbox に `has-text-end` を付与し、入力値を右揃えにする。
 </div>
 ```
 
-### 太字での強調
+### 以粗体强调
 
 ```html
-<span class="has-text-weight-bold">重要事項</span>
+<span class="has-text-weight-bold">重要事项</span>
 ```
 
-### 中央揃えの見出し
+### 居中对齐的标题
 
 ```html
-<h2 class="imds-heading is-size-4 has-text-centered">セクション見出し</h2>
+<h2 class="imds-heading is-size-4 has-text-centered">区块标题</h2>
 ```
 
-## 実装上の注意
+## 实现注意事项
 
-- 同一要素に複数の Typography クラスを付与すると競合や予期せぬ表示になることがあるため、必要最小限に留める。
-- `has-text-weight-*` はフォントによって見た目が変わるため、主要フォントでの表示確認を行う。
-- `is-capitalized` / `is-lowercase` / `is-uppercase` はアルファベットにのみ有効であり、日本語テキストへの使用は避ける。
-- `is-italic` はフォントによっては効果が現れず、イタリック字形を持たないフォント（メイリオ等）では効果が出ないため、主要フォントでの表示確認を行う。長文や日本語テキストでは可読性が下がるため、使用は最小限に留める。
+- 为同一元素添加多个 Typography 类可能导致冲突或意外显示，因此应控制在必要的最小限度。
+- `has-text-weight-*` 的外观因字体而异，应确认在主要字体下的显示。
+- `is-capitalized` / `is-lowercase` / `is-uppercase` 仅对字母有效，避免用于日文文本。
+- `is-italic` 在某些字体下不生效，在不具备斜体字形的字体（Meiryo 等）中没有效果，因此应确认在主要字体下的显示。对于长文本或日文文本会降低可读性，因此应尽量少用。

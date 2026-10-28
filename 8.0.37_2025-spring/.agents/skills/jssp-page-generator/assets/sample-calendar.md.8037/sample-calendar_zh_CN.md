@@ -9,11 +9,16 @@
 - 在日历单元格中显示节假日/休假日名称（支持 i18n 区域设置）
 - 以图例形式显示每周各天的颜色设置
 
+### 与 imds 模板的对应关系
+
+- 页面骨架遵循 `jssp-imds-theme` 技能的列表画面模板 `assets/imds-list-page.md` 的布局控制模式
+- 单元格背景的装饰色类（`is-gray` / `is-red`）参见 `jssp-imds-theme` 技能的 `reference/imds-html-table.md`
+
 ## 文件结构
 
 ```
-src/main/jssp/src/sample_calendar/view/
-  └── index.js              # 函数容器
+src/main/jssp/src/sample/sample_calendar/view/
+  ├── index.js              # 函数容器
   └── index.html            # 展示页面
 
 src/main/conf/routing-jssp-config/
@@ -22,7 +27,7 @@ src/main/conf/routing-jssp-config/
 
 ---
 
-## 函数容器（sample_calendar/view/index.js）
+## 函数容器（sample/sample_calendar/view/index.js）
 
 ```javascript
 /**
@@ -269,15 +274,15 @@ function getMonthDays(calendarId, year, month, firstDayOfWeek, today, locale) {
 
   // 表格开始日：追溯到 firstDayOfWeek 对应的上月日期
   let firstOfMonth = new Date(year, month - 1, 1);
-  let startDow = firstOfMonth.getDay();
-  let startOffset = (startDow - firstDayOfWeek + 7) % 7;
+  let startDayOfWeek = firstOfMonth.getDay();
+  let startOffset = (startDayOfWeek - firstDayOfWeek + 7) % 7;
   let gridStart = new Date(year, month - 1, 1 - startOffset);
 
   // 表格结束日：延伸到最后一个星期（firstDayOfWeek 的前一天）的下月日期
   let lastOfMonth = new Date(year, month, 0);
-  let endDow = lastOfMonth.getDay();
+  let endDayOfWeek = lastOfMonth.getDay();
   let lastDayOfWeek = (firstDayOfWeek + 6) % 7;
-  let endOffset = (lastDayOfWeek - endDow + 7) % 7;
+  let endOffset = (lastDayOfWeek - endDayOfWeek + 7) % 7;
   let gridEnd = new Date(year, month - 1, lastOfMonth.getDate() + endOffset);
 
   let result = manager.getDayInfoSummariesOnTerm(calendarId, gridStart, gridEnd);
@@ -292,21 +297,21 @@ function getMonthDays(calendarId, year, month, firstDayOfWeek, today, locale) {
   let dayList = [];
   for (let i = 0; i < result.data.length; i++) {
     let summary = result.data[i];
-    let d = summary.currentDate;
-    let dYear = d.getFullYear();
-    let dMonth = d.getMonth() + 1;
-    let dDay = d.getDate();
+    let currentDate = summary.currentDate;
+    let dateYear = currentDate.getFullYear();
+    let dateMonth = currentDate.getMonth() + 1;
+    let dateDay = currentDate.getDate();
 
     // 从 dayInfos 提取支持 i18n 的名称，以 dayInfoNames 作为备用
     let dayInfoNames = resolveDayInfoNames(summary, locale);
 
     dayList.push({
-      year: dYear,
-      month: dMonth,
-      day: dDay,
-      dayOfWeek: d.getDay(),
-      isCurrentMonth: (dYear === year && dMonth === month),
-      isToday: (dYear === todayYear && dMonth === todayMonth && dDay === todayDay),
+      year: dateYear,
+      month: dateMonth,
+      day: dateDay,
+      dayOfWeek: currentDate.getDay(),
+      isCurrentMonth: (dateYear === year && dateMonth === month),
+      isToday: (dateYear === todayYear && dateMonth === todayMonth && dateDay === todayDay),
       isHoliday: summary.isHoliday,
       color: summary.color || '',
       dayInfoNames: dayInfoNames
@@ -372,86 +377,54 @@ function transferErrorPage(code, message) {
 
 ---
 
-## 展示页面（sample_calendar/view/index.html）
+## 展示页面（sample/sample_calendar/view/index.html）
 
 ```html
 <!-- 页头 -->
 <imart type="head">
   <!-- 标题 -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
-  <!-- 样式 -->
+  <!-- 用于控制各主题不同的内容显示区域高度和宽度的 CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
+  <!-- 呈现页面自定义样式 -->
   <style>
-    /* ===== 日历导航 ===== */
-    .calendar-nav {
+    /* 布局控制样式 */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      align-items: center;
-      gap: 0.75em;
-      margin-bottom: 1em;
     }
-    .calendar-nav-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      min-width: 9em;
-      text-align: center;
-      letter-spacing: 0.03em;
-      color: var(--imds-color-text, #1a1a2e);
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
     }
-    /* ===== 日历名称徽章 ===== */
-    .calendar-name-badge {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 500;
-      padding: 0.25em 0.9em;
-      border-radius: 2em;
-      background: var(--imds-color-primary, #005BAC);
-      color: #fff;
-      margin-left: 0.6em;
-      vertical-align: middle;
-      letter-spacing: 0.04em;
+    .pgstyle-table-wrapper {
+      display: flex;
+      flex-direction: column;
     }
-    /* ===== 日历表格 ===== */
-    .calendar-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
+    /* 月度日历表格（imds 没有对应组件，因此仅日期单元格的绘制使用自定义样式） */
+    #calendar-table {
       table-layout: fixed;
-      /* 从视口高度减去页头/导航/图例的高度，使表格充满画面 */
-      height: calc(100vh - 160px);
-      min-height: 400px;
+      height: 100%;
     }
-    .calendar-table th {
-      padding: 0.65em 0;
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      letter-spacing: 0.06em;
-      background: #f0f4f8;
-      border-bottom: 2px solid var(--imds-color-primary, #005BAC);
-    }
-    .calendar-table td {
+    #calendar-table td {
       vertical-align: top;
-      border-right: 1px solid var(--imds-color-border, #e4e8ed);
-      border-bottom: 1px solid var(--imds-color-border, #e4e8ed);
       /* height: 1% 使表格高度按行数均等分配 */
       height: 1%;
-      min-height: 4em;
-      padding: 0.5em 0.6em;
-      cursor: default;
-      transition: background 0.12s ease;
-    }
-    .calendar-table td:first-child {
-      border-left: 1px solid var(--imds-color-border, #e4e8ed);
-    }
-    .calendar-table tbody tr:last-child td {
-      border-bottom: 2px solid var(--imds-color-border, #e4e8ed);
-    }
-    .calendar-table td:not(.is-other-month):hover {
-      background: rgba(0, 91, 172, 0.05);
     }
     /* 日期数字 */
     .calendar-cell-day {
       font-size: 2rem;
-      font-weight: 600;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -459,56 +432,27 @@ function transferErrorPage(code, message) {
       height: 1.4em;
       border-radius: 50%;
       line-height: 1;
-      transition: background 0.12s ease, color 0.12s ease;
     }
-    .calendar-cell-day.is-today {
-      background: var(--imds-color-primary, #005BAC);
+    /* 今天的日期（圆形背景颜色可按画面调整） */
+    .calendar-cell-day-today {
+      background: #005BAC;
       color: #fff;
+    }
+    /* 非当月日期的文字以淡色显示 */
+    .calendar-cell-muted {
+      opacity: 0.55;
     }
     /* 节假日/休假日名称 */
     .calendar-cell-info {
       font-size: 1rem;
-      font-weight: 500;
-      margin-top: 0.15em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
-    /* 非当月单元格 */
-    .calendar-table td.is-other-month {
-      background: #f7f8fa;
-      opacity: 0.55;
-    }
-    /* 休假日单元格 */
-    .calendar-table td.is-holiday {
-      background: linear-gradient(160deg, #fff4f4 0%, #fff 80%);
-    }
-    /* ===== 图例 ===== */
-    .calendar-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5em 1.25em;
-      margin-bottom: 0.75em;
-      font-size: 0.85rem;
-      padding: 0.5em 0.85em;
-      background: #fafbfc;
-      border: 1px solid var(--imds-color-border, #e4e8ed);
-      border-radius: 6px;
-    }
-    .calendar-legend:empty {
-      display: none;
-    }
-    .calendar-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.4em;
-    }
+    /* 图例色块（动态设置各星期的颜色） */
     .calendar-legend-dot {
       width: 0.75em;
       height: 0.75em;
       border-radius: 50%;
       display: inline-block;
-      border: 1px solid rgba(0,0,0,0.12);
+      border: 1px solid rgba(0, 0, 0, 0.12);
       flex-shrink: 0;
     }
   </style>
@@ -532,20 +476,20 @@ function transferErrorPage(code, message) {
 
     // 星期信息映射（dayOfWeek -> {color, holiday}）
     const weekDayMap = {};
-    (data.weekDays || []).forEach((wd) => {
-      weekDayMap[wd.dayOfWeek] = wd;
+    (data.weekDays || []).forEach((weekDay) => {
+      weekDayMap[weekDay.dayOfWeek] = weekDay;
     });
 
     // 根据 firstDayOfWeek 排列的星期顺序列表
     function getOrderedWeekDays(firstDayOfWeek) {
       const ordered = [];
       for (let i = 0; i < 7; i++) {
-        const dow = (firstDayOfWeek + i) % 7;
+        const dayOfWeek = (firstDayOfWeek + i) % 7;
         ordered.push({
-          dayOfWeek: dow,
-          name: WEEK_DAY_NAMES[dow],
-          color: weekDayMap[dow] ? (weekDayMap[dow].color || '') : '',
-          holiday: weekDayMap[dow] ? weekDayMap[dow].holiday : false
+          dayOfWeek: dayOfWeek,
+          name: WEEK_DAY_NAMES[dayOfWeek],
+          color: weekDayMap[dayOfWeek] ? (weekDayMap[dayOfWeek].color || '') : '',
+          holiday: weekDayMap[dayOfWeek] ? weekDayMap[dayOfWeek].holiday : false
         });
       }
       return ordered;
@@ -553,15 +497,15 @@ function transferErrorPage(code, message) {
 
     // 渲染星期标题
     function renderWeekDayHeaders(orderedWeekDays) {
-      const thead = document.querySelector('#calendar-table thead tr');
-      if (!thead) { return; }
-      thead.innerHTML = '';
-      orderedWeekDays.forEach((wd) => {
+      const headerRow = document.querySelector('#calendar-table thead tr');
+      if (!headerRow) { return; }
+      headerRow.textContent = '';
+      orderedWeekDays.forEach((weekDay) => {
         const th = document.createElement('th');
         th.scope = 'col';
-        th.style.color = wd.color || '';
-        th.textContent = wd.name;
-        thead.appendChild(th);
+        th.style.color = weekDay.color || '';
+        th.textContent = weekDay.name;
+        headerRow.appendChild(th);
       });
     }
 
@@ -569,32 +513,33 @@ function transferErrorPage(code, message) {
     function renderDays(calendarData, orderedWeekDays) {
       const tbody = document.querySelector('#calendar-table tbody');
       if (!tbody) { return; }
-      tbody.innerHTML = '';
+      tbody.textContent = '';
 
       const days = calendarData.days || [];
-      const colCount = orderedWeekDays.length;
-      const rowCount = Math.ceil(days.length / colCount);
+      const columnCount = orderedWeekDays.length;
+      const rowCount = Math.ceil(days.length / columnCount);
 
-      for (let r = 0; r < rowCount; r++) {
+      for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         const tr = document.createElement('tr');
-        for (let c = 0; c < colCount; c++) {
-          const idx = r * colCount + c;
-          if (idx >= days.length) {
+        for (let columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+          const dayIndex = rowIndex * columnCount + columnIndex;
+          if (dayIndex >= days.length) {
             tr.appendChild(document.createElement('td'));
             continue;
           }
-          const day = days[idx];
+          const day = days[dayIndex];
           const td = document.createElement('td');
 
+          // 单元格背景色使用 imds 表格的装饰色类指定（非当月：灰色，休假日：红色）
           if (!day.isCurrentMonth) {
-            td.className = 'is-other-month';
+            td.className = 'is-gray';
           } else if (day.isHoliday) {
-            td.className = 'is-holiday';
+            td.className = 'is-red';
           }
 
           // 日期数字 span
           const daySpan = document.createElement('span');
-          daySpan.className = 'calendar-cell-day' + (day.isToday ? ' is-today' : '');
+          daySpan.className = 'calendar-cell-day has-text-weight-bold' + (day.isToday ? ' calendar-cell-day-today' : '') + (day.isCurrentMonth ? '' : ' calendar-cell-muted');
 
           // 颜色优先级：DayInfoSummary.color → 星期颜色
           let cellColor = day.color;
@@ -611,7 +556,7 @@ function transferErrorPage(code, message) {
           // 节假日/休假日名称
           if (day.dayInfoNames && day.dayInfoNames.length > 0) {
             const infoDiv = document.createElement('div');
-            infoDiv.className = 'calendar-cell-info';
+            infoDiv.className = 'calendar-cell-info imds-line-clamp-1 imds-mt-1' + (day.isCurrentMonth ? '' : ' calendar-cell-muted');
             infoDiv.style.color = cellColor || '';
             infoDiv.title = day.dayInfoNames.join('、');
             infoDiv.textContent = day.dayInfoNames[0];
@@ -626,13 +571,13 @@ function transferErrorPage(code, message) {
 
     // 渲染导航标题
     function renderNavTitle(calendarData) {
-      const titleEl = document.getElementById('nav-title');
-      if (titleEl) {
-        titleEl.textContent = calendarData.year + '年' + calendarData.month + '月';
+      const titleElement = document.getElementById('nav-title');
+      if (titleElement) {
+        titleElement.textContent = calendarData.year + '年' + calendarData.month + '月';
       }
-      const nameEl = document.getElementById('calendar-name');
-      if (nameEl) {
-        nameEl.textContent = calendarData.calendarName || calendarData.calendarId || '';
+      const nameElement = document.getElementById('calendar-name');
+      if (nameElement) {
+        nameElement.textContent = calendarData.calendarName || calendarData.calendarId || '';
       }
     }
 
@@ -643,28 +588,28 @@ function transferErrorPage(code, message) {
 
     // 导航按钮事件
     function setupNavigation(calendarData) {
-      const prevBtn = document.getElementById('btn-prev-month');
-      const nextBtn = document.getElementById('btn-next-month');
-      const todayBtn = document.getElementById('btn-today');
+      const prevButton = document.getElementById('prev-month-button');
+      const nextButton = document.getElementById('next-month-button');
+      const todayButton = document.getElementById('this-month-button');
 
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          let y = calendarData.year;
-          let m = calendarData.month - 1;
-          if (m < 1) { m = 12; y -= 1; }
-          location.href = buildMonthUrl(y, m);
+      if (prevButton) {
+        prevButton.addEventListener('click', () => {
+          let year = calendarData.year;
+          let month = calendarData.month - 1;
+          if (month < 1) { month = 12; year -= 1; }
+          location.href = buildMonthUrl(year, month);
         });
       }
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          let y = calendarData.year;
-          let m = calendarData.month + 1;
-          if (m > 12) { m = 1; y += 1; }
-          location.href = buildMonthUrl(y, m);
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          let year = calendarData.year;
+          let month = calendarData.month + 1;
+          if (month > 12) { month = 1; year += 1; }
+          location.href = buildMonthUrl(year, month);
         });
       }
-      if (todayBtn) {
-        todayBtn.addEventListener('click', () => {
+      if (todayButton) {
+        todayButton.addEventListener('click', () => {
           // 不带查询参数跳转 → 服务器端使用系统日期的年月
           location.href = 'sample/sample_calendar';
         });
@@ -673,27 +618,32 @@ function transferErrorPage(code, message) {
 
     // 渲染图例（各星期的颜色）
     function renderLegend(orderedWeekDays) {
-      const legendEl = document.getElementById('calendar-legend');
-      if (!legendEl) { return; }
-      legendEl.innerHTML = '';
+      const legendElement = document.getElementById('calendar-legend');
+      if (!legendElement) { return; }
+      legendElement.textContent = '';
 
-      orderedWeekDays.forEach((wd) => {
-        if (!wd.color) { return; }
+      orderedWeekDays.forEach((weekDay) => {
+        if (!weekDay.color) { return; }
         const item = document.createElement('span');
-        item.className = 'calendar-legend-item';
+        item.style.display = 'flex';
+        item.style.alignItems = 'center';
+        item.style.gap = '0.4em';
 
         const dot = document.createElement('span');
         dot.className = 'calendar-legend-dot';
-        dot.style.background = wd.color;
+        dot.style.background = weekDay.color;
 
         const label = document.createElement('span');
-        label.textContent = '周' + wd.name + (wd.holiday ? '（休假日）' : '');
-        label.style.color = wd.color;
+        label.textContent = '周' + weekDay.name + (weekDay.holiday ? '（休假日）' : '');
+        label.style.color = weekDay.color;
 
         item.appendChild(dot);
         item.appendChild(label);
-        legendEl.appendChild(item);
+        legendElement.appendChild(item);
       });
+
+      // 没有任何设置了颜色的星期时，图例保持隐藏
+      legendElement.style.display = legendElement.hasChildNodes() ? 'flex' : 'none';
     }
 
     // 入口点
@@ -711,7 +661,7 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- 整个页面的容器（配置在 intra-mart 主题的 imui-container 内部，因此不附加 id） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <!-- 页头 -->
   <header class="imds-header">
     <div class="imds-header-icon">
@@ -721,46 +671,41 @@ function transferErrorPage(code, message) {
     </div>
     <div class="imds-header-title">
       <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1>
-        <imart type="string" value=$title escapeXml="true" escapeJs="false"></imart>
-        <span id="calendar-name" class="calendar-name-badge"></span>
-      </h1>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+    <!-- 日历名称（页头的 Tag） -->
+    <div class="imds-header-additional">
+      <span class="imds-tag is-blue is-rounded"><span id="calendar-name"></span></span>
     </div>
   </header>
 
   <!-- 主要内容 -->
-  <main>
-    <div class="imds-py-3">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
-
-        <!-- 月份导航 -->
-        <div class="calendar-nav imds-mb-3">
-          <button type="button" id="btn-prev-month" class="imds-button is-ghost" title="上月">
-            <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
-          </button>
-          <span id="nav-title" class="calendar-nav-title"></span>
-          <button type="button" id="btn-next-month" class="imds-button is-ghost" title="下月">
-            <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
-          </button>
-          <button type="button" id="btn-today" class="imds-button is-outlined">本月</button>
+  <main class="pgstyle-layout-main">
+    <div class="imds-px-3 imds-py-2 pgstyle-table-wrapper pgstyle-layout-content imds-scrollbar">
+      <!-- 月份导航 -->
+      <div class="imds-mb-2" style="display: flex; align-items: center; gap: 0.75em;">
+        <button type="button" id="prev-month-button" class="imds-button is-ghost" title="上月" aria-label="上月">
+          <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
+        </button>
+        <span id="nav-title" class="has-text-weight-bold has-text-centered" style="font-size: 1.6rem; min-width: 9em;"></span>
+        <button type="button" id="next-month-button" class="imds-button is-ghost" title="下月" aria-label="下月">
+          <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </button>
+        <button type="button" id="this-month-button" class="imds-button is-outlined">本月</button>
+      </div>
+      <!-- 图例（没有设置了颜色的星期时保持隐藏） -->
+      <div id="calendar-legend" class="imds-mb-2 imds-px-3 imds-py-2 imds-border-1 has-background-color-gray" style="display: none; flex-wrap: wrap; gap: 0.5em 1.25em; font-size: 0.85rem;"></div>
+      <!-- 日历表格 -->
+      <div class="imds-table is-area-bordered is-bordered is-sticky" style="height: 100%">
+        <div class="imds-table-inner">
+          <table id="calendar-table" aria-label="日历">
+            <thead>
+              <tr></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
-
-        <!-- 图例 -->
-        <div id="calendar-legend" class="calendar-legend imds-mb-2"></div>
-
-        <!-- 日历表格 -->
-        <div class="imds-table">
-          <div class="imds-table-inner">
-            <table id="calendar-table" class="calendar-table" aria-label="日历">
-              <thead>
-                <tr></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-
-      </section>
+      </div>
     </div>
   </main>
 </div>
@@ -778,7 +723,7 @@ function transferErrorPage(code, message) {
     xsi:schemaLocation="http://www.intra-mart.jp/router/routing-jssp-config routing-jssp-config.xsd">
 
   <!-- 日历画面 -->
-  <file-mapping path="/sample/sample_calendar" page="sample_calendar/view/index">
+  <file-mapping path="/sample/sample_calendar" page="sample/sample_calendar/view/index">
     <authz uri="service://sample/sample_calendar" action="execute" />
   </file-mapping>
 
@@ -814,15 +759,15 @@ for (let i = 0; i < result.data.length; i++) {
 ```javascript
 // 表格开始日：追溯到 firstDayOfWeek 对应的上月日期
 let firstOfMonth = new Date(year, month - 1, 1);
-let startDow = firstOfMonth.getDay();
-let startOffset = (startDow - firstDayOfWeek + 7) % 7;
+let startDayOfWeek = firstOfMonth.getDay();
+let startOffset = (startDayOfWeek - firstDayOfWeek + 7) % 7;
 let gridStart = new Date(year, month - 1, 1 - startOffset);
 
 // 表格结束日：延伸到最后一个星期（firstDayOfWeek 的前一天）
 let lastOfMonth = new Date(year, month, 0);
-let endDow = lastOfMonth.getDay();
+let endDayOfWeek = lastOfMonth.getDay();
 let lastDayOfWeek = (firstDayOfWeek + 6) % 7;
-let endOffset = (lastDayOfWeek - endDow + 7) % 7;
+let endOffset = (lastDayOfWeek - endDayOfWeek + 7) % 7;
 let gridEnd = new Date(year, month - 1, lastOfMonth.getDate() + endOffset);
 
 let result = manager.getDayInfoSummariesOnTerm(calendarId, gridStart, gridEnd);
@@ -890,7 +835,8 @@ function resolveDayInfoNames(summary, locale) {
 1. `DayInfoSummary.color`（特定日期的颜色设置）
 2. 各星期的颜色（`weekDayMap[dayOfWeek].color`）
 
-今天的日期（`isToday`）忽略颜色设置，使用主题色背景＋白色文字。
+今天的日期（`isToday`）忽略颜色设置，以圆形背景＋白色文字（`calendar-cell-day-today`）显示。
+单元格背景色不使用自定义 CSS，而是使用 imds 表格的装饰色类（非当月：`is-gray`，休假日：`is-red`）指定。
 
 ### 7. 参考的 d.ts 文件
 

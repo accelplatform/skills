@@ -29,18 +29,18 @@ Opens the temporary save modal.
 ```javascript
 imWorkflow.modal.showTemporarySave({
   processParameter: {
-    flowId:         '',        // 新規一時保存時に必要（更新時は不要）
-    userDataId:     '',        // 既存一時保存の更新時に指定
-    matterName:     '',        // 案件名（200 バイト以内）
-    applyBaseDate:  '',        // 申請基準日（省略時は当日）
-    applyAuthUserCd: '',       // 代理申請者ユーザコード
-    processComment: '',        // 処理コメント（2000 バイト以内）
-    interfaceControl: {}       // フィールド表示・編集制御
+    flowId:         '',        // Required for a new temporary save (not needed when updating)
+    userDataId:     '',        // Specify when updating an existing temporary save
+    matterName:     '',        // Matter name (up to 200 bytes)
+    applyBaseDate:  '',        // Apply base date (current date when omitted)
+    applyAuthUserCd: '',       // User code of the proxy applicant
+    processComment: '',        // Process comment (up to 2000 bytes)
+    interfaceControl: {}       // Field display / edit control
   },
   optionalParameter: {
-    userParameter: {}          // アクション処理に渡す業務データ
+    userParameter: {}          // Business data passed to the action process
   },
-  rebootModal: false           // モーダルを閉じたときに入力内容を破棄するか
+  rebootModal: false           // Whether to discard the entered content when the modal is closed
 });
 ```
 
@@ -102,7 +102,7 @@ document.getElementById('tempsave-button').addEventListener('click', async () =>
     processParameter: {
       flowId:     $data.result.flowId || '',
       userDataId: $data.result.userDataId || '',
-      matterName: '申請下書き_' + document.getElementById(':field1:').value
+      matterName: 'Application draft_' + document.getElementById(':field1:').value
     },
     optionalParameter: {
       userParameter: {
@@ -114,11 +114,11 @@ document.getElementById('tempsave-button').addEventListener('click', async () =>
   });
 
   if (result && result.isProcessDone) {
-    // 次回アクセス時に同じ下書きを再編集できるよう、userDataId を保持する
-    imuiShowSuccessMessage('一時保存が完了しました。');
+    // Keep userDataId so that the same draft can be re-edited on the next access
+    imuiShowSuccessMessage('The temporary save has been completed.');
   }
 
-  // 処理モーダルを閉じた後のページ遷移（完了・キャンセルどちらの場合も呼び出す）
+  // Page transition after the process modal closes (call it regardless of completion or cancel)
   imWorkflow.transition.afterProcess();
 });
 ```

@@ -135,5 +135,5 @@ After the confirm modal is closed (whether completed or canceled), always call `
 
 - `imWorkflow.modal.showConfirm()` is a client-side API. It cannot be used on the server side (SSJS / Rhino)
 - `systemMatterId` and `nodeId` must be obtained from URL parameters, etc.
-- Do not place your own "Back" button on the confirm screen. Delegate the transition to `imWorkflow.transition.afterProcess()`
+- Place a "Back" button in the header of the confirm screen, and on click return to the calling screen with `imWorkflow.transition.returnTo()`. Delegate the transition after the confirm modal closes to `imWorkflow.transition.afterProcess()`
 - Unlike `showProcess()`, there is no `processType` specification (confirmation is a single action)

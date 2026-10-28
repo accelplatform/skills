@@ -3,43 +3,43 @@ paths:
   - "src/main/jssp/**/*.html"
 ---
 
-# 多言語の入力欄（common-parts）
+# Multilingual Input Field (common-parts)
 
-## 基本情報
+## Overview
 
-intra-mart Accel Platform の多言語機能を使い、入力値を複数言語で登録する場合に使用する複合パターンである。
-標準言語（日本語）フィールドの隣に globe ボタンを配置し、クリックで追加言語フィールドを展開/折りたたむ。
+A composite pattern used when registering input values in multiple languages with the multilingual feature of intra-mart Accel Platform.
+A globe button is placed next to the standard language (Japanese) field, and clicking it expands/collapses the additional language fields.
 
-- 抽出元: `uiux-share/common-parts/多言語の入力欄.md`
-- 標準以外の言語フィールドは動的に生成する（プラットフォームの言語設定に依存する）。
-- 要件に「多言語」「ローカライズ」「言語切り替え」「言語別入力」が含まれる場合に適用する。
-- 名称・説明等の多言語対応フィールドや、設定画面・マスタ管理画面、インポート画面のフォームで用いる。
+- Source: `uiux-share/common-parts/多言語の入力欄.md`
+- Fields for languages other than the standard one are generated dynamically (they depend on the platform's language settings).
+- Apply this when the requirements include "multilingual", "localization", "language switching", or "per-language input".
+- Use it for multilingual fields such as names and descriptions, and in forms on settings screens, master management screens, and import screens.
 
-## 構成コンポーネント
+## Components Used
 
-| 使用する基本コンポーネント | 対応 reference |
+| Base component used | Reference |
 |---|---|
-| FieldGroup（`imds-field-group`） | [imds-html-field-group.md](imds-html-field-group.md) |
-| Field（`imds-field`） | [imds-html-field.md](imds-html-field.md) |
-| Textbox（`imds-textbox`） | [imds-html-textbox.md](imds-html-textbox.md) |
-| Button（`imds-button`） | [imds-html-button.md](imds-html-button.md) |
-| Divider（`imds-divider`） | [imds-html-divider.md](imds-html-divider.md) |
+| FieldGroup (`imds-field-group`) | [imds-html-field-group.md](imds-html-field-group.md) |
+| Field (`imds-field`) | [imds-html-field.md](imds-html-field.md) |
+| Textbox (`imds-textbox`) | [imds-html-textbox.md](imds-html-textbox.md) |
+| Button (`imds-button`) | [imds-html-button.md](imds-html-button.md) |
+| Divider (`imds-divider`) | [imds-html-divider.md](imds-html-divider.md) |
 
-## HTML スニペット
+## HTML Snippets
 
-### 縦型（デフォルト）
+### Vertical (Default)
 
-`imds-w-15` は FieldGroup 全体の幅クラス、`imds-w-25` は内部フィールドの幅クラスである（幅クラスの一覧は [imds-html-field.md](imds-html-field.md) を参照）。
+`imds-w-15` is the width class for the whole FieldGroup, and `imds-w-25` is the width class for the inner fields (for the list of width classes, see [imds-html-field.md](imds-html-field.md)).
 
-> **幅クラス**: 標準フィールドと追加言語フィールドは、必ず同じ幅クラス（例: `imds-w-25`）を全ての `imds-field` に明示的に付与する。省略すると生成結果でフィールドごとに入力欄の長さが揃わなくなるため注意。
+> **Width class**: Always explicitly apply the same width class (e.g. `imds-w-25`) to every `imds-field`, for both the standard field and the additional language fields. If omitted, the input lengths will not line up across fields in the generated output.
 
 ```html
 <div class="imds-field-group imds-w-15">
-  <div class="imds-field-group-label"><span>多言語</span></div>
+  <div class="imds-field-group-label"><span>Multilingual</span></div>
   <div class="imds-field-group-control">
     <div class="imds-field imds-w-25">
       <div class="imds-field-label">
-        <label for="[REPLACE: std-input-id]">標準</label>
+        <label for="[REPLACE: std-input-id]">Standard</label>
       </div>
       <div class="imds-field-control">
         <input type="text" id="[REPLACE: std-input-id]" class="imds-textbox" value="" />
@@ -48,12 +48,12 @@ intra-mart Accel Platform の多言語機能を使い、入力値を複数言語
         </button>
       </div>
     </div>
-    <!-- 追加言語フィールド（初期非表示・JS で切り替え）。実際の言語構成はプラットフォーム設定に依存し動的生成される。以下は代表例（日本語・英語・中国語） -->
+    <!-- Additional language fields (hidden initially, toggled by JS). The actual language set depends on platform settings and is generated dynamically. The following is a representative example (Japanese, English, Chinese) -->
     <hr id="[REPLACE: divider-id]" class="imds-divider" style="display: none;" />
     <div id="[REPLACE: localized-group-id]" style="display: none;">
       <div class="imds-field imds-w-25">
         <div class="imds-field-label">
-          <label for="[REPLACE: lang-input-id-ja]">日本語</label>
+          <label for="[REPLACE: lang-input-id-ja]">Japanese</label>
         </div>
         <div class="imds-field-control">
           <input type="text" id="[REPLACE: lang-input-id-ja]" class="imds-textbox" value="" />
@@ -61,7 +61,7 @@ intra-mart Accel Platform の多言語機能を使い、入力値を複数言語
       </div>
       <div class="imds-field imds-w-25">
         <div class="imds-field-label">
-          <label for="[REPLACE: lang-input-id-en]">英語</label>
+          <label for="[REPLACE: lang-input-id-en]">English</label>
         </div>
         <div class="imds-field-control">
           <input type="text" id="[REPLACE: lang-input-id-en]" class="imds-textbox" value="" />
@@ -69,32 +69,32 @@ intra-mart Accel Platform の多言語機能を使い、入力値を複数言語
       </div>
       <div class="imds-field imds-w-25">
         <div class="imds-field-label">
-          <label for="[REPLACE: lang-input-id-zh]">中国語（中華人民共和国）</label>
+          <label for="[REPLACE: lang-input-id-zh]">Chinese (People's Republic of China)</label>
         </div>
         <div class="imds-field-control">
           <input type="text" id="[REPLACE: lang-input-id-zh]" class="imds-textbox" value="" />
         </div>
       </div>
-      <!-- 言語が増減する場合はこの imds-field を増減させる -->
+      <!-- Add or remove this imds-field as languages are added or removed -->
     </div>
   </div>
 </div>
 ```
 
-### 水平型（`is-horizontal`）
+### Horizontal (`is-horizontal`)
 
-ラベルとコントロールを横並びにする場合。
+Use this to place the label and control side by side.
 
-> **幅クラス**: 縦型と同様、標準フィールドと追加言語フィールドの全 `imds-field` に同じ `imds-w-25` を明示的に付与する。
-> **アクセシビリティ注意**: この水平型パターンは `id` を `<input>` ではなく幅調整用の外側 `<div>` に付与するため、`<label for="...">` と `<input>` の関連付けが切れる。各 `<input>` に `aria-label="[言語名]"`（ラベルと同じ文言）を必ず付与すること（省略すると lint の `input-no-label` に抵触する）。
+> **Width class**: As with the vertical layout, explicitly apply the same `imds-w-25` to every `imds-field`, for both the standard field and the additional language fields.
+> **Accessibility note**: This horizontal pattern assigns the `id` to the outer width-adjusting `<div>` rather than to `<input>`, which breaks the association between `<label for="...">` and `<input>`. Always add `aria-label="[language name]"` (the same text as the label) to each `<input>` (omitting it violates the lint rule `input-no-label`).
 
 ```html
 <div class="imds-field-group is-horizontal imds-w-15">
-  <div class="imds-field-group-label"><span>多言語</span></div>
+  <div class="imds-field-group-label"><span>Multilingual</span></div>
   <div class="imds-field-group-control">
     <div class="imds-field imds-w-25">
       <div class="imds-field-label">
-        <label for="[REPLACE: std-input-id]">標準</label>
+        <label for="[REPLACE: std-input-id]">Standard</label>
       </div>
       <div class="imds-field-control">
         <input type="text" id="[REPLACE: std-input-id]" class="imds-textbox" value="" />
@@ -103,51 +103,51 @@ intra-mart Accel Platform の多言語機能を使い、入力値を複数言語
         </button>
       </div>
     </div>
-    <!-- 実際の言語構成はプラットフォーム設定に依存し動的生成される。以下は代表例（日本語・英語・中国語） -->
+    <!-- The actual language set depends on platform settings and is generated dynamically. The following is a representative example (Japanese, English, Chinese) -->
     <hr id="[REPLACE: divider-id]" class="imds-divider" style="display: none;" />
     <div id="[REPLACE: localized-group-id]" class="imds-field-group" style="display: none;">
       <div class="imds-field-group-control">
         <div class="imds-field imds-w-25">
           <div class="imds-field-label">
-            <label for="[REPLACE: lang-input-id-ja]">日本語</label>
+            <label for="[REPLACE: lang-input-id-ja]">Japanese</label>
           </div>
           <div class="imds-field-control">
             <div id="[REPLACE: lang-input-id-ja]" style="width: 100%; padding-right: calc(1em + 3.2rem);">
-              <input type="text" class="imds-textbox" value="" aria-label="日本語">
+              <input type="text" class="imds-textbox" value="" aria-label="Japanese">
             </div>
           </div>
         </div>
         <div class="imds-field imds-w-25">
           <div class="imds-field-label">
-            <label for="[REPLACE: lang-input-id-en]">英語</label>
+            <label for="[REPLACE: lang-input-id-en]">English</label>
           </div>
           <div class="imds-field-control">
             <div id="[REPLACE: lang-input-id-en]" style="width: 100%; padding-right: calc(1em + 3.2rem);">
-              <input type="text" class="imds-textbox" value="" aria-label="英語">
+              <input type="text" class="imds-textbox" value="" aria-label="English">
             </div>
           </div>
         </div>
         <div class="imds-field imds-w-25">
           <div class="imds-field-label">
-            <label for="[REPLACE: lang-input-id-zh]">中国語（中華人民共和国）</label>
+            <label for="[REPLACE: lang-input-id-zh]">Chinese (People's Republic of China)</label>
           </div>
           <div class="imds-field-control">
             <div id="[REPLACE: lang-input-id-zh]" style="width: 100%; padding-right: calc(1em + 3.2rem);">
-              <input type="text" class="imds-textbox" value="" aria-label="中国語（中華人民共和国）">
+              <input type="text" class="imds-textbox" value="" aria-label="Chinese (People's Republic of China)">
             </div>
           </div>
         </div>
-        <!-- 言語が増減する場合はこの imds-field を増減させる -->
+        <!-- Add or remove this imds-field as languages are added or removed -->
       </div>
     </div>
   </div>
 </div>
 ```
 
-## JS 制御
+## JS Control
 
-globe ボタンのクリックで divider と追加言語グループの表示/非表示を切り替える。
-`[REPLACE: toggle-btn-id]` / `[REPLACE: divider-id]` / `[REPLACE: localized-group-id]` は実際の id に置き換える。
+Clicking the globe button toggles the visibility of the divider and the additional language group.
+Replace `[REPLACE: toggle-btn-id]` / `[REPLACE: divider-id]` / `[REPLACE: localized-group-id]` with the actual ids.
 
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
@@ -163,8 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-## 実装上の注意
+## Implementation Notes
 
-- 標準フィールドと追加言語フィールドには必ず同じ幅クラス（例: `imds-w-25`）を明示的に付与すること。
-- 水平型では `<input>` に `id` を付与せず外側 `div` に付与するため、`label` との関連付けが失われる。各 `<input>` に `aria-label` を必ず付与すること。
-- 追加言語フィールドの数はプラットフォームの言語設定に依存して動的に増減する。日本語・英語・中国語は代表例であり、実装時は動的生成にすること。
+- Always explicitly apply the same width class (e.g. `imds-w-25`) to the standard field and the additional language fields.
+- In the horizontal layout, the `id` is assigned to the outer `div` instead of `<input>`, so the association with `label` is lost. Always add `aria-label` to each `<input>`.
+- The number of additional language fields increases or decreases dynamically depending on the platform's language settings. Japanese, English, and Chinese are representative examples; implement dynamic generation.

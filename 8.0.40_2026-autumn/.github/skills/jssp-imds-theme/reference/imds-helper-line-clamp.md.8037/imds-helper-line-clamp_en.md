@@ -3,28 +3,28 @@ paths:
   - "src/main/jssp/**/*.html"
 ---
 
-# LineClamp（行数省略ユーティリティ）
+# LineClamp (Line Clamp Utility)
 
-## 基本情報
+## Overview
 
-LineClamp は、指定した行数で文字列を省略表記（三点リーダー）するための imds ヘルパークラス群である。これらは imds のユーティリティクラスであり、`p` 要素等のテキストを含む任意の要素と組み合わせて使う。単独のコンポーネントとして使うものではない。
+LineClamp is a set of imds helper classes for truncating text with an ellipsis after a specified number of lines. These are imds utility classes used in combination with any element containing text, such as a `p` element. They are not used as standalone components.
 
-- 抽出元: `uiux-share/helper/LineClamp.md`
-- 命名規則: `imds-line-clamp-{行数}`（1〜5 が定義されている）
+- Source: `uiux-share/helper/LineClamp.md`
+- Naming convention: `imds-line-clamp-{lines}` (1 to 5 are defined)
 
 ## CSS Classes Reference
 
-| クラス名 | 用途 | 値 |
+| Class name | Purpose | Value |
 |----------|------|----|
-| `imds-line-clamp-1` | 1行で省略表示する | 表示行数: 1 |
-| `imds-line-clamp-2` | 2行で省略表示する | 表示行数: 2 |
-| `imds-line-clamp-3` | 3行で省略表示する | 表示行数: 3 |
-| `imds-line-clamp-4` | 4行で省略表示する | 表示行数: 4 |
-| `imds-line-clamp-5` | 5行で省略表示する | 表示行数: 5 |
+| `imds-line-clamp-1` | Truncates after 1 line | Visible lines: 1 |
+| `imds-line-clamp-2` | Truncates after 2 lines | Visible lines: 2 |
+| `imds-line-clamp-3` | Truncates after 3 lines | Visible lines: 3 |
+| `imds-line-clamp-4` | Truncates after 4 lines | Visible lines: 4 |
+| `imds-line-clamp-5` | Truncates after 5 lines | Visible lines: 5 |
 
-## 使用例
+## Usage Examples
 
-### 2行で省略表示する長文
+### Long text truncated after 2 lines
 
 ```html
 <div class="sample-box-container imds-border-1">
@@ -34,8 +34,8 @@ LineClamp は、指定した行数で文字列を省略表記（三点リーダ�
 </div>
 ```
 
-## 実装上の注意
+## Implementation Notes
 
-- 一覧画面のセル内テキストや要約表示等、限られた領域で長文を省略表示したい場合に使う。
-- 省略された全文をユーザが確認できるよう、`title` 属性やツールチップ、詳細表示への導線を併せて用意することが望ましい。
-- `imds-scrollbar`（`imds-helper-scrollbar.md`）とは用途が異なる。LineClamp は行数で切り詰めて省略記号を表示するのに対し、Scrollbar はスクロール可能な領域の見た目を整えるものである。
+- Use when you want to truncate long text in a limited area, such as cell text on list screens or summary displays.
+- Provide a `title` attribute, tooltip, or link to a detail view so users can see the full truncated text.
+- Its purpose differs from `imds-scrollbar` (`imds-helper-scrollbar.md`). LineClamp cuts text off at a number of lines and shows an ellipsis, whereas Scrollbar adjusts the appearance of scrollable areas.

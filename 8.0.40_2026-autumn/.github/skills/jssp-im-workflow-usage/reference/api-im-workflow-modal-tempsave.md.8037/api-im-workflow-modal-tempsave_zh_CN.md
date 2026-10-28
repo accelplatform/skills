@@ -29,18 +29,18 @@ IM-Workflow 的处理模态框 API。在客户端启动 IM-Workflow 的标准临
 ```javascript
 imWorkflow.modal.showTemporarySave({
   processParameter: {
-    flowId:         '',        // 新規一時保存時に必要（更新時は不要）
-    userDataId:     '',        // 既存一時保存の更新時に指定
-    matterName:     '',        // 案件名（200 バイト以内）
-    applyBaseDate:  '',        // 申請基準日（省略時は当日）
-    applyAuthUserCd: '',       // 代理申請者ユーザコード
-    processComment: '',        // 処理コメント（2000 バイト以内）
-    interfaceControl: {}       // フィールド表示・編集制御
+    flowId:         '',        // 新建临时保存时必需（更新时不需要）
+    userDataId:     '',        // 更新已有临时保存时指定
+    matterName:     '',        // 案件名（最大 200 字节）
+    applyBaseDate:  '',        // 申请基准日（省略时为当天）
+    applyAuthUserCd: '',       // 代理申请者的用户代码
+    processComment: '',        // 处理注释（最大 2000 字节）
+    interfaceControl: {}       // 字段的显示、编辑控制
   },
   optionalParameter: {
-    userParameter: {}          // アクション処理に渡す業務データ
+    userParameter: {}          // 传递给动作处理的业务数据
   },
-  rebootModal: false           // モーダルを閉じたときに入力内容を破棄するか
+  rebootModal: false           // 关闭模态框时是否丢弃输入内容
 });
 ```
 
@@ -102,7 +102,7 @@ document.getElementById('tempsave-button').addEventListener('click', async () =>
     processParameter: {
       flowId:     $data.result.flowId || '',
       userDataId: $data.result.userDataId || '',
-      matterName: '申請下書き_' + document.getElementById(':field1:').value
+      matterName: '申请草稿_' + document.getElementById(':field1:').value
     },
     optionalParameter: {
       userParameter: {
@@ -114,11 +114,11 @@ document.getElementById('tempsave-button').addEventListener('click', async () =>
   });
 
   if (result && result.isProcessDone) {
-    // 次回アクセス時に同じ下書きを再編集できるよう、userDataId を保持する
-    imuiShowSuccessMessage('一時保存が完了しました。');
+    // 保留 userDataId，以便下次访问时可重新编辑同一份草稿
+    imuiShowSuccessMessage('临时保存已完成。');
   }
 
-  // 処理モーダルを閉じた後のページ遷移（完了・キャンセルどちらの場合も呼び出す）
+  // 关闭处理模态框后的页面跳转（无论完成还是取消都调用）
   imWorkflow.transition.afterProcess();
 });
 ```

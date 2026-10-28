@@ -3,39 +3,39 @@ paths:
   - "src/main/jssp/**/*.html"
 ---
 
-# Typography（文字表現ユーティリティ）
+# Typography (Text Styling Utility)
 
-## 基本情報
+## Overview
 
-Typography は、フォントサイズ・太さ・スタイル等のプロパティに加え、`text-align` や `text-transform` によってテキストの見た目や配置を制御する imds ヘルパークラス群である。これらは imds のユーティリティクラスであり、`imds-textbox` や `imds-heading` 等のコンポーネント固有クラスと組み合わせて使う。単独のコンポーネントとして使うものではない。
+Typography is a set of imds helper classes that control the appearance and alignment of text through properties such as font size, weight, and style, as well as `text-align` and `text-transform`. These are imds utility classes used in combination with component-specific classes such as `imds-textbox` or `imds-heading`. They are not used as standalone components.
 
-- 抽出元: `uiux-share/helper/Typography.md`
+- Source: `uiux-share/helper/Typography.md`
 
 ## CSS Classes Reference
 
-| クラス名 | 用途 | 値（Property: Value） |
+| Class name | Purpose | Value (Property: Value) |
 |----------|------|----------------------|
-| `is-capitalized` | 先頭文字のみを大文字に変換 | `text-transform: capitalize;` |
-| `is-lowercase` | 小文字に変換 | `text-transform: lowercase;` |
-| `is-uppercase` | 大文字に変換 | `text-transform: uppercase;` |
-| `is-italic` | イタリック体にする | `font-style: italic;` |
-| `is-underlined` | 下線を付ける | `text-decoration: underline;` |
-| `has-text-weight-normal` | 標準の太さ | `font-weight: 400;` |
-| `has-text-weight-bold` | 太字 | `font-weight: 700;` |
-| `has-text-centered` | 中央揃え | `text-align: center;` |
-| `has-text-justified` | 均等割り付け | `text-align: justify;` |
-| `has-text-start` | 開始位置揃え | `text-align: start;` |
-| `has-text-end` | 終了位置揃え | `text-align: end;` |
+| `is-capitalized` | Capitalizes only the first letter | `text-transform: capitalize;` |
+| `is-lowercase` | Converts to lowercase | `text-transform: lowercase;` |
+| `is-uppercase` | Converts to uppercase | `text-transform: uppercase;` |
+| `is-italic` | Makes text italic | `font-style: italic;` |
+| `is-underlined` | Adds an underline | `text-decoration: underline;` |
+| `has-text-weight-normal` | Normal weight | `font-weight: 400;` |
+| `has-text-weight-bold` | Bold | `font-weight: 700;` |
+| `has-text-centered` | Center alignment | `text-align: center;` |
+| `has-text-justified` | Justified alignment | `text-align: justify;` |
+| `has-text-start` | Start alignment | `text-align: start;` |
+| `has-text-end` | End alignment | `text-align: end;` |
 
-## 使用例
+## Usage Examples
 
-### 購入金額入力欄（右揃え）
+### Purchase amount input (right-aligned)
 
-Textbox に `has-text-end` を付与し、入力値を右揃えにする。
+Add `has-text-end` to the Textbox to right-align the input value.
 
 ```html
 <div class="imds-field">
-  <div class="imds-field-label"><label for=":r0:">購入金額</label></div>
+  <div class="imds-field-label"><label for=":r0:">Purchase Amount</label></div>
   <div class="imds-field-control">
     <input
       type="text"
@@ -47,21 +47,21 @@ Textbox に `has-text-end` を付与し、入力値を右揃えにする。
 </div>
 ```
 
-### 太字での強調
+### Emphasis with bold text
 
 ```html
-<span class="has-text-weight-bold">重要事項</span>
+<span class="has-text-weight-bold">Important Notice</span>
 ```
 
-### 中央揃えの見出し
+### Centered heading
 
 ```html
-<h2 class="imds-heading is-size-4 has-text-centered">セクション見出し</h2>
+<h2 class="imds-heading is-size-4 has-text-centered">Section Heading</h2>
 ```
 
-## 実装上の注意
+## Implementation Notes
 
-- 同一要素に複数の Typography クラスを付与すると競合や予期せぬ表示になることがあるため、必要最小限に留める。
-- `has-text-weight-*` はフォントによって見た目が変わるため、主要フォントでの表示確認を行う。
-- `is-capitalized` / `is-lowercase` / `is-uppercase` はアルファベットにのみ有効であり、日本語テキストへの使用は避ける。
-- `is-italic` はフォントによっては効果が現れず、イタリック字形を持たないフォント（メイリオ等）では効果が出ないため、主要フォントでの表示確認を行う。長文や日本語テキストでは可読性が下がるため、使用は最小限に留める。
+- Applying multiple Typography classes to the same element can cause conflicts or unexpected rendering, so keep them to the minimum necessary.
+- The appearance of `has-text-weight-*` varies by font, so check the rendering with the main fonts.
+- `is-capitalized` / `is-lowercase` / `is-uppercase` are effective only for alphabetic characters; avoid using them on Japanese text.
+- `is-italic` may have no effect depending on the font; it has no effect on fonts without italic glyphs (such as Meiryo), so check the rendering with the main fonts. It reduces readability for long text and Japanese text, so keep its use to a minimum.

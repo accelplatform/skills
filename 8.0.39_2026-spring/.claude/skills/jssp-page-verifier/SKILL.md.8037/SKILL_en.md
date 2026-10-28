@@ -45,6 +45,18 @@ node .claude/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 
 **Note:** Each of these scripts accepts only a single path (a directory or a single file) per invocation. If you need to validate multiple files together, don't list individual files — pass their common parent directory instead (passing multiple paths causes the script to stop with an error).
 
+### imds Structure Validation
+
+For imds-themed screens, run the following together with the above and collect its output as well. Do not run it on screens for which a non-imds theme (plain HTML, etc.) was explicitly specified (a `<main>` outside `imds-container` triggers an `IMDS-CONTAINER-100` error).
+
+```bash
+node .claude/skills/jssp-imds-theme/scripts/validate-imds.js src/main/jssp/src/{feature-name}/
+```
+
+- Detects: errors in imds component parent-child relationships, required descendant classes, and target elements (`IMDS-<COMPONENT>-NNN`), and `imds-*` classes not listed in the reference (`IMDS-UNKNOWN-001` warning). For the rule list, see "Validation Rules" in the `jssp-imds-theme` skill
+- Include it in the re-run of "Batch Fix → Re-verify Once" below
+- Add an "imds structure" row to the summary table and record the result (X issues → fixed / 0 issues (clean))
+
 ### Detected Patterns: validate-jssp-code.js (JSSP Code Validation)
 
 - `db.select()` / `db.execute()` parameters not wrapped with `DbParameter`
@@ -113,7 +125,7 @@ echo "[SQL files]"; find "$TARGET" -name "*.sql" | head -5
 echo "[DB access]"; grep -rlE "db\.(select|execute)\(|executeByTemplate|fetchByTemplate" "$TARGET" --include=*.js
 echo "[Date variable parsing]"; grep -rnE "new Date\([a-zA-Z_]" "$TARGET" --include=*.js
 echo "[imACMSearch]"; grep -rl "imACMSearch" "$TARGET" --include=*.html
-echo "[Cross-screen parameter passing]"; grep -rlE "location\.href.*\?|<a[^>]+href=\"[^\"]*\?" "$TARGET" --include=*.html
+echo "[Cross-screen parameter passing]"; grep -rlE "location\.href.*\?|<a[^>]+href=\"[^\"]*\?|setAttribute\(.href.,[^)]*\?|\.href *= *[^;]*\?" "$TARGET" --include=*.html
 echo "[IM-Workflow]"; find "$TARGET" -maxdepth 1 -type d -name workflow
 ```
 

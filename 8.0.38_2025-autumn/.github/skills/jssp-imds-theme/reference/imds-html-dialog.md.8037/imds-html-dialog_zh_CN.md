@@ -123,11 +123,26 @@ document.getElementById('item-dialog').close();
 ```html
 <div class="imds-dialog-title-wrapper">
   <div class="imds-dialog-title-bread-crumbs-warp">
-    <span title="面包屑 1">面包屑 1</span>
+    <span title="面包屑1">面包屑 1</span>
     <span class="imds-icon is-x-small"><i class="fa-solid fa-angle-right"></i></span>
-    <span title="面包屑 2">面包屑 2</span>
+    <span title="面包屑2">面包屑 2</span>
   </div>
   <div class="imds-dialog-title"><h1 title="对话框标题">对话框标题</h1></div>
+</div>
+```
+
+### 无标题
+
+不显示标题的模式。`imds-dialog-header` 内不放置 `imds-dialog-title-wrapper`，仅保留关闭按钮。
+
+```html
+<div class="imds-dialog-header">
+  <button
+    type="button"
+    class="imds-button is-ghost is-small imds-dialog-header-close"
+    aria-label="关闭">
+    <span class="imds-icon"><i class="fa-solid fa-times"></i></span>
+  </button>
 </div>
 ```
 
@@ -171,3 +186,37 @@ document.getElementById('item-dialog').close();
 - 内容区域的内边距通过 `imds-p-4` 调整，可根据内容进行修改
 - 添加 `imds-scrollbar` 可在内容溢出时显示滚动条
 - 面包屑的类名为 `imds-dialog-title-bread-crumbs-warp`（这是官方类名，非拼写错误）
+
+### 推荐尺寸
+
+以固定尺寸（px）指定时，为确保画面缩小到 1280px × 720px 也能正常显示，推荐以下值。
+
+- `width`: 1080px 以下
+- `height`: 520px 以下
+
+列表选择类对话框等希望根据画面尺寸尽量放大显示时，以 % 指定 `width` / `height`。% 指定时若对话框过大，同时使用 `max-width` / `max-height` 设置上限。
+
+### 触发按钮与标题的命名一致
+
+打开对话框的触发按钮的标签，必须与对话框 `imds-dialog-title` 中显示的标题一致。
+
+- 注册・编辑对话框为明确对话框的用途，以「功能名 - 处理名」的形式设置标题（例：触发按钮「新建分类」→ 标题「新建分类」）。
+
+```html
+<!-- 触发按钮 -->
+<button type="button" class="imds-button is-primary" onclick="showDialog('category-create-dialog')">
+  新建分类
+</button>
+
+<!-- 对话框侧标题（与按钮标签一致） -->
+<div class="imds-dialog-title"><h1 title="新建分类">新建分类</h1></div>
+```
+
+### 禁止对话框双重叠加
+
+原则上避免在对话框上再叠加显示对话框。这会使用户难以分辨是针对哪个对话框的操作，导致遗漏内容或误操作。
+
+- 避免双重叠加的替代方案：
+  - 考虑使用 [Popover](imds-html-popover.md) 代替对话框（例：使用 Popover 的搜索）。
+  - 需要在对话框内切换画面显示时，考虑采用向导形式（[Stepper](imds-html-stepper.md) 等）进行切换。
+- 不得不双重显示对话框时（选择特定信息的对话框等），使用标题或面包屑（`imds-dialog-title-bread-crumbs-warp`）明确显示操作对象・操作内容。

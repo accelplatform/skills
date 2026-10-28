@@ -33,7 +33,7 @@ Each convention file states its **application scope** at the top. Use the **scop
 | `.github/instructions/jssp-code-style.instructions.md` | `let` / string literals / operators | 🟢 Always (when generating `.js`) |
 | `.github/instructions/jssp-naming.instructions.md` | File / function / variable names | 🟢 Always |
 | `.github/instructions/jssp-function-container.instructions.md` | `init()` structure / validation / IM Common Master API | 🟢 When generating function containers (`.js`) |
-| `.github/instructions/jssp-presentation-page.instructions.md` | Presentation page (`.html`) structure / validation / `id` naming rules | 🟢 When generating presentation pages (`.html`) |
+| `.github/instructions/jssp-presentation-page.instructions.md` | UI theme selection / presentation page (`.html`) structure / validation / `id` naming rules | 🟢 When generating presentation pages (`.html`) |
 | `.github/instructions/jssp-error-handling.instructions.md` | try-catch / response shape / error codes | 🟢 Always |
 | `.github/instructions/jssp-security.instructions.md` | XSS / CSRF / input validation | 🟢 Always (whenever user input is handled) |
 | `.github/instructions/jssp-logging.instructions.md` | Log levels / masking secrets / placeholders | 🟡 When implementing logging |

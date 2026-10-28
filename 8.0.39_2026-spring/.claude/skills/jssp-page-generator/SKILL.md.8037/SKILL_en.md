@@ -61,6 +61,11 @@ Confirm the following from the user:
 - Whether a new table is needed
 - **Whether the screen includes any field that asks the user to select an IM common master value (user / department / company / group / role)** → if so, combine with the `jssp-im-master-usage` skill to implement it as a master search dialog (manual code entry via a plain `<input>` is prohibited)
 - **Whether the screen may be placed multiple times on the same portal page as a portlet (widget)** → if so, use `assets/simple-portlet.md` (it follows a different implementation policy than a normal screen: no header/footer, `$data` scoped with an IIFE, etc.)
+- **UI theme**: If the prompt or specification explicitly names a UI theme (plain HTML, a custom theme, etc.), follow it. When generating with a non-imds theme, skip Step 3 and do not apply the items in Step 5 that concern imds class names and structure. Reuse only the JS processing and comments from the assets, and build the HTML with that theme
+
+#### Default UI Theme (imds)
+
+If no UI theme is explicitly specified, generate with the imds theme (see "Choosing the UI Theme" in `.claude/rules/jssp-presentation-page.md`).
 
 ---
 
@@ -83,6 +88,7 @@ This step must not be skipped. Assets contain usage examples of imds-compliant s
 
 ### Step 3: Load imds Component References
 
+Perform this step when generating with the imds theme.
 Refer to the `jssp-imds-theme` skill and **open and load the corresponding reference file for each UI component using the Read tool.**
 Do not write imds class names or tag structures from memory or guesswork.
 
