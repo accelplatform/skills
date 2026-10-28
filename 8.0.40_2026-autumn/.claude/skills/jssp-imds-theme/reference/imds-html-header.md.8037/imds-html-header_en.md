@@ -18,13 +18,13 @@ Users can navigate between screens, reference page information, and control the 
 | Class name | Applied to | Purpose | Required/Optional |
 |----------|--------|------|----------------|
 | imds-header | header element | Header container | Required |
-| imds-header-icon | div element | Icon area | Optional |
-| imds-header-title | div element | Title area (h1 + p) | Required |
 | imds-header-back-button | div element | Back button area | Optional |
-| imds-header-reload-button | div element | Reload button area | Optional |
+| imds-header-icon | div element | Icon area | Optional |
 | imds-header-nav | div element | Navigation with dropdown menu | Optional |
+| imds-header-title | div element | Title area (h1 + p) | Required |
 | imds-header-additional | div element | Additional info area (decorative tags, etc.) | Optional |
 | imds-header-actions | div element | Action button area | Optional |
+| imds-header-reload-button | div element | Reload button area | Optional |
 | imds-icon-wrapper | span element | Outer wrapper for icons | Optional |
 
 ## HTML Snippets
@@ -50,7 +50,7 @@ All subsequent snippets show only the differences from the basic header.
 ## Variations
 
 Variations are shown as differences from the "basic header (icon + subtitle + title)".
-They are listed in order of recommendation, so consider them from the top. The "not recommended" items at the end are patterns where elements are **omitted** from the basic structure, and should generally not be adopted for business screens.
+"No Subtitle" and "Icon Omitted (Title Only)" are official variations that exist in the actual uiux-share DOM (such as the `Title Only` story) and are not deprecated in themselves. However, this skill's `SKILL.md` has a separate operational rule that "one of `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` is required at the start of the header", and that rule takes precedence for business screens in JSSP projects (see the note on each variation for details).
 
 ### icon (Change of Icon Type)
 
@@ -66,52 +66,59 @@ Select an icon that fits the screen content (List → `fa-clipboard-list`, Stock
 
 ### backItemExists (Back Button: Edit / Detail Screens)
 
-On screens such as detail screens and edit screens that need a "return to list" navigation, place `imds-header-back-button` **instead of** `imds-header-icon` (the two are mutually exclusive and cannot coexist).
+On screens such as detail screens and edit screens that need a "return to list" navigation, place `imds-header-back-button`. `imds-header-back-button` **can be used together** with the icon area (`imds-header-icon` or `imds-header-nav`); do not remove the icon area because you placed the back-button (the two are not mutually exclusive; for the exception of screens that intentionally omit the icon, see the note on the "Title Only" variation).
 
 ```html
-<div class="imds-header-back-button">
-  <button type="button" class="imds-button is-ghost is-large">
-    <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-  </button>
-</div>
+<header class="imds-header">
+  <div class="imds-header-back-button">
+    <button type="button" class="imds-button is-ghost is-large">
+      <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+    </button>
+  </div>
+  <div class="imds-header-icon">
+    <span class="imds-icon-wrapper is-large">
+      <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+    </span>
+  </div>
+  <div class="imds-header-title"><p>Feature (Product) Name</p><h1>Screen Name</h1></div>
+</header>
 ```
 
 ### reloadItemExists (Reload Button: Dashboards etc.)
 
-Place `imds-header-reload-button` **after** `imds-header-title` (can coexist with `imds-header-icon`).
+Place `imds-header-reload-button` **only on screens that require reloading the entire page**. If the purpose is only to re-fetch list data, place the button on the content side (around the list table), not in the header. A reload button in the header always reloads the entire page, so always use "Reload page" as its `title`. Place it **after** `imds-header-actions` (at the very end of the header).
 
 ```html
 <div class="imds-header-reload-button">
-  <button type="button" class="imds-button is-ghost is-large">
+  <button type="button" class="imds-button is-ghost is-large" title="Reload page">
     <span class="imds-icon is-small"><i class="fa-solid fa-rotate-right"></i></span>
   </button>
 </div>
 ```
 
-### No Subtitle (Not Recommended: Avoid on Business Screens)
+### No Subtitle
 
-⚠️ Not recommended for general business screens. Only adopt when there is a specific design requirement.
-
-Omit the `<p>` inside `imds-header-title`. Without a subtitle, the header looks stretched out and does not satisfy the imds theme design.
-If `$subTitle` is bound, always output it inside `<p>`.
+Omit the `<p>` inside `imds-header-title` and place only `<h1>`. This is a legitimate variation that also exists in uiux-share and is not deprecated in itself.
+When a `$subTitle` binding is defined, the basic form outputs it as `<p>`, but this variation may be used on screens with no information corresponding to a subtitle.
 
 ```html
 <div class="imds-header-title"><h1>Screen Name</h1></div>
 ```
 
-### Icon Omitted (Not Recommended: Avoid on Business Screens)
+### Title Only (Icon Omitted)
 
-⚠️ Not recommended for general business screens. A configuration that places none of `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` leaves the left edge of the header empty, which breaks the imds header design.
-Only adopt this for extremely limited special use cases (external embedding, print views, etc.).
+A simple configuration with only `imds-header-title`, placing none of `imds-header-icon` / `imds-header-back-button` / `imds-header-nav`. This is a legitimate variation that exists as the `Title Only` story in uiux-share.
 
 ```html
 <header class="imds-header">
   <div class="imds-header-title">
-    <p>Subtitle</p>
+    <p>Feature (Product) Name</p>
     <h1>Screen Name</h1>
   </div>
 </header>
 ```
+
+> **Note (consistency with SKILL.md)**: This skill's `SKILL.md` defines, as an operational rule for JSSP business screens, that "one of `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` is required at the start of the header" (outside the scope of this file; not to be changed here). A title-only configuration is valid for the component on its own, but when generating business screens for this project, follow the operational rule in `SKILL.md` and place one of the three above.
 
 ## Combination Examples
 
@@ -126,11 +133,11 @@ Place `imds-popover` + `imds-header-nav` instead of `imds-header-icon`.
       type="button"
       class="imds-button is-ghost is-large"
       aria-haspopup="true"
-      aria-controls="imds-popover-:r1:">
+      aria-controls="sample-popover-1">
       <span class="imds-icon is-medium is-primary"><i class="imds-iconfont imds-application"></i></span>
       <span class="imds-icon is-x-small is-primary"><i class="fa-solid fa-caret-down"></i></span>
     </button>
-    <div id="imds-popover-:r1:" role="menu" class="imds-popover-menu">
+    <div id="sample-popover-1" role="menu" class="imds-popover-menu">
       <div class="imds-popover-content">
         <nav class="imds-menu">
           <ul class="imds-menu-list">
@@ -177,21 +184,21 @@ Multiple buttons can be aligned.
 ```
 
 ⚠️ **Do not place data-action buttons such as "New", "Add", or "Register" in `imds-header-actions`** (UI team design rule).
-What may be placed in the header is limited to **page-level meta operations that do not add or remove the list data itself, such as "Settings", "Export", or "Configure logging targets"**.
+What may be placed in the header is limited to **page-level meta operations that do not add or remove the list data itself, such as "Settings", "Export", or "Log Output Target Settings"**.
 Actions that add, remove, or edit the list's business data — such as "New", "Add", or "Bulk Import" — must be placed **directly above the list table, right-aligned** (see `assets/imds-list-page.md` for examples).
 
 ## Implementation Notes
 
-- **One of `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` must always be placed as the first element of the header.** They are mutually exclusive, so exactly one must be attached depending on the screen:
+- **In this project (JSSP business screens), the basic rule is to place one of `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` as the first element of the header, following the operational rule in `SKILL.md`** (an existing rule on the `SKILL.md` side):
   - General page → `imds-header-icon` (Font Awesome icon representing the screen content)
-  - Edit/detail screen requiring a "back" navigation → `imds-header-back-button`
-  - Screen requiring a related-screen-switching menu → `imds-header-nav` (combined with Popover)
+  - Edit/detail screens and others requiring a "back" navigation → `imds-header-back-button` (can be used together with `imds-header-icon` / `imds-header-nav`; do not remove the icon area when placing the back-button; see the "backItemExists" variation)
+  - Screen requiring a related-screen-switching menu → `imds-header-nav` (combined with Popover; mutually exclusive with `imds-header-icon`)
 
-  If none of these is placed, the title part of the header becomes left-aligned text only, breaking the imds header design (the issue "the icon does not appear" frequently occurs in implementations with only `imds-header-title`). Choose an icon type that fits the screen content from Font Awesome 6 (`fa-clipboard-list`, `fa-warehouse`, `fa-box`, `fa-location-dot`, `fa-chart-column`, `fa-gear`, etc.).
+  For the component on its own, a "Title Only" configuration with only `imds-header-title` and none of these also exists as a legitimate pattern in uiux-share (see the "Title Only (Icon Omitted)" variation for details). Choose an icon type that fits the screen content from Font Awesome 6 (`fa-clipboard-list`, `fa-warehouse`, `fa-box`, `fa-location-dot`, `fa-chart-column`, `fa-gear`, etc.).
 
-- **The contents of `imds-header-title` must be a two-tier structure of "`<p>Subtitle</p>` + `<h1>Title</h1>`"** (only in the "No Subtitle" variation may `<p>` be omitted). Writing the screen name directly inside `<h1>` alone is incorrect. Following the basic reference snippet, place the application/module name in the upper `<p>` (e.g., "In-house Equipment Rental System", "Equipment Master") and the screen name in the lower `<h1>` (e.g., "Storage Location Management", "Approval List"). Both should be output from the `$subTitle` / `$title` bindings of the function container via `<imart type="string" value=$subTitle ...>` (do not write them directly in HTML).
+- **The basic form of the contents of `imds-header-title` is a two-tier structure of "`<p>Subtitle</p>` + `<h1>Title</h1>`"** (omit `<p>` in the "No Subtitle" variation). Following the basic reference snippet, place the application/module name in the upper `<p>` (e.g., "In-house Equipment Rental System", "Equipment Master") and the screen name in the lower `<h1>` (e.g., "Storage Location Management", "Approval List"). Output both from the `$subTitle` / `$title` bindings of the function container via `<imart type="string" value=$subTitle ...>` (do not write them directly in HTML).
 
-- **Place `<header class="imds-header">` outside `<main>`.** The imds theme CSS assumes a `<header>` placed directly under `<div class="imds-container">` when applying styles (icon position, margins, etc.). Placing it inside `<main>` breaks the layout, causing issues such as the `imds-header-icon` icon not being displayed. **Consolidate the root into a single `<div>` and do not nest another `imds-container` `<div>` inside it as an intermediate wrapper** (per the `jssp-presentation-page.md` convention, intra-mart's theme feature already wraps the screen content in `<div id="imui-container">`, so the root tag itself must not carry an `id` — attach only the `imds-container` class).
+- **Place `<header class="imds-header">` outside `<main>`.** The imds theme CSS assumes a `<header>` placed directly under `<div class="imds-container">` when applying styles (icon position, margins, etc.). Placing it inside `<main>` breaks the layout, causing issues such as the `imds-header-icon` icon not being displayed. **Consolidate the root into a single `<div>` and do not nest another `imds-container` `<div>` inside it as an intermediate wrapper** (per the `jssp-presentation-page.md` convention, intra-mart's theme feature automatically wraps the screen content in `<div id="imui-container">`, so do not give the root tag an id; attach only the `imds-container` class).
   ```html
   <!-- OK -->
   <div class="imds-container">
@@ -201,7 +208,7 @@ Actions that add, remove, or edit the list's business data — such as "New", "A
     </main>
   </div>
 
-  <!-- NG (intermediate wrapper: nests an imds-container div inside another div) -->
+  <!-- NG (intermediate wrapper: nests an imds-container div) -->
   <div>
     <div class="imds-container">
       <header class="imds-header">...</header>
@@ -211,7 +218,10 @@ Actions that add, remove, or edit the list's business data — such as "New", "A
   ```
   ※ The rule "do not add `<header>` to presentation pages" in `jssp-accessibility.md` aims to avoid duplication with the platform's global header, and the imds `<header class="imds-header">` (in-page header) is exempt from this rule.
 - Do not use class names like `imds-page-header` / `imds-page-header-title` / `imds-page-header-actions` to represent the "page header" (these are imaginary classes not in the reference. CSS will not apply, and the layout will break). The correct names are `imds-header` / `imds-header-title` / `imds-header-actions`.
-- Order of placement inside the header: `imds-header-back-button` / `imds-header-icon` / `imds-header-nav` → `imds-header-title` → `imds-header-additional` → `imds-header-reload-button` → `imds-header-actions`
-- `imds-header-icon`, `imds-header-back-button`, and `imds-header-nav` are used exclusively (do not place simultaneously)
-- Replace the `id` / `aria-controls` of the dropdown menu with unique values (`:r1:` is a placeholder)
+- Order of placement inside the header: `imds-header-back-button` → `imds-header-icon` / `imds-header-nav` → `imds-header-title` → `imds-header-additional` → `imds-header-actions` → `imds-header-reload-button` (**`imds-header-actions` comes before `imds-header-reload-button`**)
+- Exclusivity among the icon-area elements depends on the combination. Do not treat all three as mutually exclusive.
+  - `imds-header-icon` and `imds-header-nav` are mutually exclusive (do not place both; the icon area is one or the other)
+  - `imds-header-back-button` **can be used together** with `imds-header-icon` / `imds-header-nav` (do not remove the icon area when placing the back-button; see the "backItemExists" variation for details)
+  - This reference does not cover combining `imds-header-back-button` and `imds-header-nav`. Treat them as mutually exclusive as before
+- Replace the `id` / `aria-controls` of the dropdown menu with unique values (`sample-popover-N` is a placeholder; use a unique name that fits the feature, without colons since it is not an input element)
 - Dropdown menu open/close must be controlled with JavaScript

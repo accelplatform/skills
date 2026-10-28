@@ -14,7 +14,7 @@ Use it only when changes are reflected immediately.
 |----------|--------|------|----------------|
 | imds-toggle-switch | label element | Toggle switch container | Required |
 | imds-toggle-switch-appearance | span element | Switch appearance | Required |
-| imds-toggle-switch-text | span element | Label text | Required |
+| imds-toggle-switch-text | span element | Label text | Optional (omit when the label is omitted) |
 | is-x-small | imds-toggle-switch | Extra small size | Optional |
 | is-small | imds-toggle-switch | Small size | Optional |
 | is-normal | imds-toggle-switch | Normal size | Optional |
@@ -23,7 +23,7 @@ Use it only when changes are reflected immediately.
 
 ## HTML Snippets
 
-### Basic toggle
+### Basic Toggle
 
 ```html
 <label class="imds-toggle-switch">
@@ -39,7 +39,7 @@ The following sections show only the differences from the basic toggle.
 
 ## Variations
 
-### size
+### size (Size)
 
 Add a size class to `label.imds-toggle-switch`.
 
@@ -59,13 +59,28 @@ Add the `disabled` attribute to `input`.
 <input type="checkbox" disabled />
 ```
 
-### checked (on state)
+### checked (On State)
 
 Add the `checked` attribute to `input`.
 
 ```html
 <input type="checkbox" checked />
 ```
+
+### Label Not Exists
+
+When the label is omitted, for example because the meaning is obvious from nearby UI, do not add `imds-toggle-switch-text`. This is a valid variation in the actual DOM as well; the label is not always required.
+
+```html
+<label class="imds-toggle-switch">
+  <input type="checkbox" />
+  <span class="imds-toggle-switch-appearance">
+    <span class="imds-icon"><i class="fa-solid fa-check"></i></span>
+  </span>
+</label>
+```
+
+Even when the label is omitted, consider supplementing it with `aria-label` or similar so that screen reader users can identify the toggle's meaning.
 
 ## Accessibility
 
@@ -83,8 +98,8 @@ Add the `checked` attribute to `input`.
 
 ## Implementation Notes
 
-- Describe toggle switch with the structure `label > input[type="checkbox"] + span.imds-toggle-switch-appearance + span.imds-toggle-switch-text`
+- Describe toggle switch with the structure `label > input[type="checkbox"] + span.imds-toggle-switch-appearance (+ span.imds-toggle-switch-text)`. Add `imds-toggle-switch-text` only when displaying a label; it is not required
 - Include a check icon (`fa-solid fa-check`) inside `imds-toggle-switch-appearance`
 - Control the on/off state with the `checked` attribute of `input`
 - `disabled` and `checked` can be combined (e.g. on state and disabled)
-- Do not change the label text based on the switch state
+- When displaying label text, do not change it based on the switch state

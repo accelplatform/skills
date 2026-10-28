@@ -142,4 +142,4 @@ document.getElementById('process-button').addEventListener('click', async () => 
 - `imWorkflow.modal.showProcess()` はクライアントサイドの API。サーバサイド（SSJS / Rhino）では使用不可
 - `systemMatterId` と `nodeId` は URL パラメータ等から取得する必要がある
 - `processType` を省略するとフロー定義で許可されているすべての処理種別がモーダル内に表示される
-- 処理画面には独自の「戻る」ボタンを配置しないこと。`imWorkflow.transition.afterProcess()` に遷移を委ねること
+- 処理画面のヘッダには「戻る」ボタンを配置し、クリック時は `imWorkflow.transition.returnTo()` で呼び出し元画面へ戻ること。処理モーダルを閉じた後の遷移は `imWorkflow.transition.afterProcess()` に委ねること

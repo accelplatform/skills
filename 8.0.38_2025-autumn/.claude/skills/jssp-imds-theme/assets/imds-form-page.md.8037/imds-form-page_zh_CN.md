@@ -699,5 +699,5 @@ div.imds-container.pgstyle-layout-container    ... 根 div（因配置在 intra-
 - 实现模式：
   - 服务器端校验时，在错误响应中原样包含输入值返回，并在函数容器一侧通过 `<imart type="string" value=$xxx>` 重新显示
   - 客户端校验时，仅通过 `preventDefault()` 等方式阻止表单提交，不改变输入值的 DOM
-  - 错误提示本身通过在对应 `imds-field` 的正下方显示 `<span class="imds-error-text">`，并对 `imds-field` 添加／移除 `imds-validation-error` 类以进行视觉强调实现（详见 SKILL.md 的「表单实现模式」）
+- 错误提示本身通过在对应 `imds-field` 的正下方显示 `<span class="imds-error-text">`，并对 `imds-field` 添加／移除 `imds-validation-error` 类以进行视觉强调实现（详见 SKILL.md 的「表单实现模式」）
 - 即使发生页面跳转或临时性的重新显示（例如打开并关闭其他对话框），也不应导致输入值丢失

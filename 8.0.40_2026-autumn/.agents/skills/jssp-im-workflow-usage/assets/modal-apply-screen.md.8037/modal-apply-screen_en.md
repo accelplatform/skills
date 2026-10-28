@@ -197,16 +197,40 @@ function transferErrorPage(code, message) {
 <!-- Header -->
 <imart type="head">
   <!-- Title -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- Secure token (use the http-equiv form in the modal method) -->
   <meta http-equiv="X-Intramart-Secure-Token" content="<imart type="imSecureToken" mode="value" />"/>
   <!-- Processing modal API (defer required) -->
   <script src="im_workflow/js/api_base.js" defer></script>
+  <!-- CSS that controls the height/width of the content area, which differs per theme -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- Presentation page custom styles -->
   <style>
-    .button-spacing {
+    /* Layout control styles */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
     }
   </style>
   <!-- Presentation page scripts -->
@@ -330,6 +354,11 @@ function transferErrorPage(code, message) {
         };
       }
 
+      // Prevent the page from reloading through implicit form submission (pressing Enter in an input field)
+      document.getElementById('main-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+      });
+
       // "Back" button click event
       document.getElementById('back-button').addEventListener('click', () => {
         imWorkflow.transition.returnTo();
@@ -375,8 +404,9 @@ function transferErrorPage(code, message) {
         // Processing after application / re-application completion
         if (result && result.isProcessDone) {
           imuiShowSuccessMessage(isReapply ? 'The re-application has been completed.' : 'The application has been completed.');
-          imWorkflow.transition.afterProcess();
         }
+        // Page transition after the modal closes (call it regardless of completion or cancel)
+        imWorkflow.transition.afterProcess();
       });
 
       // "Temporary Save" button click event (async required)
@@ -403,8 +433,9 @@ function transferErrorPage(code, message) {
         // Processing after temporary save completion
         if (result && result.isProcessDone) {
           imuiShowSuccessMessage('The temporary save has been completed.');
-          imWorkflow.transition.afterProcess();
         }
+        // Page transition after the modal closes (call it regardless of completion or cancel)
+        imWorkflow.transition.afterProcess();
       });
 
       // Entry point
@@ -420,10 +451,10 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- Page overall container (the theme already wraps the page in imui-container, so no id is added here) -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="Back">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="Back" aria-label="Back">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
       </button>
     </div>
@@ -437,8 +468,8 @@ function transferErrorPage(code, message) {
       <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
     </div>
   </header>
-  <main>
-    <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+  <main class="pgstyle-layout-main">
+    <form id="main-form" class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
       <!-- TODO: Implement sections and fields here -->
       <!-- The following is a sample structure (example field implementation) -->
       <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
@@ -454,7 +485,7 @@ function transferErrorPage(code, message) {
                 <div class="imds-field-control">
                   <input type="text" id=":field1:" class="imds-textbox" value="" />
                 </div>
-                <span class="imds-error-text" for=":field1:" style="display:none;"></span>
+                <span class="imds-error-text" for=":field1:" id="error-field1" style="display:none;"></span>
               </div>
             </div>
           </div>
@@ -473,8 +504,8 @@ function transferErrorPage(code, message) {
           </div>
         </div>
       </section>
-    </div>
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+    </form>
+    <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
       <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">Apply</button>
       <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">Temporary Save</button>
     </div>
@@ -505,15 +536,17 @@ function transferErrorPage(code, message) {
 - **Match the key names of `userParameter` with the `userParam` of the action process**
   - Match exactly the key names that the action process (`action_process.js`) reads as `userParam.fieldName`
   - Consolidating into the `buildUserParameter()` function lets both the apply and temporary save buttons pass the same data
-- **For both `showApply()` and `showTemporarySave()`, call `imWorkflow.transition.afterProcess()` only when `isProcessDone` is true**
-  - `showApply()`: Call only when the application is completed (transition to the application list after completion)
-  - `showTemporarySave()`: Call only when the temporary save is completed (on failure or cancel, stay on the screen so the user can make corrections)
+- **For both `showApply()` and `showTemporarySave()`, call `imWorkflow.transition.afterProcess()` regardless of completion or cancel**
+  - On completion (`isProcessDone` is true), display a completion message; it then transitions to the calling screen
+  - On cancel, no matter processing has occurred, so `afterProcess()` does nothing and the screen stays (the user can correct the input)
 - **Be careful with the format of the secure token tag**
   - Use `<meta http-equiv="X-Intramart-Secure-Token">` instead of `<meta name="im_secure_token">`
 - **Do not omit the `defer` attribute of `api_base.js`**
 - **Place a "Back" button in the header**
   - Place a button with the `imds-header-back-button` div + `back-button` id before `imds-header-icon`
   - On click, call `imWorkflow.transition.returnTo()`
+- **Wrap the input fields in `<form id="main-form" class="imds-form">`** (the same skeleton as `assets/imds-form-page.md` of `jssp-imds-theme`)
+  - All buttons are `type="button"` and open the processing modal from JS, so the form is never submitted natively. To prevent the page from reloading through implicit submission when Enter is pressed in an input field, call `preventDefault()` in the `submit` event
 - **Make the event listeners of the apply and temporary save buttons `async` functions**
 - **Do not forget to create the routing XML**
   - If the URL to the application screen is not registered in `routing-jssp-config`, it will be inaccessible

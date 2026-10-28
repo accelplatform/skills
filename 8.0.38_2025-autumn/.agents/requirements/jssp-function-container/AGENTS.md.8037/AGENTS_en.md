@@ -152,6 +152,7 @@ function transferErrorPage(code, message) {
   - Escape the output JSON string using `.replace(/\//g, '\\/')` to neutralize slashes
     - This prevents unintended script termination when `</script>` is included in the JSON string on the presentation page
 - Do not use `new Packages.***` (direct instantiation of Java classes). This can cause memory leaks and processing locks that affect performance. Instead, use the SSJS global classes and APIs defined in `d.ts/`
+  - Only for processing that cannot be achieved with the SSJS APIs in d.ts or existing skills (e.g. operating Excel files with Apache POI), create a wrapper class on the Java side, register it as a JSSP API, and call it (the `jssp-im-java-wrapper` skill, available in projects that include the Java development feature). Do not create a wrapper for processing that can be achieved with the d.ts APIs
 - **Call APIs according to the type definitions in d.ts**
   - If the argument type does not include `null` (no `?` or `| null`), do not pass `null`. Determine whether it is optional by the presence of `?` (optional argument). Even when expressing "no conditions", pass an empty object of the appropriate type (e.g., `new AppCmnSearchCondition()`)
   - **Do not guess and call method names not defined in d.ts**. Always verify method names and argument types in d.ts or the reference (`reference/` directory) before implementing.

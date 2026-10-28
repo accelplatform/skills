@@ -129,7 +129,7 @@ Message 共通の使用方法、注意事項は、Documentation を参照して�
 
 ## 実装上の注意
 
-- カラークラスごとに適切なアイコンを使い分ける（上記 mode セクション参照）
+- カラークラスごとに適切なアイコンを使い分ける（上記 color セクション参照）
 - `imds-message-title` と `imds-message-content` のクラス名は Message コンポーネントと共通
 - `content-only` パターンでは構造が異なる（`imds-message-title` を使用せず、アイコンを直接配置する）
 - BannerMessage は画面上部に固定配置する用途を想定している。通常のインライン表示には Message を使用する

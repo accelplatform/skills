@@ -699,5 +699,5 @@ There are three variants of required marks. **Always standardize on a single var
 - Implementation patterns:
   - For server-side validation, include the input values as-is in the error response, and re-display them on the function container side using `<imart type="string" value=$xxx>`
   - For client-side validation, simply stop form submission with `preventDefault()` etc., without modifying the input value DOM
-  - For the error display itself, show `<span class="imds-error-text">` directly under the corresponding `imds-field`, and toggle the `imds-validation-error` class on the `imds-field` to visually emphasize it (see "Form Implementation Patterns" in SKILL.md for details)
+- For the error display itself, show `<span class="imds-error-text">` directly under the corresponding `imds-field`, and toggle the `imds-validation-error` class on the `imds-field` to visually emphasize it (see "Form Implementation Patterns" in SKILL.md for details)
 - Ensure that input values are not lost across page transitions or temporary re-displays (e.g. opening and closing another dialog)

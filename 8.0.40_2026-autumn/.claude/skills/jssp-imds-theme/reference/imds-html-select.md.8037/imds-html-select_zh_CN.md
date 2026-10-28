@@ -23,6 +23,7 @@ Select 是从选项中选择一个项目时使用的组件。
 | is-normal | imds-select | 标准尺寸 | 可选 |
 | is-medium | imds-select | 中等尺寸 | 可选 |
 | is-large | imds-select | 大尺寸 | 可选 |
+| is-static | imds-select | 仅供查看的静态显示状态（与 `disabled` 并用） | 可选 |
 
 ## HTML 代码片段
 
@@ -68,6 +69,26 @@ Select 是从选项中选择一个项目时使用的组件。
 <select class="imds-select" multiple>
 ```
 
+### is-static（仅供查看的静态显示）
+
+不可编辑值、仅供查看的显示状态。根据 HTML 规范，`<select>` 不存在 `readonly` 属性，因此并用 `is-static` 类与 `disabled` 属性来实现仅供查看的外观（注意这与 Textbox / Textarea 使用 `readonly` 不同）。
+
+```html
+<!-- 单选 -->
+<select class="imds-select is-static" disabled>
+  <option>Select-1</option>
+  <option>Select-2</option>
+  <option>Select-3</option>
+</select>
+
+<!-- 多选 -->
+<select multiple class="imds-select is-static" disabled>
+  <option>Select-1</option>
+  <option>Select-2</option>
+  <option>Select-3</option>
+</select>
+```
+
 ## 无障碍支持
 
 - 初始值在用户未进行更改时使用，因此请指定最常被选择的项目或推荐项目
@@ -78,3 +99,4 @@ Select 是从选项中选择一个项目时使用的组件。
 - `disabled` 添加到 `select` 元素上（也可添加到单个 `option` 元素上）
 - 使用 `multiple` 时将显示为列表，可选择多个项目
 - 在输入表单中使用时，用 Field（`imds-field`）进行包裹
+- 仅供查看的显示（`is-static`）须与 `disabled` 属性一起使用。`<select>` 无法指定 `readonly`

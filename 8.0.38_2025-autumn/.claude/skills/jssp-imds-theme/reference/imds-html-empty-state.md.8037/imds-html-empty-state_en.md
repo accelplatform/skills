@@ -5,38 +5,38 @@ paths:
 
 # EmptyState
 
-## 基本情報
+## Overview
 
-EmptyState は、ユーザが初めてアプリケーションを開いた際に、コンテンツが存在しない場合に表示する部品です。
-現在の状態の簡潔な説明と、次の行動を促すメッセージやボタンを配置する。
+EmptyState is a component displayed when no content exists, such as when a user opens an application for the first time.
+It presents a brief description of the current state and a message or button that prompts the next action.
 
-**設計原則（DESIGN.md）**: EmptyState は中立のプレースホルダーであり、severity 色（error/success/warning/info）は使用しない。アイコンは `is-gray-light` の中立トーンで表示する。
+**Design principle (DESIGN.md)**: EmptyState is a neutral placeholder and does not use severity colors (error/success/warning/info). Display the icon in the neutral `is-gray-light` tone.
 
-- 抽出元URL: https://document.intra-mart.jp/design/?path=/docs/components-emptystate--documentation
-- 基本クラス: imds-empty-state
+- Source URL: https://document.intra-mart.jp/design/?path=/docs/components-emptystate--documentation
+- Base class: imds-empty-state
 
 ## CSS Classes Reference
 
-| クラス名 | 付与先 | 用途 | 必須/オプション |
+| Class name | Applied to | Purpose | Required/Optional |
 |----------|--------|------|----------------|
-| imds-empty-state-container | div 要素 | EmptyState 全体のコンテナ | 必須 |
-| imds-empty-state | div 要素 | EmptyState 本体（サイズ・整列クラスを付与） | 必須 |
-| imds-empty-state-message-wrapper | div 要素 | アイコン + メッセージのラッパー | 必須 |
-| imds-empty-state-icon | span 要素 | アイコンのラッパー | オプション（省略可） |
-| imds-empty-state-message | div 要素 | メッセージ（タイトル + 詳細）のラッパー | 必須 |
-| imds-empty-state-message-title | p 要素 | 状態の簡潔な説明（タイトル） | 必須 |
-| imds-empty-state-message-content | p 要素 | 次の行動を促す詳細メッセージ | オプション（is-x-small/is-small では使用不可） |
-| imds-empty-state-content | div 要素 | アクションボタンのラッパー | オプション（is-x-small/is-small では使用不可） |
-| is-x-small | imds-empty-state | 極小サイズ（Popover 等の狭いエリア用） | オプション |
-| is-small | imds-empty-state | 小サイズ（Table や右ペイン等の狭いエリア用） | オプション |
-| is-medium | imds-empty-state | 中サイズ（Dialog 等の比較的広いエリア用） | オプション |
-| is-large | imds-empty-state | 大サイズ（デフォルト。ウィンドウ・ページ全体用） | オプション |
-| is-vertical | imds-empty-state | 要素を垂直方向に整列 | オプション |
-| is-horizontal | imds-empty-state | 要素を水平方向に整列 | オプション |
+| imds-empty-state-container | div element | Container for the whole EmptyState | Required |
+| imds-empty-state | div element | EmptyState body (apply size and alignment classes) | Required |
+| imds-empty-state-message-wrapper | div element | Wrapper for icon + message | Required |
+| imds-empty-state-icon | span element | Icon wrapper | Optional (can be omitted) |
+| imds-empty-state-message | div element | Wrapper for message (title + details) | Required |
+| imds-empty-state-message-title | p element | Brief description of the state (title) | Required |
+| imds-empty-state-message-content | p element | Detail message prompting the next action | Optional (not available with is-x-small/is-small) |
+| imds-empty-state-content | div element | Wrapper for action buttons | Optional (not available with is-x-small/is-small) |
+| is-x-small | imds-empty-state | Extra-small size (for narrow areas such as Popover) | Optional |
+| is-small | imds-empty-state | Small size (for narrow areas such as Table or right pane) | Optional |
+| is-medium | imds-empty-state | Medium size (for relatively wide areas such as Dialog) | Optional |
+| is-large | imds-empty-state | Large size (default; for a whole window or page) | Optional |
+| is-vertical | imds-empty-state | Align elements vertically | Optional |
+| is-horizontal | imds-empty-state | Align elements horizontally | Optional |
 
-## HTML スニペット
+## HTML Snippets
 
-### 基本形（is-large 相当）
+### Basic Form (equivalent to is-large)
 
 ```html
 <div class="imds-empty-state-container">
@@ -46,39 +46,39 @@ EmptyState は、ユーザが初めてアプリケーションを開いた際に
         <span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>
       </span>
       <div class="imds-empty-state-message">
-        <p class="imds-empty-state-message-title">アプリケーションが作成されていません</p>
-        <p class="imds-empty-state-message-content">新規作成ボタンからアプリケーションを作成してください。</p>
+        <p class="imds-empty-state-message-title">No applications have been created</p>
+        <p class="imds-empty-state-message-content">Create an application with the Create New button.</p>
       </div>
     </div>
     <div class="imds-empty-state-content imds-mt-7">
       <button type="button" class="imds-button is-large is-primary">
-        アプリケーションを新規作成
+        Create New Application
       </button>
     </div>
   </div>
 </div>
 ```
 
-以降は基本形からの差分のみを示す。
+The following sections show only the differences from the basic form.
 
-## バリエーション
+## Variations
 
-### アイコン
+### Icon
 
-基本的には「info」アイコン（`fa-circle-info`）を `is-gray-light` トーンで使用する。他に使用できるアイコンについては icon-font（imds-html-icon-font.md）を参照すること。severity 色（`is-danger`・`is-warning`・`is-success` 等）はアイコンに付与しない。
+Basically, use the "info" icon (`fa-circle-info`) in the `is-gray-light` tone. For other available icons, refer to icon-font (imds-html-icon-font.md). Do not apply severity colors (`is-danger`, `is-warning`, `is-success`, etc.) to the icon.
 
-### size（サイズ）
+### size (Size)
 
-`imds-empty-state` にサイズクラスを付与する。通常は `is-large`（デフォルト）を使用し、利用箇所に応じて選択する。
+Apply a size class to `imds-empty-state`. Normally use `is-large` (default), and choose according to where it is used.
 
 ```html
 <div class="imds-empty-state-container">
-  <div class="imds-empty-state is-x-small">   <!-- 極小: Popover などの狭いエリア -->
+  <div class="imds-empty-state is-x-small">   <!-- Extra-small: narrow areas such as Popover -->
     <div class="imds-empty-state-message-wrapper">
       <span class="imds-empty-state-icon">
         <span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>
       </span>
-      <div class="imds-empty-state-message"><p class="imds-empty-state-message-title">処理は設定されていません。</p></div>
+      <div class="imds-empty-state-message"><p class="imds-empty-state-message-title">No process is configured.</p></div>
     </div>
   </div>
 </div>
@@ -86,37 +86,37 @@ EmptyState は、ユーザが初めてアプリケーションを開いた際に
 
 ```html
 <div class="imds-empty-state-container">
-  <div class="imds-empty-state is-small">     <!-- 小: Table や右ペインなどの狭いエリア -->
+  <div class="imds-empty-state is-small">     <!-- Small: narrow areas such as Table or right pane -->
     <div class="imds-empty-state-message-wrapper">
       <span class="imds-empty-state-icon">
         <span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>
       </span>
-      <div class="imds-empty-state-message"><p class="imds-empty-state-message-title">エンティティ項目が存在しません。「エンティティ項目編集」ボタンから追加してください。</p></div>
+      <div class="imds-empty-state-message"><p class="imds-empty-state-message-title">No entity items exist. Add them with the "Edit Entity Items" button.</p></div>
     </div>
   </div>
 </div>
 ```
 
-`is-x-small` / `is-small` では `imds-empty-state-message-content`（詳細メッセージ）と `imds-empty-state-content`（アクションボタン）は使用不可。タイトルのみを表示する。
+With `is-x-small` / `is-small`, `imds-empty-state-message-content` (detail message) and `imds-empty-state-content` (action buttons) are not available. Display only the title.
 
 ```html
 <div class="imds-empty-state-container">
-  <div class="imds-empty-state is-medium">    <!-- 中: Dialog などの比較的広いエリア -->
+  <div class="imds-empty-state is-medium">    <!-- Medium: relatively wide areas such as Dialog -->
     <div class="imds-empty-state-message-wrapper">
       <span class="imds-empty-state-icon">
         <span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>
       </span>
       <div class="imds-empty-state-message">
-        <p class="imds-empty-state-message-title">このエンティティを参照先としているエンティティはありません。</p>
+        <p class="imds-empty-state-message-title">No entities reference this entity.</p>
       </div>
     </div>
   </div>
 </div>
 ```
 
-`is-medium` / `is-large` は必要に応じてメッセージ・アクションボタンを表示できる。
+`is-medium` / `is-large` can display a message and action buttons as needed.
 
-### Table 内に配置する場合（is-small）
+### Placing Inside a Table (is-small)
 
 ```html
 <div class="imds-table is-bordered is-area-bordered">
@@ -124,10 +124,10 @@ EmptyState は、ユーザが初めてアプリケーションを開いた際に
     <table>
       <thead>
         <tr>
-          <th><span>主キー</span></th>
-          <th><span>必須</span></th>
+          <th><span>Primary Key</span></th>
+          <th><span>Required</span></th>
           <th><span>ID</span></th>
-          <th><span>エンティティ項目</span></th>
+          <th><span>Entity Item</span></th>
         </tr>
       </thead>
       <tbody>
@@ -139,7 +139,7 @@ EmptyState は、ユーザが初めてアプリケーションを開いた際に
                   <span class="imds-empty-state-icon">
                     <span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>
                   </span>
-                  <div class="imds-empty-state-message"><p class="imds-empty-state-message-title">エンティティ項目が存在しません。「エンティティ項目編集」ボタンから追加してください。</p></div>
+                  <div class="imds-empty-state-message"><p class="imds-empty-state-message-title">No entity items exist. Add them with the "Edit Entity Items" button.</p></div>
                 </div>
               </div>
             </div>
@@ -151,47 +151,47 @@ EmptyState は、ユーザが初めてアプリケーションを開いた際に
 </div>
 ```
 
-### alignment（整列）
+### alignment (Alignment)
 
 ```html
-<div class="imds-empty-state is-vertical">    <!-- 垂直整列 -->
-<div class="imds-empty-state is-horizontal">  <!-- 水平整列 -->
+<div class="imds-empty-state is-vertical">    <!-- Vertical alignment -->
+<div class="imds-empty-state is-horizontal">  <!-- Horizontal alignment -->
 ```
 
-### アイコンなし
+### Without Icon
 
-`imds-empty-state-icon` を省略する。
+Omit `imds-empty-state-icon`.
 
 ```html
 <div class="imds-empty-state-container">
   <div class="imds-empty-state">
     <div class="imds-empty-state-message-wrapper">
       <div class="imds-empty-state-message">
-        <p class="imds-empty-state-message-title">アプリケーションが作成されていません</p>
-        <p class="imds-empty-state-message-content">新規作成ボタンからアプリケーションを作成してください。</p>
+        <p class="imds-empty-state-message-title">No applications have been created</p>
+        <p class="imds-empty-state-message-content">Create an application with the Create New button.</p>
       </div>
     </div>
     <div class="imds-empty-state-content imds-mt-7">
       <button type="button" class="imds-button is-large is-primary">
-        アプリケーションを新規作成
+        Create New Application
       </button>
     </div>
   </div>
 </div>
 ```
 
-## レスポンシブ対応
+## Responsive Behavior
 
-EmptyState は親要素（コンテナ要素）の横幅に合わせてアイコンの表示位置が自動制御される。
+EmptyState automatically controls the icon position according to the width of its parent (container) element.
 
-- `is-medium` / `is-large`: コンテナ幅が 768px を下回ると自動的に垂直方向に整列する。
-- `is-x-small` / `is-small`: コンテナ幅が 520px を下回ると自動的に垂直方向に整列する。ただし Table 内に配置した場合はコンテナ幅に関わらず常にアイコンとタイトルが横並び・左寄せで表示される。
+- `is-medium` / `is-large`: When the container width falls below 768px, elements are automatically aligned vertically.
+- `is-x-small` / `is-small`: When the container width falls below 520px, elements are automatically aligned vertically. However, when placed inside a Table, the icon and title are always displayed side by side and left-aligned regardless of the container width.
 
-## 実装上の注意
+## Implementation Notes
 
-- **severity 色は使わない**（DESIGN.md「empty-state: 中立のプレースホルダー」）。アイコンは常に `is-gray-light` の中立トーンとし、`is-danger` 等のステータス色クラスを付与してはならない。空状態を表す文脈であっても error/warning とは無関係な中立表現に留める。
-- アイコンは基本的に「info」（`fa-circle-info`）を使用する。
-- メッセージ（タイトル）は状態を簡潔に記載し、詳細メッセージ（`imds-empty-state-message-content`）で次の行動を促す。
-- ユーザが次に行うべき行動が明確な場合は、`imds-empty-state-content` 内にアクションボタン（`imds-button is-large is-primary` 等）を配置する。
-- `is-x-small` / `is-small` サイズでは詳細メッセージとアクションボタンは使用できない（タイトルのみ）。
-- 通常は `is-large`（デフォルト）を使用し、利用箇所の広さに応じて `is-x-small`〜`is-large` を選択する。
+- **Do not use severity colors** (DESIGN.md "empty-state: neutral placeholder"). Always use the neutral `is-gray-light` tone for the icon, and do not apply status color classes such as `is-danger`. Even in contexts representing an empty state, keep to a neutral expression unrelated to error/warning.
+- Basically, use the "info" icon (`fa-circle-info`).
+- Describe the state briefly in the message (title), and prompt the next action with the detail message (`imds-empty-state-message-content`).
+- When the user's next action is clear, place action buttons (`imds-button is-large is-primary`, etc.) inside `imds-empty-state-content`.
+- With the `is-x-small` / `is-small` sizes, the detail message and action buttons are not available (title only).
+- Normally use `is-large` (default), and choose from `is-x-small` to `is-large` according to the size of the area where it is used.

@@ -1,21 +1,21 @@
-# BackgroundColor（背景色ユーティリティ）
+# BackgroundColor (Background Color Utility)
 
-## 基本情報
+## Overview
 
-BackgroundColor は、指定した要素に背景色を指定するための imds ヘルパークラス群である。これらは imds のユーティリティクラスであり、`imds-section` 等のコンポーネント固有クラスと組み合わせて使う。単独のコンポーネントとして使うものではない。`has-background-color-gray` は Section 等と組み合わせることで、視覚的に分かりやすいセクショニングを提供する。
+BackgroundColor is a set of imds helper classes for specifying the background color of an element. These are imds utility classes used in combination with component-specific classes such as `imds-section`. They are not used as standalone components. Combining `has-background-color-gray` with Section and similar components provides visually clear sectioning.
 
-- 抽出元: `uiux-share/helper/BackgroundColor.md`
+- Source: `uiux-share/helper/BackgroundColor.md`
 
 ## CSS Classes Reference
 
-| クラス名 | 用途 | 値 |
+| Class name | Purpose | Value |
 |----------|------|----|
-| `has-background-color-gray` | 要素の背景をグレーにする | 背景色: グレー |
-| `has-background-color-white` | 要素の背景を白にする | 背景色: 白 |
+| `has-background-color-gray` | Makes the element background gray | Background color: gray |
+| `has-background-color-white` | Makes the element background white | Background color: white |
 
-## 使用例
+## Usage Examples
 
-### セクションの視覚的な区切り
+### Visual separation of sections
 
 ```html
 <div>
@@ -30,7 +30,7 @@ BackgroundColor は、指定した要素に背景色を指定するための imd
 </div>
 ```
 
-## 実装上の注意
+## Implementation Notes
 
-- 背景色を持つ要素に十分な余白（`imds-p-*` / `imds-py-*` / `imds-px-*` 等）を併用しないと、背景の視認性が損なわれる。
-- コンテンツと背景のコントラスト比が低下しないよう、テキスト色との組み合わせに注意する。
+- Without sufficient spacing (`imds-p-*` / `imds-py-*` / `imds-px-*`, etc.) on an element with a background color, the background loses visibility.
+- Choose text colors carefully so that the contrast ratio between content and background does not drop.

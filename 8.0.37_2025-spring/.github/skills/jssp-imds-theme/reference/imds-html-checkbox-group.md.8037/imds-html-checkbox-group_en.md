@@ -92,9 +92,38 @@ Add `imds-validation-error` to `div.imds-field` and append an error message at t
 </div>
 ```
 
+### Equal-Interval Layout (imds-w-33)
+
+When there are many items spanning multiple lines, add `imds-w-33` to `div.imds-checkbox-group` to arrange the items at equal intervals (in thirds) for better visibility. Columns stay aligned even when label lengths vary.
+
+```html
+<div class="imds-field">
+  <div class="imds-field-label"><label for="todo-replace-:ra:">Label</label></div>
+  <div class="imds-field-control">
+    <div class="imds-checkbox-group is-horizontal imds-w-33">
+      <label class="imds-checkbox">
+        <input type="checkbox" />
+        <span>xxxxxxxxxx</span>
+      </label>
+      <label class="imds-checkbox">
+        <input type="checkbox" />
+        <span>xxx</span>
+      </label>
+      <label class="imds-checkbox">
+        <input type="checkbox" />
+        <span>xxxxx</span>
+      </label>
+      <!-- Repeat label structure as many times as needed -->
+    </div>
+  </div>
+</div>
+```
+
+Without `imds-w-33`, the start position of each item varies with the label length of the previous item, which reduces visibility (NG example). Always add it when there are many items.
+
 ## Accessibility
 
-- When there are many items spanning multiple lines, arrange them at equal intervals to improve visibility
+- When there are many items spanning multiple lines, arrange them at equal intervals with `imds-w-33` to improve visibility
 
 ## Implementation Notes
 
@@ -102,3 +131,5 @@ Add `imds-validation-error` to `div.imds-field` and append an error message at t
 - The structure of each checkbox conforms to the Checkbox component
 - Wrap with Field (`imds-field`) when used in an input form
 - On validation error, add `imds-validation-error` to `imds-field` and display the message with `imds-error-text`
+- Do not use `fieldset`/`legend`. Group with the combination of `imds-field` + `imds-checkbox-group` + `label` (the actual DOM has no examples using `fieldset`/`legend`)
+- When there are many items spanning multiple lines, add `imds-w-33` to arrange them at equal intervals

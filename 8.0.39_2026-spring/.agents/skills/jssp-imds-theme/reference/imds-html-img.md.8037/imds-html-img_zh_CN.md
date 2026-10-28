@@ -56,6 +56,12 @@ Img 使用 `<img>` 标签显示图标。
   <span class="imds-button-text">添加现有资源</span>
 </button>
 
+<!-- 在新标签页中打开按钮（is-outlined） -->
+<button type="button" class="imds-button is-outlined">
+  <span class="imds-icon"><img src="img/url.svg" /></span>
+  <span class="imds-button-text">在新标签页中打开</span>
+</button>
+
 <!-- 仅图标按钮 -->
 <button type="button" class="imds-button is-ghost">
   <span class="imds-icon"><img src="img/addition.svg" /></span>

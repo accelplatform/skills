@@ -70,6 +70,16 @@ Radio 是从选项中选择一个项目时使用的组件。
 ## 实现注意事项
 
 - 单选按钮使用 `label.imds-radio > input[type="radio"] + span` 的结构编写
-- 同一组的单选按钮须设置相同的 `name` 属性
+- **同一组内的 `name` 属性必须一致**。未设置 `name` 或组内值不同时，浏览器中无法实现互斥选择（仅能选中一项的状态）。此处容易出现实现错误，应作为必须事项处理
+  ```html
+  <label class="imds-radio">
+    <input type="radio" name="status" value="active" />
+    <span>有效</span>
+  </label>
+  <label class="imds-radio">
+    <input type="radio" name="status" value="inactive" />
+    <span>无效</span>
+  </label>
+  ```
 - `disabled` 与 `checked` 可以组合使用（如已选中且禁用等）
-- 分组多个单选按钮时，使用 RadioGroup
+- 分组多个单选按钮时，使用 RadioGroup（`imds-radio-group`）。详见 [imds-html-radio-group.md](imds-html-radio-group.md)

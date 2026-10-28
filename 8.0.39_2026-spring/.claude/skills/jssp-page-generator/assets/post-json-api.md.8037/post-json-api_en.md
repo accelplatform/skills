@@ -385,7 +385,8 @@ function init(request) {
 
 ## Test Screen Presentation Page (sample_api/view/post_json_test.html)
 
-A verification screen with a textarea for the request body and a textarea for displaying the response. "Load sample" populates a sample JSON, "Send" performs `fetch`, and the HTTP status / received type / summary / response body are displayed.
+A verification screen that stacks the request body textarea above the response area (a detail table of HTTP status / received type / summary, and a read-only textarea for the response body).
+"Load sample" populates a sample JSON, and "Send" performs `fetch` and displays the response.
 
 ```html
 <imart type="head">
@@ -396,40 +397,6 @@ A verification screen with a textarea for the request body and a textarea for di
       display: flex;
       gap: 0.75em;
       align-items: center;
-      margin-top: 0.5em;
-    }
-    .post-json-response {
-      background-color: var(--imds-color-background-secondary, #f5f7fa);
-      border: 1px solid var(--imds-color-border, #d0d7de);
-      border-radius: 0.5em;
-      padding: 1em 1.5em;
-      margin-top: 1em;
-    }
-    .post-json-response-meta {
-      display: flex;
-      gap: 1.5em;
-      flex-wrap: wrap;
-      margin-bottom: 0.75em;
-      font-size: 0.875em;
-    }
-    .post-json-response-meta dt {
-      font-weight: bold;
-      display: inline;
-      margin-right: 0.5em;
-    }
-    .post-json-response-meta dd {
-      display: inline;
-      margin: 0;
-    }
-    .post-json-response-body {
-      width: 100%;
-      min-height: 12em;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.875em;
-    }
-    .post-json-request-body {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.875em;
     }
   </style>
   <!-- Scope $data via an IIFE instead of leaving it in the global scope -->
@@ -567,7 +534,7 @@ A verification screen with a textarea for the request body and a textarea for di
     <imart type="imSecureToken" />
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="request-section-title">
-      <h2 id="request-section-title" class="imds-mb-3">Request</h2>
+      <h2 id="request-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">Request</h2>
       <div class="imds-field" for=":requestBody:">
         <div class="imds-field-label">
           <label for=":requestBody:" class="has-text-weight-bold">JSON body</label>
@@ -576,13 +543,14 @@ A verification screen with a textarea for the request body and a textarea for di
           <textarea
             id=":requestBody:"
             name="requestBody"
-            class="imds-textarea post-json-request-body"
+            class="imds-textarea is-small"
             rows="10"
+            style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"
             placeholder='{ "key": "value" }'></textarea>
-          <span class="imds-help-text">Sent as POST with Content-Type: application/json.</span>
         </div>
+        <span class="imds-help-text">Sent as POST with Content-Type: application/json.</span>
       </div>
-      <div class="post-json-actions">
+      <div class="post-json-actions imds-mt-2">
         <button type="button" class="imds-button is-primary" id="send-button">
           <span class="imds-icon"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></span>
           <span class="imds-button-text">Send</span>
@@ -597,23 +565,29 @@ A verification screen with a textarea for the request body and a textarea for di
     </section>
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="response-section-title">
-      <h2 id="response-section-title" class="imds-mb-3">Response</h2>
-      <div id="post-json-response" class="post-json-response" style="display:none;" role="status" aria-live="polite">
-        <dl class="post-json-response-meta">
-          <div>
-            <dt>HTTP status</dt>
-            <dd id=":responseStatus:"></dd>
+      <h2 id="response-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">Response</h2>
+      <div id="post-json-response" class="has-background-color-gray imds-border-1 imds-p-4" style="display:none;" role="status" aria-live="polite">
+        <div class="imds-table is-area-bordered is-bordered is-narrow" style="width: fit-content;">
+          <div class="imds-table-inner">
+            <table>
+              <tbody>
+                <tr>
+                  <th><span>HTTP status</span></th>
+                  <td><span id=":responseStatus:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>Received type</span></th>
+                  <td><span id=":responseValueType:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>Summary</span></th>
+                  <td><span id=":responseSummary:"></span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div>
-            <dt>Received type</dt>
-            <dd id=":responseValueType:"></dd>
-          </div>
-          <div>
-            <dt>Summary</dt>
-            <dd id=":responseSummary:"></dd>
-          </div>
-        </dl>
-        <div class="imds-field" for=":responseBody:">
+        </div>
+        <div class="imds-field imds-mt-4" for=":responseBody:">
           <div class="imds-field-label">
             <label for=":responseBody:" class="has-text-weight-bold">Response body</label>
           </div>
@@ -621,8 +595,9 @@ A verification screen with a textarea for the request body and a textarea for di
             <textarea
               id=":responseBody:"
               name="responseBody"
-              class="imds-textarea post-json-response-body"
+              class="imds-textarea is-small is-static"
               rows="15"
+              style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"
               readonly></textarea>
           </div>
         </div>
@@ -635,6 +610,8 @@ A verification screen with a textarea for the request body and a textarea for di
 ---
 
 ## Routing Configuration (sample_api.xml)
+
+The routing of both `file-upload-download-api.md` and `post-json-api.md` is defined in `sample_api.xml`. When using both in the same project, merge their `file-mapping` entries into the same `sample_api.xml`.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

@@ -1,6 +1,6 @@
 ---
 name: jssp-imds-theme
-description: Generates HTML components for presentation pages compliant with the intra-mart Design System (imds). Use whenever working with UI parts such as tables, buttons, forms, dialogs, checkboxes, radio buttons, selects, textboxes, tabs, accordions, pagination, etc. Never write imds class names from memory or guesswork — always refer to the references in this skill. Use when mentioning writing HTML, creating screen layouts, or placing UI components.
+description: Generates HTML components for presentation pages compliant with the intra-mart Design System (imds). Use whenever working with UI parts such as tables, buttons, forms, dialogs, checkboxes, radio buttons, selects, textboxes, tabs, accordions, pagination, empty-state displays, utility classes for spacing, grids, etc., and composite patterns such as search layouts and multilingual input fields. Never write imds class names from memory or guesswork — always refer to the references in this skill. Use when mentioning writing HTML, creating screen layouts, or placing UI components. Use this skill by default for JSSP screen generation when no UI theme is explicitly specified (do not use it when plain HTML, a custom theme, etc. is explicitly specified).
 ---
 
 # imds-Compliant HTML Code Generation Skill
@@ -13,7 +13,7 @@ A skill set for creating the HTML tag portions of presentation pages that comply
 
 When generating HTML, proceed with the following steps:
 
-1. **Check the page-wide template first** (for list screens: `assets/imds-list-page.md`; for form screens: `assets/imds-form-page.md`)
+1. **Check the page-wide template first** (for list screens: `assets/imds-list-page.md`; for form screens: `assets/imds-form-page.md`; for export screens: `assets/imds-export-screen.md`; for import screens: `assets/imds-import-screen.md`)
    - The placement of `<header class="imds-header">` and its relationship with `<main>` is only explained here
 2. Identify the UI components needed from the user's requirements
 3. Load the corresponding file(s) under `reference/` for the relevant component(s)
@@ -38,14 +38,29 @@ In particular, mandatory information related to page structure — such as the p
 |------|------------------|
 | List screen (list + action buttons) | `assets/imds-list-page.md` |
 | Input form screen (CRUD) | `assets/imds-form-page.md` |
+| Export screen (multi-step screen with a stepper) | `assets/imds-export-screen.md` |
+| Import screen (multi-step screen with a stepper + import result summary) | `assets/imds-import-screen.md` |
 
-When generating a new screen, first read one of these two files, use the page skeleton as a base, and then refer to the individual component references.
+When generating a new screen, first read one of these four files, use the page skeleton as a base, and then refer to the individual component references.
+
+### File Categories under `reference/` (File Name Prefixes)
+
+The files under `reference/` fall into three categories by purpose. Look for files in the category that matches the user's requirements.
+
+| Prefix | Content | Examples |
+|---|---|---|
+| `imds-html-*` | Individual UI components (buttons, tables, dialogs, etc.) | `imds-html-button.md`, `imds-html-table.md` |
+| `imds-helper-*` | Utility classes for spacing, text, background color, borders, width, line clamping, scrollbars, etc. (not used alone; combined with components) | `imds-helper-spacing.md` (`imds-p-*`/`imds-m-*`), `imds-helper-flexbox-grid.md` (`imds-grid`, `has-cols-N`, `is-col-span-N`) |
+| `imds-common-*` | Frequently used business patterns combining multiple components (search layout, multilingual input fields, indeterminate checkboxes, fixed header layout, etc.) | `imds-common-search-layout.md`, `imds-common-multilingual-input.md`, `imds-common-fixed-header-layout.md` |
+
+Do not implement spacing, font size, grid layout, etc. with custom CSS; first check whether `imds-helper-*` provides a class. When implementing composite UIs such as search fields, multilingual input, or data-list linkage, first check whether `imds-common-*` has a matching pattern.
 
 ### Icons in `<header class="imds-header">` Are Required
 
 Inside `<header class="imds-header">`, placing only `imds-header-title` is **not allowed**.
 **Always place at least one of the icon area (`imds-header-icon` or `imds-header-nav` — these two are mutually exclusive and must not be placed together) or `imds-header-back-button` at the beginning.**
 `imds-header-back-button` **can be combined** with `imds-header-icon` / `imds-header-nav` — it is not a replacement for the icon. On screens that need "back" navigation (detail/edit screens, etc.), the default is to place the back-button **while keeping the icon area** rather than removing it (see "backItemExists" in `reference/imds-html-header.md` for details).
+Note that a "title only" configuration with none of `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` is itself a legitimate variation in uiux-share, and is neither "deprecated" nor something that "breaks the design" (see `reference/imds-html-header.md`). For business screens in this project, placing one of the above is required **as an operational rule** to keep a consistent look across screens.
 
 | Purpose | Element to place | Icon examples |
 |------|------------|------------|
@@ -130,6 +145,10 @@ Do not write the screen name directly in `<h1>` alone (it fails to meet the imds
 
 Note: The rule "do not add `<header>` to presentation pages" in `.github/instructions/jssp-accessibility.instructions.md` is intended **to avoid duplication with the platform's global `<header>`**, and the imds `<header class="imds-header">` (in-page header) is exempt from this rule.
 
+### Fixing the Header/Footer and Scrolling Only the Content Area
+
+On list, form, wizard, and similar screens, when you want to "always keep the header (and the footer with action buttons) fixed and scroll only the content area vertically", use the layout control pattern with the fixed class names `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` / `pgstyle-layout-footer` (`assets/imds-list-page.md` / `assets/imds-form-page.md`; for wizards, `assets/imds-export-screen.md` / `assets/imds-import-screen.md`), and load `theme-conditional-layout.css` in `<imart type="head">`. Small screens where simple vertical stacking is enough do not need it, but screens that require a fixed footer or partial scrolling must follow this pattern. For special layouts not covered by these templates, refer to the explanation in `reference/imds-common-fixed-header-layout.md`.
+
 ### Do Not Place Business Data Action Buttons in `imds-header-actions`
 
 You **must not place data-action buttons such as "New", "Add", or "Register" on the right side of `<header class="imds-header">` (`imds-header-actions`)** (UI team design rule).
@@ -181,11 +200,11 @@ Common error patterns:
 | `imds-required-mark` (span) | Apply `imds-required-label-required` class to a `<span>`/`<label>` |
 | `imds-inline-message is-error` (for field error display) | `<span class="imds-error-text">` |
 
-If unsure, run `validate-imds.js` and check whether a `IMDS-U-001` warning is raised (see below).
+If unsure, run `validate-imds.js` and check whether a `IMDS-UNKNOWN-001` warning is raised (see below).
 
-### Form Implementation Pattern (Mandatory Reference: `assets/simple-form.md`)
+### Form Implementation Pattern (Mandatory Reference: `assets/imds-form-page.md`)
 
-When implementing input forms, always follow the canonical pattern in `.github/skills/jssp-page-generator/assets/simple-form.md`.
+When implementing input forms, always follow `assets/imds-form-page.md` (page skeleton, footer, and combinations of input components) and the canonical pattern below.
 Placing individual `imds-field` items in a flat list is incorrect. The standard is the nested structure: **`imds-field-container > imds-field-group > imds-field-group-label + imds-field-group-control > imds-field`**.
 
 ```html
@@ -242,6 +261,8 @@ When implementing a dialog, use **HTML5 native `<dialog class="imds-dialog-wrapp
 - With a `<div>` root, you have to implement these yourself, and missing pieces become bug sources
 - See `reference/imds-html-dialog.md` for details
 - For the composite pattern that places an input form inside a dialog (new / edit dialogs, etc.), see `reference/imds-html-dialog-form.md`
+- For the pattern that displays read-only information in table form inside a dialog (detail/view dialogs), see `reference/imds-html-dialog-detail.md`
+- For the pattern that places a search box + list table inside a dialog and lets the user pick a value from the list (data selection/lookup dialogs), see `reference/imds-html-dialog-select.md`
 
 ### Padding Inside Dialog Content
 
@@ -284,9 +305,15 @@ Custom CSS definitions should be a last resort.
 Each component has state classes based on purpose. Use state classes based on what action is being performed, not for color purposes.
 For example, do not use `is-danger` just to make something red, and do not apply color via CSS.
 
+### Bold and Spacing for Headings (`imds-heading`)
+
+- For an `imds-heading` without `is-bordered`, add `has-text-weight-bold` in the initial proposal (so it does not get lost on the page; it may be removed after visually checking the page balance)
+- For a heading placed at the start of a section with padding (`imds-py-4` / `imds-p-4`, etc.), i.e. a heading with no preceding sibling, add `imds-mt-0` (the section padding and the heading's top margin overlap, doubling the space)
+
 ### Table Structure Notes
 
 Tables must always be implemented with the double-structure of `imds-table` and `imds-table-inner`.
+For the criteria for applying variation classes (`is-area-bordered` / `is-hoverable` / `is-sticky` / `is-bordered` / `is-narrow`) and when to use `width: fit-content`, see "Implementation Notes" in `reference/imds-html-table.md`.
 
 ```html
 <div class="imds-table" style="width: 100%; height: 100%; max-height: 250px;">
@@ -332,13 +359,17 @@ node .github/skills/jssp-imds-theme/scripts/validate-imds.js <target file or dir
 | Tag | `imds-tag` is limited to `span` elements |
 | Textarea | `imds-textarea` is limited to `textarea` elements (do not confuse with textbox) |
 | Element type | `imds-select`=`select`, `imds-textbox`=`input`, `imds-textarea`=`textarea`, `imds-checkbox`/`imds-radio`=`label`, plus the element type for each component's base class |
-| Undefined class detection | Classes with `imds-*` prefix that are not in `reference/` or `.github/instructions/` are reported as `IMDS-U-001` (warning). Helps catch typos or imaginary classes (e.g., `imds-page-header`) |
+| Header (exclusive classes) | Whether `imds-header-nav` and `imds-header-icon` are placed together inside `header.imds-header` (`IMDS-HEADER-300`) |
+| Tag (misused intent classes) | Whether `imds-tag` has intent classes that do not exist for tags, such as `is-success`/`is-danger`/`is-warning`/`is-error` (`IMDS-TAG-400`) |
+| Table (colspan of the empty-result row) | Whether `N` in a single-cell row such as an empty-result row (`<td colspan="N">`) matches the actual number of `<th>` in the same table (`IMDS-TABLE-500`, warning) |
+| Divider (element type) | Whether `imds-divider` is either `hr` (horizontal divider) or `div`+`is-vertical` (vertical divider) (`IMDS-DIVIDER-500`) |
+| Undefined class detection | Classes with `imds-*` prefix that are not in `reference/` or `.github/instructions/` are reported as `IMDS-UNKNOWN-001` (warning). Helps catch typos or imaginary classes (e.g., `imds-page-header`) |
 
 ### Handling Validation Results
 
 - `PASS` → Done as-is
 - `ERROR` → Fix the HTML structure at the indicated line and repeat validation until PASS
-- `WARN [IMDS-U-001]` → A `imds-*` class not in the reference is being used. Likely a typo or imaginary class. Check the reference and correct the class name. If you intentionally define your own, confirm the corresponding CSS is applied and consider documenting it in a rules file
+- `WARN [IMDS-UNKNOWN-001]` → A `imds-*` class not in the reference is being used. Likely a typo or imaginary class. Check the reference and correct the class name. If you intentionally define your own, confirm the corresponding CSS is applied and consider documenting it in a rules file
 
 ## Implementation Workflow Examples
 
@@ -354,7 +385,7 @@ node .github/skills/jssp-imds-theme/scripts/validate-imds.js <target file or dir
 
 1. Load `table.md` to get the basic table structure
 2. Load `button.md` to place the new registration button (`is-primary`) and edit button (`is-outlined`)
-3. Load `imds-html-dialog.md` as needed to implement a confirmation dialog (use `imds-html-dialog-form.md` for dialogs containing an input form)
+3. Load `imds-html-dialog.md` as needed to implement a confirmation dialog (use `imds-html-dialog-form.md` for dialogs containing an input form, `imds-html-dialog-detail.md` for read-only detail dialogs, and `imds-html-dialog-select.md` for dialogs that let the user select data from a list)
 4. Run `node .github/skills/jssp-imds-theme/scripts/validate-imds.js <generated file>` and confirm PASS
 
 ## Troubleshooting

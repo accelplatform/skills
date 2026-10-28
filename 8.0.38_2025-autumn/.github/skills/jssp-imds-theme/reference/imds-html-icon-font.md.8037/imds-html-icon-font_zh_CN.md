@@ -107,6 +107,29 @@ IconFont 使用 `<i>` 标签显示图标。
 </button>
 ```
 
+### 与最小宽度・按钮间距组合
+
+在工具栏或操作区域中，与最小宽度（内联 `style="min-width: 8em;"`）及按钮间距的指定组合使用。详情请参阅 [imds-html-button.md](imds-html-button.md)。
+
+```html
+<div style="display: flex; gap: 1em;">
+  <button type="button" class="imds-button is-primary" style="min-width: 8em;">
+    <span class="imds-icon"><i class="fa-solid fa-add"></i></span>
+    <span class="imds-button-text">新建</span>
+  </button>
+  <button type="button" class="imds-button is-danger" style="min-width: 8em;">
+    <span class="imds-icon"><i class="fa-solid fa-trash-can"></i></span>
+    <span class="imds-button-text">删除</span>
+  </button>
+  <button type="button" class="imds-button is-outlined is-primary" aria-label="添加">
+    <span class="imds-icon is-primary"><i class="fa-solid fa-add"></i></span>
+  </button>
+  <button type="button" class="imds-button is-outlined is-danger" aria-label="删除">
+    <span class="imds-icon is-danger"><i class="fa-solid fa-trash-can"></i></span>
+  </button>
+</div>
+```
+
 ### 与 Tag 组合
 
 ```html

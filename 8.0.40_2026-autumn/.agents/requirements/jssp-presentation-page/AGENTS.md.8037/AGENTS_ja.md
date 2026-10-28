@@ -2,6 +2,17 @@
 
 > **適用範囲**: 🟢 **常時** — プレゼンテーションページ（`.html`）を生成する際に適用。HTML 構造、バリデーション、id 命名規約等。
 
+## UI テーマの選択
+
+- プロンプト・仕様書で UI テーマ（ピュア HTML、独自テーマ等）が明示されている場合は、その指定に従う
+- imds テーマを使わない場合のルートタグの扱いは「実装方針」を参照する
+
+### imds テーマ（既定）
+
+- UI テーマの明示指定が無い場合は、imds テーマで画面を生成する
+- 画面骨格は `.agents/skills/jssp-imds-theme/assets/` のページ全体テンプレート、UI 部品は同 `reference/` を参照する（詳細は `jssp-imds-theme` スキル）
+- `imuiShowErrorMessage` / `imuiShowSuccessMessage` / `imuiShowWarningMessage` 等のメッセージ表示 API と `imuiCalendar` は imds テーマと併用してよい
+
 ## プレゼンテーションページの標準実装方針
 
 ### 基本構造
@@ -180,6 +191,25 @@ var participants = [];                  // var は使用しない
 ```html
 <imart type="string" value=$data escapeXml="false" escapeJs="false" />    <!-- OK -->
 ```
+
+#### 3. HTML コメントや JavaScript のコメントの中に記述しても処理される
+
+`<imart>` タグは JSP のタグと同様にサーバ側で処理されるため、HTML コメント（`<!-- -->`）や `<script>` 内の JavaScript のコメント（`//`・`/* */`）の中に記述しても無効にならず、処理結果（置換文字列）に置き換えられる。置換結果は画面には表示されないが、HTML ソースには出力される。
+
+悪い例（いずれも `<imart>` タグが実行され、`$data.foo` の値がコメント内に出力される）:
+```html
+<!--
+<imart type="string" value=$data.foo />
+-->
+```
+```html
+<script>
+  // <imart type="string" value=$data.foo />
+  /* <imart type="string" value=$data.foo /> */
+</script>
+```
+
+`<imart>` タグを無効にしたい場合は、コメントで囲まずにタグ自体を削除すること。
 
 ## バインド変数の使用方法
 

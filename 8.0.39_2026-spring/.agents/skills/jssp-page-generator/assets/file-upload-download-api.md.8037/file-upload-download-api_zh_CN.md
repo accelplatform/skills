@@ -474,7 +474,8 @@ function init(request) {
 
 ## 测试画面展示页面（sample_api/view/file_upload_test.html）
 
-实现了文件选择 → 上传 → fileKey 显示 → 自动填入下载键的一系列流程的示例。
+实现了通过 FileUpload 组件（拖放或「选择文件」按钮）选择文件 → 列表显示所选文件 → 上传 → 在详细表格中显示结果（fileKey 等）→ 自动填入下载键的一系列流程的示例。
+`input[type="file"]` 通过 `hidden` 属性隐藏，点击「选择文件」按钮时调用其 `click()`。拖放的文件在 `drop` 事件中接收。
 下载时使用 `fetch` 接收响应，转换为 Blob，再通过 `URL.createObjectURL` 让浏览器保存。
 通过此方式即使附带安全令牌的 GET 也能正常下载。
 
@@ -482,29 +483,6 @@ function init(request) {
 <imart type="head">
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <meta name="im_secure_token" content="<imart type="imSecureToken" mode="value" />">
-  <style>
-    .upload-result-card {
-      background-color: var(--imds-color-background-secondary, #f5f7fa);
-      border: 1px solid var(--imds-color-border, #d0d7de);
-      border-radius: 0.5em;
-      padding: 1em 1.5em;
-      margin-top: 1em;
-    }
-    .upload-result-card dt {
-      font-weight: bold;
-      margin-top: 0.5em;
-    }
-    .upload-result-card dd {
-      margin: 0.25em 0 0.75em 0;
-      word-break: break-all;
-    }
-    .file-upload-actions {
-      display: flex;
-      gap: 0.75em;
-      align-items: center;
-      margin-top: 0.5em;
-    }
-  </style>
   <!-- 将 $data 通过 IIFE 作用域化，而不放入全局作用域 -->
   <script>
   (function($data) {
@@ -512,12 +490,29 @@ function init(request) {
       const UPLOAD_API_PATH = 'sample_api/api/upload_file';
       const DOWNLOAD_API_PATH = 'sample_api/api/download_file';
 
+      // 当前选择的文件（由「选择文件」按钮和拖放两种方式更新）
+      let selectedFile = null;
+
       function getSecureToken() {
         return document.querySelector('meta[name=im_secure_token]').content;
       }
 
       function getElement(id) {
         return document.getElementById(id);
+      }
+
+      function selectFile(file) {
+        selectedFile = file;
+        if (file) {
+          getElement('upload-file-name').textContent = file.name;
+          getElement('upload-file-size').textContent = String(file.size) + ' bytes';
+          getElement('upload-file-list').style.display = '';
+        } else {
+          getElement(':uploadFile:').value = '';
+          getElement('upload-file-name').textContent = '';
+          getElement('upload-file-size').textContent = '';
+          getElement('upload-file-list').style.display = 'none';
+        }
       }
 
       function showUploadResult(data) {
@@ -619,16 +614,42 @@ function init(request) {
         return true;
       }
 
+      // 通过「选择文件」按钮打开隐藏的 input[type=file]
+      getElement('upload-select-button').addEventListener('click', () => {
+        getElement(':uploadFile:').click();
+      });
+
+      getElement(':uploadFile:').addEventListener('change', () => {
+        const files = getElement(':uploadFile:').files;
+        if (files && files.length > 0) {
+          selectFile(files[0]);
+        }
+      });
+
+      // 拖放（若不在 dragover 中阻止默认动作，drop 不会触发）
+      const dropArea = getElement('upload-drop-area');
+      dropArea.addEventListener('dragover', (event) => {
+        event.preventDefault();
+      });
+      dropArea.addEventListener('drop', (event) => {
+        event.preventDefault();
+        const files = event.dataTransfer ? event.dataTransfer.files : null;
+        if (files && files.length > 0) {
+          selectFile(files[0]);
+        }
+      });
+
+      getElement('upload-file-remove-button').addEventListener('click', () => {
+        selectFile(null);
+      });
+
       getElement('upload-button').addEventListener('click', () => {
-        const input = getElement(':uploadFile:');
-        const files = input.files;
-        if (!files || files.length === 0) {
+        if (!selectedFile) {
           imuiShowWarningMessage('请选择要上传的文件。');
           return;
         }
-        const file = files[0];
         clearUploadResult();
-        uploadFile(file);
+        uploadFile(selectedFile);
       });
 
       getElement('download-button').addEventListener('click', () => {
@@ -666,39 +687,85 @@ function init(request) {
     <imart type="imSecureToken" />
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="upload-section-title">
-      <h2 id="upload-section-title" class="imds-mb-3">上传</h2>
+      <h2 id="upload-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">上传</h2>
       <div class="imds-field" for=":uploadFile:">
         <div class="imds-field-label">
           <label for=":uploadFile:" class="has-text-weight-bold">文件</label>
         </div>
         <div class="imds-field-control">
-          <div class="file-upload-actions">
-            <input type="file" id=":uploadFile:" name="uploadFile" />
-            <button type="button" class="imds-button is-primary" id="upload-button">
-              <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></span>
-              <span class="imds-button-text">上传</span>
-            </button>
+          <div class="imds-file-upload">
+            <div class="imds-file-upload-drop-area" id="upload-drop-area">
+              <input type="file" id=":uploadFile:" name="uploadFile" hidden />
+              <span class="imds-icon"><i class="fa-solid fa-file-arrow-up"></i></span>
+              <p class="imds-file-upload-message">请将文件拖放到此处</p>
+              <p class="imds-file-upload-text">或</p>
+              <button type="button" class="imds-button is-outlined is-small is-primary" id="upload-select-button">
+                选择文件
+              </button>
+            </div>
+          </div>
+          <!-- 当前选择（上传前）的文件。选择时由 JavaScript 显示 -->
+          <div class="imds-file-upload-list" id="upload-file-list" style="display:none;">
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <span>
+                      <span class="imds-icon is-gray-light imds-file-upload-file-icon"><i class="fa-regular fa-file"></i></span>
+                      <span class="imds-file-upload-name" id="upload-file-name"></span>
+                    </span>
+                  </td>
+                  <td class="imds-file-upload-size"><span id="upload-file-size"></span></td>
+                  <td>
+                    <button type="button" class="imds-button is-ghost" id="upload-file-remove-button" title="删除">
+                      <span class="imds-icon"><i class="fa-regular fa-circle-xmark"></i></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+        <span class="imds-help-text">可上传最大 10MB（10485760 字节）的文件。</span>
+      </div>
+      <div class="imds-mt-2">
+        <button type="button" class="imds-button is-primary" id="upload-button" style="min-width: 8em;">
+          <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></span>
+          <span class="imds-button-text">上传</span>
+        </button>
       </div>
 
-      <div id="upload-result" class="upload-result-card" style="display:none;" role="status" aria-live="polite">
-        <h3 class="imds-mb-2">上传结果</h3>
-        <dl>
-          <dt>文件键（fileKey）</dt>
-          <dd id=":resultFileKey:"></dd>
-          <dt>保存文件名</dt>
-          <dd id=":resultFileName:"></dd>
-          <dt>原文件名</dt>
-          <dd id=":resultOriginalFileName:"></dd>
-          <dt>大小</dt>
-          <dd id=":resultSize:"></dd>
-        </dl>
+      <div id="upload-result" class="has-background-color-gray imds-border-1 imds-p-4 imds-mt-4" style="display:none;" role="status" aria-live="polite">
+        <h3 class="imds-heading is-size-4 has-text-weight-bold imds-mt-0">上传结果</h3>
+        <div class="imds-table is-area-bordered is-bordered">
+          <div class="imds-table-inner">
+            <table>
+              <tbody>
+                <tr>
+                  <th style="width: 30%;"><span>文件键（fileKey）</span></th>
+                  <td><span id=":resultFileKey:" style="word-break: break-all;"></span></td>
+                </tr>
+                <tr>
+                  <th><span>保存文件名</span></th>
+                  <td><span id=":resultFileName:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>原文件名</span></th>
+                  <td><span id=":resultOriginalFileName:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>大小</span></th>
+                  <td><span id=":resultSize:"></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="download-section-title">
-      <h2 id="download-section-title" class="imds-mb-3">下载</h2>
+      <h2 id="download-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">下载</h2>
       <div class="imds-field" for=":downloadFileKey:">
         <div class="imds-field-label">
           <label for=":downloadFileKey:" class="has-text-weight-bold">文件键（fileKey）</label>
@@ -707,8 +774,8 @@ function init(request) {
           <input type="text" id=":downloadFileKey:" name="downloadFileKey" class="imds-textbox" placeholder="uploads/yyyymmdd_hhmmss_xxxxxxxx/filename.ext" />
         </div>
       </div>
-      <div class="file-upload-actions">
-        <button type="button" class="imds-button is-primary" id="download-button">
+      <div class="imds-mt-2">
+        <button type="button" class="imds-button is-primary" id="download-button" style="min-width: 8em;">
           <span class="imds-icon"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i></span>
           <span class="imds-button-text">下载</span>
         </button>
@@ -721,6 +788,8 @@ function init(request) {
 ---
 
 ## 路由配置（sample_api.xml）
+
+`file-upload-download-api.md` / `post-json-api.md` 的路由均定义在 `sample_api.xml` 中。在同一项目中同时使用两者时，请将 `file-mapping` 合并到同一个 `sample_api.xml` 中。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

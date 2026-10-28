@@ -149,17 +149,30 @@ function transferErrorPage(code, message) {
         return div.innerHTML;
       }
 
+      // 自画面のルート要素（DOM 操作はこの要素配下に限定する）
+      const root = document.getElementById('app-portlet-{機能名}-container');
+
       // 一覧テーブル描画
       function renderTable(list) {
-        const tbody = document.getElementById('portlet-sample-table-body');
-        tbody.innerHTML = '';
+        const tbody = root.querySelector('#portlet-sample-table-body');
+        tbody.textContent = '';
 
+        // データ 0 件の場合は、テーブル内に空状態 UI（is-small）を表示する
         if (list.length === 0) {
           const tr = document.createElement('tr');
           const td = document.createElement('td');
           td.setAttribute('colspan', '3');
-          td.style.textAlign = 'center';
-          td.textContent = 'データがありません。';
+          td.innerHTML =
+            '<div class="imds-empty-state-container">' +
+              '<div class="imds-empty-state is-small">' +
+                '<div class="imds-empty-state-message-wrapper">' +
+                  '<span class="imds-empty-state-icon">' +
+                    '<span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>' +
+                  '</span>' +
+                  '<div class="imds-empty-state-message"><p class="imds-empty-state-message-title">データがありません。</p></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
           tr.appendChild(td);
           tbody.appendChild(tr);
           return;
@@ -189,7 +202,7 @@ function transferErrorPage(code, message) {
 <!-- ページ全体のコンテナ（ポートレット部品のため、ヘッダ・フッタは含めない。同一ポータル画面に異なるポートレットが複数配置された場合に DOM 操作のスコープを画面ごとに区別するため、id="app-portlet-{機能名}-container" を付与する） -->
 <div id="app-portlet-{機能名}-container" class="imds-container">
   <main>
-    <div class="imds-table is-narrow" id="portlet-sample-table">
+    <div class="imds-table is-area-bordered is-hoverable is-narrow" id="portlet-sample-table">
       <div class="imds-table-inner">
         <table>
           <thead>

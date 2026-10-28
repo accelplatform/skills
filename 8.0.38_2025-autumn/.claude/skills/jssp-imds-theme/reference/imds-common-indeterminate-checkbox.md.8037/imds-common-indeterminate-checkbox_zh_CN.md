@@ -3,54 +3,54 @@ paths:
   - "src/main/jssp/**/*.html"
 ---
 
-# 不確定状態のチェックボックス（common-parts）
+# 不确定状态的复选框（common-parts）
 
-## 基本情報
+## 基本信息
 
-複数の選択肢のうち一部が選択された状態（不確定状態）を表す際に使用する複合パターンである。
-「全選択/全解除」チェックボックスと個別選択肢を組み合わせる場面で必要になる。テーブルの全行選択・チェックボックスリストの全選択どちらにも適用できる。
+表示多个选项中部分被选中的状态（不确定状态）时使用的复合模式。
+在组合使用「全选/全部取消」复选框与各个选项的场景中需要使用。可同时适用于表格的全行选择和复选框列表的全选。
 
-- 抽出元: `uiux-share/common-parts/不確定状態のチェックボックス.md`
-- 子チェックボックスがすべて選択 → 親は `checked`
-- 子チェックボックスがすべて未選択 → 親は `unchecked`
-- 子チェックボックスが一部選択 → 親は `indeterminate`（三状態）
+- 来源: `uiux-share/common-parts/不確定状態のチェックボックス.md`
+- 子复选框全部选中 → 父复选框为 `checked`
+- 子复选框全部未选中 → 父复选框为 `unchecked`
+- 子复选框部分选中 → 父复选框为 `indeterminate`（三态）
 
-## 構成コンポーネント
+## 构成组件
 
-| 使用する基本コンポーネント | 対応 reference |
+| 使用的基础组件 | 对应 reference |
 |---|---|
 | Checkbox（`imds-checkbox`） | [imds-html-checkbox.md](imds-html-checkbox.md) |
 | Divider（`imds-divider`） | [imds-html-divider.md](imds-html-divider.md) |
 
-## HTML スニペット
+## HTML 代码片段
 
-`data-type="overall"` が親（全選択）、`data-type="ingredient"` が子（個別選択肢）を表す。
-`imds-divider` で親と子を視覚的に区切る。
+`data-type="overall"` 表示父复选框（全选），`data-type="ingredient"` 表示子复选框（各个选项）。
+用 `imds-divider` 在视觉上分隔父复选框与子复选框。
 
 ```html
 <label class="imds-checkbox">
   <input type="checkbox" data-type="overall" />
-  <span>すべて</span>
+  <span>全部</span>
 </label>
 <hr class="imds-divider" />
 <label class="imds-checkbox">
   <input type="checkbox" data-type="ingredient" />
-  <span>[REPLACE: 選択肢1]</span>
+  <span>[REPLACE: 选项1]</span>
 </label>
 <label class="imds-checkbox">
   <input type="checkbox" data-type="ingredient" />
-  <span>[REPLACE: 選択肢2]</span>
+  <span>[REPLACE: 选项2]</span>
 </label>
 <label class="imds-checkbox">
   <input type="checkbox" data-type="ingredient" />
-  <span>[REPLACE: 選択肢3]</span>
+  <span>[REPLACE: 选项3]</span>
 </label>
 ```
 
-## JS 制御
+## JS 控制
 
-`indeterminate` プロパティは HTML 属性では設定できないため、JavaScript で制御する。
-複数のグループが同一画面に存在する場合は、`data-type` の取得対象を適切なコンテナ（親要素）に限定してスコープを絞ること。
+`indeterminate` 属性无法通过 HTML 属性设置，因此通过 JavaScript 控制。
+同一画面中存在多个分组时，应将 `data-type` 的获取对象限定在相应的容器（父元素）内以缩小作用范围。
 
 ```javascript
 const initialize = () => {
@@ -84,8 +84,8 @@ const initialize = () => {
 document.addEventListener('DOMContentLoaded', initialize);
 ```
 
-## 実装上の注意
+## 实现注意事项
 
-- テーブルのヘッダチェックボックス（全行選択）に適用する場合、`label.imds-checkbox` 内に不要な `<span></span>` を追加しないこと（テーブル文脈では `input` のみで `span` を付けない。詳細は [imds-html-table.md](imds-html-table.md) を参照）。本パターンの `<label class="imds-checkbox"><input/><span>...</span></label>` はテーブル外（チェックボックスリスト等）での標準形である。
-- チェックボックスのグルーピングに `fieldset`/`legend` は使わない。imds の実パターンは `label.imds-checkbox` の並びのみで構成する。
-- `indeterminate` は JavaScript でのみ設定可能なプロパティであり、HTML 属性として `<input indeterminate>` と書いても効果がない点に注意する。
+- 应用于表格的表头复选框（全行选择）时，不要在 `label.imds-checkbox` 内添加多余的 `<span></span>`（在表格上下文中只使用 `input`，不附加 `span`。详细信息请参考 [imds-html-table.md](imds-html-table.md)）。本模式的 `<label class="imds-checkbox"><input/><span>...</span></label>` 是表格外（复选框列表等）的标准形式。
+- 复选框分组不使用 `fieldset`/`legend`。imds 的实际模式仅由并列的 `label.imds-checkbox` 构成。
+- `indeterminate` 是只能通过 JavaScript 设置的属性，即使以 HTML 属性形式写成 `<input indeterminate>` 也不会生效。

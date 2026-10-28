@@ -9,11 +9,16 @@ A screen that displays a monthly calendar with holidays, public holidays, and co
 - Displays holiday/public holiday names in calendar cells (i18n locale support)
 - Displays per-weekday color settings as a legend
 
+### Correspondence with imds Templates
+
+- The page skeleton follows the layout control pattern of the list page template `assets/imds-list-page.md` in the `jssp-imds-theme` skill
+- For the decorative color classes for cell backgrounds (`is-gray` / `is-red`), see `reference/imds-html-table.md` in the `jssp-imds-theme` skill
+
 ## File Structure
 
 ```
-src/main/jssp/src/sample_calendar/view/
-  └── index.js              # Function container
+src/main/jssp/src/sample/sample_calendar/view/
+  ├── index.js              # Function container
   └── index.html            # Presentation page
 
 src/main/conf/routing-jssp-config/
@@ -22,15 +27,14 @@ src/main/conf/routing-jssp-config/
 
 ---
 
-## Function Container (sample_calendar/view/index.js)
+## Function Container (sample/sample_calendar/view/index.js)
 
 ```javascript
 /**
  * Sample Calendar Screen
  *
  * @file index.js
- * @description Displays a calendar with holidays, public holidays, and colors
- *              based on the calendar selected by the logged-in user.
+ * @description Displays a calendar with holidays, public holidays, and colors based on the calendar selected by the logged-in user.
  */
 
 // ========================================
@@ -270,15 +274,15 @@ function getMonthDays(calendarId, year, month, firstDayOfWeek, today, locale) {
 
   // Grid start: go back to the firstDayOfWeek of the previous month
   let firstOfMonth = new Date(year, month - 1, 1);
-  let startDow = firstOfMonth.getDay();
-  let startOffset = (startDow - firstDayOfWeek + 7) % 7;
+  let startDayOfWeek = firstOfMonth.getDay();
+  let startOffset = (startDayOfWeek - firstDayOfWeek + 7) % 7;
   let gridStart = new Date(year, month - 1, 1 - startOffset);
 
   // Grid end: extend to the last weekday (day before firstDayOfWeek) in the next month
   let lastOfMonth = new Date(year, month, 0);
-  let endDow = lastOfMonth.getDay();
+  let endDayOfWeek = lastOfMonth.getDay();
   let lastDayOfWeek = (firstDayOfWeek + 6) % 7;
-  let endOffset = (lastDayOfWeek - endDow + 7) % 7;
+  let endOffset = (lastDayOfWeek - endDayOfWeek + 7) % 7;
   let gridEnd = new Date(year, month - 1, lastOfMonth.getDate() + endOffset);
 
   let result = manager.getDayInfoSummariesOnTerm(calendarId, gridStart, gridEnd);
@@ -293,21 +297,21 @@ function getMonthDays(calendarId, year, month, firstDayOfWeek, today, locale) {
   let dayList = [];
   for (let i = 0; i < result.data.length; i++) {
     let summary = result.data[i];
-    let d = summary.currentDate;
-    let dYear = d.getFullYear();
-    let dMonth = d.getMonth() + 1;
-    let dDay = d.getDate();
+    let currentDate = summary.currentDate;
+    let dateYear = currentDate.getFullYear();
+    let dateMonth = currentDate.getMonth() + 1;
+    let dateDay = currentDate.getDate();
 
     // Extract i18n-aware names from dayInfos, fall back to dayInfoNames
     let dayInfoNames = resolveDayInfoNames(summary, locale);
 
     dayList.push({
-      year: dYear,
-      month: dMonth,
-      day: dDay,
-      dayOfWeek: d.getDay(),
-      isCurrentMonth: (dYear === year && dMonth === month),
-      isToday: (dYear === todayYear && dMonth === todayMonth && dDay === todayDay),
+      year: dateYear,
+      month: dateMonth,
+      day: dateDay,
+      dayOfWeek: currentDate.getDay(),
+      isCurrentMonth: (dateYear === year && dateMonth === month),
+      isToday: (dateYear === todayYear && dateMonth === todayMonth && dateDay === todayDay),
       isHoliday: summary.isHoliday,
       color: summary.color || '',
       dayInfoNames: dayInfoNames
@@ -373,86 +377,54 @@ function transferErrorPage(code, message) {
 
 ---
 
-## Presentation Page (sample_calendar/view/index.html)
+## Presentation Page (sample/sample_calendar/view/index.html)
 
 ```html
 <!-- Header -->
 <imart type="head">
   <!-- Title -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
-  <!-- Styles -->
+  <!-- CSS that controls the height/width of the content area, which differs per theme -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
+  <!-- Presentation page custom styles -->
   <style>
-    /* ===== Calendar Navigation ===== */
-    .calendar-nav {
+    /* Layout control styles */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      align-items: center;
-      gap: 0.75em;
-      margin-bottom: 1em;
     }
-    .calendar-nav-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      min-width: 9em;
-      text-align: center;
-      letter-spacing: 0.03em;
-      color: var(--imds-color-text, #1a1a2e);
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
     }
-    /* ===== Calendar Name Badge ===== */
-    .calendar-name-badge {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 500;
-      padding: 0.25em 0.9em;
-      border-radius: 2em;
-      background: var(--imds-color-primary, #005BAC);
-      color: #fff;
-      margin-left: 0.6em;
-      vertical-align: middle;
-      letter-spacing: 0.04em;
+    .pgstyle-table-wrapper {
+      display: flex;
+      flex-direction: column;
     }
-    /* ===== Calendar Grid ===== */
-    .calendar-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
+    /* Monthly calendar grid (imds has no equivalent component, so only the date cell rendering is custom) */
+    #calendar-table {
       table-layout: fixed;
-      /* Stretch table to fill viewport height minus header/nav/legend */
-      height: calc(100vh - 160px);
-      min-height: 400px;
+      height: 100%;
     }
-    .calendar-table th {
-      padding: 0.65em 0;
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      letter-spacing: 0.06em;
-      background: #f0f4f8;
-      border-bottom: 2px solid var(--imds-color-primary, #005BAC);
-    }
-    .calendar-table td {
+    #calendar-table td {
       vertical-align: top;
-      border-right: 1px solid var(--imds-color-border, #e4e8ed);
-      border-bottom: 1px solid var(--imds-color-border, #e4e8ed);
       /* height: 1% distributes table height evenly across rows */
       height: 1%;
-      min-height: 4em;
-      padding: 0.5em 0.6em;
-      cursor: default;
-      transition: background 0.12s ease;
-    }
-    .calendar-table td:first-child {
-      border-left: 1px solid var(--imds-color-border, #e4e8ed);
-    }
-    .calendar-table tbody tr:last-child td {
-      border-bottom: 2px solid var(--imds-color-border, #e4e8ed);
-    }
-    .calendar-table td:not(.is-other-month):hover {
-      background: rgba(0, 91, 172, 0.05);
     }
     /* Date number */
     .calendar-cell-day {
       font-size: 2rem;
-      font-weight: 600;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -460,56 +432,27 @@ function transferErrorPage(code, message) {
       height: 1.4em;
       border-radius: 50%;
       line-height: 1;
-      transition: background 0.12s ease, color 0.12s ease;
     }
-    .calendar-cell-day.is-today {
-      background: var(--imds-color-primary, #005BAC);
+    /* Today's date (the circle background color may be adjusted per screen) */
+    .calendar-cell-day-today {
+      background: #005BAC;
       color: #fff;
+    }
+    /* Dates outside the current month are shown with faded text */
+    .calendar-cell-muted {
+      opacity: 0.55;
     }
     /* Holiday / public holiday name */
     .calendar-cell-info {
       font-size: 1rem;
-      font-weight: 500;
-      margin-top: 0.15em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
-    /* Cells outside the current month */
-    .calendar-table td.is-other-month {
-      background: #f7f8fa;
-      opacity: 0.55;
-    }
-    /* Holiday cell */
-    .calendar-table td.is-holiday {
-      background: linear-gradient(160deg, #fff4f4 0%, #fff 80%);
-    }
-    /* ===== Legend ===== */
-    .calendar-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5em 1.25em;
-      margin-bottom: 0.75em;
-      font-size: 0.85rem;
-      padding: 0.5em 0.85em;
-      background: #fafbfc;
-      border: 1px solid var(--imds-color-border, #e4e8ed);
-      border-radius: 6px;
-    }
-    .calendar-legend:empty {
-      display: none;
-    }
-    .calendar-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.4em;
-    }
+    /* Legend color swatch (the per-weekday color is set dynamically) */
     .calendar-legend-dot {
       width: 0.75em;
       height: 0.75em;
       border-radius: 50%;
       display: inline-block;
-      border: 1px solid rgba(0,0,0,0.12);
+      border: 1px solid rgba(0, 0, 0, 0.12);
       flex-shrink: 0;
     }
   </style>
@@ -531,26 +474,22 @@ function transferErrorPage(code, message) {
     // Weekday names (English)
     const WEEK_DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    // Month names (English)
-    const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
-                         'July', 'August', 'September', 'October', 'November', 'December'];
-
     // Weekday info map (dayOfWeek -> {color, holiday})
     const weekDayMap = {};
-    (data.weekDays || []).forEach((wd) => {
-      weekDayMap[wd.dayOfWeek] = wd;
+    (data.weekDays || []).forEach((weekDay) => {
+      weekDayMap[weekDay.dayOfWeek] = weekDay;
     });
 
     // Ordered weekday list adjusted for firstDayOfWeek
     function getOrderedWeekDays(firstDayOfWeek) {
       const ordered = [];
       for (let i = 0; i < 7; i++) {
-        const dow = (firstDayOfWeek + i) % 7;
+        const dayOfWeek = (firstDayOfWeek + i) % 7;
         ordered.push({
-          dayOfWeek: dow,
-          name: WEEK_DAY_NAMES[dow],
-          color: weekDayMap[dow] ? (weekDayMap[dow].color || '') : '',
-          holiday: weekDayMap[dow] ? weekDayMap[dow].holiday : false
+          dayOfWeek: dayOfWeek,
+          name: WEEK_DAY_NAMES[dayOfWeek],
+          color: weekDayMap[dayOfWeek] ? (weekDayMap[dayOfWeek].color || '') : '',
+          holiday: weekDayMap[dayOfWeek] ? weekDayMap[dayOfWeek].holiday : false
         });
       }
       return ordered;
@@ -558,15 +497,15 @@ function transferErrorPage(code, message) {
 
     // Render weekday headers
     function renderWeekDayHeaders(orderedWeekDays) {
-      const thead = document.querySelector('#calendar-table thead tr');
-      if (!thead) { return; }
-      thead.innerHTML = '';
-      orderedWeekDays.forEach((wd) => {
+      const headerRow = document.querySelector('#calendar-table thead tr');
+      if (!headerRow) { return; }
+      headerRow.textContent = '';
+      orderedWeekDays.forEach((weekDay) => {
         const th = document.createElement('th');
         th.scope = 'col';
-        th.style.color = wd.color || '';
-        th.textContent = wd.name;
-        thead.appendChild(th);
+        th.style.color = weekDay.color || '';
+        th.textContent = weekDay.name;
+        headerRow.appendChild(th);
       });
     }
 
@@ -574,32 +513,33 @@ function transferErrorPage(code, message) {
     function renderDays(calendarData, orderedWeekDays) {
       const tbody = document.querySelector('#calendar-table tbody');
       if (!tbody) { return; }
-      tbody.innerHTML = '';
+      tbody.textContent = '';
 
       const days = calendarData.days || [];
-      const colCount = orderedWeekDays.length;
-      const rowCount = Math.ceil(days.length / colCount);
+      const columnCount = orderedWeekDays.length;
+      const rowCount = Math.ceil(days.length / columnCount);
 
-      for (let r = 0; r < rowCount; r++) {
+      for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         const tr = document.createElement('tr');
-        for (let c = 0; c < colCount; c++) {
-          const idx = r * colCount + c;
-          if (idx >= days.length) {
+        for (let columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+          const dayIndex = rowIndex * columnCount + columnIndex;
+          if (dayIndex >= days.length) {
             tr.appendChild(document.createElement('td'));
             continue;
           }
-          const day = days[idx];
+          const day = days[dayIndex];
           const td = document.createElement('td');
 
+          // Cell background uses imds table decorative color classes (outside current month: gray, holiday: red)
           if (!day.isCurrentMonth) {
-            td.className = 'is-other-month';
+            td.className = 'is-gray';
           } else if (day.isHoliday) {
-            td.className = 'is-holiday';
+            td.className = 'is-red';
           }
 
           // Date number span
           const daySpan = document.createElement('span');
-          daySpan.className = 'calendar-cell-day' + (day.isToday ? ' is-today' : '');
+          daySpan.className = 'calendar-cell-day has-text-weight-bold' + (day.isToday ? ' calendar-cell-day-today' : '') + (day.isCurrentMonth ? '' : ' calendar-cell-muted');
 
           // Color priority: DayInfoSummary.color → weekday color
           let cellColor = day.color;
@@ -616,7 +556,7 @@ function transferErrorPage(code, message) {
           // Holiday / public holiday name
           if (day.dayInfoNames && day.dayInfoNames.length > 0) {
             const infoDiv = document.createElement('div');
-            infoDiv.className = 'calendar-cell-info';
+            infoDiv.className = 'calendar-cell-info imds-line-clamp-1 imds-mt-1' + (day.isCurrentMonth ? '' : ' calendar-cell-muted');
             infoDiv.style.color = cellColor || '';
             infoDiv.title = day.dayInfoNames.join(', ');
             infoDiv.textContent = day.dayInfoNames[0];
@@ -631,13 +571,13 @@ function transferErrorPage(code, message) {
 
     // Render navigation title
     function renderNavTitle(calendarData) {
-      const titleEl = document.getElementById('nav-title');
-      if (titleEl) {
-        titleEl.textContent = MONTH_NAMES[calendarData.month - 1] + ' ' + calendarData.year;
+      const titleElement = document.getElementById('nav-title');
+      if (titleElement) {
+        titleElement.textContent = new Date(calendarData.year, calendarData.month - 1, 1).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
       }
-      const nameEl = document.getElementById('calendar-name');
-      if (nameEl) {
-        nameEl.textContent = calendarData.calendarName || calendarData.calendarId || '';
+      const nameElement = document.getElementById('calendar-name');
+      if (nameElement) {
+        nameElement.textContent = calendarData.calendarName || calendarData.calendarId || '';
       }
     }
 
@@ -648,28 +588,28 @@ function transferErrorPage(code, message) {
 
     // Navigation button events
     function setupNavigation(calendarData) {
-      const prevBtn = document.getElementById('btn-prev-month');
-      const nextBtn = document.getElementById('btn-next-month');
-      const todayBtn = document.getElementById('btn-today');
+      const prevButton = document.getElementById('prev-month-button');
+      const nextButton = document.getElementById('next-month-button');
+      const todayButton = document.getElementById('this-month-button');
 
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          let y = calendarData.year;
-          let m = calendarData.month - 1;
-          if (m < 1) { m = 12; y -= 1; }
-          location.href = buildMonthUrl(y, m);
+      if (prevButton) {
+        prevButton.addEventListener('click', () => {
+          let year = calendarData.year;
+          let month = calendarData.month - 1;
+          if (month < 1) { month = 12; year -= 1; }
+          location.href = buildMonthUrl(year, month);
         });
       }
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          let y = calendarData.year;
-          let m = calendarData.month + 1;
-          if (m > 12) { m = 1; y += 1; }
-          location.href = buildMonthUrl(y, m);
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          let year = calendarData.year;
+          let month = calendarData.month + 1;
+          if (month > 12) { month = 1; year += 1; }
+          location.href = buildMonthUrl(year, month);
         });
       }
-      if (todayBtn) {
-        todayBtn.addEventListener('click', () => {
+      if (todayButton) {
+        todayButton.addEventListener('click', () => {
           // Navigate without query params → server uses system date
           location.href = 'sample/sample_calendar';
         });
@@ -678,27 +618,32 @@ function transferErrorPage(code, message) {
 
     // Render legend (colors per weekday)
     function renderLegend(orderedWeekDays) {
-      const legendEl = document.getElementById('calendar-legend');
-      if (!legendEl) { return; }
-      legendEl.innerHTML = '';
+      const legendElement = document.getElementById('calendar-legend');
+      if (!legendElement) { return; }
+      legendElement.textContent = '';
 
-      orderedWeekDays.forEach((wd) => {
-        if (!wd.color) { return; }
+      orderedWeekDays.forEach((weekDay) => {
+        if (!weekDay.color) { return; }
         const item = document.createElement('span');
-        item.className = 'calendar-legend-item';
+        item.style.display = 'flex';
+        item.style.alignItems = 'center';
+        item.style.gap = '0.4em';
 
         const dot = document.createElement('span');
         dot.className = 'calendar-legend-dot';
-        dot.style.background = wd.color;
+        dot.style.background = weekDay.color;
 
         const label = document.createElement('span');
-        label.textContent = wd.name + (wd.holiday ? ' (Holiday)' : '');
-        label.style.color = wd.color;
+        label.textContent = weekDay.name + (weekDay.holiday ? ' (Holiday)' : '');
+        label.style.color = weekDay.color;
 
         item.appendChild(dot);
         item.appendChild(label);
-        legendEl.appendChild(item);
+        legendElement.appendChild(item);
       });
+
+      // Keep the legend hidden when no weekday has a color setting
+      legendElement.style.display = legendElement.hasChildNodes() ? 'flex' : 'none';
     }
 
     // Entry point
@@ -716,7 +661,7 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- Full-page container (no id is added, since it is placed inside the intra-mart theme's <div id="imui-container">) -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <!-- Header -->
   <header class="imds-header">
     <div class="imds-header-icon">
@@ -726,46 +671,41 @@ function transferErrorPage(code, message) {
     </div>
     <div class="imds-header-title">
       <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-      <h1>
-        <imart type="string" value=$title escapeXml="true" escapeJs="false"></imart>
-        <span id="calendar-name" class="calendar-name-badge"></span>
-      </h1>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+    <!-- Calendar name (Tag in the header) -->
+    <div class="imds-header-additional">
+      <span class="imds-tag is-blue is-rounded"><span id="calendar-name"></span></span>
     </div>
   </header>
 
   <!-- Main content -->
-  <main>
-    <div class="imds-py-3">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
-
-        <!-- Month navigation -->
-        <div class="calendar-nav imds-mb-3">
-          <button type="button" id="btn-prev-month" class="imds-button is-ghost" title="Previous Month">
-            <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
-          </button>
-          <span id="nav-title" class="calendar-nav-title"></span>
-          <button type="button" id="btn-next-month" class="imds-button is-ghost" title="Next Month">
-            <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
-          </button>
-          <button type="button" id="btn-today" class="imds-button is-outlined">This Month</button>
+  <main class="pgstyle-layout-main">
+    <div class="imds-px-3 imds-py-2 pgstyle-table-wrapper pgstyle-layout-content imds-scrollbar">
+      <!-- Month navigation -->
+      <div class="imds-mb-2" style="display: flex; align-items: center; gap: 0.75em;">
+        <button type="button" id="prev-month-button" class="imds-button is-ghost" title="Previous Month" aria-label="Previous Month">
+          <span class="imds-icon"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></span>
+        </button>
+        <span id="nav-title" class="has-text-weight-bold has-text-centered" style="font-size: 1.6rem; min-width: 9em;"></span>
+        <button type="button" id="next-month-button" class="imds-button is-ghost" title="Next Month" aria-label="Next Month">
+          <span class="imds-icon"><i class="fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </button>
+        <button type="button" id="this-month-button" class="imds-button is-outlined">This Month</button>
+      </div>
+      <!-- Legend (stays hidden when no weekday has a color setting) -->
+      <div id="calendar-legend" class="imds-mb-2 imds-px-3 imds-py-2 imds-border-1 has-background-color-gray" style="display: none; flex-wrap: wrap; gap: 0.5em 1.25em; font-size: 0.85rem;"></div>
+      <!-- Calendar grid -->
+      <div class="imds-table is-area-bordered is-bordered is-sticky" style="height: 100%">
+        <div class="imds-table-inner">
+          <table id="calendar-table" aria-label="Calendar">
+            <thead>
+              <tr></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
-
-        <!-- Legend -->
-        <div id="calendar-legend" class="calendar-legend imds-mb-2"></div>
-
-        <!-- Calendar grid -->
-        <div class="imds-table">
-          <div class="imds-table-inner">
-            <table id="calendar-table" class="calendar-table" aria-label="Calendar">
-              <thead>
-                <tr></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-
-      </section>
+      </div>
     </div>
   </main>
 </div>
@@ -783,7 +723,7 @@ function transferErrorPage(code, message) {
     xsi:schemaLocation="http://www.intra-mart.jp/router/routing-jssp-config routing-jssp-config.xsd">
 
   <!-- Calendar screen -->
-  <file-mapping path="/sample/sample_calendar" page="sample_calendar/view/index">
+  <file-mapping path="/sample/sample_calendar" page="sample/sample_calendar/view/index">
     <authz uri="service://sample/sample_calendar" action="execute" />
   </file-mapping>
 
@@ -819,15 +759,15 @@ Instead, use `getDayInfoSummariesOnTerm(calendarId, startDate, endDate)` and cal
 ```javascript
 // Grid start: go back to the firstDayOfWeek of the previous month
 let firstOfMonth = new Date(year, month - 1, 1);
-let startDow = firstOfMonth.getDay();
-let startOffset = (startDow - firstDayOfWeek + 7) % 7;
+let startDayOfWeek = firstOfMonth.getDay();
+let startOffset = (startDayOfWeek - firstDayOfWeek + 7) % 7;
 let gridStart = new Date(year, month - 1, 1 - startOffset);
 
 // Grid end: extend to the last weekday (day before firstDayOfWeek)
 let lastOfMonth = new Date(year, month, 0);
-let endDow = lastOfMonth.getDay();
+let endDayOfWeek = lastOfMonth.getDay();
 let lastDayOfWeek = (firstDayOfWeek + 6) % 7;
-let endOffset = (lastDayOfWeek - endDow + 7) % 7;
+let endOffset = (lastDayOfWeek - endDayOfWeek + 7) % 7;
 let gridEnd = new Date(year, month - 1, lastOfMonth.getDate() + endOffset);
 
 let result = manager.getDayInfoSummariesOnTerm(calendarId, gridStart, gridEnd);
@@ -895,7 +835,8 @@ The text color of a date cell is determined in the following priority order:
 1. `DayInfoSummary.color` (color setting for a specific date)
 2. Per-weekday color (`weekDayMap[dayOfWeek].color`)
 
-For today's date (`isToday`), color settings are ignored and the primary color background with white text is used.
+For today's date (`isToday`), color settings are ignored and the date is shown with a circle background and white text (`calendar-cell-day-today`).
+Cell background colors are specified with the imds table decorative color classes (outside the current month: `is-gray`, holiday: `is-red`) instead of custom CSS.
 
 ### 7. Referenced d.ts Files
 

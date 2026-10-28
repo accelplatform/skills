@@ -14,7 +14,7 @@ Toggle 是用于切换开/关状态的组件。
 |----------|--------|------|----------------|
 | imds-toggle-switch | label 元素 | 切换开关容器 | 必须 |
 | imds-toggle-switch-appearance | span 元素 | 开关外观 | 必须 |
-| imds-toggle-switch-text | span 元素 | 标签文字 | 必须 |
+| imds-toggle-switch-text | span 元素 | 标签文字 | 可选（省略标签时不添加） |
 | is-x-small | imds-toggle-switch | 超小尺寸 | 可选 |
 | is-small | imds-toggle-switch | 小尺寸 | 可选 |
 | is-normal | imds-toggle-switch | 标准尺寸 | 可选 |
@@ -67,6 +67,21 @@ Toggle 是用于切换开/关状态的组件。
 <input type="checkbox" checked />
 ```
 
+### 省略标签（Label Not Exists）
+
+根据相邻 UI 含义已不言自明等情况下省略标签时，不添加 `imds-toggle-switch-text`。这在实际 DOM 中也是正当的变体，并非始终必须。
+
+```html
+<label class="imds-toggle-switch">
+  <input type="checkbox" />
+  <span class="imds-toggle-switch-appearance">
+    <span class="imds-icon"><i class="fa-solid fa-check"></i></span>
+  </span>
+</label>
+```
+
+即使省略标签，也应考虑通过 `aria-label` 等进行补充，以便屏幕阅读器用户能够判断开关的含义。
+
 ## 无障碍支持
 
 ### 标签
@@ -83,8 +98,8 @@ Toggle 是用于切换开/关状态的组件。
 
 ## 实现注意事项
 
-- 切换开关使用 `label > input[type="checkbox"] + span.imds-toggle-switch-appearance + span.imds-toggle-switch-text` 的结构编写
+- 切换开关使用 `label > input[type="checkbox"] + span.imds-toggle-switch-appearance (+ span.imds-toggle-switch-text)` 的结构编写。`imds-toggle-switch-text` 仅在显示标签时添加，并非必须
 - `imds-toggle-switch-appearance` 内包含勾选图标（`fa-solid fa-check`）
 - 开/关状态通过 `input` 的 `checked` 属性控制
 - `disabled` 与 `checked` 可以组合使用（如开启状态且禁用等）
-- 标签文字不随开关状态变化
+- 显示标签文字时，不随开关状态变化
