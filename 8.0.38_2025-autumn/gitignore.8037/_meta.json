@@ -9,5 +9,12 @@
       "from": "gitignore",
       "to": ".gitignore"
     }
+  ],
+  "replacements": [
+    {
+      "type": "regex",
+      "pattern": "\\{\\{ACCEL_GITIGNORE\\}\\}",
+      "replacement": "{{$gitignoreEntries}}"
+    }
   ]
 }
