@@ -28,6 +28,7 @@ Button is a component that users click to execute processes such as registration
 | is-normal | imds-button | Normal size | Optional |
 | is-medium | imds-button | Medium size | Optional |
 | is-large | imds-button | Large size | Optional |
+| is-applied | imds-button | Shows an "applied" badge (available only when an icon is present) | Optional |
 
 ## HTML Snippets
 
@@ -80,11 +81,22 @@ Add the `disabled` attribute to the `button` element. Not clickable; visually gr
 <button type="button" class="imds-button" disabled>Button</button>
 ```
 
+### applied (Applied Badge)
+
+A badge indicating that search conditions or similar are applied in an area whose visibility is toggled by a button click, such as an advanced search area. Available only when an icon is present.
+
+```html
+<button type="button" class="imds-button is-applied" title="">
+  <span class="imds-icon is-small"><i class="fa-solid fa-sliders"></i></span>
+  <span class="imds-button-text">Button</span>
+</button>
+```
+
 ## Combination Examples
 
 ### Combination with Icon
 
-For details on buttons with icons, see [icon-button.md](icon-button.md).
+For details on buttons with icons, see [imds-html-icon-button.md](imds-html-icon-button.md).
 When using both icon and text, always wrap the text with `imds-button-text`.
 
 ```html
@@ -94,8 +106,43 @@ When using both icon and text, always wrap the text with `imds-button-text`.
 </button>
 ```
 
+### Minimum Width (min-width)
+
+When the button label is short, such as "Register/Update", specify the minimum width with an inline `style="min-width: 8em;"` to make the button easier to press and more visible (do not define custom classes such as `min-width-8em`; see "Anti-pattern: Do Not Define Custom `.max-width-NNem` / `.min-width-NNem` Classes" in `.github/instructions/jssp-presentation-page.instructions.md`).
+
+```html
+<button type="button" class="imds-button is-primary" style="min-width: 8em;">Register</button>
+```
+
+### Page-Level Actions (Fixed Footer)
+
+Group page-level action buttons such as "Register", "Update" and "Delete" at the bottom of the page in a fixed footer outside the scroll area (`pgstyle-layout-footer`; see "Implementation Notes" in `assets/imds-form-page.md` for the CSS definition). `pgstyle-layout-footer` leaves 2em between buttons. For auxiliary actions (such as "Copy as New"), widen the gap from the main buttons with `style="margin-left: 3em;"` to reduce complexity.
+
+```html
+<div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
+  <button type="button" class="imds-button is-primary" style="min-width: 8em;">Update</button>
+  <button type="button" class="imds-button is-outlined is-danger" style="min-width: 8em;">Delete</button>
+  <button type="button" class="imds-button is-outlined is-primary" style="min-width: 8em; margin-left: 3em;">Copy as New</button>
+</div>
+```
+
+### Toolbar
+
+When lining up buttons in a toolbar, leave 1em between them (e.g. `style="display: flex; gap: 1em;"` on the parent element). For the action area of a list screen that lines up a search field and a "Create New" button, use `pgstyle-toolbar` from `assets/imds-list-page.md`.
+
+```html
+<div style="display: flex; gap: 1em;">
+  <button type="button" class="imds-button is-primary" style="min-width: 8em;">Create New</button>
+  <button type="button" class="imds-button is-outlined" style="min-width: 8em;">Export</button>
+</div>
+```
+
 ## Implementation Notes
 
-- When using both icon and text, always wrap the text in `<span class="imds-button-text">`. Do not place text nodes directly. See [icon-button.md](icon-button.md) for details
+- When using both icon and text, always wrap the text in `<span class="imds-button-text">`. Do not place text nodes directly. See [imds-html-icon-button.md](imds-html-icon-button.md) for details
 - `is-outlined` and `is-ghost` are used exclusively (do not apply both simultaneously)
 - Color classes and style classes can be combined (e.g., `is-outlined is-primary`, `is-ghost is-danger`)
+- **One primary-colored button per screen**: Apply a colored standard button (solid `is-primary` / `is-danger` button) only to the single most important button in a screen or dialog. Do not place multiple colored standard buttons in the same screen or dialog (when there are multiple independent content areas, as in a portal, one per area is allowed). Use `is-outlined is-primary` (outlined) for auxiliary actions such as "Save Draft", and do not mix them with a solid `is-primary`
+  - ✅ OK: `is-primary` (Register) + `is-outlined is-primary` (Save Draft)
+  - ❌ NG: `is-primary` (Register) + `is-primary` (Save Draft) — results in two primary buttons
+- When placing buttons side by side, use the same size (do not mix `is-large` etc. with other sizes)

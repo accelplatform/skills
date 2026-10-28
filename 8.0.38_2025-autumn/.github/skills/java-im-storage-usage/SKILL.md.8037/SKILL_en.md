@@ -73,7 +73,7 @@ If there is no explicit mention of "in Java" or "in the JavaEE development model
 1. Gather requirements from the user (persistent vs. temporary, text vs. binary, operation type such as read/write/delete, target package)
 2. Decide which of `PublicStorage` / `SessionScopeStorage` / `SystemStorage` to use based on the purpose (see the table above; **prioritize the user's specification if given**)
 3. Implement by referring to the relevant `assets/` template (always check method signatures in `reference/storage-api-reference.md`; do not write from memory or guesswork)
-4. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+4. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -93,7 +93,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 2. Whether the choice of `PublicStorage` / `SessionScopeStorage` / `SystemStorage` matches the purpose (persistent/temporary, public/internal)
 3. Whether temporary files using `SessionScopeStorage` are reliably deleted after processing completes or on exception
 4. Whether places using user input in paths have path traversal countermeasures
-5. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 6. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to output from this skill. If the project has separate code review/security check skills for Java, use those instead
 
 ## Boundaries with Other Skills

@@ -80,7 +80,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのロ
 2. `RoleInfo` のコンストラクタ選択（ロールIDを自動採番するか、明示指定するか）と、ロール名・カテゴリ・表示名（ロケール別）の設定要否を決定
 3. `assets/role-basic-usage.md` を参照して実装（メソッドのシグネチャは `reference/role-api-reference.md` を必ず参照し、記憶や推測で書かない）
 4. サブロール階層を扱う場合、`addSubRoleInfo`/`deleteSubRoleInfo(s)`（サマリ自動更新版）をデフォルトとし、大量データの一括更新等パフォーマンスが問題になる場合のみ `WithoutCreatingSummary` 系＋最後に1回だけ `regenerateRoleSummary()` を使う設計にする
-5. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+5. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -103,7 +103,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのロ
 5. `@Deprecated` の `getCategoryCount`・`isUpdate` を新規実装で使用していないか
 6. `moveCategory`・`deleteRoleInfo(s)`・`deleteCategory(ies)` 等の破壊的操作について、要件通りの範囲でのみ実行されるか
 7. `AdminException`（チェック例外）を握りつぶしていないか
-8. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+8. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 9. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

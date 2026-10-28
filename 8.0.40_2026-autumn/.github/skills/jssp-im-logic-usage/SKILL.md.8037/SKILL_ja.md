@@ -76,7 +76,7 @@ node scripts/fetch-logic-swagger.js --base-url http://127.0.0.1/imart --route <�
 `reference/swagger-routing-call.md` の fetch 呼び出しパターンに従い、JSSP プレゼンテーションページの `<script>` にコードを実装する。完成品サンプルは `assets/sample-call.md` を参照。
 
 実装時の必須ルール:
-- 呼び出しURLは `logic/api/<route>` の相対パスで指定する（`jssp-presentation-page.md` の URL 指定方針に準拠）
+- 呼び出しURLは `logic/api/<route>` の相対パスで指定する（`.github/instructions/jssp-presentation-page.instructions.md` の URL 指定方針に準拠）
 - レスポンスの正常/異常判定は、JSSP 独自の `{error, errorMessage}` 形式ではなく **HTTPステータス（`response.ok`）** で行う（ルーティングのレスポンスはフローの出力データそのものであり、JSSP の API レスポンス規約とは異なる）
 - リクエストボディの型は `definitions` の `properties` に厳密に合わせる（推測で項目を増減させない）
 - 型が不明・spec上の情報が不足する場合は、コード生成前にユーザに確認する
@@ -85,11 +85,11 @@ node scripts/fetch-logic-swagger.js --base-url http://127.0.0.1/imart --route <�
 
 | 規約・スキル | 取り扱い |
 |------|---------|
-| `jssp-presentation-page.md` | 🟢 必読 — URL指定方針・`fetch` 呼び出しの基本形 |
+| `.github/instructions/jssp-presentation-page.instructions.md` | 🟢 必読 — URL指定方針・`fetch` 呼び出しの基本形 |
 | `reference/swagger-routing-call.md`（本スキル） | 🟢 必読 — swagger構造の読み方・fetch呼び出しパターン・注意点 |
 | `jssp-im-logic-generator` の `reference/route_definition.schema.json` / `routing-response.md` | 🟡 参考 — ルーティング定義側の仕様（`secured`・`responseType`等）。swagger には出てこない情報の裏付けに使う |
-| `jssp-error-handling.md` | 🔴 本スキール単独では不要 — ロジックフローAPIのレスポンスは JSSP のAPIレスポンス規約に従わないため |
-| `jssp-security.md` | 🟡 参考 — CSRFトークン（`X-Intramart-Secure-Token`）は、対象ルーティングの `secured: true` が確認できた場合のみ付与する |
+| `.github/instructions/jssp-error-handling.instructions.md` | 🔴 本スキール単独では不要 — ロジックフローAPIのレスポンスは JSSP のAPIレスポンス規約に従わないため |
+| `.github/instructions/jssp-security.instructions.md` | 🟡 参考 — CSRFトークン（`X-Intramart-Secure-Token`）は、対象ルーティングの `secured: true` が確認できた場合のみ付与する |
 
 ## 参照
 

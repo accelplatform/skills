@@ -194,7 +194,7 @@ public String processData(final String input) {
 
 ## Comments
 
-For class/method JavaDoc, refer to `java-javadoc.md`. This section covers inline comments only.
+For class/method JavaDoc, refer to `.github/instructions/java-javadoc.instructions.md`. This section covers inline comments only.
 
 ### Inline Comments
 

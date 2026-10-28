@@ -115,6 +115,6 @@ GET ルートかつ入力パラメータを持つため、`reference/swagger-rou
 ## 実装上のポイント
 
 - クエリパラメータへの変換は `URLSearchParams` を使用し、未入力項目は送信しない
-- レスポンスの `records` 配列を DOM に挿入する際は、`escapeHtml()` で必ずエスケープする（`jssp-security.md` の XSS対策方針に準拠）
+- レスポンスの `records` 配列を DOM に挿入する際は、`escapeHtml()` で必ずエスケープする（`.github/instructions/jssp-security.instructions.md` の XSS対策方針に準拠）
 - エラー判定は `response.ok` のみで行い、JSSP独自の `{error, errorMessage}` 形式は想定しない
-- `id` 属性は要素種別に応じた命名規約に従う（入力要素は `:searchUserCd:` のようにコロンで囲み、構造要素は `account-list-body` のようにハイフン区切りとする。`jssp-presentation-page.md` の id 命名規約に準拠）
+- `id` 属性は要素種別に応じた命名規約に従う（入力要素は `:searchUserCd:` のようにコロンで囲み、構造要素は `account-list-body` のようにハイフン区切りとする。`.github/instructions/jssp-presentation-page.instructions.md` の id 命名規約に準拠）

@@ -73,7 +73,7 @@ JSSP 版（SSJS 的 `PublicStorage` 等，定义于 `d.ts/platform/storage/*.d.t
 1. 听取用户需求（持久化还是临时、文本还是二进制、读取/写入/删除等操作种类、放置的目标包）
 2. 根据用途决定使用 `PublicStorage` / `SessionScopeStorage` / `SystemStorage` 中的哪一个（参见上表。**若用户有指定，则优先按其指定**）
 3. 参考对应的 `assets/` 模板进行实现（方法签名必须参考 `reference/storage-api-reference.md`，不可凭记忆或推测编写）
-4. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+4. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
 
@@ -93,7 +93,7 @@ JSSP 版（SSJS 的 `PublicStorage` 等，定义于 `d.ts/platform/storage/*.d.t
 2. `PublicStorage` / `SessionScopeStorage` / `SystemStorage` 的选择是否符合用途（持久/临时、公开/内部）
 3. 使用 `SessionScopeStorage` 的临时文件，是否在处理完成后或发生异常时确实被删除
 4. 在将用户输入用于路径的地方是否有防范路径穿越攻击的措施
-5. 是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. 是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 6. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。若项目中另有面向 Java 的代码评审、安全检查技能，请使用该技能
 
 ## 与其他技能的边界

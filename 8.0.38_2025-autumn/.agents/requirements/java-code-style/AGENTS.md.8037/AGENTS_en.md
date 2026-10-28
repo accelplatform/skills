@@ -189,7 +189,7 @@ public String processData(final String input) {
 
 ## Comments
 
-For class/method JavaDoc, refer to `java-javadoc.md`. This section covers inline comments only.
+For class/method JavaDoc, refer to `.agents/requirements/java-javadoc/AGENTS.md`. This section covers inline comments only.
 
 ### Inline Comments
 

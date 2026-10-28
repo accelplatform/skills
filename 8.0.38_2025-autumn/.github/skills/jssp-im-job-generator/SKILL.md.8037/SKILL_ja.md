@@ -17,12 +17,12 @@ intra-mart Accel Platform のジョブスケジューラで実行されるジョ
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-function-container.md` | 🟢 **必読** — `execute()` エントリーポイントの構造 |
-| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必読** — バッチは多くの場合詳細ログとエラー処理が必須 |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必読 |
-| `jssp-2way-sql.md` | 🟡 **DB 操作を含むバッチの場合のみ参照**（多くのバッチは DB を扱うので頻出） |
-| `jssp-security.md` | 🟡 外部入力（ジョブパラメータ等）を扱う場合のみ |
-| `jssp-presentation-page.md` / `jssp-accessibility.md` | 🔴 **画面なしのため不要** |
+| `.github/instructions/jssp-function-container.instructions.md` | 🟢 **必読** — `execute()` エントリーポイントの構造 |
+| `.github/instructions/jssp-error-handling.instructions.md` / `.github/instructions/jssp-logging.instructions.md` | 🟢 **必読** — バッチは多くの場合詳細ログとエラー処理が必須 |
+| `.github/instructions/jssp-naming.instructions.md` / `.github/instructions/jssp-code-style.instructions.md` / `.github/instructions/jssp-file-structure.instructions.md` | 🟢 必読 |
+| `.github/instructions/jssp-2way-sql.instructions.md` | 🟡 **DB 操作を含むバッチの場合のみ参照**（多くのバッチは DB を扱うので頻出） |
+| `.github/instructions/jssp-security.instructions.md` | 🟡 外部入力（ジョブパラメータ等）を扱う場合のみ |
+| `.github/instructions/jssp-presentation-page.instructions.md` / `.github/instructions/jssp-accessibility.instructions.md` | 🔴 **画面なしのため不要** |
 
 ## 生成対象
 

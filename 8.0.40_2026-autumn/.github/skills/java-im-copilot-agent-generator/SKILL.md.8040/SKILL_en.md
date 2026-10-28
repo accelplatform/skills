@@ -95,7 +95,7 @@ If the request falls into the following categories, explain that it is out of sc
 4. When implementing a custom tool, annotate the input parameter DTO with `SchemaProperties` and generate the schema with `JsonSchemaGenerator.generateSchema(...)`
 5. When integrating with the IM-Copilot chat UI, create an `AbstractCopilotAssistant<T>` subclass annotated with `@Assistant` (build and run the `Agent` inside `doExecute`). **The parameter class `T` must be `AssistantParameter` itself (`jp.co.intra_mart.foundation.copilot.assistant.model`), or a subclass of it** (see "`AssistantParameter`" in `reference/assistant-integration-api-reference.md` — a bespoke POJO leaves the chat UI unable to accept a prompt)
 6. When an Assistant is created, **always implement/register `AssistantScanPackageFactory` and grant the IM-Authz permission** (omitting either one leaves the assistant missing from the assistant list; `assets/copilot-agent-basic-usage.md` Pattern 9)
-7. Verify compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+7. Verify compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -127,7 +127,7 @@ Rather than an automated validation script, verify the following items manually.
 5. Whether checked exceptions such as `AgentException`/`CopilotAssistantException` are being swallowed anywhere
 6. When an Assistant was created, whether the parameter class `T` is `AssistantParameter` itself or a subclass of it (leaving it as a bespoke POJO means the chat UI cannot accept a prompt)
 7. When an Assistant was created, whether `AssistantScanPackageFactory` was implemented/registered, and whether a permit policy was granted for the resource `im-copilot-assistant://assistant/<assistant ID>` in IM-Authz (both are required for it to appear in the assistant list)
-8. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+8. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 9. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-specific code review/security check skills, use those instead
 
 ## Boundaries with Other Skills

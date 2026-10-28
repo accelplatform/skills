@@ -4,7 +4,7 @@
 
 ## 概要
 
-サービス層はビジネスロジックを実装し、複数のリポジトリにまたがる操作をオーケストレーションする。アーキテクチャ全体のレイヤー構造は `java-architecture.md` を参照。
+サービス層はビジネスロジックを実装し、複数のリポジトリにまたがる操作をオーケストレーションする。アーキテクチャ全体のレイヤー構造は `.agents/requirements/java-architecture/AGENTS.md` を参照。
 
 ## サービスインターフェースと実装
 
@@ -66,7 +66,7 @@ public {ResultType} process{BusinessOperation}({InputType} input) throws {Servic
 
 - **必須** `RepositoryException` は `{ServiceName}ServiceException` でラップすること（cause を保持）
 - **必須** 予期しない `RuntimeException` はそのままスローすること（キャッチしない）
-- 例外メッセージは日本語、トラブルシューティングに必要な変数値を含めること。ログ出力の要否・レベルは `java-logging.md` を参照
+- 例外メッセージは日本語、トラブルシューティングに必要な変数値を含めること。ログ出力の要否・レベルは `.agents/requirements/java-logging/AGENTS.md` を参照
 
 ## 主要な要件
 
@@ -78,7 +78,7 @@ public {ResultType} process{BusinessOperation}({InputType} input) throws {Servic
 
 ## 関連
 
-- `java-architecture.md` - アーキテクチャ原則・レイヤー構造
-- `java-entity.md` - Entity クラス規約
-- `java-logging.md` - ログ出力規約
+- `.agents/requirements/java-architecture/AGENTS.md` - アーキテクチャ原則・レイヤー構造
+- `.agents/requirements/java-entity/AGENTS.md` - Entity クラス規約
+- `.agents/requirements/java-logging/AGENTS.md` - ログ出力規約
 - 完全なサービス実装テンプレートは `.agents/skills/java-im-service-layer/SKILL.md` を参照

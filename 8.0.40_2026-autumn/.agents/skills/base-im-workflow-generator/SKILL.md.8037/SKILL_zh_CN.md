@@ -16,10 +16,10 @@ description: 新建 IM-Workflow 导入用 XML 定义文件。根据提示指示�
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-file-structure.md` | 🟢 必读 — XML 的输出位置（`src/main/storage/public/im_workflow/`） |
-| `jssp-naming.md` | 🟢 必读 — workflowName / shortName 等命名 |
-| `jssp-function-container.md` / `jssp-presentation-page.md` / `jssp-code-style.md` 等 | 🔴 **本技能单独不需要**（仅 XML 生成。`.js` / `.html` 的实现由 `jssp-im-workflow-usage` 负责） |
-| `jssp-2way-sql.md` / `jssp-accessibility.md` / `jssp-logging.md` 等 | 🔴 **本技能单独不需要** |
+| `.agents/requirements/jssp-file-structure/AGENTS.md` | 🟢 必读 — XML 的输出位置（`src/main/storage/public/im_workflow/`） |
+| `.agents/requirements/jssp-naming/AGENTS.md` | 🟢 必读 — workflowName / shortName 等命名 |
+| `.agents/requirements/jssp-function-container/AGENTS.md` / `.agents/requirements/jssp-presentation-page/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` 等 | 🔴 **本技能单独不需要**（仅 XML 生成。`.js` / `.html` 的实现由 `jssp-im-workflow-usage` 负责） |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` / `.agents/requirements/jssp-accessibility/AGENTS.md` / `.agents/requirements/jssp-logging/AGENTS.md` 等 | 🔴 **本技能单独不需要** |
 
 ## 生成对象
 

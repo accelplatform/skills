@@ -7,8 +7,8 @@ description: intra-mart JSSP の画面やファンクションコンテナに含
 
 実装着手前に、以下を確認すること。未チェック項目がある場合は着手不可。
 
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
 
 
 # JSSP 多言語化支援スキル

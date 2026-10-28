@@ -7,14 +7,14 @@ description: intra-mart ジョブスケジューラで実行されるジョブ�
 
 実装着手前に、以下を確認すること。未チェック項目がある場合は着手不可。
 
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-function-container](../../../requirements/jssp-function-container/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-function-container](../../requirements/jssp-function-container/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
 
 
 # ジョブスケジューラ ジョブプログラム生成支援スキル
@@ -30,12 +30,12 @@ intra-mart Accel Platform のジョブスケジューラで実行されるジョ
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-function-container.md` | 🟢 **必読** — `execute()` エントリーポイントの構造 |
-| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必読** — バッチは多くの場合詳細ログとエラー処理が必須 |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必読 |
-| `jssp-2way-sql.md` | 🟡 **DB 操作を含むバッチの場合のみ参照**（多くのバッチは DB を扱うので頻出） |
-| `jssp-security.md` | 🟡 外部入力（ジョブパラメータ等）を扱う場合のみ |
-| `jssp-presentation-page.md` / `jssp-accessibility.md` | 🔴 **画面なしのため不要** |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **必読** — `execute()` エントリーポイントの構造 |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-logging/AGENTS.md` | 🟢 **必読** — バッチは多くの場合詳細ログとエラー処理が必須 |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` / `.agents/requirements/jssp-file-structure/AGENTS.md` | 🟢 必読 |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🟡 **DB 操作を含むバッチの場合のみ参照**（多くのバッチは DB を扱うので頻出） |
+| `.agents/requirements/jssp-security/AGENTS.md` | 🟡 外部入力（ジョブパラメータ等）を扱う場合のみ |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` / `.agents/requirements/jssp-accessibility/AGENTS.md` | 🔴 **画面なしのため不要** |
 
 ## 生成対象
 

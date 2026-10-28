@@ -72,7 +72,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのア
 2. 通常ロックとリクエストスコープロックのどちらを使うか決定（上表の判断基準を参照。**ユーザの指定があればそちらを優先**、単一メソッド内で完結するなら通常ロックがデフォルト）
 3. `assets/lock-basic-usage.md` を参照して実装（メソッドのシグネチャは `reference/lock-api-reference.md` を必ず参照し、記憶や推測で書かない）
 4. ロックID（`NewLock` のコンストラクタ引数）の設計: 排他制御したい対象を一意に表すキーとする（例: `loginGroupId + ":" + 対象リソースのパス`）。過度に広い粒度（例: 固定文字列1つ）にすると無関係な処理まで直列化されるため避ける
-5. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+5. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -92,7 +92,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのア
 2. リクエストスコープロックとの選択が、ロックの保持スコープ（単一メソッド内か、複数箇所にまたがるか）に合っているか
 3. `NewLock.releaseRequestScope()`（`@Deprecated`）をアプリケーションコードから直接呼び出していないか
 4. ロックID の粒度が排他制御の対象として適切か（粗すぎず、細かすぎない）
-5. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+5. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 6. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

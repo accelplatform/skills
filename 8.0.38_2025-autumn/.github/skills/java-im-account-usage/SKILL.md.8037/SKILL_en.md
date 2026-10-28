@@ -74,7 +74,7 @@ Also, if the request concerns role **definitions** themselves (new registration,
 3. Implement by referring to `assets/account-basic-usage.md` (always refer to `reference/account-api-reference.md` for method signatures — do not write from memory or guesswork)
 4. When handling passwords, always design under the assumption that the `password` field is `null` when the storage method is hashing (never compare plaintext directly; use `AccountPasswordAdapter#collate()`)
 5. When updating account information, never instantiate a fresh `new AccountInfo(userCd)` each time — always fetch the existing values with `getAccountInfo()` first and change only the needed fields
-6. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -96,7 +96,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 4. Whether role-assignment lookups use direct-match (`getAccountRoleIds()` / `getUserCdsByAccountRoleId()`) versus hierarchy-aware (`getAccountRoleIdsRecursively()` / `getUserCdsByRoleId()`) methods consistently with the requirements
 5. Whether `AdminException` / `PasswordException` are being swallowed silently
 6. Whether operations on role definitions themselves have crept in (if so, carve them out into the scope of `java-im-role-usage`)
-7. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+7. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 8. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has a separate Java-specific code review / security check skill, use that instead
 
 ## Boundaries with Other Skills

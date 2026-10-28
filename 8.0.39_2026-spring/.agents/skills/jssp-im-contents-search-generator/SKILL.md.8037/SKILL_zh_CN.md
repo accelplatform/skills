@@ -7,15 +7,15 @@ description: 生成 IM-ContentsSearch 的自定义 Crawler（Solr 索引注册/�
 
 实施前必须确认以下内容。有未确认项目时不得开始。
 
-- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-accessibility](../../requirements/jssp-accessibility/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-presentation-page](../../requirements/jssp-presentation-page/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) 已参考并理解内容
 
 
 # IM-ContentsSearch 扩展程序生成 Skill
@@ -42,12 +42,12 @@ description: 生成 IM-ContentsSearch 的自定义 Crawler（Solr 索引注册/�
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-function-container.md` | 🟢 **必读** — 模板 JS 的 `init()` 结构 |
-| `jssp-naming.md` / `jssp-code-style.md` | 🟢 必读 |
-| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必读** — Crawler 必须有详细日志和错误处理 |
-| `jssp-2way-sql.md` | 🟡 **仅在使用 2WaySQL 时参考**（例如，Crawler 的检索 SQL 使用 2WaySQL 时） |
-| `jssp-presentation-page.md` | 🟡 模板 HTML 的基本结构（imcs 专用类优先参考本 Skill 的 assets） |
-| `jssp-security.md` | 🟡 实现模板 HTML 时参考 XSS 对策章节。由于检索结果内容（`request` 参数）来自 Apache Solr，存储型 XSS 的风险不为零。DOM 操作使用 `textContent`，`innerHTML` 仅限用于 iAP 内部生成的 HTML |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **必读** — 模板 JS 的 `init()` 结构 |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` | 🟢 必读 |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-logging/AGENTS.md` | 🟢 **必读** — Crawler 必须有详细日志和错误处理 |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🟡 **仅在使用 2WaySQL 时参考**（例如，Crawler 的检索 SQL 使用 2WaySQL 时） |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | 🟡 模板 HTML 的基本结构（imcs 专用类优先参考本 Skill 的 assets） |
+| `.agents/requirements/jssp-security/AGENTS.md` | 🟡 实现模板 HTML 时参考 XSS 对策章节。由于检索结果内容（`request` 参数）来自 Apache Solr，存储型 XSS 的风险不为零。DOM 操作使用 `textContent`，`innerHTML` 仅限用于 iAP 内部生成的 HTML |
 
 ---
 

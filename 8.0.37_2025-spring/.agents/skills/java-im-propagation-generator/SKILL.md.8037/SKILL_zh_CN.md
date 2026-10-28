@@ -113,7 +113,7 @@ PropagationManager#send(operationType, dataClass, data, resultClass)
 2. 实现发送方时，参考 `assets/sender-usage.md`，按数据模型 → `GenericModel`（继承 `AbstractGeneric`）→ `Encoder`（继承 `AbstractEncoder`）→ `PropagationManager` 调用代码 → 发送配置文件的顺序实现（方法签名务必参考 `reference/propagation-api-reference.md`，不要凭记忆或猜测编写）
 3. 实现接收方时，参考 `assets/receiver-usage.md`，按 `Decoder`（继承 `AbstractDecoder`）→ `Procedure`（继承 `AbstractProcedure` 或 `AbstractSessionableProcedure`）→ 接收配置文件的顺序实现。**`source`/`operationType` 需与发送方（自建情形参见步骤 2，intra-mart 标准数据情形参见 `assets/standard-listener-usage.md` 的清单）完全一致**。**实现前必须确认 `Decoder<G, D>` 中指定为 `G` 的类是否具有 `public` 的无参构造函数**（若不具备就注册为接收方，会导致发送方自身的处理被破坏，参见"注意事项"）。**接收 intra-mart 标准数据时，`G` 不应直接使用领域模型类，而应使用 `jp.co.intra_mart.foundation.propagation.model.generic` 包中对应的 `Generic*` 类**（参见 `assets/standard-listener-usage.md` 的对应表，并先在验证环境中确认）
 4. `GenericModel` 的类与字段结构在发送方・接收方之间不必是完全相同的类，但字段名・类型差异过大会导致还原时数据丢失。应与用户协商是在收发双方使用同一个 `GenericModel` 类（例如放置于共享库中），还是在留意字段结构的前提下各自单独定义
-5. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+5. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 存放规约
 
@@ -186,7 +186,7 @@ src/main/conf/propagation-config.xml                        … 全局配置（�
 5. **`Decoder<G, D>` 中指定为 `G` 的类是否具有 `public` 的无参构造函数（自定义类如另行定义了构造函数，需特别确认）。接收 intra-mart 标准数据时，`G` 是否使用了 `jp.co.intra_mart.foundation.propagation.model.generic` 包中对应的 `Generic*` 类而非直接使用领域模型类，是否在部署到生产等同环境之前先在验证环境中确认过**
 6. 是否根据接收方 Procedure 是否需要数据库事务，恰当地选择了 `AbstractProcedure`/`AbstractSessionableProcedure`
 7. 配置文件的存放位置是否为 `src/main/conf/propagation-senders-config/`・`src/main/conf/propagation-receivers-config/`（而非 `src/main/webapp/WEB-INF/conf/`）
-8. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+8. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 9. `jssp-code-review` / `jssp-security-check` 是 JSSP 专用的，不适用于本技能的生成物。若项目中另有面向 Java 的代码审查・安全检查技能，应使用该技能
 
 ## 与其他技能的边界

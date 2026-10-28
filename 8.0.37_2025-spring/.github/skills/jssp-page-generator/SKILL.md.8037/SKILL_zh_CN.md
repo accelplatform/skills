@@ -26,13 +26,13 @@ allowed-tools: Bash, Read, Write, Glob
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-presentation-page.md` | 🟢 **必读** — `.html` 的 HTML 结构、验证、id 命名 |
-| `jssp-function-container.md` | 🟢 **必读** — `init()` 结构、validateRequest |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必读 |
-| `jssp-error-handling.md` / `jssp-security.md` | 🟢 必读 — 含表单输入 + API，二者均相关 |
-| `jssp-2way-sql.md` | 🟡 **仅在实现含 DB 操作时参照**。只读 UI 等无 DB 操作的画面无需阅读 |
-| `jssp-logging.md` | 🟡 仅在实现日志时 |
-| `jssp-accessibility.md` | 🟠 **业务需求依赖** — 仅在规格书明确要求时厚涂适用。无要求时保持最小（`imdsConfirm`、`aria-label`、装饰图标的 `aria-hidden` 等基础） |
+| `.github/instructions/jssp-presentation-page.instructions.md` | 🟢 **必读** — `.html` 的 HTML 结构、验证、id 命名 |
+| `.github/instructions/jssp-function-container.instructions.md` | 🟢 **必读** — `init()` 结构、validateRequest |
+| `.github/instructions/jssp-naming.instructions.md` / `.github/instructions/jssp-code-style.instructions.md` / `.github/instructions/jssp-file-structure.instructions.md` | 🟢 必读 |
+| `.github/instructions/jssp-error-handling.instructions.md` / `.github/instructions/jssp-security.instructions.md` | 🟢 必读 — 含表单输入 + API，二者均相关 |
+| `.github/instructions/jssp-2way-sql.instructions.md` | 🟡 **仅在实现含 DB 操作时参照**。只读 UI 等无 DB 操作的画面无需阅读 |
+| `.github/instructions/jssp-logging.instructions.md` | 🟡 仅在实现日志时 |
+| `.github/instructions/jssp-accessibility.instructions.md` | 🟠 **业务需求依赖** — 仅在规格书明确要求时厚涂适用。无要求时保持最小（`imdsConfirm`、`aria-label`、装饰图标的 `aria-hidden` 等基础） |
 
 ## 使用时机
 
@@ -61,6 +61,11 @@ allowed-tools: Bash, Read, Write, Glob
 - 是否需要新建数据表
 - **画面是否包含让用户选择 IM 通用主数据值（用户・组织・公司・组・角色）的字段** → 若包含，请配合 `jssp-im-master-usage` 技能将其实现为主数据检索对话框（禁止使用自行制作的 `<input>` 进行手动输入）
 - **画面是否作为门户页面的 Portlet（部件），可能在同一门户页面上多重配置** → 若是，使用 `assets/simple-portlet.md`（其实现方针与普通画面不同：不含页头、页脚，`$data` 通过 IIFE 进行作用域隔离等）
+- **UI 主题**：提示词或规格书中明确指定了 UI 主题（纯 HTML、自定义主题等）时，遵循该指定。使用 imds 以外的主题生成时，不执行步骤 3，也不适用步骤 5 中有关 imds 类名和结构的项目。资源中仅复用 JS 处理和注释，HTML 按该主题构建
+
+#### UI 主题的默认值（imds）
+
+未明确指定 UI 主题时，使用 imds 主题生成（参见 `.github/instructions/jssp-presentation-page.instructions.md` 的「UI 主题的选择」）。
 
 ---
 
@@ -83,6 +88,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 ### 步骤 3：读取 imds 组件参考文档
 
+使用 imds 主题生成时执行此步骤。
 参考 `jssp-imds-theme` 技能，**对画面中包含的每个 UI 组件，使用 Read 工具打开并读取对应的参考文件。**
 不得凭记忆或猜测编写 imds 类名或标签结构。
 

@@ -80,7 +80,7 @@ allowed-tools: Bash, Read, Write, Glob
 2. 选择 `RoleInfo` 的构造函数（自动编号角色ID，还是明确指定），并确定是否需要设置角色名・分类・（按语言环境的）显示名
 3. 参考 `assets/role-basic-usage.md` 进行实现（方法签名必须参考 `reference/role-api-reference.md`，不要凭记忆或猜测编写）
 4. 处理子角色层级时，默认使用 `addSubRoleInfo`/`deleteSubRoleInfo(s)`（自动更新摘要的版本），仅在大量数据批量更新等出现性能问题时才使用 `WithoutCreatingSummary` 系列方法，并在最后统一调用一次 `regenerateRoleSummary()`
-5. 确认是否遵循 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. 确认是否遵循 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
 
@@ -103,7 +103,7 @@ allowed-tools: Bash, Read, Write, Glob
 5. 新实现中是否使用了已 `@Deprecated` 的 `getCategoryCount`・`isUpdate`
 6. `moveCategory`・`deleteRoleInfo(s)`・`deleteCategory(ies)` 等破坏性操作是否仅在需求要求的范围内执行
 7. 是否存在吞掉 `AdminException`（受检异常）的情况
-8. 是否遵循 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+8. 是否遵循 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 9. `jssp-code-review` / `jssp-security-check` 是 JSSP 专用的，不适用于本技能的生成物。如果项目另有 Java 专用的代码评审・安全检查技能，请使用该技能
 
 ## 与其他技能的边界

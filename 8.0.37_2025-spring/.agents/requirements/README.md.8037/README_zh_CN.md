@@ -12,7 +12,7 @@
 
 ## 规约的参考方针
 
-各规约文件开头标注了 **适用范围**。请参考下表的 **适用范围标签**，仅对当前任务相关的规约使用 `Read` 工具读取。与任务无关的规约（例如：无 DB 操作的画面无需 `jssp-2way-sql.md`）无需读取。
+各规约文件开头标注了 **适用范围**。请参考下表的 **适用范围标签**，仅对当前任务相关的规约使用 `Read` 工具读取。与任务无关的规约（例如：无 DB 操作的画面无需 `.agents/requirements/jssp-2way-sql/AGENTS.md`）无需读取。
 
 ### 适用范围标签图例
 
@@ -28,37 +28,37 @@
 
 | 文件 | 一行摘要 | 适用范围 |
 |------|---------|---------|
-| `jssp-overview.md` | 项目概述与技术栈 | 🟢 始终 |
-| `jssp-file-structure.md` | 目录结构与文件命名 | 🟢 始终 |
-| `jssp-code-style.md` | `let` / 字符串字面量 / 运算符 | 🟢 始终（`.js` 生成时） |
-| `jssp-naming.md` | 文件名・函数名・变量名 | 🟢 始终 |
-| `jssp-function-container.md` | `init()` 结构・验证・IM 通用主数据 API | 🟢 函数容器（`.js`）生成时 |
-| `jssp-presentation-page.md` | 展示页面（`.html`）结构・验证・id 命名规约 | 🟢 展示页面（`.html`）生成时 |
-| `jssp-error-handling.md` | try-catch / 响应结构 / 错误代码 | 🟢 始终 |
-| `jssp-security.md` | XSS / CSRF / 输入验证 | 🟢 始终（处理用户输入时） |
-| `jssp-logging.md` | 日志级别 / 敏感信息脱敏 / 占位符 | 🟡 实现日志时 |
-| `jssp-2way-sql.md` | 2WaySQL / `DbParameter` / 事务 | 🟡 **仅在 DB 操作时**（使用 `db.executeByTemplate` / `db.execute` 时） |
-| `jssp-testing.md` | 单元测试（jest-on-rhino） | 🟡 编写测试时 |
-| `jssp-performance.md` | 编译器设置 / session.js | 🟡 性能调优时 |
-| `jssp-accessibility.md` | ARIA / WCAG 2.1 AA / 屏幕阅读器 | 🟠 **业务需求依赖** — 仅在规格书有明确要求时厚涂适用；无要求时保持基本（`imdsConfirm`、基础 `aria-label` 等） |
+| `.agents/requirements/jssp-overview/AGENTS.md` | 项目概述与技术栈 | 🟢 始终 |
+| `.agents/requirements/jssp-file-structure/AGENTS.md` | 目录结构与文件命名 | 🟢 始终 |
+| `.agents/requirements/jssp-code-style/AGENTS.md` | `let` / 字符串字面量 / 运算符 | 🟢 始终（`.js` 生成时） |
+| `.agents/requirements/jssp-naming/AGENTS.md` | 文件名・函数名・变量名 | 🟢 始终 |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | `init()` 结构・验证・IM 通用主数据 API | 🟢 函数容器（`.js`）生成时 |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | UI 主题选择・展示页面（`.html`）结构・验证・id 命名规约 | 🟢 展示页面（`.html`）生成时 |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` | try-catch / 响应结构 / 错误代码 | 🟢 始终 |
+| `.agents/requirements/jssp-security/AGENTS.md` | XSS / CSRF / 输入验证 | 🟢 始终（处理用户输入时） |
+| `.agents/requirements/jssp-logging/AGENTS.md` | 日志级别 / 敏感信息脱敏 / 占位符 | 🟡 实现日志时 |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 2WaySQL / `DbParameter` / 事务 | 🟡 **仅在 DB 操作时**（使用 `db.executeByTemplate` / `db.execute` 时） |
+| `.agents/requirements/jssp-testing/AGENTS.md` | 单元测试（jest-on-rhino） | 🟡 编写测试时 |
+| `.agents/requirements/jssp-performance/AGENTS.md` | 编译器设置 / session.js | 🟡 性能调优时 |
+| `.agents/requirements/jssp-accessibility/AGENTS.md` | ARIA / WCAG 2.1 AA / 屏幕阅读器 | 🟠 **业务需求依赖** — 仅在规格书有明确要求时厚涂适用；无要求时保持基本（`imdsConfirm`、基础 `aria-label` 等） |
 
 ### 通用（JSSP / Java 两者适用）
 
 | 文件 | 一行摘要 | 适用范围 |
 |------|---------|---------|
-| `database-ddl.md` | 表・列命名规约 / 类型映射 / 审计追踪列 / 主键・索引设计 / DDL 中允许的语法 | 🟢 始终（创建新表的 DDL 时。无论该表由 JSSP 还是 Java 使用均适用） |
+| `.agents/requirements/database-ddl/AGENTS.md` | 表・列命名规约 / 类型映射 / 审计追踪列 / 主键・索引设计 / DDL 中允许的语法 | 🟢 始终（创建新表的 DDL 时。无论该表由 JSSP 还是 Java 使用均适用） |
 
 ### 面向 Java（JavaEE 开发模型）
 
 | 文件 | 一行摘要 | 适用范围 |
 |------|---------|---------|
-| `java-architecture.md` | 分层结构 / 依赖规则 / 异常层次 / 工厂模式 | 🟢 始终（Java 实现时） |
-| `java-service-layer.md` | 服务层（Service）实现规则 / 事务边界 / 异常转换 | 🟢 始终（`service` 包实现时） |
-| `java-entity.md` | Entity 类（Mirage ORM）设计规约 / 审计字段 | 🟡 生成 Entity 类（`entity` 包）时 |
-| `java-code-style.md` | `final` / 字符串字面量 / `equals()` / 禁止 raw type | 🟢 始终（`.java` 生成时） |
-| `java-naming.md` | 包・类・方法・变量的命名规约 | 🟢 始终 |
-| `java-javadoc.md` | 类・方法的 JavaDoc 编写规约 | 🟢 始终 |
-| `java-logging.md` | 日志级别 / 敏感信息脱敏 / 按异常类型判断日志级别 | 🟡 实现日志时 |
+| `.agents/requirements/java-architecture/AGENTS.md` | 分层结构 / 依赖规则 / 异常层次 / 工厂模式 | 🟢 始终（Java 实现时） |
+| `.agents/requirements/java-service-layer/AGENTS.md` | 服务层（Service）实现规则 / 事务边界 / 异常转换 | 🟢 始终（`service` 包实现时） |
+| `.agents/requirements/java-entity/AGENTS.md` | Entity 类（Mirage ORM）设计规约 / 审计字段 | 🟡 生成 Entity 类（`entity` 包）时 |
+| `.agents/requirements/java-code-style/AGENTS.md` | `final` / 字符串字面量 / `equals()` / 禁止 raw type | 🟢 始终（`.java` 生成时） |
+| `.agents/requirements/java-naming/AGENTS.md` | 包・类・方法・变量的命名规约 | 🟢 始终 |
+| `.agents/requirements/java-javadoc/AGENTS.md` | 类・方法的 JavaDoc 编写规约 | 🟢 始终 |
+| `.agents/requirements/java-logging/AGENTS.md` | 日志级别 / 敏感信息脱敏 / 按异常类型判断日志级别 | 🟡 实现日志时 |
 
 ## 本地化
 

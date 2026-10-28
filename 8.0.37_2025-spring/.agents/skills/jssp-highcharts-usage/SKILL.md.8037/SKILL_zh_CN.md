@@ -7,10 +7,10 @@ description: 在 intra-mart JSSP 表示页面中使用 Highcharts 绘制图表�
 
 实施前必须确认以下内容。有未确认项目时不得开始。
 
-- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-accessibility](../../requirements/jssp-accessibility/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-presentation-page](../../requirements/jssp-presentation-page/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) 已参考并理解内容
 
 
 # Highcharts 图表绘制技能

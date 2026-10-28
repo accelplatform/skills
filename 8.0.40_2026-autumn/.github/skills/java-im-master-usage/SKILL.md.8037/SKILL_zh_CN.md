@@ -147,7 +147,7 @@ allowed-tools: Bash, Read, Write, Glob
 6. 使用分组系・法人/取引方/品目分类/品目/货币的检索方法（`list*`/`search*`/`count*`）时，传递给 `AppCmnSearchCondition` 的列名须从各实体专用的枚举类型（如 `ImmPublicGroupColumn`/`ImmCustomerColumn` 等，即 `ImmTableColumn` 的实现）的 `toString()` 中获取
 7. 使用 `CustomerManager`/`ItemManager` 的检索方法（`search`/`list`/`count`/`total`）时，须确认是否忘记传递第一个参数 `companyCd`（与其他类不同，其方法名不含实体名，为通用签名）
 8. 由于分组系单体获取系（`get*`）在对象不存在时返回 `null`，调用方须进行空值检查
-9. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+9. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
 
@@ -198,7 +198,7 @@ allowed-tools: Bash, Read, Write, Glob
 10. 是否混淆了 `CorporationManager`（法人）与 `CorporationGroupManager`（法人分组）
 11. `CustomerManager`/`ItemManager` 的检索系方法是否传递了 `companyCd`
 12. 是否试图为货币的 `Currency`/`CurrencyConversion`/`CurrencyPrecision` 设置本不存在的 `startDate`/`endDate`（仅 `CurrencyRate` 具备期间概念）
-13. 是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+13. 是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 14. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目另有 Java 专用的代码评审/安全检查技能，请使用该技能
 
 ## 与其他技能的边界

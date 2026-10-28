@@ -77,7 +77,7 @@ allowed-tools: Bash, Read, Write, Glob
 4. 参照 `assets/toolcalling-basic-usage.md` 进行实现。建议先从非流式（模式 1）着手，如有需要再扩展为流式（模式 2）
 5. 需要与 IM-Copilot 聊天界面对接时，创建标注了 `@Assistant` 的 `AbstractCopilotAssistant<T>` 子类。**参数类 `T` 必须是 `AssistantParameter` 本身，或其子类**（使用自定义 POJO 会导致聊天界面无法输入提示词）
 6. 创建了 Assistant 时，**务必同时完成 `AssistantScanPackageFactory` 的实现・注册，以及 IM-Authz 权限的授予**（二者缺一，助手都不会出现在助手一览中。详情请参照 `java-im-copilot-agent-generator` 的 `reference/assistant-integration-api-reference.md`「向平台注册」）
-7. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+7. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
 
@@ -99,7 +99,7 @@ allowed-tools: Bash, Read, Write, Glob
 4. 异常的 `catch` 是否因 `CopilotServiceException` 的继承关系而发生编译错误
 5. 创建了 Assistant 时，参数类 `T` 是否为 `AssistantParameter` 本身或其子类
 6. 创建了 Assistant 时，是否已实现・注册 `AssistantScanPackageFactory`，是否已在 IM-Authz 中为资源 `im-copilot-assistant://assistant/<助手ID>` 授予许可策略
-7. 是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+7. 是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 8. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目另有 Java 专用的代码评审・安全检查技能，请使用该技能
 
 ## 与其他技能的边界

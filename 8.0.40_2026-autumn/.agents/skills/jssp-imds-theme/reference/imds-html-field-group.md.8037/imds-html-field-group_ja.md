@@ -148,6 +148,33 @@ imds-field-group                          # グループ全体（is-vertical / i
 </div>
 ```
 
+### 横並び Field の幅指定とエラー表示
+
+入力欄の横幅は原則 `input` / `select` に `style="max-width: …"` で直接指定する。ただし `imds-field-group-control is-horizontal` で Field を横並びにする場合に限り、各 `div.imds-field` に横幅を指定する（入力要素に指定すると入力欄の間に不自然な隙間ができるため）。
+
+`div.imds-field` の幅が 10em 未満の場合、エラーメッセージ（`imds-error-text`）はフィールドごとではなく `imds-field-group-control` の後（グループの末尾）に表示する（幅が狭いとメッセージの折り返しが多く読みにくいため）。10em 以上でも、メッセージが長く読みにくい場合はグループの末尾に表示してよい。複数フィールドのエラーを並べる場合は `imds-error-text` をフィールドごとに 1 つずつ並べる。`imds-validation-error` は従来どおり個別の `imds-field` に付与する。
+
+```html
+<div class="imds-field-group is-horizontal imds-w-15">
+  <div class="imds-field-group-label"><span>数量</span></div>
+  <div class="imds-field-group-control is-horizontal">
+    <div class="imds-field" style="max-width: 8em;">
+      <div class="imds-field-label"><label for=":r10:">単価</label></div>
+      <div class="imds-field-control">
+        <input type="text" id=":r10:" class="imds-textbox" value="" />
+      </div>
+    </div>
+    <div class="imds-field imds-validation-error" style="max-width: 8em;">
+      <div class="imds-field-label"><label for=":r11:">在庫数</label></div>
+      <div class="imds-field-control">
+        <input type="text" id=":r11:" class="imds-textbox" value="" />
+      </div>
+    </div>
+  </div>
+  <span class="imds-error-text">在庫数は0以上の数値で入力してください。</span>
+</div>
+```
+
 ### field-container でラップする
 
 FieldGroup をフォームの第1階層に配置する場合は、Field と同様に `imds-field-container` でラップする。`imds-field-container` の詳細（`has-divider` / `has-accent-color` / 768px 未満の自動縦積み）は [imds-html-field.md](imds-html-field.md) の「Field Container」節を参照。
@@ -185,6 +212,7 @@ FieldGroup をフォームの第1階層に配置する場合は、Field と同�
 - グループ内の各 Field で `id` が重複しないよう一意の値を付与すること（`:r1:` 等はプレースホルダー）
 - `imds-help-text` と `imds-error-text` は `imds-field-group-control` の後に配置する
 - `imds-validation-error` はグループではなく個別の `imds-field` に付与する
+- `imds-field-group-control is-horizontal` で Field を横並びにする場合のみ、横幅を入力要素ではなく `div.imds-field` に指定する（「横並び Field の幅指定とエラー表示」参照）
 - `imds-field-group-control is-horizontal` 内に複数の `imds-field` を配置する場合、`imds-field-label` の有無はグループ内で統一すること。ラベルありとなしが混在するとレイアウトが崩れる
   - 全フィールドにラベルを付ける場合は、`imds-field-group-label` にはグループ全体の見出しを設定する
   - ラベルなしで統一する場合は、`imds-field-group-label` に代表的な項目名を設定する

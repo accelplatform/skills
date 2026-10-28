@@ -68,7 +68,7 @@ Also, **when the data to be cached is short-lived data that is self-contained wi
 3. Implement by referring to `assets/cache-basic-usage.md` (always refer to `reference/cache-api-reference.md` for method signatures — do not write from memory or guesswork)
 4. Confirm that the cache key and value classes implement `java.io.Serializable`
 5. Implement the reload logic for when `Cache#get()` returns `null` (fetching from the data source, then registering it in the cache via `put()`)
-6. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -95,7 +95,7 @@ Rather than an automated validation script, verify the following manually.
 3. Whether the `null` check on the return value of `Cache#get()`, along with the reload/re-registration logic on a cache miss, is implemented
 4. Whether the execution environment that calls `CacheManagerFactory.getCacheManager()` has a tenant context (i.e., that it is not being called from an execution environment not tied to a tenant, such as the job scheduler)
 5. When sensitive information is stored in the cache, whether the design prevents unintended access across tenants or users
-6. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 7. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has a separate Java-specific code review / security check skill, use that instead
 
 ## Boundaries with Other Skills

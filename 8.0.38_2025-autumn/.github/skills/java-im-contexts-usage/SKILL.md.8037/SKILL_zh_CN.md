@@ -143,7 +143,7 @@ if (ContextStatus.isAdministrator()) { /* 系统管理员 */ }
 3. 对于以认证为前提的处理，确认 `ContextStatus.isAuthenticated()` 或 `AccountContext.isAuthenticated()`
 4. 参考 `assets/contexts-basic-usage.md` 实现（方法签名务必参考 `reference/contexts-api-reference.md`，不要凭记忆或推测编写）
 5. 遵守按层划分的使用位置（参见下文"注意事项"）
-6. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
 
@@ -176,7 +176,7 @@ if (ContextStatus.isAdministrator()) { /* 系统管理员 */ }
 3. 是否将上下文保存在实例字段或 `static` 字段中
 4. 是否将 `UserProfile` 中的姓名、邮箱等个人信息输出到日志
 5. 基础设施层（DAO/Repository）是否直接调用了 `Contexts` API
-6. 是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. 是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 7. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。如果项目另有面向 Java 的代码评审/安全检查技能，请使用那些技能
 
 ## 上下文可用范围

@@ -12,7 +12,7 @@
 
 ## 规约的参考方针
 
-各规约文件开头标注了 **适用范围**。请参考下表的 **适用范围标签**，仅对当前任务相关的规约使用 `Read` 工具读取。与任务无关的规约（例如：无 DB 操作的画面无需 `jssp-2way-sql.instructions.md`）无需读取。
+各规约文件开头标注了 **适用范围**。请参考下表的 **适用范围标签**，仅对当前任务相关的规约使用 `Read` 工具读取。与任务无关的规约（例如：无 DB 操作的画面无需 `.github/instructions/jssp-2way-sql.instructions.md`）无需读取。
 
 ### 适用范围标签图例
 
@@ -28,37 +28,37 @@
 
 | 文件 | 一行摘要 | 适用范围 |
 |------|---------|---------|
-| `jssp-overview.instructions.md` | 项目概述与技术栈 | 🟢 始终 |
-| `jssp-file-structure.instructions.md` | 目录结构与文件命名 | 🟢 始终 |
-| `jssp-code-style.instructions.md` | `let` / 字符串字面量 / 运算符 | 🟢 始终（`.js` 生成时） |
-| `jssp-naming.instructions.md` | 文件名・函数名・变量名 | 🟢 始终 |
-| `jssp-function-container.instructions.md` | `init()` 结构・验证・IM 通用主数据 API | 🟢 函数容器（`.js`）生成时 |
-| `jssp-presentation-page.instructions.md` | 展示页面（`.html`）结构・验证・id 命名规约 | 🟢 展示页面（`.html`）生成时 |
-| `jssp-error-handling.instructions.md` | try-catch / 响应结构 / 错误代码 | 🟢 始终 |
-| `jssp-security.instructions.md` | XSS / CSRF / 输入验证 | 🟢 始终（处理用户输入时） |
-| `jssp-logging.instructions.md` | 日志级别 / 敏感信息脱敏 / 占位符 | 🟡 实现日志时 |
-| `jssp-2way-sql.instructions.md` | 2WaySQL / `DbParameter` / 事务 | 🟡 **仅在 DB 操作时**（使用 `db.executeByTemplate` / `db.execute` 时） |
-| `jssp-testing.instructions.md` | 单元测试（jest-on-rhino） | 🟡 编写测试时 |
-| `jssp-performance.instructions.md` | 编译器设置 / session.js | 🟡 性能调优时 |
-| `jssp-accessibility.instructions.md` | ARIA / WCAG 2.1 AA / 屏幕阅读器 | 🟠 **业务需求依赖** — 仅在规格书有明确要求时厚涂适用；无要求时保持基本（`imdsConfirm`、基础 `aria-label` 等） |
+| `.github/instructions/jssp-overview.instructions.md` | 项目概述与技术栈 | 🟢 始终 |
+| `.github/instructions/jssp-file-structure.instructions.md` | 目录结构与文件命名 | 🟢 始终 |
+| `.github/instructions/jssp-code-style.instructions.md` | `let` / 字符串字面量 / 运算符 | 🟢 始终（`.js` 生成时） |
+| `.github/instructions/jssp-naming.instructions.md` | 文件名・函数名・变量名 | 🟢 始终 |
+| `.github/instructions/jssp-function-container.instructions.md` | `init()` 结构・验证・IM 通用主数据 API | 🟢 函数容器（`.js`）生成时 |
+| `.github/instructions/jssp-presentation-page.instructions.md` | UI 主题选择・展示页面（`.html`）结构・验证・id 命名规约 | 🟢 展示页面（`.html`）生成时 |
+| `.github/instructions/jssp-error-handling.instructions.md` | try-catch / 响应结构 / 错误代码 | 🟢 始终 |
+| `.github/instructions/jssp-security.instructions.md` | XSS / CSRF / 输入验证 | 🟢 始终（处理用户输入时） |
+| `.github/instructions/jssp-logging.instructions.md` | 日志级别 / 敏感信息脱敏 / 占位符 | 🟡 实现日志时 |
+| `.github/instructions/jssp-2way-sql.instructions.md` | 2WaySQL / `DbParameter` / 事务 | 🟡 **仅在 DB 操作时**（使用 `db.executeByTemplate` / `db.execute` 时） |
+| `.github/instructions/jssp-testing.instructions.md` | 单元测试（jest-on-rhino） | 🟡 编写测试时 |
+| `.github/instructions/jssp-performance.instructions.md` | 编译器设置 / session.js | 🟡 性能调优时 |
+| `.github/instructions/jssp-accessibility.instructions.md` | ARIA / WCAG 2.1 AA / 屏幕阅读器 | 🟠 **业务需求依赖** — 仅在规格书有明确要求时厚涂适用；无要求时保持基本（`imdsConfirm`、基础 `aria-label` 等） |
 
 ### 通用（JSSP / Java 两者适用）
 
 | 文件 | 一行摘要 | 适用范围 |
 |------|---------|---------|
-| `database-ddl.instructions.md` | 表・列命名规约 / 类型映射 / 审计追踪列 / 主键・索引设计 / DDL 中允许的语法 | 🟢 始终（创建新表的 DDL 时。无论该表由 JSSP 还是 Java 使用均适用） |
+| `.github/instructions/database-ddl.instructions.md` | 表・列命名规约 / 类型映射 / 审计追踪列 / 主键・索引设计 / DDL 中允许的语法 | 🟢 始终（创建新表的 DDL 时。无论该表由 JSSP 还是 Java 使用均适用） |
 
 ### 面向 Java（JavaEE 开发模型）
 
 | 文件 | 一行摘要 | 适用范围 |
 |------|---------|---------|
-| `java-architecture.instructions.md` | 分层结构 / 依赖规则 / 异常层次 / 工厂模式 | 🟢 始终（Java 实现时） |
-| `java-service-layer.instructions.md` | 服务层（Service）实现规则 / 事务边界 / 异常转换 | 🟢 始终（`service` 包实现时） |
-| `java-entity.instructions.md` | Entity 类（Mirage ORM）设计规约 / 审计字段 | 🟡 生成 Entity 类（`entity` 包）时 |
-| `java-code-style.instructions.md` | `final` / 字符串字面量 / `equals()` / 禁止 raw type | 🟢 始终（`.java` 生成时） |
-| `java-naming.instructions.md` | 包・类・方法・变量的命名规约 | 🟢 始终 |
-| `java-javadoc.instructions.md` | 类・方法的 JavaDoc 编写规约 | 🟢 始终 |
-| `java-logging.instructions.md` | 日志级别 / 敏感信息脱敏 / 按异常类型判断日志级别 | 🟡 实现日志时 |
+| `.github/instructions/java-architecture.instructions.md` | 分层结构 / 依赖规则 / 异常层次 / 工厂模式 | 🟢 始终（Java 实现时） |
+| `.github/instructions/java-service-layer.instructions.md` | 服务层（Service）实现规则 / 事务边界 / 异常转换 | 🟢 始终（`service` 包实现时） |
+| `.github/instructions/java-entity.instructions.md` | Entity 类（Mirage ORM）设计规约 / 审计字段 | 🟡 生成 Entity 类（`entity` 包）时 |
+| `.github/instructions/java-code-style.instructions.md` | `final` / 字符串字面量 / `equals()` / 禁止 raw type | 🟢 始终（`.java` 生成时） |
+| `.github/instructions/java-naming.instructions.md` | 包・类・方法・变量的命名规约 | 🟢 始终 |
+| `.github/instructions/java-javadoc.instructions.md` | 类・方法的 JavaDoc 编写规约 | 🟢 始终 |
+| `.github/instructions/java-logging.instructions.md` | 日志级别 / 敏感信息脱敏 / 按异常类型判断日志级别 | 🟡 实现日志时 |
 
 ## 本地化
 

@@ -29,23 +29,23 @@ Opens the process (approve, deny, send back, etc.) modal.
 ```javascript
 imWorkflow.modal.showProcess({
   processParameter: {
-    systemMatterId:        '',   // システム案件 ID
-    nodeId:                '',   // ノード ID
-    processType:           [],   // 処理種別の配列（省略時は自動決定）
-    matterName:            '',   // 案件名
-    authUserDepartmentInfo: {},  // 権限者所属組織情報
-    priorityLevel:         '',   // 優先度
-    processComment:        '',   // 処理コメントの初期値
-    branchSelects:         [],   // 分岐選択情報
-    sendBackNodeIds:       [],   // 差戻し先ノード ID
-    dynamicNodeConfigs:    [],   // 動的ノード設定
-    confirmNodeConfigs:    [],   // 確認ノード設定
-    horizontalNodeConfigs: [],   // 水平ノード設定
-    verticalNodeConfigs:   [],   // 垂直ノード設定
-    interfaceControl:      {}    // フィールド表示・編集制御
+    systemMatterId:        '',   // System matter ID
+    nodeId:                '',   // Node ID
+    processType:           [],   // Array of process types (determined automatically when omitted)
+    matterName:            '',   // Matter name
+    authUserDepartmentInfo: {},  // Department information of the authorized user
+    priorityLevel:         '',   // Priority
+    processComment:        '',   // Initial value of the process comment
+    branchSelects:         [],   // Branch selection information
+    sendBackNodeIds:       [],   // Send-back destination node ID
+    dynamicNodeConfigs:    [],   // Dynamic node settings
+    confirmNodeConfigs:    [],   // Confirmation node settings
+    horizontalNodeConfigs: [],   // Horizontal node settings
+    verticalNodeConfigs:   [],   // Vertical node settings
+    interfaceControl:      {}    // Field display/edit control
   },
   optionalParameter: {
-    userParameter: {}            // アクション処理に渡す業務データ
+    userParameter: {}            // Business data passed to the action processing
   },
   rebootModal: false
 });
@@ -128,7 +128,7 @@ document.getElementById('process-button').addEventListener('click', async () => 
     rebootModal: false
   });
 
-  // 処理完了後のページ遷移（完了・キャンセルどちらの場合も呼び出す）
+  // Page transition after processing (call it on both completion and cancel)
   imWorkflow.transition.afterProcess();
 });
 ```
@@ -142,4 +142,4 @@ After the process modal closes (in both the completed and canceled cases), alway
 - `imWorkflow.modal.showProcess()` is a client-side API. It cannot be used on the server side (SSJS / Rhino)
 - `systemMatterId` and `nodeId` must be obtained from URL parameters, etc.
 - When `processType` is omitted, all process types permitted by the flow definition are displayed in the modal
-- Do not place your own "Back" button on the process screen. Delegate the transition to `imWorkflow.transition.afterProcess()`
+- Place a "Back" button in the header of the process screen, and on click return to the calling screen with `imWorkflow.transition.returnTo()`. Delegate the transition after the processing modal closes to `imWorkflow.transition.afterProcess()`

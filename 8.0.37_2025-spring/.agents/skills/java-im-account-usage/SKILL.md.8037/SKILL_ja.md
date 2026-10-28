@@ -73,7 +73,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのア
 3. `assets/account-basic-usage.md` を参照して実装（メソッドのシグネチャは `reference/account-api-reference.md` を必ず参照し、記憶や推測で書かない）
 4. パスワードを扱う実装では、必ずハッシュ化保存時に `password` フィールドが `null` になる前提で設計する（平文比較禁止、`AccountPasswordAdapter#collate()` を使用）
 5. アカウント情報の更新では、`new AccountInfo(userCd)` を都度生成せず、必ず `getAccountInfo()` で既存値を取得してから一部フィールドを変更する
-6. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+6. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -95,7 +95,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのア
 4. ロール割当の検索が、直接一致（`getAccountRoleIds()` / `getUserCdsByAccountRoleId()`）と階層考慮（`getAccountRoleIdsRecursively()` / `getUserCdsByRoleId()`）のどちらを使うべきか要件と一致しているか
 5. `AdminException` / `PasswordException` を握りつぶしていないか
 6. ロール定義自体の操作が紛れ込んでいないか（紛れ込んでいれば `java-im-role-usage` の範囲に切り出す）
-7. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+7. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 8. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

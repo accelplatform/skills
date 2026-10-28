@@ -7,10 +7,10 @@ description: intra-mart JSSP プレゼンテーションページで Highcharts 
 
 実装着手前に、以下を確認すること。未チェック項目がある場合は着手不可。
 
-- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-accessibility](../../requirements/jssp-accessibility/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-presentation-page](../../requirements/jssp-presentation-page/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
 
 
 # Highcharts グラフ描画スキル

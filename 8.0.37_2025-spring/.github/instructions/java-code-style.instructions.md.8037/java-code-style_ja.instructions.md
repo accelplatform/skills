@@ -194,7 +194,7 @@ public String processData(final String input) {
 
 ## コメント
 
-クラス・メソッドの JavaDoc の書き方は `java-javadoc.md` を参照すること。ここではインラインコメントのみ扱う。
+クラス・メソッドの JavaDoc の書き方は `.github/instructions/java-javadoc.instructions.md` を参照すること。ここではインラインコメントのみ扱う。
 
 ### インラインコメント
 

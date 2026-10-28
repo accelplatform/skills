@@ -75,7 +75,7 @@ allowed-tools: Bash, Read, Write, Glob
 3. 参照 `assets/secure-token-basic-usage.md` 进行实现（方法签名务必参照 `reference/secure-token-api-reference.md`，不要凭记忆或推测编写）
 4. 决定 `HttpServletRequest` 的获取方式（根据是否以参数形式传递，使用 `assets/secure-token-basic-usage.md` 模式 1 或模式 2）
 5. 将 `verify()` 返回 `false` 时的响应（如 `403`）与 `SecureTokenException` 的处理分开实现（`assets/secure-token-basic-usage.md` 模式 5）
-6. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
 
@@ -93,7 +93,7 @@ allowed-tools: Bash, Read, Write, Glob
 2. `verify()` 的 `false` 判定（拒绝访问）与 `SecureTokenException`（系统错误）是否被区分处理
 3. `HttpServletRequest` 的获取方式（直接参数／`HTTPContextManager`）是否符合实现场景
 4. 使用参数绑定令牌时，签发与验证是否传入了相同格式的参数
-5. 是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. 是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 6. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目另有 Java 专用的代码评审/安全检查技能，请使用该技能
 
 ## 与其他技能的边界

@@ -143,7 +143,7 @@ If it is not explicit whether Java or JSSP is intended, confirm with the user wh
 3. For processing that assumes authentication, check `ContextStatus.isAuthenticated()` or `AccountContext.isAuthenticated()`
 4. Implement using `assets/contexts-basic-usage.md` as a reference (always consult `reference/contexts-api-reference.md` for exact method signatures — never rely on memory or guesswork)
 5. Respect the recommended usage location per layer (see "Notes" below)
-6. Verify compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Verify compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -176,7 +176,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 3. No context is held in an instance field or `static` field
 4. No personal information from `UserProfile` (name, email, etc.) is logged
 5. The infrastructure layer (DAO/Repository) never calls the `Contexts` API directly
-6. Compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 7. `jssp-code-review` / `jssp-security-check` are JSSP-only and do not apply to this skill's output. If the project has separate Java code-review/security-check skills, use those instead
 
 ## Context Availability

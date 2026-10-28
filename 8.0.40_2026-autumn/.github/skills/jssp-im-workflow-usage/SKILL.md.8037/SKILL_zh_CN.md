@@ -17,17 +17,19 @@ allowed-tools: Bash, Read, Write, Glob
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-presentation-page.md` | 🟢 **必读** — 申请/审批画面的 HTML 结构、验证、id 命名 |
-| `jssp-function-container.md` | 🟢 **必读** — `init()` 结构、workflowOpenPage 参数接收 |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必读 |
-| `jssp-error-handling.md` / `jssp-security.md` | 🟢 必读 |
-| `jssp-2way-sql.md` | 🔴 **画面侧原则上不需要**（申请/审批画面仅通过 `workflowOpenPage` 提交，无 DB 操作）。仅当动作处理侧使用 `db.executeByTemplate` 时参照 |
-| `jssp-logging.md` | 🟡 仅在动作处理中实现日志时 |
-| `jssp-accessibility.md` | 🟠 **业务需求依赖** — 仅在规格书明确要求时厚涂适用。无要求时保持最小（`imdsConfirm`、`aria-label`、装饰图标的 `aria-hidden` 等基础） |
+| `.github/instructions/jssp-presentation-page.instructions.md` | 🟢 **必读** — 申请/审批画面的 HTML 结构、验证、id 命名 |
+| `.github/instructions/jssp-function-container.instructions.md` | 🟢 **必读** — `init()` 结构、workflowOpenPage 参数接收 |
+| `.github/instructions/jssp-naming.instructions.md` / `.github/instructions/jssp-code-style.instructions.md` / `.github/instructions/jssp-file-structure.instructions.md` | 🟢 必读 |
+| `.github/instructions/jssp-error-handling.instructions.md` / `.github/instructions/jssp-security.instructions.md` | 🟢 必读 |
+| `.github/instructions/jssp-2way-sql.instructions.md` | 🔴 **画面侧原则上不需要**（申请/审批画面仅通过 `workflowOpenPage` 提交，无 DB 操作）。仅当动作处理侧使用 `db.executeByTemplate` 时参照 |
+| `.github/instructions/jssp-logging.instructions.md` | 🟡 仅在动作处理中实现日志时 |
+| `.github/instructions/jssp-accessibility.instructions.md` | 🟠 **业务需求依赖** — 仅在规格书明确要求时厚涂适用。无要求时保持最小（`imdsConfirm`、`aria-label`、装饰图标的 `aria-hidden` 等基础） |
 
 ## 生成对象与模板
 
 ### 画面
+
+画面的 UI 主题遵循 `.github/instructions/jssp-presentation-page.instructions.md` 的「UI 主题的选择」。下表中的模板是功能特有部分（`<imart type="workflowOpenPage">`、处理模态框的调用、与动作处理的联动等）的正本，而不是 HTML 骨架和 UI 组件的正本。`jssp-imds-theme` 技能不存在，或明确指定了 imds 以外的主题时，仅复用 JS 和功能特有部分，HTML 按该主题构建。
 
 | 生成对象 | 模板 | 存放位置 |
 |---------|------|---------|
@@ -37,6 +39,10 @@ allowed-tools: Bash, Read, Write, Glob
 | 审批画面（处理画面）— 处理模态框方式 ★推荐（.html / .js） | `assets/modal-approve-screen.md` | `{功能名}/workflow/approve/` |
 | 确认画面 — workflowOpenPage 方式（.html / .js） | `assets/simple-confirm-screen.md` | `{功能名}/workflow/confirm/` |
 | 确认画面 — 处理模态框方式 ★推荐（.html / .js） | `assets/modal-confirm-screen.md` | `{功能名}/workflow/confirm/` |
+
+#### 使用 imds 主题生成时
+
+不要照抄模板的 HTML。先使用 Read 读取 `jssp-imds-theme` 技能的 SKILL.md、对应的页面模板（输入・审批类画面为 `assets/imds-form-page.md`）以及所用 UI 组件的 reference，再组建画面。仅从模板移植功能特有部分，生成后在「步骤 4」的 imds 合规性检查中执行 `validate-imds.js`。
 
 ### 批处理
 
@@ -52,7 +58,8 @@ allowed-tools: Bash, Read, Write, Glob
 
 | 生成对象 | 模板 | 存放位置 |
 |---------|------|---------|
-| 处理对象者插件（.js） | `assets/simple-authority-exec-event-listener.md` | `{功能名}/workflow/plugin/` |
+| 处理对象者插件（.js）（SSJS 实现） | `assets/simple-authority-exec-event-listener.md` | `{功能名}/workflow/plugin/` |
+| 处理对象者插件（IM-LogicDesigner 联动） | `assets/logic-flow-authority-plugin.md` | `src/main/storage/public/im_logic/` |
 | 未完成案件删除监听器（.js） | `assets/simple-actv-matter-delete-listener.md` | `{功能名}/workflow/` |
 | 完成案件删除监听器（.js） | `assets/simple-cpl-matter-delete-listener.md` | `{功能名}/workflow/` |
 | 过去案件删除监听器（.js） | `assets/simple-arc-matter-delete-listener.md` | `{功能名}/workflow/` |
@@ -121,6 +128,8 @@ allowed-tools: Bash, Read, Write, Glob
 - "实现分支条件"
 - "创建到达处理"
 - "实现处理对象者插件"
+- "想用 IM-LogicDesigner 决定处理对象者"
+- "想用逻辑流动态决定审批者"
 - "添加案件删除监听器"
 
 ## 实现步骤
@@ -253,22 +262,27 @@ node .github/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 4. SQL 中是否直接引用了 intra-mart 内部表（以 `im` 开头的表）？（仅在用户明确指示时允许）
 5. 画面的下拉选择框·日期输入是否指定了适当的 `max-width`？
 
-### 步骤 4：画面 HTML 的 imds 合规性再检查（仅在生成 HTML 时）
+### 步骤 4：画面 HTML 的再检查（仅在生成 HTML 时）
 
-申请画面·审批画面·详情画面·确认画面等 **生成了 `.html` 时必须执行**。虽然 `validate-workflow-code.js` 能检测出诸如 `imds-selectbox` 之类的已知错误类名，但 **它无法覆盖与 reference 的完整对照**，因此须打开 `.github/skills/jssp-imds-theme/reference/` 进行目视再确认。
+申请画面·审批画面·详情画面·确认画面等 **生成了 `.html` 时必须执行**。
 
-#### 实施步骤
+#### imds 合规性检查
 
-1. 扫描已生成的各 `.html`，列出使用的 imds 组件（文本框、文本区域、下拉框、复选框、单选框、按钮、表格、对话框、字段、标签页、日历输入、横幅/行内消息等）
-2. 针对每个组件，**使用 Read 工具打开 `.github/skills/jssp-imds-theme/reference/imds-html-{component}.md` 进行再确认**（不依赖记忆）
-3. 将 reference 的类名、标签结构、属性与生成的 HTML 进行对照
+以使用 imds 主题生成的画面为对象（明确指定了 imds 以外的主题时跳过）。虽然 `validate-workflow-code.js` 能检测出诸如 `imds-selectbox` 之类的已知错误类名，但 **它无法覆盖与 reference 的完整对照**，因此须通过 `validate-imds.js` 进行结构验证，并打开 `.github/skills/jssp-imds-theme/reference/` 进行目视再确认。
 
-#### 重点检查项
+##### 实施步骤
+
+1. 执行 `node .github/skills/jssp-imds-theme/scripts/validate-imds.js <生成的画面所在目录>`，修正直至错误为 0 件
+2. 扫描已生成的各 `.html`，列出使用的 imds 组件（文本框、文本区域、下拉框、复选框、单选框、按钮、表格、对话框、字段、标签页、日历输入、横幅/行内消息等）
+3. 针对每个组件，**使用 Read 工具打开 `.github/skills/jssp-imds-theme/reference/imds-html-{component}.md` 进行再确认**（不依赖记忆）
+4. 将 reference 的类名、标签结构、属性与生成的 HTML 进行对照
+
+##### 重点检查项
 
 | 观点 | 确认要点 | 不一致时的处理 |
 |------|---------|--------------|
 | 类名存在性 | 是否使用了 `imds-selectbox` / `imds-input` 等 reference 中不存在的类？ | 替换为 reference 的正式名称（`imds-select` / `imds-textbox` 等） |
-| 字段层级 | 是否保持 `imds-field-container has-accent-color` > `imds-field-group is-horizontal imds-w-15` > `imds-field-group-label` / `imds-field-group-control` > `imds-field` 的嵌套结构（与素材 `simple-apply-screen.md` / `simple-approve-screen.md` 逐行一致）？ | 从素材逐行重新抄写。不要简化为单独使用 `imds-field` |
+| 字段层级 | 是否保持 `imds-field-container has-accent-color` > `imds-field-group is-horizontal imds-w-15` > `imds-field-group-label` / `imds-field-group-control` > `imds-field` 的嵌套结构（与 `jssp-imds-theme` 的 `assets/imds-form-page.md` 的表单结构一致）？ | 按模板结构重新组建。不要简化为单独使用 `imds-field` |
 | 必填标签 | 必填项目是否附加了 `<span class="imds-required-label-required" data-required-label="必須">`？ | 添加。`imds-required-label-required` 类名和 `data-required-label` 属性两者均为必需 |
 | 错误显示 | `imds-field` 是否带有 `for=":fieldName:"` 属性，紧接其下是否配置了 `<span class="imds-error-text" for=":fieldName:" style="display:none;"></span>`？ | 按规约配置。不要忘记 display:none 的初始隐藏 |
 | 表格 | 是否使用了 `imds-table` > `imds-table-inner` > `table` 的双层包装结构？ | 补足包装层 |
@@ -277,7 +291,7 @@ node .github/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 | 图标按钮 | 带文本的按钮是否用 `<span class="imds-button-text">` 包裹，纯图标按钮是否使用常规尺寸？ | 遵循 `imds-html-icon-button.md` |
 | imuiCalendar | 是否指定了 `floatable="true"`，且 `altField` 是否引用了非 hidden 的输入？ | 按 `imui-html-calendar.md` 修改 |
 | 横幅/行内 | 是否用自定义 CSS 添加了警告色？（应使用 `imds-banner-message` / `imds-inline-message`） | 替换为相应的状态类（`is-warning` 等） |
-| 素材改动 | 是否对素材（`simple-apply-screen.md` / `simple-approve-screen.md`）的 HTML 结构进行了 **基于独立判断的布局变更**（`is-horizontal` → `is-vertical` 等）？ | 还原为素材的结构。如需变更须事先与用户确认 |
+| 模板改动 | 是否对 `jssp-imds-theme` 页面模板的 HTML 结构进行了 **基于独立判断的布局变更**（`is-horizontal` → `is-vertical` 等）？ | 还原为模板的结构。如需变更须事先与用户确认 |
 
 #### 与 `<imart type="workflowOpenPage">` 相关的追加检查（仅 workflowOpenPage 方式）
 
@@ -296,7 +310,7 @@ node .github/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 - 申请按钮的事件监听器是否为 `async` 函数？（`await imWorkflow.modal.showApply(...)` 所必需）
 - 是否残留了 `workflowOpenPage('0')` 等 pageType 调用？（处理模态框方式不使用）
 - 是否残留了 `$imwFlowId` / `$imwMatterName` 等 `$imw*` 绑定变量？（处理模态框方式不需要）
-- 临时保存按钮・返回按钮是否已删除？（处理模态框方式不需要）
+- 页头是否放置了返回按钮，并在点击时调用 `imWorkflow.transition.returnTo()`？（申请画面的临时保存按钮是否调用 `imWorkflow.modal.showTemporarySave()`？）
 - 路由 XML（`routing-jssp-config/*.xml`）是否已创建？
 - `flowId` 中是否设置了实际的流程 ID，或是否残留了 TODO 注释？（确认是否为正确的值，而非临时值）
 - 临时保存・处理（审批/否决）・确认画面时，`imWorkflow.transition.afterProcess()` 是否在 `then()` 或 `await` 之后调用？（完成・取消两种情况下都需要调用）

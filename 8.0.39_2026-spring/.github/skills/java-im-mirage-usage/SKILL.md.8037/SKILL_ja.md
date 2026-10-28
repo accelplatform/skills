@@ -1,6 +1,6 @@
 ---
 name: java-im-mirage-usage
-description: intra-mart 固有の DB アクセス基盤である im_mirage（`jp.co.intra_mart.mirage.*`、Mirage-SQL の intra-mart 内製版）を Java（JavaEE 開発モデル）で使用するためのスキルセット。エンティティクラス（`@Table`/`@Column`/`@PrimaryKey`）、DAOクラス（`AbstractDAO` 継承・`DAOFactory` によるインスタンス取得）、2WaySQL の SQLファイル（`/*IF*/`/`/*BEGIN*/`/`/*param*/`/`/*FOR*/`）、`SqlManager` によるクエリ実行（`getResultList`/`getSingleResult`/`executeUpdate`/エンティティCRUD）、`SessionTemplate`/`SessionCallback` によるトランザクション管理、DB方言別 SQL ファイル（`_oracle.sql`/`_sqlserver.sql` 等）の実装パターンを提供する。Java で im_mirage を使いたい、Java で AbstractDAO / DAOFactory / SqlManager を使いたい、JavaEE 開発モデルで DB アクセス処理を実装したい、Mirage の DAO・エンティティを作りたい、Java 側で 2WaySQL の SQL ファイルを書きたい、と言及されたときに使用。JSSP（スクリプト開発モデル）で DB アクセスを行う場合は `jssp-page-generator`（`TenantDatabase`/`SharedDatabase` API・`jssp-2way-sql.md` 規約）を使うこと。両者は開発モデルが異なり実装は完全に独立している。
+description: intra-mart 固有の DB アクセス基盤である im_mirage（`jp.co.intra_mart.mirage.*`、Mirage-SQL の intra-mart 内製版）を Java（JavaEE 開発モデル）で使用するためのスキルセット。エンティティクラス（`@Table`/`@Column`/`@PrimaryKey`）、DAOクラス（`AbstractDAO` 継承・`DAOFactory` によるインスタンス取得）、2WaySQL の SQLファイル（`/*IF*/`/`/*BEGIN*/`/`/*param*/`/`/*FOR*/`）、`SqlManager` によるクエリ実行（`getResultList`/`getSingleResult`/`executeUpdate`/エンティティCRUD）、`SessionTemplate`/`SessionCallback` によるトランザクション管理、DB方言別 SQL ファイル（`_oracle.sql`/`_sqlserver.sql` 等）の実装パターンを提供する。Java で im_mirage を使いたい、Java で AbstractDAO / DAOFactory / SqlManager を使いたい、JavaEE 開発モデルで DB アクセス処理を実装したい、Mirage の DAO・エンティティを作りたい、Java 側で 2WaySQL の SQL ファイルを書きたい、と言及されたときに使用。JSSP（スクリプト開発モデル）で DB アクセスを行う場合は `jssp-page-generator`（`TenantDatabase`/`SharedDatabase` API・`.github/instructions/jssp-2way-sql.instructions.md` 規約）を使うこと。両者は開発モデルが異なり実装は完全に独立している。
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -128,7 +128,7 @@ Repository・Service のインスタンスは `new StandardXxx()` で直接生�
 4. 独自クエリがある場合、2WaySQL の SQLファイルを作成する（DB方言差分がある場合のみ方言別ファイルを追加）。作成後は `scripts/validate-mirage-sql-comments.js` を実行し、コメントの誤混入がないか検証する（「生成後の確認」参照）
 5. Repository を「インタフェース + Standard実装クラス + ファクトリクラス（`ServiceLoaderUtil.loadTopPriority` 使用）」の3点構成で実装し、DAO 呼び出しを `SessionTemplate.execute(SessionCallback)` によるトランザクション境界でラップする
 6. 複数の Repository を横断する処理がある場合、Service を同様に「インタフェース + Standard実装クラス + ファクトリクラス」の3点構成で作成し、Service 自身の `SessionTemplate.execute` トランザクション境界内で各 Repository（`XxxRepositoryFactory.getInstance()` で取得）を呼び出す（単一 Repository のメソッド呼び出しだけで完結する場合、Service 側に `SessionTemplate` は不要。Repository 側の境界だけで十分な薄いラッパーとする）
-7. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+7. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -136,7 +136,7 @@ Repository・Service のインスタンスは `new StandardXxx()` で直接生�
 - **監査項目（`createUserCd`/`createDate`/`recordUserCd`/`recordDate`）を手動で設定しない。** `AbstractDAO#insert`/`update` が自動設定するため、手動設定すると意図しない上書きが発生する可能性がある。ただし `update` が設定するのは `record` 系のみ、かつ主キー以外の全カラムを更新するため、**更新時は `find()` で取得した既存 Entity をベースに変更点だけを反映すること**（新規に組み立てた Entity を渡すと登録時の監査証跡が消える）
 - **`SqlManager` の SQLファイル系メソッドと `xxxBySql` 系メソッドを混同しない。** 前者は 2WaySQL テンプレート（ファイルパス指定）、後者は素の SQL 文字列（`?` プレースホルダ）で、パラメータの扱いも異なる
 - **DB更新処理は `SessionTemplate.execute(SessionCallback)` のトランザクション境界内で実行する。** 境界外で実行すると自動コミットの単位が意図した粒度にならない場合がある
-- **`/*FOR*/` 構文は im_mirage と LogicDesigner で使用でき、JSSP（スクリプト開発モデル）では非対応。** JSSP 側の 2WaySQL ファイルをそのまま流用できない（`jssp-2way-sql.md` 参照）
+- **`/*FOR*/` 構文は im_mirage と LogicDesigner で使用でき、JSSP（スクリプト開発モデル）では非対応。** JSSP 側の 2WaySQL ファイルをそのまま流用できない（`.github/instructions/jssp-2way-sql.instructions.md` 参照）
 - **監査項目4フィールドを1つでも欠いたエンティティを `AbstractDAO#insert`/`update` に渡すと `NullPointerException` になる。** 規約上の要求であるだけでなく、実装上の強制要件である（`reference/mirage-api-reference.md` の `EntityHelper` 参照）
 - **`getSingleResult`/`find` は件数の一意性を保証しない。** 0件では例外ではなく `null` を返し、2件以上でも例外にならず先頭1行を返す。戻り値は必ず `null` チェックし、一意性が必要なクエリでは主キー／一意制約で担保するか `getResultList` で件数を検証する
 - **具象 DAO は `AbstractDAO<エンティティ型>` を直接継承するか、型変数をそのまま渡す中間クラス（`CommonDAO<T> extends AbstractDAO<T>`）を経由する。** `AbstractDAO#find` はエンティティ型を `getClass().getGenericSuperclass()` の第1実型引数からのみ解決するため、型引数を固定した中間クラスを挟む／具象 DAO をさらに継承すると解決結果が `null` になり `NullPointerException`、第1型引数がエンティティ型以外だとテーブル名不正になる。`insert`/`update`/`delete` と SQLファイル系の独自クエリはこの解決を使わないため、`find()` を呼んだときにだけ顕在化する
@@ -170,7 +170,7 @@ node .github/skills/java-im-mirage-usage/scripts/validate-mirage-sql-comments.js
 14. Endpoint（Web API Maker）クラスが `SessionTemplate`/`DAOFactory` を直接呼び出さず、必ず Service 経由になっているか
 15. Repository・Service が「インタフェース + Standard実装クラス + ファクトリクラス」の3点構成になっているか、呼び出し側が `new StandardXxx()` で直接生成せず `XxxFactory.getInstance()` を使っているか
 16. ファクトリクラスの実装が `ServiceLoaderUtil.loadPriority`（`Collection` を返す）ではなく `loadTopPriority`（単一インスタンスを返す）を使っているか
-17. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+17. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 18. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

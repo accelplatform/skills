@@ -9,18 +9,18 @@
 
 | 组件 | reference | 本例中的用途 |
 |---------------|-----------|-------------|
-| Header | [header.md](../reference/header.md) | 带返回按钮的页面标题 |
-| Field | [field.md](../reference/field.md) | 各输入项目 |
-| FieldGroup | [field-group.md](../reference/field-group.md) | 输入项目的分组 |
-| Textbox | [textbox.md](../reference/textbox.md) | 文本输入 |
-| TextboxControl | [textbox-control.md](../reference/textbox-control.md) | 带搜索图标的文本输入 |
-| Select | [select.md](../reference/select.md) | 下拉选择 |
-| Radio | [radio.md](../reference/radio.md) | 单选按钮 |
-| Checkbox | [checkbox.md](../reference/checkbox.md) | 复选框 |
-| Button | [button.md](../reference/button.md) | 操作按钮 |
-| IconButton | [icon-button.md](../reference/icon-button.md) | 清除按钮（×图标） |
-| FileUpload | [file-upload.md](../reference/file-upload.md) | 文件上传 |
-| IconFont | [icon-font.md](../reference/icon-font.md) | 各种图标 |
+| Header | [imds-html-header.md](../reference/imds-html-header.md) | 带返回按钮的页面标题 |
+| Field | [imds-html-field.md](../reference/imds-html-field.md) | 各输入项目 |
+| FieldGroup | [imds-html-field-group.md](../reference/imds-html-field-group.md) | 输入项目的分组 |
+| Textbox | [imds-html-textbox.md](../reference/imds-html-textbox.md) | 文本输入 |
+| TextboxControl | [imds-html-textbox-control.md](../reference/imds-html-textbox-control.md) | 带搜索图标的文本输入 |
+| Select | [imds-html-select.md](../reference/imds-html-select.md) | 下拉选择 |
+| Radio | [imds-html-radio.md](../reference/imds-html-radio.md) | 单选按钮 |
+| Checkbox | [imds-html-checkbox.md](../reference/imds-html-checkbox.md) | 复选框 |
+| Button | [imds-html-button.md](../reference/imds-html-button.md) | 操作按钮 |
+| IconButton | [imds-html-icon-button.md](../reference/imds-html-icon-button.md) | 清除按钮（×图标） |
+| FileUpload | [imds-html-file-upload.md](../reference/imds-html-file-upload.md) | 文件上传 |
+| IconFont | [imds-html-icon-font.md](../reference/imds-html-icon-font.md) | 各种图标 |
 
 ## 整体结构
 
@@ -635,7 +635,7 @@ div.imds-container.pgstyle-layout-container    ... 根 div（因配置在 intra-
 **要点：**
 - 使用 `imds-border-t-1` 显示与表单区域的分界线
 - 主要操作（注册）使用 `is-primary`，辅助操作（暂存）使用 `is-outlined is-primary`
-- 宽度指定不定义独有的 `min-width-8em` 系列类，而是使用内联 `style="min-width: 8em;"`（参见 `jssp-presentation-page.md`「输入字段的宽度控制」中的反模式说明。自定义类与 imds 标准类的优先级相同，可能会被覆盖）
+- 宽度指定不定义独有的 `min-width-8em` 系列类，而是使用内联 `style="min-width: 8em;"`（参见 `.github/instructions/jssp-presentation-page.instructions.md`「输入字段的宽度控制」中的反模式说明。自定义类与 imds 标准类的优先级相同，可能会被覆盖）
 
 ## 实现注意事项
 
@@ -699,5 +699,5 @@ div.imds-container.pgstyle-layout-container    ... 根 div（因配置在 intra-
 - 实现模式：
   - 服务器端校验时，在错误响应中原样包含输入值返回，并在函数容器一侧通过 `<imart type="string" value=$xxx>` 重新显示
   - 客户端校验时，仅通过 `preventDefault()` 等方式阻止表单提交，不改变输入值的 DOM
-  - 错误提示本身通过在对应 `imds-field` 的正下方显示 `<span class="imds-error-text">`，并对 `imds-field` 添加／移除 `imds-validation-error` 类以进行视觉强调实现（详见 SKILL.md 的「表单实现模式」）
+- 错误提示本身通过在对应 `imds-field` 的正下方显示 `<span class="imds-error-text">`，并对 `imds-field` 添加／移除 `imds-validation-error` 类以进行视觉强调实现（详见 SKILL.md 的「表单实现模式」）
 - 即使发生页面跳转或临时性的重新显示（例如打开并关闭其他对话框），也不应导致输入值丢失

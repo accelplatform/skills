@@ -320,7 +320,7 @@ public @interface Priority {
 
 ## 2WaySQL 構文（im_mirage 版）
 
-| 構文 | 用途 | JSSP側（`jssp-2way-sql.md`）との差異 |
+| 構文 | 用途 | JSSP側（`.agents/requirements/jssp-2way-sql/AGENTS.md`）との差異 |
 |------|------|------|
 | `/*IF condition*/.../*END*/` | 条件分岐 | 同一 |
 | `/*BEGIN*/.../*END*/` | オプショナルブロック | 同一 |

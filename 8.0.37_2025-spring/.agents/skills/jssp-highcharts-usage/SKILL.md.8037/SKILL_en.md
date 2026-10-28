@@ -7,10 +7,10 @@ description: A skill set for rendering graphs and charts using Highcharts in int
 
 Confirm the following before starting implementation. Do not proceed if any item is unchecked.
 
-- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) has been read and understood
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) has been read and understood
-- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) has been read and understood
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) has been read and understood
+- [ ] [jssp-accessibility](../../requirements/jssp-accessibility/AGENTS.md) has been read and understood
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) has been read and understood
+- [ ] [jssp-presentation-page](../../requirements/jssp-presentation-page/AGENTS.md) has been read and understood
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) has been read and understood
 
 
 # Highcharts Graph Rendering Skill

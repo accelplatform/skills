@@ -17,12 +17,12 @@ This skill generates batch processing (`.js` only; no screen). See `.github/inst
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-function-container.md` | 🟢 **Required** — structure of the `execute()` entry point |
-| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **Required** — batches typically need detailed logging and error handling |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 Required |
-| `jssp-2way-sql.md` | 🟡 **Only when the batch performs DB operations** (very common in batches) |
-| `jssp-security.md` | 🟡 Only when handling external input such as job parameters |
-| `jssp-presentation-page.md` / `jssp-accessibility.md` | 🔴 **Not needed; no screen is involved** |
+| `.github/instructions/jssp-function-container.instructions.md` | 🟢 **Required** — structure of the `execute()` entry point |
+| `.github/instructions/jssp-error-handling.instructions.md` / `.github/instructions/jssp-logging.instructions.md` | 🟢 **Required** — batches typically need detailed logging and error handling |
+| `.github/instructions/jssp-naming.instructions.md` / `.github/instructions/jssp-code-style.instructions.md` / `.github/instructions/jssp-file-structure.instructions.md` | 🟢 Required |
+| `.github/instructions/jssp-2way-sql.instructions.md` | 🟡 **Only when the batch performs DB operations** (very common in batches) |
+| `.github/instructions/jssp-security.instructions.md` | 🟡 Only when handling external input such as job parameters |
+| `.github/instructions/jssp-presentation-page.instructions.md` / `.github/instructions/jssp-accessibility.instructions.md` | 🔴 **Not needed; no screen is involved** |
 
 ## Generation Targets
 

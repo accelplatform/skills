@@ -73,7 +73,7 @@ allowed-tools: Bash, Read, Write, Glob
 2. 决定使用普通锁还是请求作用域锁（参考上表的判断标准。**若用户有明确指定，优先遵循用户指定**；若在单个方法内闭环完成，则默认使用普通锁）
 3. 参考 `assets/lock-basic-usage.md` 实现（方法签名务必参考 `reference/lock-api-reference.md`，不要凭记忆或推测编写）
 4. 设计锁ID（`NewLock` 的构造函数参数）：应使用能唯一表示互斥控制对象的键（例如 `loginGroupId + ":" + 目标资源路径`）。粒度过粗（例如固定的单一字符串）会导致无关处理也被串行化，应避免
-5. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
 
@@ -93,7 +93,7 @@ allowed-tools: Bash, Read, Write, Glob
 2. 普通锁与请求作用域锁的选择是否符合锁的持有作用域（单个方法内，还是跨多个位置）
 3. 是否从应用代码中直接调用了 `NewLock.releaseRequestScope()`（`@Deprecated`）
 4. 锁ID的粒度是否适合互斥控制的对象（既不过粗也不过细）
-5. 是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. 是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 6. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。若项目中另有针对 Java 的代码评审・安全检查技能，应使用该技能
 
 ## 与其他技能的边界

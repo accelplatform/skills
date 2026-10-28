@@ -70,7 +70,7 @@ If there is no explicit mention of "in Java" / "in the JavaEE development model,
 2. Decide whether to use `get()` or `make()` (see the decision criteria table above. **Prioritize the user's explicit specification if given**; default to `get()` for numbering business data)
 3. Implement by referring to `assets/identifier-basic-usage.md` (always refer to `reference/identifier-api-reference.md` for method signatures — do not write from memory or guesswork)
 4. When using `get()`, decide whether to wrap `IOException` into a business exception or propagate it via `throws`, following the pattern in `assets/identifier-basic-usage.md` (prefer a dedicated Java error-handling convention instead, if the project later adds one)
-5. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -88,7 +88,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 1. Whether the choice between `get()` / `make()` matches the required uniqueness scope (distributed environment or single process)
 2. Whether `IOException` is being swallowed anywhere `get()` is used
 3. Whether the API has been misused for a purpose requiring unguessability, such as a security token
-4. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+4. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 5. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has a separate Java-specific code review / security check skill, use that instead
 
 ## Boundaries with Other Skills

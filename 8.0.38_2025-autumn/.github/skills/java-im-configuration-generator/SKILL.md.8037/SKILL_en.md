@@ -118,7 +118,7 @@ If it is not explicitly stated that this is "in Java" / "in the JavaEE developme
 4. For configuration that does not need dynamic updates, place it at `src/main/conf/{name}.xml` (not `src/main/webapp/WEB-INF/conf/`) using the file name derived in step 2. For configuration updated dynamically e.g. from an admin screen, implement code that uses `ConfigurationLoader.save()` (this writes under SystemStorage's `conf/`; it is not a file an operator edits directly). **Do not combine these two for the same configuration** (having `WEB-INF/conf/{name}.xml` present prevents `save()`'s content from being picked up — see "Placement Directories")
 5. Place the XSD schema at `src/main/schema/{name}.xsd`, **directly, with no subdirectories** (it is copied to `WEB-INF/schema/` as-is)
 6. Implement the call-site code (e.g. in a service class) that reads via `ConfigurationLoader.load()`. Decide between `Instance.SINGLETON` (default) and `Instance.PROTOTYPE` per the guidance in "Notes"
-7. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+7. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -140,7 +140,7 @@ Not an automated validation script (unlike the JSSP-side `validate-jssp-code.js`
 2. Confirm the XSD schema's `targetNamespace` matches the `namespace` attribute on the configuration class / `ObjectFactory`
 3. Confirm the XML configuration file is valid against the XSD schema
 4. If using `save()`, confirm `clearCache()` is called after saving
-5. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 6. `jssp-code-review` / `jssp-security-check` are JSSP-only and do not apply to this skill's output. If the project has separate code-review/security-check skills for Java, use those instead
 
 ## Boundaries with Other Skills

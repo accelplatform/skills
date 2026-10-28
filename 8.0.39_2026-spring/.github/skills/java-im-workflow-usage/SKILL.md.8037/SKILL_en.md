@@ -23,7 +23,7 @@ The JSSP version (`jssp-im-workflow-usage`) and the Java version are **two indep
 | Error notification | `result.resultFlag = false; result.message = e.message;` | Let the method's `throws Exception` propagate as-is (the workflow engine catches it and treats it as an error) |
 | Registration method | Set the **JSSP file path** (without extension) in the import XML's `plugins[].parameter` | Set the **fully qualified class name (FQCN) of the implementation class** in the import XML's `plugins[].parameter` |
 | Placement | `src/main/jssp/src/{feature-name}/workflow/...` | `src/main/java/{basePackage}/{feature-name}/workflow/...` (must be compiled and placed on the classpath of the Java runtime environment) |
-| Coding conventions | The full set of jssp-related conventions under `.github/instructions/` | The full set of java-related conventions under `.github/instructions/` (`java-naming.md` / `java-code-style.md` / `java-javadoc.md` / `java-logging.md`) |
+| Coding conventions | The full set of jssp-related conventions under `.github/instructions/` | The full set of java-related conventions under `.github/instructions/` (`.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` / `.github/instructions/java-logging.instructions.md`) |
 
 **What this skill generates is ultimately only Java source files (`.java`).** For the workflow definition's import XML (the part where the FQCN is set in `plugins[].parameter`), generate it by referring to `base-im-workflow-generator`'s Java-support section ("Registering Java Class Execution (JavaEE Development Model)").
 
@@ -37,7 +37,7 @@ The JSSP version (`jssp-im-workflow-usage`) and the Java version are **two indep
 | `.github/instructions/java-logging.instructions.md` | 🟡 When implementing logging (`Logger.getLogger(XxxClass.class)`) |
 | `.github/instructions/jssp-error-handling.instructions.md` | 🟡 **Reference for the concept only** (the philosophy of the error code scheme. Read the implementation as translated into Java's exception mechanism) |
 
-The `jssp-*` conventions (`jssp-code-style.md`, etc.) are out of scope for this skill (do not apply them to Java files).
+The `jssp-*` conventions (`.github/instructions/jssp-code-style.instructions.md`, etc.) are out of scope for this skill (do not apply them to Java files).
 
 ## Generation Targets and Templates
 
@@ -83,7 +83,7 @@ If there is no explicit mention of "in Java," "in the JavaEE development model,"
    - **Leave unused methods with the parent class's default implementation** (an empty `return null;` / `return true;` / do nothing). Do not force-fill methods that are not implemented for the action process (e.g. not using `reserve`)
    - Always refer to `reference/parameter-reference.md` for the parameter class fields (do not write `getXxx()` from memory or guesswork)
 3. Decide the package and placement path (see "Placement Convention" below)
-4. Check compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+4. Check compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 5. Inform the user that the FQCN of the generated class needs to be set in the import XML's `plugins[].parameter` (see `base-im-workflow-generator`'s Java-support section; this skill does not generate the XML itself)
 
 ## Placement Convention
@@ -162,7 +162,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 
 1. Whether the FQCN of the parent class/implemented interface matches what is described in `reference/parameter-reference.md`
 2. Whether the signature of the overridden methods (argument types, return type, `throws`) exactly matches the abstract class/interface definition (add `@Override` and let the compiler verify it)
-3. Whether it complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+3. Whether it complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 4. `jssp-code-review` / `jssp-security-check` are JSSP-only and do not apply to this skill's output. If the project separately has a code review/security check skill for Java, use that instead
 
 ## Boundaries with Other Skills

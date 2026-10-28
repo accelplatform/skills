@@ -76,7 +76,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのメ
 3. メッセージキーを決定し、`assets/message-manager-usage.md` の「メッセージキーの命名規約」に従ってプロパティファイル（`.properties`、`ja`/`en`/`zh_CN`/デフォルトの各ロケール分）を作成または追記する
 4. `assets/message-manager-usage.md` を参照して Java 実装を作成（メソッドのシグネチャは `reference/message-manager-api-reference.md` を必ず参照し、記憶や推測で書かない）
 5. `AccessSecurityException` の扱いを決定（`assets/message-manager-usage.md` のパターンに従う。原則として上位に伝播させるか、内部エラーとして扱う）
-6. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+6. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -95,7 +95,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのメ
 2. メッセージキーが `assets/message-manager-usage.md` の命名規約（ドット区切り、アンダースコア・ハイフン禁止）に準拠しているか
 3. プロパティファイルが ja / en / zh_CN / デフォルトの各ロケール分そろっているか、キーセットが一致しているか
 4. `AccessSecurityException` が握りつぶされていないか
-5. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+5. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 6. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

@@ -47,7 +47,7 @@ See `reference/flow-element-api.md` for the full API (complete method signatures
 6. Create the metadata class (extends `FlowElementMetadata`), passing the flow element class to its constructor
 7. If properties (values preset via the designer screen) are needed, implement them per "Adding a property" in `reference/flow-element-api.md`
 8. If post-processing (resource cleanup, etc.) is needed, implement `FlowElementCloser`
-9. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+9. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Minimal implementation example
 
@@ -159,7 +159,7 @@ Rather than an automated validation script, confirm the following manually.
 1. That the `id` on `@LogicFlowElement` and the category's `getCategoryId()` do not start with `im_`
 2. That the three type parameters of `Task<metadata, parameter, result>` match the flow element class passed to the metadata class's constructor
 3. That the types used for parameters, results, and properties are included in the list of usable types in `reference/flow-element-api.md` (and that `@TypeHint` is added when using `Collection`/`List`)
-4. Compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+4. Compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 5. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output
 
 ## Boundaries with other skills

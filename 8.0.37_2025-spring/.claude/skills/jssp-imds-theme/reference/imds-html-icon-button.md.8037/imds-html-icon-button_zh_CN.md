@@ -13,7 +13,7 @@ IconButton 是带图标的按钮组件。
 
 - 来源URL: https://document.intra-mart.jp/design/?path=/docs/components-button-iconbutton--documentation
 - 基础类: imds-button
-- 关于基本按钮的详细信息，请参阅 [button](button.md)
+- 关于基本按钮的详细信息，请参阅 [button](imds-html-button.md)
 
 ## CSS 类参考
 
@@ -50,6 +50,29 @@ IconButton 是带图标的按钮组件。
 ```
 
 左侧图标和右侧图标均可省略。以下仅显示与基本图标按钮的差异部分。
+
+## 组合示例
+
+### Popover 触发器
+
+用作显示 Popover 内容的触发按钮。
+
+```html
+<button type="button" class="imds-button">
+  <span class="imds-button-text">搜索对象</span>
+  <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
+</button>
+```
+
+### 省略菜单（ellipsis）
+
+用作显示被省略菜单的按钮。仅图标按钮为辅助理解操作内容，需设置 `title` 属性。
+
+```html
+<button type="button" class="imds-button is-outlined" title="其他操作">
+  <span class="imds-icon"><i class="fa-solid fa-ellipsis"></i></span>
+</button>
+```
 
 ## 变体
 
@@ -104,3 +127,7 @@ IconButton 是带图标的按钮组件。
 ```html
 <button type="button" class="imds-button" disabled>
 ```
+
+## 实现注意事项
+
+- 仅图标按钮（不含文本的结构）为辅助理解操作内容，必须设置 `title` 属性（或 `aria-label`）

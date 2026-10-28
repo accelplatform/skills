@@ -74,7 +74,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 3. 参考 `assets/profile-basic-usage.md` 实现（方法签名务必参考 `reference/profile-api-reference.md`，不要凭记忆或推测编写）
 4. 实现时须经由 `UserProfileImageManagerFactory.getFactory().getService()` 获取，不要直接 `new` `UserProfileImageManagerImpl`
 5. 使用 `setUserProfileImage(UserImage)` 时，传给 `UserImage#setStorage()` 的 `Storage<?>` 的获取・关闭应遵循 `java-im-storage-usage` 的规约（必须使用 `try-with-resources` 等）
-6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
@@ -94,7 +94,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 3. 使用 `setUserProfileImage(UserImage)` 的地方，`Storage<?>` 的获取来源是否通过 `try-with-resources` 等方式被恰当关闭（是否符合 `java-im-storage-usage` 的规约）
 4. 是否吞没了 `BizApiException`
 5. 用户基本信息的 CRUD 或 IM-LogicDesigner 联动是否混入了本技能范围
-6. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 7. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。若项目中另有针对 Java 的代码评审・安全检查技能，应使用该技能
 
 ## 与其他技能的边界

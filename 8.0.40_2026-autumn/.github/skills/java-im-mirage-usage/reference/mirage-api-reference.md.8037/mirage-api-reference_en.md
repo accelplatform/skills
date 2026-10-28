@@ -320,7 +320,7 @@ public @interface Priority {
 
 ## 2WaySQL Syntax (im_mirage Edition)
 
-| Syntax | Purpose | Difference from the JSSP side (`jssp-2way-sql.md`) |
+| Syntax | Purpose | Difference from the JSSP side (`.github/instructions/jssp-2way-sql.instructions.md`) |
 |------|------|------|
 | `/*IF condition*/.../*END*/` | Conditional branching | Same |
 | `/*BEGIN*/.../*END*/` | Optional block | Same |

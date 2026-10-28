@@ -7,14 +7,14 @@ description: Generates new job programs (batch processing) for the intra-mart jo
 
 Confirm the following before starting implementation. Do not proceed if any item is unchecked.
 
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) has been read and understood
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
-- [ ] [jssp-function-container](../../../requirements/jssp-function-container/AGENTS.md) has been read and understood
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) has been read and understood
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) has been read and understood
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) has been read and understood
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) has been read and understood
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) has been read and understood
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
+- [ ] [jssp-function-container](../../requirements/jssp-function-container/AGENTS.md) has been read and understood
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) has been read and understood
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) has been read and understood
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) has been read and understood
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) has been read and understood
 
 
 # Job Scheduler Job Program Generation Skill
@@ -30,12 +30,12 @@ This skill generates batch processing (`.js` only; no screen). See `.agents/requ
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-function-container.md` | 🟢 **Required** — structure of the `execute()` entry point |
-| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **Required** — batches typically need detailed logging and error handling |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 Required |
-| `jssp-2way-sql.md` | 🟡 **Only when the batch performs DB operations** (very common in batches) |
-| `jssp-security.md` | 🟡 Only when handling external input such as job parameters |
-| `jssp-presentation-page.md` / `jssp-accessibility.md` | 🔴 **Not needed; no screen is involved** |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **Required** — structure of the `execute()` entry point |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-logging/AGENTS.md` | 🟢 **Required** — batches typically need detailed logging and error handling |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` / `.agents/requirements/jssp-file-structure/AGENTS.md` | 🟢 Required |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🟡 **Only when the batch performs DB operations** (very common in batches) |
+| `.agents/requirements/jssp-security/AGENTS.md` | 🟡 Only when handling external input such as job parameters |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` / `.agents/requirements/jssp-accessibility/AGENTS.md` | 🔴 **Not needed; no screen is involved** |
 
 ## Generation Targets
 

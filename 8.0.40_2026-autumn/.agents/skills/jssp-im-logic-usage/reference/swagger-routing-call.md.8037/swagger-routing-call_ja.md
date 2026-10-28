@@ -101,8 +101,8 @@ async function callSampleAccounts(userCd) {
 
 ### 実装方針
 
-- URLは `logic/api/<route>` を **相対パス** で指定する（`jssp-presentation-page.md` の URL 指定方針に準拠。コンテキストパスは `<imart type="head">` の `<base>` タグにより解決される）
-- **エラー判定は `response.ok`（HTTPステータス）で行う。** JSSP 独自の `{error, errorMessage}` 形式のレスポンス規約（`jssp-error-handling.md`）は、`routing-jssp-config` で定義される自前の `api/*.js` にのみ適用されるものであり、IM-LogicDesigner のルーティングにはこの規約は適用されない。レスポンスボディはフローの `outputDataDefinition` そのものである。
+- URLは `logic/api/<route>` を **相対パス** で指定する（`.agents/requirements/jssp-presentation-page/AGENTS.md` の URL 指定方針に準拠。コンテキストパスは `<imart type="head">` の `<base>` タグにより解決される）
+- **エラー判定は `response.ok`（HTTPステータス）で行う。** JSSP 独自の `{error, errorMessage}` 形式のレスポンス規約（`.agents/requirements/jssp-error-handling/AGENTS.md`）は、`routing-jssp-config` で定義される自前の `api/*.js` にのみ適用されるものであり、IM-LogicDesigner のルーティングにはこの規約は適用されない。レスポンスボディはフローの `outputDataDefinition` そのものである。
 - レスポンスの `Content-Type` は、ルーティング定義の `responseType` に依存する（`imJsonResponse` なら `application/json`、`imTextResponse` 等ならプレーンテキスト）。spec の `definitions` に構造化されたプロパティが定義されている場合は `imJsonResponse` である可能性が高いが、確証が持てない場合は `response.json()` の前に `Content-Type` ヘッダを確認するか、`.text()` で受けてから安全にパースすること。
 - 非同期処理は `async`/`await` を使用する
 - セキュアトークン（`X-Intramart-Secure-Token`）は、対象ルーティングの `secured: true` が確認できている場合のみヘッダに付与する（swagger spec には出てこない情報のため、ルーティング定義側の設定 or 実機確認で判断する）

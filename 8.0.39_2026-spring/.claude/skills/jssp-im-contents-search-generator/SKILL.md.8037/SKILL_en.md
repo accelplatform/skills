@@ -1,6 +1,6 @@
 ---
 name: jssp-im-contents-search-generator
-description: Generates custom Crawlers for IM-ContentsSearch (Solr index registration/deletion Jobs) and custom content display Search Result Templates. Use when mentioned: create a Crawler, register to Solr, enable full-text search, add content search, extend IM-ContentsSearch, create a Search Result Template. Combine with jssp-im-job-generator to also guide Job registration steps.
+description: Generates custom Crawlers for IM-ContentsSearch (Solr index registration/deletion Jobs) and custom content display Search Result Templates. Use when mentioned "create a Crawler", "register to Solr", "enable full-text search", "add content search", "extend IM-ContentsSearch", or "create a Search Result Template". Combine with jssp-im-job-generator to also guide Job registration steps.
 allowed-tools: Bash, Read, Write, Glob
 ---
 

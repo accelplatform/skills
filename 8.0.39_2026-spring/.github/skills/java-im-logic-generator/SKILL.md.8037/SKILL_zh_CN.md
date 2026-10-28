@@ -47,7 +47,7 @@ IM-LogicDesigner 有多个扩展点，但本技能**仅覆盖流程要素（任�
 6. 创建元数据类（继承 `FlowElementMetadata`），将流程要素类传给其构造函数
 7. 如需属性（在设计器画面预先设置的值），按照 `reference/flow-element-api.md` 的"添加属性"实现
 8. 如需后处理（释放资源等），实现 `FlowElementCloser`
-9. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+9. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 最小实现示例
 
@@ -159,7 +159,7 @@ src/main/java/{basePackage 的路径分隔形式}/logicdesigner/element/{ClassNa
 1. `@LogicFlowElement` 的 `id` 及分类的 `getCategoryId()` 是否以 `im_` 开头
 2. `Task<元数据, 参数, 结果>` 的三个类型参数与元数据类构造函数中传入的流程要素类是否一致
 3. 参数、结果、属性所用类型是否包含在 `reference/flow-element-api.md` 的可用类型一览中（使用 `Collection`/`List` 时是否附加了 `@TypeHint`）
-4. 是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+4. 是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 5. `jssp-code-review` / `jssp-security-check` 是 JSSP 专用技能，不适用于本技能的产出物
 
 ## 与其他技能的边界

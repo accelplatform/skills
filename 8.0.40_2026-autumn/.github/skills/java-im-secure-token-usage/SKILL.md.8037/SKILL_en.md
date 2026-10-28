@@ -75,7 +75,7 @@ If it's not explicitly stated whether this is for Java or the JavaEE development
 3. Implement by consulting `assets/secure-token-basic-usage.md` (always consult `reference/secure-token-api-reference.md` for method signatures; do not write from memory or guesswork)
 4. Decide how to obtain the `HttpServletRequest` (use Pattern 1 or Pattern 2 in `assets/secure-token-basic-usage.md` depending on whether it's passed as an argument)
 5. Implement the response when `verify()` returns `false` (e.g., `403`) separately from handling a `SecureTokenException` (`assets/secure-token-basic-usage.md` Pattern 5)
-6. Verify compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Verify compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -93,7 +93,7 @@ Rather than an automated validation script, verify the following items manually.
 2. Whether a `false` result from `verify()` (access denial) is handled separately from a `SecureTokenException` (system error)
 3. Whether the method of obtaining `HttpServletRequest` (direct argument / `HTTPContextManager`) matches the implementation context
 4. When using parameter-bound tokens, whether the same parameter format is passed at both issuance and verification time
-5. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 6. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-specific code review/security check skills, use those instead
 
 ## Boundaries with Other Skills

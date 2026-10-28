@@ -142,7 +142,7 @@ if (ContextStatus.isAdministrator()) { /* システム管理者 */ }
 3. 認証前提の処理では `ContextStatus.isAuthenticated()` または `AccountContext.isAuthenticated()` を確認する
 4. `assets/contexts-basic-usage.md` を参照して実装（メソッドのシグネチャは `reference/contexts-api-reference.md` を必ず参照し、記憶や推測で書かない）
 5. レイヤーに応じた使用場所を守る（下記「注意事項」参照）
-6. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+6. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -176,7 +176,7 @@ if (ContextStatus.isAdministrator()) { /* システム管理者 */ }
 3. コンテキストをインスタンスフィールド・`static` フィールドに保持していないか
 4. `UserProfile` の氏名・メールアドレス等の個人情報をログに出力していないか
 5. インフラストラクチャ層（DAO/Repository）から `Contexts` API を直接呼び出していないか
-6. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+6. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 7. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## コンテキスト利用可能範囲

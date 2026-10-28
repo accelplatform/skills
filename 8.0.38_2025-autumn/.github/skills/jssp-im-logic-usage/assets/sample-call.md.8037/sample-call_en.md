@@ -115,6 +115,6 @@ Since this is a GET route with input parameters, it is implemented using the que
 ## Implementation notes
 
 - Convert to query parameters using `URLSearchParams`, and omit unfilled fields
-- Always escape values from the `records` array with `escapeHtml()` before inserting into the DOM (per the XSS protection policy in `jssp-security.md`)
+- Always escape values from the `records` array with `escapeHtml()` before inserting into the DOM (per the XSS protection policy in `.github/instructions/jssp-security.instructions.md`)
 - Judge errors solely by `response.ok`; do not assume the JSSP-specific `{error, errorMessage}` shape
-- `id` attributes follow the naming convention appropriate to the element type (colon-wrapped for input elements like `:searchUserCd:`, hyphenated for structural elements like `account-list-body`, per `jssp-presentation-page.md`)
+- `id` attributes follow the naming convention appropriate to the element type (colon-wrapped for input elements like `:searchUserCd:`, hyphenated for structural elements like `account-list-body`, per `.github/instructions/jssp-presentation-page.instructions.md`)

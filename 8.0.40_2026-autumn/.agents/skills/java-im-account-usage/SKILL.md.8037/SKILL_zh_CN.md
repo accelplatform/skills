@@ -73,7 +73,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 3. 参考 `assets/account-basic-usage.md` 实现（方法签名务必参考 `reference/account-api-reference.md`，不要凭记忆或推测编写）
 4. 处理密码时，务必以"密码保存方式为哈希化时 password 字段为 null"为前提进行设计（禁止明文比较，应使用 `AccountPasswordAdapter#collate()`）
 5. 更新账户信息时，不要每次都新建 `new AccountInfo(userCd)`，务必先通过 `getAccountInfo()` 获取现有值后再修改所需字段
-6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
@@ -95,7 +95,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 4. 角色分配的检索是直接匹配（`getAccountRoleIds()` / `getUserCdsByAccountRoleId()`）还是考虑层级（`getAccountRoleIdsRecursively()` / `getUserCdsByRoleId()`），是否与需求一致
 5. 是否吞没了 `AdminException` / `PasswordException`
 6. 是否混入了角色定义本身的操作（若混入，应切分到 `java-im-role-usage` 的范围）
-7. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+7. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 8. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。若项目中另有针对 Java 的代码评审・安全检查技能，应使用该技能
 
 ## 与其他技能的边界

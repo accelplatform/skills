@@ -7,8 +7,8 @@ description: 对 intra-mart JSSP 画面和函数容器中硬编码的日文字�
 
 实施前必须确认以下内容。有未确认项目时不得开始。
 
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) 已参考并理解内容
 
 
 # JSSP 多语言化支援技能

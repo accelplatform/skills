@@ -3,31 +3,31 @@
 An implementation example of a business import screen that combines imds theme components.
 Using the "Assistant Definition" screen as the subject, this shows the composition pattern for the header, stepper, file selection, content confirmation, and import result.
 
-This page uses a fixed-header layout, in which the header stays fixed while only the content of each stepper step scrolls vertically. For the canonical CSS design and DOM structure pattern, see [imds-common-fixed-header-layout.md](../reference/imds-common-fixed-header-layout.md).
+This page keeps the header fixed and scrolls only the content of each stepper step vertically. It uses the layout control pattern based on the fixed class names `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` / `pgstyle-layout-footer` (because it is based on `height: 100%`, loading `theme-conditional-layout.css` in `<imart type="head">` is mandatory; see "Implementation Notes" for details). For an explanation of the older approach that uses a different placeholder prefix for each feature, see [imds-common-fixed-header-layout.md](../reference/imds-common-fixed-header-layout.md).
 
 ## Components Used
 
 | Component | reference | Usage in this example |
 |---------------|-----------|-------------|
-| Header | [header.md](../reference/header.md) | Page header with related-screen menu |
-| Stepper | [stepper.md](../reference/stepper.md) | Progress display for the import process (3 steps) |
-| Message | [message.md](../reference/message.md) | Supplementary explanation of import conditions |
-| FileUpload | [file-upload.md](../reference/file-upload.md) | File upload area + post-upload file list |
-| CollapseMessage | [collapse-message.md](../reference/collapse-message.md) | Collapsible display of status notes / caveats |
-| Table | [table.md](../reference/table.md) | Import content confirmation table / result summary table |
-| Checkbox | [checkbox.md](../reference/checkbox.md) | "Show failures only" filter |
-| Button | [button.md](../reference/button.md) | Execute / back buttons for each step |
+| Header | [imds-html-header.md](../reference/imds-html-header.md) | Page header with related-screen menu |
+| Stepper | [imds-html-stepper.md](../reference/imds-html-stepper.md) | Progress display for the import process (3 steps) |
+| Message | [imds-html-message.md](../reference/imds-html-message.md) | Supplementary explanation of import conditions |
+| FileUpload | [imds-html-file-upload.md](../reference/imds-html-file-upload.md) | File upload area + post-upload file list |
+| CollapseMessage | [imds-html-collapse-message.md](../reference/imds-html-collapse-message.md) | Collapsible display of status notes / caveats |
+| Table | [imds-html-table.md](../reference/imds-html-table.md) | Import content confirmation table / result summary table |
+| Checkbox | [imds-html-checkbox.md](../reference/imds-html-checkbox.md) | "Show failures only" filter |
+| Button | [imds-html-button.md](../reference/imds-html-button.md) | Execute / back buttons for each step |
 
 ## Overall Structure
 
-For details of the fixed-header layout (a 2-row grid on `imds-container`, a vertical flex on `<main>`, and `flex:1 0 0; overflow:auto` on the step content), see [imds-common-fixed-header-layout.md](../reference/imds-common-fixed-header-layout.md).
+Add `pgstyle-layout-container` (2-row grid) to `imds-container`, `pgstyle-layout-main` (vertical flex) to `<main>`, `pgstyle-layout-content` (`flex:1 0 0; overflow:auto`) to the scroll area of the step content, and `pgstyle-layout-footer` (`flex:0 0 auto`) to the fixed footer.
 
 ```
-div.imds-container                    ... root div (placed inside the intra-mart theme's imui-container, so no id is assigned and no intermediate wrapper is inserted)
+div.imds-container.pgstyle-layout-container    ... root div (placed inside the intra-mart theme's imui-container, so no id is assigned and no intermediate wrapper is inserted)
 ├── header.imds-header               ... page header (related-screen menu, title; fixed)
-└── main (vertical flex container)
+└── main.pgstyle-layout-main (vertical flex container)
     ├── div.imds-stepper              ... progress stepper (3 steps; fixed, flex:0 0 auto)
-    └── section (switched per step; has imds-scrollbar, flex:1 0 0; overflow:auto)
+    └── section.pgstyle-layout-content (switched per step; has imds-scrollbar, flex:1 0 0; overflow:auto)
         ├── Step 1: Select File
         │   ├── imds-message         ... supplementary message (supported formats, etc.)
         │   ├── imds-file-upload      ... file upload area
@@ -36,43 +36,18 @@ div.imds-container                    ... root div (placed inside the intra-mart
         ├── Step 2: Confirm Content
         │   ├── imds-collapse-message × N ... status notes / caveats
         │   ├── imds-table            ... import content list (with status column)
-        │   └── footer (directly under main, outside the scroll area, flex:0 0 auto) ... back / run import
+        │   └── div.pgstyle-layout-footer (directly under main, outside the scroll area, flex:0 0 auto) ... back / run import
         └── Step 3: Import Result
             ├── sample-import-result-container ... result icon + message + action buttons
             └── imds-table            ... result summary table
 ```
 
-```css
-.assistant-import-layout-container {
-  height: 100vh;
-  display: grid;
-  grid-template-rows: 5rem minmax(0, 1fr);
-  grid-template-columns: 100%;
-}
-.assistant-import-layout-container > .imds-header {
-  grid-row: 1 / 2;
-}
-.assistant-import-layout-main {
-  grid-row: 2 / 3;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.assistant-import-step-panel {
-  flex: 1 0 0;
-  overflow: auto;
-}
-.assistant-import-footer {
-  flex: 0 0 auto;
-}
-```
-
 ```html
-<div class="imds-container assistant-import-layout-container">
+<div class="imds-container pgstyle-layout-container">
   <header class="imds-header">…</header>
-  <main class="assistant-import-layout-main">
+  <main class="pgstyle-layout-main">
     <div class="imds-stepper">…</div>
-    <section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar">
+    <section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar">
       <!-- Content for each step (see 3–5 below) -->
     </section>
   </main>
@@ -141,8 +116,8 @@ Structure the import screen as 3 steps: "Select File" → "Confirm Content" → 
 Composed of a supplementary message + file upload area + post-upload file list.
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar">
-  <div class="imds-message is-outlined is-info imds-mb-5">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar">
+  <div class="imds-message is-outlined is-info imds-mb-4">
     <div class="imds-message-title">
       <span class="imds-icon is-medium"><i class="fa-solid fa-circle-info"></i></span>
       <p>Select File</p>
@@ -184,7 +159,7 @@ Composed of a supplementary message + file upload area + post-upload file list.
       </tbody>
     </table>
   </div>
-  <button type="button" id="to-confirm-button" class="imds-button is-primary imds-mt-7" style="min-width:8em;" disabled>
+  <button type="button" id="to-confirm-button" class="imds-button is-primary imds-mt-7" style="min-width: 8em;" disabled>
     Go to Content Confirmation
   </button>
 </section>
@@ -192,6 +167,7 @@ Composed of a supplementary message + file upload area + post-upload file list.
 
 **Points:**
 - Keep the "Go to content confirmation" button `disabled` until the file upload completes.
+- Because this step consists only of the file upload and has little content, place the button directly below the content instead of in a fixed footer (this falls under the exception in "Implementation Notes" of [imds-html-stepper.md](../reference/imds-html-stepper.md)).
 - The file list (`imds-file-upload-list`) is inserted by JavaScript after the upload completes. Place a file icon, file name, upload date/time, size, and a delete button in each row.
 - If a file is removed via the delete button and the list becomes empty, set the "Go to content confirmation" button back to `disabled`.
 
@@ -200,7 +176,7 @@ Composed of a supplementary message + file upload area + post-upload file list.
 Display a list that lets the user check the content of the uploaded file by status (new / updated / deleted / unchanged).
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar">
   <div class="imds-collapse-message is-outlined is-small is-info imds-mb-3">
     <input type="checkbox" id="status-note-toggle">
     <label for="status-note-toggle">
@@ -246,7 +222,7 @@ Display a list that lets the user check the content of the uploaded file by stat
       </div>
     </div>
   </div>
-  <div class="imds-table is-sticky" style="max-height: 400px;">
+  <div class="imds-table is-area-bordered is-sticky is-narrow is-hoverable" style="max-height: 400px;">
     <div class="imds-table-inner">
       <table>
         <thead>
@@ -261,10 +237,10 @@ Display a list that lets the user check the content of the uploaded file by stat
     </div>
   </div>
 </section>
-<!-- Place the footer directly under main, outside the scrollable area (section), and fix it with flex:0 0 auto -->
-<div class="assistant-import-footer imds-py-2 imds-px-8 imds-border-t-1">
-  <button type="button" id="back-to-file-select" class="imds-button is-outlined" style="min-width:8em;">Back</button>
-  <button type="button" id="import-execute-button" class="imds-button is-primary" style="min-width:8em;">Import</button>
+<!-- Place the footer directly under main, outside the scrollable area (section), and fix it with pgstyle-layout-footer (flex:0 0 auto) -->
+<div class="pgstyle-layout-footer imds-py-2 imds-px-6 imds-border-t-1">
+  <button type="button" id="back-to-file-select" class="imds-button is-outlined" style="min-width: 8em;">Back</button>
+  <button type="button" id="import-execute-button" class="imds-button is-primary" style="min-width: 8em;">Import</button>
 </div>
 ```
 
@@ -272,6 +248,8 @@ Display a list that lets the user check the content of the uploaded file by stat
 - Show status notes and caveats with `imds-collapse-message` (collapsible), and include it only when needed. When using a table inside the message, use a Table variant such as `is-bordered is-area-bordered is-narrow`.
 - "Unchanged" data is also included in the import target; make it clear that only the updater and update date/time are updated.
 - Clicking the back button returns to Step 1 (file selection).
+- Add `is-area-bordered is-sticky is-narrow is-hoverable` to the confirmation table (per the criteria for adding variation classes in "Implementation Notes" of [imds-html-table.md](../reference/imds-html-table.md)).
+- Match the footer's horizontal padding (`imds-px-6`) to the section's horizontal padding.
 
 ## 5. Step 3: Import Result
 
@@ -280,7 +258,7 @@ Switch the summary display depending on the outcome of the import (success / war
 ### 5-A. Success
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar sample-import-result-container">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar sample-import-result-container">
   <div class="sample-import-result-icon">
     <span class="imds-icon is-success"><i class="fa-regular fa-circle-check"></i></span>
   </div>
@@ -329,7 +307,7 @@ Switch the summary display depending on the outcome of the import (success / war
 ### 5-B. Warning (Partial Failure)
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar sample-import-result-container">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar sample-import-result-container">
   <div class="sample-import-result-icon">
     <span class="imds-icon is-warning"><i class="imds-iconfont imds-warning"></i></span>
   </div>
@@ -376,8 +354,12 @@ Switch the summary display depending on the outcome of the import (success / war
     <input type="checkbox" id="show-failed-only" checked>
     <span>Show Failures Only</span>
   </label>
-  <div class="imds-table is-bordered" id="import-result-detail-table">
-    <!-- Detailed list of failed data (generated by JS) -->
+  <div class="imds-table is-area-bordered is-bordered is-sticky is-narrow is-hoverable" id="import-result-detail-table" style="max-height: 400px;">
+    <div class="imds-table-inner">
+      <table>
+        <!-- Detailed list of failed data (generated by JS) -->
+      </table>
+    </div>
   </div>
 </section>
 ```
@@ -385,7 +367,7 @@ Switch the summary display depending on the outcome of the import (success / war
 ### 5-C. Error (All Failed)
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar sample-import-result-container">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar sample-import-result-container">
   <div class="sample-import-result-icon">
     <span class="imds-icon is-error"><i class="fa-regular fa-circle-xmark"></i></span>
   </div>
@@ -434,5 +416,43 @@ Switch the summary display depending on the outcome of the import (success / war
 - Replace occurrences corresponding to `${sample}` (the data type name) with the actual data type name of the target implementation.
 - Make the acceptable file format explicit both in `<input type="file" accept="...">` and in the supplementary message.
 - Because this is usually paired with an export screen, the `imds-header-nav` menu in the header often includes links to the export screen and the list screen.
-- The confirmation table in Step 2 and the result table in Step 3 may be given a fixed header with `imds-table is-sticky` as needed (see the `isSticky` section of the list screen template).
-- `sample-import-*` / `assistant-import-*` are placeholder prefixes. Replace them with a prefix matching the feature name at implementation time (do not change standard classes that start with `imds-`).
+- For list tables that can scroll vertically, such as the confirmation table in Step 2 and the failure detail table in Step 3, fix the header with `is-sticky` (see the `isSticky` section of the list screen template).
+- `sample-import-*` is a placeholder prefix. Replace it with a prefix matching the feature name at implementation time (do not change standard classes that start with `imds-`).
+- `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` / `pgstyle-layout-footer` are fixed class names, **not** placeholders to be replaced per feature. Do not change these class names when generating.
+- Because this template covers only the HTML part, define the following layout control styles in the `<style>` of `<imart type="head">` (only the classes used in this file are listed).
+
+  ```css
+  /* Layout control styles */
+  .pgstyle-layout-container {
+    grid-template-rows: 5rem minmax(0, 1fr);
+    grid-template-columns: 100%;
+    height: 100%;
+    display: grid;
+  }
+  .pgstyle-layout-container > .imds-header {
+    grid-row: 1 / 2;
+  }
+  .pgstyle-layout-main {
+    flex-direction: column;
+    grid-row: 2 / 3;
+    height: 100%;
+    display: flex;
+  }
+  .pgstyle-layout-content {
+    flex: 1 0 0;
+    overflow: auto;
+  }
+  .pgstyle-layout-footer {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: left;
+    gap: 2em;
+  }
+  ```
+
+- In addition, `<imart type="head">` must load `im_design_system/theme/css/theme-conditional-layout.css` (CSS that controls the height and width of the content display area, which differ by theme). Without it, the height of `.imds-container` is not determined, `flex: 1 0 0` of `pgstyle-layout-content` has nothing to grow into, and the content area collapses to a height of 0.
+
+  ```html
+  <!-- CSS that controls the height and width of the content display area, which differ by theme -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
+  ```

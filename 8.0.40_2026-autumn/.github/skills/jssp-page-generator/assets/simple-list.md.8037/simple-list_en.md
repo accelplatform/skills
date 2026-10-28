@@ -3,14 +3,18 @@
 ## Overview
 
 A basic screen template with a simple table list and pagination.
-On initial display, values retrieved from the server are shown in the presentation page; table rendering and pagination are handled by client-side JavaScript.
-Each row in the list has an edit link allowing navigation to the edit screen.
+On initial display, values retrieved from the server are shown in the presentation page; table rendering, filtering by search keyword and pagination are handled by client-side JavaScript.
+The first column (product name) of the list links to the edit screen. When there is no data, an empty state UI is shown.
+
+### Correspondence with imds Templates
+
+- The screen structure conforms to the list page template `assets/imds-list-page.md` in the `jssp-imds-theme` skill
 
 ## File Structure
 
 ```
-src/main/jssp/src/simple_list/view/
-  └── index.js              # Function container
+src/main/jssp/src/sample/simple_list/view/
+  ├── index.js              # Function container
   └── index.html            # Presentation page
 
 src/main/conf/routing-jssp-config/
@@ -19,7 +23,7 @@ src/main/conf/routing-jssp-config/
 
 ---
 
-## Function Container (simple_list/view/index.js)
+## Function Container (sample/simple_list/view/index.js)
 
 ```javascript
 /**
@@ -148,17 +152,42 @@ function transferErrorPage(code, message) {
 
 ---
 
-## Presentation Page (simple_list/view/index.html)
+## Presentation Page (sample/simple_list/view/index.html)
 
 ```html
 <!-- Header -->
 <imart type="head">
   <!-- Title -->
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
+  <!-- CSS that controls the height/width of the content area, which differs per theme -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- Presentation page custom styles -->
   <style>
-    /* Area above the table uses flex layout */
-    .button-area {
+    /* Layout control styles */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
+      display: flex;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-table-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+    .pgstyle-toolbar {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -166,19 +195,10 @@ function transferErrorPage(code, message) {
       justify-content: space-between;
       gap: 0.5em 1em;
     }
-    /* TODO: Modify the following table layout as needed for your use case */
-    #stock-table th,
-    #stock-table td {
-      white-space: nowrap;
-    }
-    #stock-table .col-remarks {
-      white-space: normal;
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .col-edit {
-      width: 4em;
+    /* Search field width (adjust the values per screen as needed) */
+    .pgstyle-toolbar > .imds-input-group {
+      max-width: 30em;
+      flex: 1 0 20em;
     }
   </style>
   <!-- Presentation page scripts (scope $data via an IIFE instead of leaving it in the global scope) -->
@@ -187,10 +207,16 @@ function transferErrorPage(code, message) {
   document.addEventListener('DOMContentLoaded', () => {
     // Constants
     const STORAGE_KEY = 'product_stock_data';
-    const PAGE_SIZE = 10;
+    const COLUMN_COUNT = 6;
+    const RANGE_LENGTH = 3;
+    const RECORDS_PER_PAGE_OPTIONS = [100, 125, 150, 175, 200];
 
+    // Records per page (default: 100)
+    let pageSize = 100;
     // Current page
     let currentPage = 1;
+    // Search keyword
+    let keyword = '';
 
     // Initialize dummy data in session storage
     function initializeData() {
@@ -205,175 +231,279 @@ function transferErrorPage(code, message) {
       return data ? JSON.parse(data) : [];
     }
 
-    // HTML escape
-    function escapeHtml(str) {
-      let div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
+    // Get data filtered by the search keyword (partial match on product name, product code, warehouse number and remarks)
+    function getFilteredData(allData) {
+      if (!keyword) {
+        return allData;
+      }
+      let lowerKeyword = keyword.toLowerCase();
+      return allData.filter((item) => {
+        return [item.productName, item.productCode, item.warehouseNumber, item.remarks].some((value) => {
+          return String(value || '').toLowerCase().indexOf(lowerKeyword) !== -1;
+        });
+      });
+    }
+
+    // Create a cell that contains text only
+    function createTextCell(text, className) {
+      let td = document.createElement('td');
+      if (className) {
+        td.className = className;
+      }
+      let span = document.createElement('span');
+      span.textContent = text;
+      td.appendChild(span);
+      return td;
+    }
+
+    // Create a data row (the product name in the first column links to the edit screen)
+    function createRow(item) {
+      let tr = document.createElement('tr');
+
+      // TODO: Implement the edit screen (sample/simple_list/edit). Treat it as edit when the productCode parameter is present, and as new registration when it is absent
+      let link = document.createElement('a');
+      link.textContent = item.productName;
+      link.setAttribute('href', 'sample/simple_list/edit?productCode=' + encodeURIComponent(item.productCode));
+      let linkSpan = document.createElement('span');
+      linkSpan.appendChild(link);
+      let linkCell = document.createElement('td');
+      linkCell.appendChild(linkSpan);
+      tr.appendChild(linkCell);
+
+      tr.appendChild(createTextCell(item.productCode));
+      tr.appendChild(createTextCell(Number(item.unitPrice).toLocaleString(), 'has-text-right'));
+      tr.appendChild(createTextCell(String(item.stockQuantity), 'has-text-right'));
+      tr.appendChild(createTextCell(item.warehouseNumber || ''));
+
+      // Truncate remarks to one line; the full text is available via title
+      let remarksCell = createTextCell(item.remarks || '');
+      let remarksSpan = remarksCell.firstChild;
+      remarksSpan.className = 'imds-line-clamp-1';
+      remarksSpan.setAttribute('title', item.remarks || '');
+      tr.appendChild(remarksCell);
+
+      return tr;
+    }
+
+    // Create the row for zero search results (empty state UI placed inside the table: is-small)
+    function createEmptyRow() {
+      let tr = document.createElement('tr');
+      let td = document.createElement('td');
+      td.setAttribute('colspan', String(COLUMN_COUNT));
+      td.innerHTML =
+        '<div class="imds-empty-state-container">' +
+          '<div class="imds-empty-state is-small">' +
+            '<div class="imds-empty-state-message-wrapper">' +
+              '<span class="imds-empty-state-icon">' +
+                '<span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>' +
+              '</span>' +
+              '<div class="imds-empty-state-message"><p class="imds-empty-state-message-title">No matching data was found. Please review the search keyword.</p></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      tr.appendChild(td);
+      return tr;
+    }
+
+    // When no data is registered, hide the operation area, table and pagination, and show only the empty state UI
+    function toggleNoDataState(hasData) {
+      document.getElementById('search-form').style.display = hasData ? '' : 'none';
+      document.getElementById('stock-table').style.display = hasData ? '' : 'none';
+      document.getElementById('no-data-state').style.display = hasData ? 'none' : '';
     }
 
     // Render table
     function renderTable() {
       let allData = getAllData();
-      let totalItems = allData.length;
-      let totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+      let pagination = document.getElementById('pagination');
+
+      if (allData.length === 0) {
+        toggleNoDataState(false);
+        pagination.style.display = 'none';
+        return;
+      }
+      toggleNoDataState(true);
+
+      let filteredData = getFilteredData(allData);
+      let totalItems = filteredData.length;
+      let totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
       if (currentPage > totalPages) {
         currentPage = totalPages;
       }
 
-      let startIndex = (currentPage - 1) * PAGE_SIZE;
-      let endIndex = Math.min(startIndex + PAGE_SIZE, totalItems);
-      let pageData = allData.slice(startIndex, endIndex);
+      let startIndex = (currentPage - 1) * pageSize;
+      let endIndex = Math.min(startIndex + pageSize, totalItems);
+      let pageData = filteredData.slice(startIndex, endIndex);
 
       let tbody = document.getElementById('stock-table-body');
-      tbody.innerHTML = '';
+      tbody.textContent = '';
 
       if (pageData.length === 0) {
-        let tr = document.createElement('tr');
-        let td = document.createElement('td');
-        td.setAttribute('colspan', '7');
-        td.style.textAlign = 'center';
-        td.style.padding = '2em';
-        td.textContent = 'No data available.';
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-      } else {
-        pageData.forEach((item) => {
-          let tr = document.createElement('tr');
-          tr.innerHTML =
-            '<td class="col-edit has-content-only">' +
-            '<button type="button" class="imds-button is-ghost is-small" data-edit-code="' + escapeHtml(item.productCode) + '">' +
-            '<span class="imds-icon"><i class="fa-regular fa-file-lines"></i></span></button></td>' +
-            '<td><span>' + escapeHtml(item.productCode) + '</span></td>' +
-            '<td><span>' + escapeHtml(item.productName) + '</span></td>' +
-            '<td class="has-text-right"><span>' + Number(item.unitPrice).toLocaleString() + '</span></td>' +
-            '<td class="has-text-right"><span>' + item.stockQuantity + '</span></td>' +
-            '<td><span>' + escapeHtml(item.warehouseNumber || '') + '</span></td>' +
-            '<td class="col-remarks"><span>' + escapeHtml(item.remarks || '') + '</span></td>';
-          tbody.appendChild(tr);
-        });
+        tbody.appendChild(createEmptyRow());
+        pagination.style.display = 'none';
+        return;
       }
 
-      // Edit button event
-      tbody.querySelectorAll('[data-edit-code]').forEach((button) => {
-        button.addEventListener('click', () => {
-          location.href = 'product_stock/edit?productCode=' + encodeURIComponent(button.getAttribute('data-edit-code'));
-        });
+      pageData.forEach((item) => {
+        tbody.appendChild(createRow(item));
       });
 
+      pagination.style.display = '';
       renderPagination(totalPages, totalItems, startIndex + 1, endIndex);
     }
 
     // Calculate page number list for pagination
+    // Show RANGE_LENGTH pages before and after the current page; never collapse just a single page
     function getPageNumbers(current, total) {
       let pages = [];
-      let delta = 2;
 
-      for (let i = 1; i <= total; i++) {
-        if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+      if (total <= RANGE_LENGTH * 2 + 5) {
+        for (let i = 1; i <= total; i++) {
           pages.push(i);
-        } else if (pages[pages.length - 1]  !== '...') {
-          pages.push('...');
         }
+        return pages;
       }
 
+      let start = Math.max(Math.min(current - RANGE_LENGTH, total - RANGE_LENGTH * 2 - 2), 3);
+      let end = Math.min(Math.max(current + RANGE_LENGTH, RANGE_LENGTH * 2 + 3), total - 2);
+
+      pages.push(1);
+      pages.push(start > 3 ? '...' : 2);
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      pages.push(end < total - 2 ? '...' : total - 1);
+      pages.push(total);
+
       return pages;
+    }
+
+    // Create the previous/next button
+    function createMoveButton(title, iconClass, disabled, targetPage) {
+      let button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'imds-button is-ghost';
+      button.title = title;
+      button.disabled = disabled;
+      button.innerHTML = '<span class="imds-icon"><i class="fa-solid ' + iconClass + '"></i></span>';
+      button.addEventListener('click', () => {
+        currentPage = targetPage;
+        renderTable();
+      });
+      return button;
+    }
+
+    // Create a page number button (or an ellipsis)
+    function createPageNumberItem(page) {
+      if (page === '...') {
+        let ellipsis = document.createElement('div');
+        ellipsis.className = 'imds-pagination-page-ellipsis';
+        ellipsis.innerHTML = '<span>…</span>';
+        return ellipsis;
+      }
+      let pageButton = document.createElement('button');
+      pageButton.type = 'button';
+      pageButton.className = 'imds-button ' + (page === currentPage ? 'is-primary' : 'is-ghost');
+      pageButton.textContent = String(page);
+      pageButton.addEventListener('click', () => {
+        if (page !== currentPage) {
+          currentPage = page;
+          renderTable();
+        }
+      });
+      return pageButton;
+    }
+
+    // Create the page navigation button group
+    function createPaginationControls(totalPages) {
+      let controls = document.createElement('div');
+      controls.className = 'imds-pagination-controls';
+
+      // Previous button
+      controls.appendChild(createMoveButton('Previous', 'fa-angle-left', currentPage <= 1, currentPage - 1));
+
+      // Page numbers
+      let pageNumberContainer = document.createElement('div');
+      pageNumberContainer.className = 'imds-pagination-page-number';
+      getPageNumbers(currentPage, totalPages).forEach((page) => {
+        pageNumberContainer.appendChild(createPageNumberItem(page));
+      });
+      controls.appendChild(pageNumberContainer);
+
+      // Next button
+      controls.appendChild(createMoveButton('Next', 'fa-angle-right', currentPage >= totalPages, currentPage + 1));
+
+      return controls;
+    }
+
+    // Create the options area (records per page + count information)
+    function createPaginationOptions(totalItems, startNum, endNum) {
+      let options = document.createElement('div');
+      options.className = 'imds-pagination-options';
+
+      // Records per page
+      let recordsPerPage = document.createElement('div');
+      recordsPerPage.className = 'imds-pagination-records-per-page';
+      let label = document.createElement('label');
+      label.setAttribute('for', 'records-per-page');
+      label.textContent = 'Records per page';
+      recordsPerPage.appendChild(label);
+      let select = document.createElement('select');
+      select.id = 'records-per-page';
+      select.className = 'imds-select';
+      RECORDS_PER_PAGE_OPTIONS.forEach((value) => {
+        let option = document.createElement('option');
+        option.value = String(value);
+        option.textContent = String(value);
+        option.selected = (value === pageSize);
+        select.appendChild(option);
+      });
+      select.addEventListener('change', () => {
+        pageSize = Number(select.value);
+        currentPage = 1;
+        renderTable();
+      });
+      recordsPerPage.appendChild(select);
+      options.appendChild(recordsPerPage);
+
+      // Count information
+      let info = document.createElement('span');
+      info.textContent = startNum + ' - ' + endNum + ' / ' + totalItems;
+      options.appendChild(info);
+
+      return options;
     }
 
     // Render pagination
     function renderPagination(totalPages, totalItems, startNum, endNum) {
       let container = document.getElementById('pagination');
-      container.innerHTML = '';
-
-      if (totalItems === 0) {
-        return;
-      }
+      container.textContent = '';
 
       let nav = document.createElement('nav');
-      nav.className = 'imds-pagination';
-
-      // Page navigation button group
-      let controls = document.createElement('div');
-      controls.className = 'imds-pagination-controls';
-
-      // Previous button
-      let prevButton = document.createElement('button');
-      prevButton.type = 'button';
-      prevButton.className = 'imds-button is-ghost';
-      prevButton.title = 'Previous';
-      prevButton.disabled = (currentPage <= 1);
-      prevButton.innerHTML = '<span class="imds-icon"><i class="fa-solid fa-angle-left"></i></span>';
-      prevButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-          currentPage--;
-          renderTable();
-        }
-      });
-      controls.appendChild(prevButton);
-
-      // Page numbers
-      let pageNumberContainer = document.createElement('div');
-      pageNumberContainer.className = 'imds-pagination-page-number';
-
-      let pageNumbers = getPageNumbers(currentPage, totalPages);
-      pageNumbers.forEach((page) => {
-        if (page === '...') {
-          let ellipsis = document.createElement('div');
-          ellipsis.className = 'imds-pagination-page-ellipsis';
-          ellipsis.innerHTML = '<span>…</span>';
-          pageNumberContainer.appendChild(ellipsis);
-        } else {
-          let pageButton = document.createElement('button');
-          pageButton.type = 'button';
-          pageButton.className = 'imds-button ' + (page === currentPage ? 'is-primary' : 'is-ghost');
-          pageButton.textContent = String(page);
-          pageButton.addEventListener('click', (function(p) {
-            return function() {
-              if (p !== currentPage) {
-                currentPage = p;
-                renderTable();
-              }
-            };
-          })(page));
-          pageNumberContainer.appendChild(pageButton);
-        }
-      });
-
-      controls.appendChild(pageNumberContainer);
-
-      // Next button
-      let nextButton = document.createElement('button');
-      nextButton.type = 'button';
-      nextButton.className = 'imds-button is-ghost';
-      nextButton.title = 'Next';
-      nextButton.disabled = (currentPage >= totalPages);
-      nextButton.innerHTML = '<span class="imds-icon"><i class="fa-solid fa-angle-right"></i></span>';
-      nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-          currentPage++;
-          renderTable();
-        }
-      });
-      controls.appendChild(nextButton);
-
-      nav.appendChild(controls);
-
-      // Count information
-      let options = document.createElement('div');
-      options.className = 'imds-pagination-options';
-      let info = document.createElement('span');
-      info.textContent = startNum + ' - ' + endNum + ' / ' + totalItems;
-      options.appendChild(info);
-      nav.appendChild(options);
+      nav.className = 'imds-pagination is-small';
+      nav.appendChild(createPaginationControls(totalPages));
+      nav.appendChild(createPaginationOptions(totalItems, startNum, endNum));
 
       container.appendChild(nav);
     }
 
-    // New create button click event
-    document.getElementById('create-button').addEventListener('click', () => {
+    // Navigate to the create screen
+    function moveToCreate() {
       location.href = 'sample/simple_list/edit';
+    }
+
+    // Search form submit event (Enter key and search button share a single path)
+    document.getElementById('search-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      keyword = document.getElementById(':searchKeywords:').value.trim();
+      currentPage = 1;
+      renderTable();
     });
+
+    // New create button click event
+    document.getElementById('create-button').addEventListener('click', moveToCreate);
+    document.getElementById('no-data-create-button').addEventListener('click', moveToCreate);
 
     // Entry point
     if ($data.error.code) {
@@ -388,7 +518,7 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- Page container (no id here — it sits inside the theme's own <div id="imui-container">) -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <!-- Header -->
   <header class="imds-header">
     <div class="imds-header-icon">
@@ -403,38 +533,57 @@ function transferErrorPage(code, message) {
   </header>
 
   <!-- Main content -->
-  <main>
-    <div class="imds-py-3">
-      <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4">
-        <div class="button-area imds-mb-3">
+  <main class="pgstyle-layout-main">
+    <div class="imds-px-3 imds-py-2 pgstyle-table-wrapper pgstyle-layout-content imds-scrollbar">
+      <!-- Operation area (search field + new create button) -->
+      <form id="search-form" class="imds-form">
+        <div class="pgstyle-toolbar imds-mb-2">
           <div class="imds-input-group">
-            <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="Search keywords">
-            <button type="button" title="Search" class="imds-button">
+            <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="Search keywords" aria-label="Search keywords">
+            <button type="submit" title="Search" class="imds-button is-outlined">
               <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
             </button>
           </div>
-          <button type="button" id="create-button" class="imds-button is-primary">New</button>
+          <button type="button" id="create-button" class="imds-button is-primary" style="min-width: 8em;">New</button>
         </div>
-        <div class="imds-table" id="stock-table">
-          <div class="imds-table-inner">
-            <table>
-              <thead>
-                <tr>
-                  <th class="col-edit has-text-centered"><span>Edit</span></th>
-                  <th><span>Product Code</span></th>
-                  <th><span>Product Name</span></th>
-                  <th><span>Unit Price</span></th>
-                  <th><span>Stock Quantity</span></th>
-                  <th><span>Warehouse Number</span></th>
-                  <th><span>Remarks</span></th>
-                </tr>
-              </thead>
-              <tbody id="stock-table-body"></tbody>
-            </table>
+      </form>
+      <!-- List table -->
+      <div class="imds-table is-area-bordered is-bordered is-sticky is-narrow is-hoverable" id="stock-table" style="height: 100%">
+        <div class="imds-table-inner">
+          <table>
+            <thead>
+              <tr>
+                <th><span>Product Name</span></th>
+                <th><span>Product Code</span></th>
+                <th><span>Unit Price</span></th>
+                <th><span>Stock Quantity</span></th>
+                <th><span>Warehouse Number</span></th>
+                <th><span>Remarks</span></th>
+              </tr>
+            </thead>
+            <tbody id="stock-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Pagination -->
+      <div class="imds-mt-2" id="pagination"></div>
+      <!-- Empty state UI for no registered data (shown only when there is no data at all) -->
+      <div class="imds-empty-state-container" id="no-data-state" style="display: none;">
+        <div class="imds-empty-state">
+          <div class="imds-empty-state-message-wrapper">
+            <span class="imds-empty-state-icon">
+              <span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>
+            </span>
+            <div class="imds-empty-state-message">
+              <p class="imds-empty-state-message-title">No data has been registered yet</p>
+              <p class="imds-empty-state-message-content">Register data using the New button.</p>
+            </div>
+          </div>
+          <div class="imds-empty-state-content imds-mt-7">
+            <button type="button" id="no-data-create-button" class="imds-button is-large is-primary">New</button>
           </div>
         </div>
-        <div class="imds-py-3" id="pagination"></div>
-      </section>
+      </div>
     </div>
   </main>
 </div>
@@ -465,9 +614,11 @@ function transferErrorPage(code, message) {
 
 - **Simple List**: [assets/simple-list.md](assets/simple-list.md)
   - Screen with intra-mart Design System (imds) theme applied
-  - Table list display and pagination
-  - Search keyword input and new create button
-  - Edit link placed in each row
+  - Table list display and pagination (with records-per-page selector)
+  - Search keyword and new create button (search runs on `<form>` submit and filters the list already retrieved at initial display on the client side)
+  - Link to the edit screen placed in the first column (product name)
+  - Empty state UI for no registered data and for zero search results
+  - If the data volume is too large to hold all records on the client side, replace search and paging with server-side processing (re-fetching via an API)
 
 ### Example Instructions for Generation
 

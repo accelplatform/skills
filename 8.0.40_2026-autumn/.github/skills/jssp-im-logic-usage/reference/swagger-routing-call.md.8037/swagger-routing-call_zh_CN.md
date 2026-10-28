@@ -101,8 +101,8 @@ async function callSampleAccounts(userCd) {
 
 ### 实现方针
 
-- URL 以 **相对路径** `logic/api/<route>` 指定（遵循 `jssp-presentation-page.md` 的 URL 指定方针，上下文路径通过 `<imart type="head">` 输出的 `<base>` 标签解析）
-- **成功/失败判定使用 `response.ok`（HTTP 状态码）。** JSSP 独有的 `{error, errorMessage}` 响应规约（`jssp-error-handling.md`）仅适用于 `routing-jssp-config` 中定义的自有 `api/*.js`，不适用于 IM-LogicDesigner 路由。响应体即为流程的 `outputDataDefinition` 本身。
+- URL 以 **相对路径** `logic/api/<route>` 指定（遵循 `.github/instructions/jssp-presentation-page.instructions.md` 的 URL 指定方针，上下文路径通过 `<imart type="head">` 输出的 `<base>` 标签解析）
+- **成功/失败判定使用 `response.ok`（HTTP 状态码）。** JSSP 独有的 `{error, errorMessage}` 响应规约（`.github/instructions/jssp-error-handling.instructions.md`）仅适用于 `routing-jssp-config` 中定义的自有 `api/*.js`，不适用于 IM-LogicDesigner 路由。响应体即为流程的 `outputDataDefinition` 本身。
 - 响应的 `Content-Type` 取决于路由定义的 `responseType`（`imJsonResponse` 为 `application/json`，`imTextResponse` 等为纯文本）。若 spec 的 `definitions` 中定义了结构化属性，则很可能是 `imJsonResponse`，但无法确定时，应在调用 `response.json()` 前检查 `Content-Type` 头，或先用 `.text()` 读取后再安全解析。
 - 异步处理使用 `async`/`await`
 - 仅在确认目标路由 `secured: true` 时才在请求头中附加安全令牌（`X-Intramart-Secure-Token`）（此信息不会出现在 swagger spec 中，需通过路由定义侧的设置或实机确认判断）

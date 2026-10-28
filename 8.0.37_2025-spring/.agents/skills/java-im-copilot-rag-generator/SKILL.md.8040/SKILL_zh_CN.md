@@ -78,7 +78,7 @@ RAG 由「数据准备阶段」（对文档进行分块・向量化并登录到�
 4. 需要与 IM-Copilot 聊天界面对接时，创建标注了 `@Assistant` 的 `AbstractCopilotAssistant<T>` 子类。**参数类 `T` 必须是 `AssistantParameter` 本身，或其子类**（使用自定义 POJO 会导致聊天界面无法输入提示词）
 5. 创建了 Assistant 时，**务必同时完成 `AssistantScanPackageFactory` 的实现・注册，以及 IM-Authz 权限的授予**（二者缺一，助手都不会出现在助手一览中。详见 `java-im-copilot-agent-generator` 的 `reference/assistant-integration-api-reference.md` 中的「对平台的注册」。注册机制本身与 Agent 框架的 Assistant 通用）
 6. 数据准备作业需要注册到作业调度器（`job-scheduler.xml` 等租户配置资材，属于 `jssp-tenant-setup-generator` 的范畴）
-7. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+7. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
@@ -101,7 +101,7 @@ RAG 由「数据准备阶段」（对文档进行分块・向量化并登录到�
 4. `Embedder` 适配器是否将 `EmbeddingsAction` 的异常（`CopilotServiceConfigurationException`/`CopilotServiceActionException`）转换为 `EmbedderException`
 5. 创建了 Assistant 时，参数类 `T` 是否为 `AssistantParameter` 本身或其子类
 6. 创建了 Assistant 时，是否已实现・注册 `AssistantScanPackageFactory`，是否已在 IM-Authz 中为资源 `im-copilot-assistant://assistant/<助手ID>` 授予许可策略
-7. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+7. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 8. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目另有 Java 专用的代码评审・安全检查技能，请使用该技能
 
 ## 与其他技能的边界

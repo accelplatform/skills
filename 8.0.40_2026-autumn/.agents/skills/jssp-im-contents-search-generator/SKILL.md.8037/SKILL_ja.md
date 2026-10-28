@@ -7,15 +7,15 @@ description: IM-ContentsSearch の独自クローラ（Solr インデックス�
 
 実装着手前に、以下を確認すること。未チェック項目がある場合は着手不可。
 
-- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-accessibility](../../requirements/jssp-accessibility/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-presentation-page](../../requirements/jssp-presentation-page/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
 
 
 # IM-ContentsSearch 拡張 プログラム生成スキル
@@ -42,12 +42,12 @@ SSJS 向け API は公式には提供されていないため、Rhino の `Packa
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-function-container.md` | 🟢 **必読** — テンプレート JS の `init()` 構造 |
-| `jssp-naming.md` / `jssp-code-style.md` | 🟢 必読 |
-| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必読** — クローラは詳細ログとエラー処理が必須 |
-| `jssp-2way-sql.md` | 🟡 **2WaySQL を使用する場合のみ参照**（クローラ対象の検索に 2WaySQL を使用する場合など） |
-| `jssp-presentation-page.md` | 🟡 テンプレート HTML の基本構造（imcs 専用クラスは本スキルの assets を優先） |
-| `jssp-security.md` | 🟡 テンプレート HTML 実装時は XSS 対策セクションを参照。検索結果コンテンツ（`request` 引数）のデータは Apache Solr 由来のデータのため、格納型 XSS の可能性はゼロではない。DOM 操作では `textContent` を使用し `innerHTML` は iAP 内部生成 HTML のみに限定すること |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **必読** — テンプレート JS の `init()` 構造 |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` | 🟢 必読 |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-logging/AGENTS.md` | 🟢 **必読** — クローラは詳細ログとエラー処理が必須 |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🟡 **2WaySQL を使用する場合のみ参照**（クローラ対象の検索に 2WaySQL を使用する場合など） |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | 🟡 テンプレート HTML の基本構造（imcs 専用クラスは本スキルの assets を優先） |
+| `.agents/requirements/jssp-security/AGENTS.md` | 🟡 テンプレート HTML 実装時は XSS 対策セクションを参照。検索結果コンテンツ（`request` 引数）のデータは Apache Solr 由来のデータのため、格納型 XSS の可能性はゼロではない。DOM 操作では `textContent` を使用し `innerHTML` は iAP 内部生成 HTML のみに限定すること |
 
 ---
 

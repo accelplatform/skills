@@ -23,5 +23,28 @@
       "from": "simple-wizard_en.md",
       "to": "simple-wizard.md"
     }
+  ],
+  "replacements": [
+    {
+      "type": "section",
+      "heading": "imds テンプレートとの対応",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "Correspondence with imds Templates",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "与 imds 模板的对应关系",
+      "condition": {
+        "feature": "imds"
+      }
+    }
   ]
 }

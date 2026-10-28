@@ -189,7 +189,7 @@ public String processData(final String input) {
 
 ## 注释
 
-关于类・方法的 JavaDoc 写法，请参考 `java-javadoc.md`。本节仅涉及行内注释。
+关于类・方法的 JavaDoc 写法，请参考 `.agents/requirements/java-javadoc/AGENTS.md`。本节仅涉及行内注释。
 
 ### 行内注释
 

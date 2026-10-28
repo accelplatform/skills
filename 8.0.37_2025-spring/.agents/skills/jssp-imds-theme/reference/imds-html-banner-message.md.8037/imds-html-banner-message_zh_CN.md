@@ -124,7 +124,7 @@ BannerMessage 是在页面或特定区域顶部展示页面内容相关信息的
 
 ## 实现注意事项
 
-- 根据颜色类使用适当的图标（参见上面的颜色部分）
+- 根据颜色类使用适当的图标（参见上述 color 部分）
 - `imds-message-title` 和 `imds-message-content` 的类名与 Message 组件共用
 - `content-only` 模式结构不同（不使用 `imds-message-title`，直接放置图标）
 - BannerMessage 适用于固定在页面顶部的场景。普通内联显示请使用 Message

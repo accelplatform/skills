@@ -133,11 +133,11 @@ Header は、ページ上部のエリアを表示する部品です。
       type="button"
       class="imds-button is-ghost is-large"
       aria-haspopup="true"
-      aria-controls="imds-popover-:r1:">
+      aria-controls="sample-popover-1">
       <span class="imds-icon is-medium is-primary"><i class="imds-iconfont imds-application"></i></span>
       <span class="imds-icon is-x-small is-primary"><i class="fa-solid fa-caret-down"></i></span>
     </button>
-    <div id="imds-popover-:r1:" role="menu" class="imds-popover-menu">
+    <div id="sample-popover-1" role="menu" class="imds-popover-menu">
       <div class="imds-popover-content">
         <nav class="imds-menu">
           <ul class="imds-menu-list">
@@ -198,7 +198,7 @@ Header は、ページ上部のエリアを表示する部品です。
 
 - **`imds-header-title` の中身は「`<p>サブタイトル</p>` + `<h1>タイトル</h1>`」の 2 段構成が基本形**（「サブタイトルなし」バリエーションの場合は `<p>` を省略）。リファレンス基本スニペットに従い、上段 `<p>` にアプリ名/モジュール名（例: 「社内備品貸出システム」「備品マスタ」）、下段 `<h1>` に画面名（例: 「保管場所管理」「承認一覧」）を配置する。両方ともファンクションコンテナの `$subTitle` / `$title` バインドから `<imart type="string" value=$subTitle ...>` で出力すること（HTML 直書きしない）。
 
-- **`<header class="imds-header">` は `<main>` の外側に配置すること**。imds テーマの CSS は `<div class="imds-container">` の直下に置かれた `<header>` を前提にスタイル（アイコン位置・余白等）を当てているため、`<main>` の内側に置くとレイアウトが崩れ、`imds-header-icon` のアイコンが表示されない等の不具合が起きる。**ルートの `<div>` は 1 つに統合し、内側にさらに `imds-container` の `<div>` を入れ子にする中間ラッパーを作らないこと**（`jssp-presentation-page.md` の規約により、intra-mart のテーマ機能が `<div id="imui-container">` で画面内容を自動的に包むため、ルートタグに id は付与せず `imds-container` クラスのみを付与する）。
+- **`<header class="imds-header">` は `<main>` の外側に配置すること**。imds テーマの CSS は `<div class="imds-container">` の直下に置かれた `<header>` を前提にスタイル（アイコン位置・余白等）を当てているため、`<main>` の内側に置くとレイアウトが崩れ、`imds-header-icon` のアイコンが表示されない等の不具合が起きる。**ルートの `<div>` は 1 つに統合し、内側にさらに `imds-container` の `<div>` を入れ子にする中間ラッパーを作らないこと**（`.github/instructions/jssp-presentation-page.instructions.md` の規約により、intra-mart のテーマ機能が `<div id="imui-container">` で画面内容を自動的に包むため、ルートタグに id は付与せず `imds-container` クラスのみを付与する）。
   ```html
   <!-- OK -->
   <div class="imds-container">
@@ -216,12 +216,12 @@ Header は、ページ上部のエリアを表示する部品です。
     </div>
   </div>
   ```
-  ※ `jssp-accessibility.md` の「プレゼンテーションページに `<header>` を追加してはならない」はプラットフォームのグローバルヘッダとの重複を避ける主旨であり、imds の `<header class="imds-header">`（ページ内ヘッダ）はこの規則の対象外。
+  ※ `.github/instructions/jssp-accessibility.instructions.md` の「プレゼンテーションページに `<header>` を追加してはならない」はプラットフォームのグローバルヘッダとの重複を避ける主旨であり、imds の `<header class="imds-header">`（ページ内ヘッダ）はこの規則の対象外。
 - 「ページヘッダ」を表すのに `imds-page-header` / `imds-page-header-title` / `imds-page-header-actions` といったクラス名を使ってはならない（リファレンスに存在しない架空のクラス。CSS が当たらず崩れる）。正しくは `imds-header` / `imds-header-title` / `imds-header-actions`。
 - ヘッダ内の配置順序: `imds-header-back-button` → `imds-header-icon` / `imds-header-nav` → `imds-header-title` → `imds-header-additional` → `imds-header-actions` → `imds-header-reload-button`（**`imds-header-actions` が `imds-header-reload-button` より先**）
 - アイコン領域の排他関係は要素の組み合わせによって異なる。まとめて「3 つとも排他」と扱わないこと。
   - `imds-header-icon` と `imds-header-nav` は排他（同時に配置しない。アイコン領域はどちらか一方）
   - `imds-header-back-button` は `imds-header-icon` / `imds-header-nav` と**併用可能**（back-button を置いてもアイコン領域は消さない。詳細は「backItemExists」バリエーションを参照）
   - `imds-header-back-button` と `imds-header-nav` の併用パターンは本リファレンスでは扱わない。従来通り排他として扱う
-- ドロップダウンメニューの `id` / `aria-controls` は一意の値に置き換えること（`:r1:` はプレースホルダー）
+- ドロップダウンメニューの `id` / `aria-controls` は一意の値に置き換えること（`sample-popover-N` はプレースホルダー。機能に合わせた一意な名前にし、入力要素ではないためコロンは付けない）
 - ドロップダウンメニューの開閉は JavaScript で制御する必要がある

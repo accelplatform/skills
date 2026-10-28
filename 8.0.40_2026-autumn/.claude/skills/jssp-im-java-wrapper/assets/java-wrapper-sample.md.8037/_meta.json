@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "java-wrapper-sample_ja.md",
+      "to": "java-wrapper-sample.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "java-wrapper-sample_zh_CN.md",
+      "to": "java-wrapper-sample.md"
+    },
+    {
+      "from": "java-wrapper-sample_en.md",
+      "to": "java-wrapper-sample.md"
+    }
+  ]
+}

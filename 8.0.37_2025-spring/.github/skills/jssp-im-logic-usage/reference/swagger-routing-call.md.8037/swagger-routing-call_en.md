@@ -101,8 +101,8 @@ async function callSampleAccounts(userCd) {
 
 ### Implementation policy
 
-- Specify the URL as a **relative path** `logic/api/<route>` (per the URL policy in `jssp-presentation-page.md`; the context path is resolved via the `<base>` tag emitted by `<imart type="head">`)
-- **Judge success/failure by `response.ok` (HTTP status).** The JSSP-specific `{error, errorMessage}` response convention (`jssp-error-handling.md`) applies only to self-authored `api/*.js` defined in `routing-jssp-config`, not to IM-LogicDesigner routing. The response body is the flow's `outputDataDefinition` itself.
+- Specify the URL as a **relative path** `logic/api/<route>` (per the URL policy in `.github/instructions/jssp-presentation-page.instructions.md`; the context path is resolved via the `<base>` tag emitted by `<imart type="head">`)
+- **Judge success/failure by `response.ok` (HTTP status).** The JSSP-specific `{error, errorMessage}` response convention (`.github/instructions/jssp-error-handling.instructions.md`) applies only to self-authored `api/*.js` defined in `routing-jssp-config`, not to IM-LogicDesigner routing. The response body is the flow's `outputDataDefinition` itself.
 - The response `Content-Type` depends on the routing definition's `responseType` (`application/json` for `imJsonResponse`, plain text for `imTextResponse`, etc.). If `definitions` shows a structured set of properties, `imJsonResponse` is likely, but when unsure, check the `Content-Type` header before calling `response.json()`, or read with `.text()` and parse safely.
 - Use `async`/`await` for asynchronous code
 - Only attach the secure token (`X-Intramart-Secure-Token`) header when the target routing is confirmed to have `secured: true` (this information does not appear in the swagger spec — confirm via the routing definition or on the real server)

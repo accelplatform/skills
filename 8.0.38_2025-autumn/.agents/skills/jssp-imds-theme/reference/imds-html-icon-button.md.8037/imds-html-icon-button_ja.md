@@ -8,7 +8,7 @@ Button 共通の使用方法、注意事項は、Button を参照してくださ
 
 - 抽出元URL: https://document.intra-mart.jp/design/?path=/docs/components-button-iconbutton--documentation
 - 基本クラス: imds-button
-- 基本ボタンの詳細は [button](button.md) を参照
+- 基本ボタンの詳細は [button](imds-html-button.md) を参照
 
 ## CSS Classes Reference
 

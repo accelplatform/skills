@@ -1,10 +1,18 @@
-# intra-mart Accel Platform Script Development Project
+# intra-mart Accel Platform Development Project
 
 ## Overview
 
-This project uses the intra-mart Accel Platform script development model (JSSP).
+This project develops on the intra-mart Accel Platform, combining the following development models.
+
+| Development Model | Use |
+|------|------------|
+| JSSP (script development model) | Source code for screens and various plugins |
+| Java (JavaEE development model) | Source code for various plugins (excluding screens) |
+| IM-LogicDesigner / IM-Workflow / IM-BPM | Low-code assets |
 
 ## Technology Stack
+
+### JSSP (script development model)
 
 | Item | Technology |
 |------|------------|
@@ -15,7 +23,11 @@ This project uses the intra-mart Accel Platform script development model (JSSP).
 | Workflow | IM-Workflow / ApplyManager |
 | Low-code | IM-LogicDesigner |
 
-## Mandatory Rules (No Exceptions)
+### Java (JavaEE development model)
+
+See `.github/instructions/java-architecture.instructions.md` for details. For layer structure, dependency rules, naming conventions, etc., see the Java conventions listed in `.github/instructions/README.md`.
+
+## Mandatory Rules (No Exceptions, JSSP)
 
 When JSSP files (`.js` / `.html`) are **newly generated or edited**, the following steps **must be executed** before reporting completion.
 Skipping or deferring is prohibited regardless of context compression, session resumption, or the volume of work.
@@ -26,9 +38,9 @@ Skipping or deferring is prohibited regardless of context compression, session r
 
 > These steps may be skipped only if the skill itself does not exist. Skipping for reasons such as "it takes too long" or "there are too many files" is not permitted.
 
-## Sub-Agent Split Policy
+## Sub-Agent Split Policy (JSSP)
 
-For large-scale implementations involving multiple files, delegate work to sub-agents as described below to prevent the main conversation context from growing too large.
+For large-scale JSSP implementations involving multiple files, delegate work to sub-agents as described below to prevent the main conversation context from growing too large.
 
 ### Execution Order (strict — dependencies require this order)
 
@@ -76,9 +88,9 @@ Coding conventions are placed under `.github/instructions/`. For the file list a
 
 Various skill sets are placed under `.github/skills/`. For the skill list and contents, refer to `.github/skills/README.md`.
 
-### API Type Definitions (d.ts)
+### API Type Definitions (d.ts, JSSP)
 
-When implementing function containers, refer to the TypeScript type definition files under `d.ts/`.
+When implementing JSSP function containers, refer to the TypeScript type definition files under `d.ts/`.
 These define the API specifications (arguments, return values, and types) for globally available classes, functions, and objects in SSJS.
 
 | Directory | Description |

@@ -75,7 +75,7 @@ description: 在 intra-mart Accel Platform 上用 Java（JavaEE 开发模型）�
 3. 在 `pom.xml` 中添加对 `im_copilot_mcp` 的依赖（显式指定版本，参见 `reference/mcp-annotation-api-reference.md` 中的「依赖关系」）。若项目已有该依赖，直接复用，不要重复添加
 4. 参照 `assets/mcp-server-basic-usage.md` 实现 `@MCPServer` 类、工具实现类、参数 DTO（属性签名务必参照 `reference/mcp-annotation-api-reference.md`，不要凭记忆或推测编写）
 5. **进行 MCP 服务器的注册（严禁省略）。** 若项目已存在 `McpScanPackageFactory` 实现，只需将新类放入其目标包下即可。若没有，则按照 `assets/mcp-server-basic-usage.md` 模式 4 新建
-6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
@@ -95,7 +95,7 @@ description: 在 intra-mart Accel Platform 上用 Java（JavaEE 开发模型）�
 3. 参数 DTO 的所有字段是否都标注了与其用途对应的 `SchemaProperties` 注解（`StringProperty`/`IntegerProperty`/`BooleanProperty`/`NumberProperty`/`EnumProperty`/`ObjectProperty`/`ArrayProperty`）
 4. 应为必填的参数是否设置了 `required`
 5. `@Tool` 的 `description` 是否具体到足以让 LLM 判断该工具的用途与使用场景
-6. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 7. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目另有 Java 专用的代码评审/安全检查技能，请使用该技能
 
 ## 与其他技能的边界

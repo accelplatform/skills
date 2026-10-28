@@ -93,7 +93,7 @@ allowed-tools: Bash, Read, Write, Glob
 3. 整理主体条件（是单一 `Subject`，还是通过 `Expression.AND`/`OR`/`NOT` 组合的复合条件？同时确认内置组（`getAuthenticatedUsers`/`getGuestSubjectGroup`）是否足够）
 4. 参考 `assets/authz-basic-usage.md` 进行实现（方法签名务必参考 `reference/authz-api-reference.md`，不要凭记忆或猜测编写）
 5. 实现权限确认时，将资源URI的组装逻辑在登录处理与确认处理之间共用（避免因写法不一致导致判定错误）
-6. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
 
@@ -119,7 +119,7 @@ allowed-tools: Bash, Read, Write, Glob
 6. 资源URI 的开头是否为已注册的资源类型ID，且传给 `setPolicy`/`authorize` 的 `action` 是否为该资源类型已定义的动作（`flat-crud` 则为 `c`/`r`/`u`/`d`）
 7. `removeAllPolicies`・`removeResourceGroup`・`removePoliciesForResourceGroup`・`removePoliciesForSubjectGroup` 等破坏性操作是否仅在需求所要求的范围内执行
 8. 是否未吞没 `SubjectManagingException`（受检异常）
-9. 是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+9. 是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 10. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目中另有面向 Java 的代码审查・安全检查技能，应使用该技能
 
 ## 与其他技能的边界

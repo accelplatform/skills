@@ -7,8 +7,8 @@ description: 使用 jest-on-rhino 支持函数容器（.js）的单元测试创�
 
 实施前必须确认以下内容。有未确认项目时不得开始。
 
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-testing](../../../requirements/jssp-testing/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-testing](../../requirements/jssp-testing/AGENTS.md) 已参考并理解内容
 
 
 # jest-on-rhino 测试开发指南

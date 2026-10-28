@@ -147,7 +147,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの IM
 6. グループ系・法人/取引先/品目カテゴリ/品目/通貨の検索系（`list*`/`search*`/`count*`）を使う場合、`AppCmnSearchCondition` に渡すカラム名は各エンティティ用の列挙型（`ImmPublicGroupColumn`/`ImmCustomerColumn` 等、`ImmTableColumn` 実装）の `toString()` から取得する
 7. `CustomerManager`/`ItemManager` の検索系（`search`/`list`/`count`/`total`）を使う場合、第一引数の `companyCd` を渡し忘れていないか確認する（他クラスと異なりメソッド名にエンティティ名を含まない汎用シグネチャ）
 8. グループ系・単体取得系（`get*`）は対象が存在しない場合に `null` を返すため、呼び出し側で null チェックを行う
-9. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+9. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -198,7 +198,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの IM
 10. `CorporationManager`（法人）と `CorporationGroupManager`（法人グループ）を混同していないか
 11. `CustomerManager`/`ItemManager` の検索系メソッドに `companyCd` を渡しているか
 12. 通貨の `Currency`/`CurrencyConversion`/`CurrencyPrecision` に対して、存在しない `startDate`/`endDate` を設定しようとしていないか（`CurrencyRate` にのみ期間の概念がある）
-13. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+13. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 14. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

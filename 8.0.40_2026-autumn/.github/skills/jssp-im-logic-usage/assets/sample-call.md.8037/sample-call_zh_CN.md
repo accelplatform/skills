@@ -115,6 +115,6 @@
 ## 实现要点
 
 - 使用 `URLSearchParams` 转换为查询参数，未填写项不发送
-- 将 `records` 数组插入 DOM 前，必须使用 `escapeHtml()` 进行转义（遵循 `jssp-security.md` 的 XSS 对策方针）
+- 将 `records` 数组插入 DOM 前，必须使用 `escapeHtml()` 进行转义（遵循 `.github/instructions/jssp-security.instructions.md` 的 XSS 对策方针）
 - 错误判定仅使用 `response.ok`，不假定 JSSP 特有的 `{error, errorMessage}` 格式
-- `id` 属性遵循与元素种类对应的命名规约（输入元素如 `:searchUserCd:` 用冒号包裹，结构元素如 `account-list-body` 用连字符分隔，遵循 `jssp-presentation-page.md`）
+- `id` 属性遵循与元素种类对应的命名规约（输入元素如 `:searchUserCd:` 用冒号包裹，结构元素如 `account-list-body` 用连字符分隔，遵循 `.github/instructions/jssp-presentation-page.instructions.md`）

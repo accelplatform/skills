@@ -2,6 +2,17 @@
 
 > **適用範囲**: 🟢 **常時** — プレゼンテーションページ（`.html`）を生成する際に適用。HTML 構造、バリデーション、id 命名規約等。
 
+## UI テーマの選択
+
+- プロンプト・仕様書で UI テーマ（ピュア HTML、独自テーマ等）が明示されている場合は、その指定に従う
+- imds テーマを使わない場合のルートタグの扱いは「実装方針」を参照する
+
+### imds テーマ（既定）
+
+- UI テーマの明示指定が無い場合は、imds テーマで画面を生成する
+- 画面骨格は `.agents/skills/jssp-imds-theme/assets/` のページ全体テンプレート、UI 部品は同 `reference/` を参照する（詳細は `jssp-imds-theme` スキル）
+- `imuiShowErrorMessage` / `imuiShowSuccessMessage` / `imuiShowWarningMessage` 等のメッセージ表示 API と `imuiCalendar` は imds テーマと併用してよい
+
 ## プレゼンテーションページの標準実装方針
 
 ### 基本構造
@@ -125,7 +136,7 @@
 ### 変数宣言
 
 プレゼンテーションページ内の JavaScript はブラウザで実行されるため、Rhino の制約は適用されない。
-`jssp-code-style.md` の `const` 制限はファンクションコンテナ（`.js`）専用であり、HTML 内スクリプトには適用しないこと。
+`.agents/requirements/jssp-code-style/AGENTS.md` の `const` 制限はファンクションコンテナ（`.js`）専用であり、HTML 内スクリプトには適用しないこと。
 
 - **再代入しない変数**: `const` を使用する
 - **再代入する変数**: `let` を使用する
@@ -180,6 +191,25 @@ var participants = [];                  // var は使用しない
 ```html
 <imart type="string" value=$data escapeXml="false" escapeJs="false" />    <!-- OK -->
 ```
+
+#### 3. HTML コメントや JavaScript のコメントの中に記述しても処理される
+
+`<imart>` タグは JSP のタグと同様にサーバ側で処理されるため、HTML コメント（`<!-- -->`）や `<script>` 内の JavaScript のコメント（`//`・`/* */`）の中に記述しても無効にならず、処理結果（置換文字列）に置き換えられる。置換結果は画面には表示されないが、HTML ソースには出力される。
+
+悪い例（いずれも `<imart>` タグが実行され、`$data.foo` の値がコメント内に出力される）:
+```html
+<!--
+<imart type="string" value=$data.foo />
+-->
+```
+```html
+<script>
+  // <imart type="string" value=$data.foo />
+  /* <imart type="string" value=$data.foo /> */
+</script>
+```
+
+`<imart>` タグを無効にしたい場合は、コメントで囲まずにタグ自体を削除すること。
 
 ## バインド変数の使用方法
 
@@ -600,7 +630,7 @@ async function register(request) {
   - Content-Type が application/x-www-form-urlencoded を想定している場合、リクエストパラメータを `URLSearchParams` で指定する
   - Content-Type が application/json を想定している場合、リクエストパラメータを `JSON.stringify()` で指定する
 - 非同期処理は Promise を使用し、`async`, `await` を使用してコードを見やすくする
-- レスポンス形式は `{error: bool, data | errorMessage}`（→ `jssp-error-handling.md`「API レスポンスの構造（JSON）」）
+- レスポンス形式は `{error: bool, data | errorMessage}`（→ `.agents/requirements/jssp-error-handling/AGENTS.md`「API レスポンスの構造（JSON）」）
   - `result.error` で分岐し、エラー時は `result.errorMessage`（`[コード] メッセージ` 形式）をそのまま表示する
   - HTTP ステータスコード（200 / 400 / 405 / 500）は API 側が設定する。クライアントでは個別判定せず、`result.error` のみで判定する
 - 正常終了時は `imuiShowSuccessMessage()` で処理完了メッセージを表示する

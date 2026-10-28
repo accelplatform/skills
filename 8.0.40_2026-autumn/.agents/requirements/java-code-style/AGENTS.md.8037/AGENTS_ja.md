@@ -189,7 +189,7 @@ public String processData(final String input) {
 
 ## コメント
 
-クラス・メソッドの JavaDoc の書き方は `java-javadoc.md` を参照すること。ここではインラインコメントのみ扱う。
+クラス・メソッドの JavaDoc の書き方は `.agents/requirements/java-javadoc/AGENTS.md` を参照すること。ここではインラインコメントのみ扱う。
 
 ### インラインコメント
 

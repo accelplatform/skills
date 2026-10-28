@@ -76,7 +76,7 @@ Always consult `reference/swagger-routing-call.md` for the detailed structure an
 Follow the `fetch` call pattern in `reference/swagger-routing-call.md` and implement the code inside the `<script>` of the JSSP presentation page. See `assets/sample-call.md` for a complete example.
 
 Mandatory implementation rules:
-- Specify the call URL as a relative path `logic/api/<route>` (per the URL policy in `jssp-presentation-page.md`)
+- Specify the call URL as a relative path `logic/api/<route>` (per the URL policy in `.agents/requirements/jssp-presentation-page/AGENTS.md`)
 - Judge success/failure by **HTTP status (`response.ok`)**, not the JSSP-specific `{error, errorMessage}` shape — the routing response is the flow's own output data and does not follow the JSSP API response convention
 - Match the request body shape exactly to the `properties` in `definitions` — do not add or remove fields by guesswork
 - If a type is unclear or the spec is missing information, confirm with the user before generating code
@@ -85,11 +85,11 @@ Mandatory implementation rules:
 
 | Convention / Skill | Handling |
 |------|---------|
-| `jssp-presentation-page.md` | 🟢 Required — URL policy, basic `fetch` call shape |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | 🟢 Required — URL policy, basic `fetch` call shape |
 | `reference/swagger-routing-call.md` (this skill) | 🟢 Required — how to read the swagger structure, fetch call pattern, known caveats |
 | `jssp-im-logic-generator`'s `reference/route_definition.schema.json` / `routing-response.md` | 🟡 Reference — routing definition specs (`secured`, `responseType`, etc.) not present in the swagger spec |
-| `jssp-error-handling.md` | 🔴 Not needed for this skill alone — logic flow API responses do not follow the JSSP API response convention |
-| `jssp-security.md` | 🟡 Reference — only attach the CSRF token (`X-Intramart-Secure-Token`) header when the target routing is confirmed to have `secured: true` |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` | 🔴 Not needed for this skill alone — logic flow API responses do not follow the JSSP API response convention |
+| `.agents/requirements/jssp-security/AGENTS.md` | 🟡 Reference — only attach the CSRF token (`X-Intramart-Secure-Token`) header when the target routing is confirmed to have `secured: true` |
 
 ## References
 

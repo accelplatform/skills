@@ -7,17 +7,17 @@ description: Generates new screens, function containers, common processing, and 
 
 Confirm the following before starting implementation. Do not proceed if any item is unchecked.
 
-- [ ] [jssp-2way-sql](../../../requirements/jssp-2way-sql/AGENTS.md) has been read and understood
-- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) has been read and understood
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) has been read and understood
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
-- [ ] [jssp-function-container](../../../requirements/jssp-function-container/AGENTS.md) has been read and understood
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) has been read and understood
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) has been read and understood
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) has been read and understood
-- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) has been read and understood
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) has been read and understood
+- [ ] [jssp-2way-sql](../../requirements/jssp-2way-sql/AGENTS.md) has been read and understood
+- [ ] [jssp-accessibility](../../requirements/jssp-accessibility/AGENTS.md) has been read and understood
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) has been read and understood
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
+- [ ] [jssp-function-container](../../requirements/jssp-function-container/AGENTS.md) has been read and understood
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) has been read and understood
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) has been read and understood
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) has been read and understood
+- [ ] [jssp-presentation-page](../../requirements/jssp-presentation-page/AGENTS.md) has been read and understood
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) has been read and understood
 
 
 # JSSP Code Generation Skill
@@ -42,13 +42,13 @@ This skill generates both `.js` (function containers) and `.html` (presentation 
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-presentation-page.md` | 🟢 **Required** — HTML structure, validation, id naming for `.html` |
-| `jssp-function-container.md` | 🟢 **Required** — `init()` structure, validateRequest |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 Required |
-| `jssp-error-handling.md` / `jssp-security.md` | 🟢 Required — both apply since forms + APIs are involved |
-| `jssp-2way-sql.md` | 🟡 **Only when the implementation includes DB operations**. Skip for read-only UIs etc. that do not touch the DB |
-| `jssp-logging.md` | 🟡 Only when implementing logging |
-| `jssp-accessibility.md` | 🟠 **Business-requirement-dependent** — apply thickly only when explicitly required by the spec; otherwise stay minimal (`imdsConfirm`, `aria-label`, `aria-hidden` on decorative icons, etc.) |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | 🟢 **Required** — HTML structure, validation, id naming for `.html` |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **Required** — `init()` structure, validateRequest |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` / `.agents/requirements/jssp-file-structure/AGENTS.md` | 🟢 Required |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-security/AGENTS.md` | 🟢 Required — both apply since forms + APIs are involved |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🟡 **Only when the implementation includes DB operations**. Skip for read-only UIs etc. that do not touch the DB |
+| `.agents/requirements/jssp-logging/AGENTS.md` | 🟡 Only when implementing logging |
+| `.agents/requirements/jssp-accessibility/AGENTS.md` | 🟠 **Business-requirement-dependent** — apply thickly only when explicitly required by the spec; otherwise stay minimal (`imdsConfirm`, `aria-label`, `aria-hidden` on decorative icons, etc.) |
 
 ## When to Use
 
@@ -77,6 +77,11 @@ Confirm the following from the user:
 - Whether a new table is needed
 - **Whether the screen includes any field that asks the user to select an IM common master value (user / department / company / group / role)** → if so, combine with the `jssp-im-master-usage` skill to implement it as a master search dialog (manual code entry via a plain `<input>` is prohibited)
 - **Whether the screen may be placed multiple times on the same portal page as a portlet (widget)** → if so, use `assets/simple-portlet.md` (it follows a different implementation policy than a normal screen: no header/footer, `$data` scoped with an IIFE, etc.)
+- **UI theme**: If the prompt or specification explicitly names a UI theme (plain HTML, a custom theme, etc.), follow it. When generating with a non-imds theme, skip Step 3 and do not apply the items in Step 5 that concern imds class names and structure. Reuse only the JS processing and comments from the assets, and build the HTML with that theme
+
+#### Default UI Theme (imds)
+
+If no UI theme is explicitly specified, generate with the imds theme (see "Choosing the UI Theme" in `.agents/requirements/jssp-presentation-page/AGENTS.md`).
 
 ---
 
@@ -99,6 +104,7 @@ This step must not be skipped. Assets contain usage examples of imds-compliant s
 
 ### Step 3: Load imds Component References
 
+Perform this step when generating with the imds theme.
 Refer to the `jssp-imds-theme` skill and **open and load the corresponding reference file for each UI component using the Read tool.**
 Do not write imds class names or tag structures from memory or guesswork.
 

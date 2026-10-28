@@ -75,7 +75,7 @@ Also, if the request concerns CRUD on **basic user information** (name, affiliat
 3. Implement by referring to `assets/profile-basic-usage.md` (always refer to `reference/profile-api-reference.md` for method signatures — do not write from memory or guesswork)
 4. Route the implementation through `UserProfileImageManagerFactory.getFactory().getService()`; never instantiate `UserProfileImageManagerImpl` directly with `new`
 5. When using `setUserProfileImage(UserImage)`, obtain and close the `Storage<?>` passed to `UserImage#setStorage()` according to the `java-im-storage-usage` conventions (`try-with-resources` required, etc.)
-6. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -95,7 +95,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 3. Wherever `setUserProfileImage(UserImage)` is used, whether the `Storage<?>` source is properly closed via `try-with-resources` or similar (compliant with the `java-im-storage-usage` conventions)
 4. Whether `BizApiException` is being swallowed silently
 5. Whether CRUD on basic user information or IM-LogicDesigner integration has crept into the scope of this skill
-6. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 7. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has a separate Java-specific code review / security check skill, use that instead
 
 ## Boundaries with Other Skills

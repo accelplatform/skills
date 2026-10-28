@@ -9,18 +9,18 @@ imds テーマのコンポーネントを組み合わせた、業務入力フォ
 
 | コンポーネント | reference | 本例での用途 |
 |---------------|-----------|-------------|
-| Header | [header.md](../reference/header.md) | 戻るボタン付きページヘッダ |
-| Field | [field.md](../reference/field.md) | 各入力項目 |
-| FieldGroup | [field-group.md](../reference/field-group.md) | 入力項目のグループ化 |
-| Textbox | [textbox.md](../reference/textbox.md) | テキスト入力 |
-| TextboxControl | [textbox-control.md](../reference/textbox-control.md) | 検索アイコン付きテキスト入力 |
-| Select | [select.md](../reference/select.md) | プルダウン選択 |
-| Radio | [radio.md](../reference/radio.md) | ラジオボタン |
-| Checkbox | [checkbox.md](../reference/checkbox.md) | チェックボックス |
-| Button | [button.md](../reference/button.md) | アクションボタン |
-| IconButton | [icon-button.md](../reference/icon-button.md) | クリアボタン（×アイコン） |
-| FileUpload | [file-upload.md](../reference/file-upload.md) | ファイルアップロード |
-| IconFont | [icon-font.md](../reference/icon-font.md) | 各種アイコン |
+| Header | [imds-html-header.md](../reference/imds-html-header.md) | 戻るボタン付きページヘッダ |
+| Field | [imds-html-field.md](../reference/imds-html-field.md) | 各入力項目 |
+| FieldGroup | [imds-html-field-group.md](../reference/imds-html-field-group.md) | 入力項目のグループ化 |
+| Textbox | [imds-html-textbox.md](../reference/imds-html-textbox.md) | テキスト入力 |
+| TextboxControl | [imds-html-textbox-control.md](../reference/imds-html-textbox-control.md) | 検索アイコン付きテキスト入力 |
+| Select | [imds-html-select.md](../reference/imds-html-select.md) | プルダウン選択 |
+| Radio | [imds-html-radio.md](../reference/imds-html-radio.md) | ラジオボタン |
+| Checkbox | [imds-html-checkbox.md](../reference/imds-html-checkbox.md) | チェックボックス |
+| Button | [imds-html-button.md](../reference/imds-html-button.md) | アクションボタン |
+| IconButton | [imds-html-icon-button.md](../reference/imds-html-icon-button.md) | クリアボタン（×アイコン） |
+| FileUpload | [imds-html-file-upload.md](../reference/imds-html-file-upload.md) | ファイルアップロード |
+| IconFont | [imds-html-icon-font.md](../reference/imds-html-icon-font.md) | 各種アイコン |
 
 ## 全体構成
 
@@ -635,7 +635,7 @@ div.imds-container.pgstyle-layout-container    ... ルート div（intra-mart �
 **ポイント:**
 - `imds-border-t-1` でフォーム領域との境界線を表示
 - メインアクション（登録）には `is-primary`、サブアクション（一時保存）には `is-outlined is-primary` を使用
-- 幅指定は独自の `min-width-8em` 系クラスを定義せず、インライン `style="min-width: 8em;"` を使う（`jssp-presentation-page.md`「入力フィールドの幅制御」のアンチパターン参照。カスタムクラスは imds 標準クラスと詳細度が同等になり上書きされうる）
+- 幅指定は独自の `min-width-8em` 系クラスを定義せず、インライン `style="min-width: 8em;"` を使う（`.agents/requirements/jssp-presentation-page/AGENTS.md`「入力フィールドの幅制御」のアンチパターン参照。カスタムクラスは imds 標準クラスと詳細度が同等になり上書きされうる）
 
 ## 実装上の注意
 

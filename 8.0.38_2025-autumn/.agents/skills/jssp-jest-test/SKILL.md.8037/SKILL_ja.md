@@ -7,8 +7,8 @@ description: jest-on-rhino を使ったファンクションコンテナ（.js�
 
 実装着手前に、以下を確認すること。未チェック項目がある場合は着手不可。
 
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-testing](../../../requirements/jssp-testing/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-testing](../../requirements/jssp-testing/AGENTS.md) を参照し、内容を理解した
 
 
 # jest-on-rhino テスト開発ガイド

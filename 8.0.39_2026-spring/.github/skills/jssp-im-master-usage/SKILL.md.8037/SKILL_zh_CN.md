@@ -28,11 +28,11 @@ description: 生成调用 intra-mart IM 通用主数据检索（imACMSearch）�
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-presentation-page.md` | 🟢 **必读** — HTML 结构、id 命名 |
-| `jssp-naming.md` / `jssp-file-structure.md` | 🟢 必读 |
-| `jssp-imds-theme` 技能的 reference | 🟢 必读（不得凭记忆书写 imds 类名） |
-| `jssp-function-container.md` / `jssp-2way-sql.md` / `jssp-error-handling.md` 等 | 🔴 **本技能单独不需要**（由调用方技能适用） |
-| `jssp-accessibility.md` | 🟠 **业务需求依赖** — 主数据检索对话框通过 imds 标准实现已具备基础 ARIA，通常无需追加厚涂 |
+| `.github/instructions/jssp-presentation-page.instructions.md` | 🟢 **必读** — HTML 结构、id 命名 |
+| `.github/instructions/jssp-naming.instructions.md` / `.github/instructions/jssp-file-structure.instructions.md` | 🟢 必读 |
+| `jssp-imds-theme` 技能的 reference | 🟢 使用 imds 主题生成时必读（不得凭记忆书写 imds 类名） |
+| `.github/instructions/jssp-function-container.instructions.md` / `.github/instructions/jssp-2way-sql.instructions.md` / `.github/instructions/jssp-error-handling.instructions.md` 等 | 🔴 **本技能单独不需要**（由调用方技能适用） |
+| `.github/instructions/jssp-accessibility.instructions.md` | 🟠 **业务需求依赖** — 主数据检索对话框通过 imds 标准实现已具备基础 ARIA，通常无需追加厚涂 |
 
 ## 完成品示例
 
@@ -164,4 +164,8 @@ description: 生成调用 intra-mart IM 通用主数据检索（imACMSearch）�
 
 - 必须参考参考资料，不得凭记忆或推测使用插件ID或字段名
 - 遵循完成品示例的结构模式（事件监听器、参数构建、回调、window 注册）
-- HTML 部分遵循 `jssp-imds-theme` 技能的规范，使用 imds 的类名
+- 完成品示例是 imACMSearch 调用・回调等功能特有部分的正本，而不是输入框・按钮等 UI 组件的正本。UI 主题遵循 `.github/instructions/jssp-presentation-page.instructions.md` 的「UI 主题的选择」。`jssp-imds-theme` 技能不存在，或明确指定了 imds 以外的主题时，仅复用功能特有部分，输入框・按钮等按该主题构建
+
+### 使用 imds 主题生成时
+
+不要照抄完成品示例的 HTML。先使用 Read 读取 `jssp-imds-theme` 技能的 SKILL.md 以及所用 UI 组件的 reference（`imds-html-textbox-control.md`、`imds-html-field.md`、`imds-html-button.md` 等），再组建输入框。仅从示例移植 imACMSearch 调用・回调等功能特有部分。生成后，在调用方技能的验证步骤（`jssp-page-verifier`）中通过 `validate-imds.js` 进行结构验证。

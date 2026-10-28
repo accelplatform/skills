@@ -118,7 +118,7 @@ XSD 模式按以下优先级顺序被搜索。
 4. 不需要动态更新的配置，按步骤2推导出的文件名放置于 `src/main/conf/{name}.xml`（不是 `src/main/webapp/WEB-INF/conf/`）。需要通过管理画面等动态更新的配置，实现使用 `ConfigurationLoader.save()` 的代码（会写入 SystemStorage 的 `conf/` 下，不是运维人员直接编辑的文件）。**这两者不要用于同一配置**（同时放置 `WEB-INF/conf/{name}.xml` 会导致 `save()` 的内容不被反映，参见「放置目录」）
 5. 将 XSD 模式**直接平铺**（不创建子目录）放置于 `src/main/schema/{name}.xsd`（会原样复制到 `WEB-INF/schema/`）
 6. 在调用方（如服务类）中实现通过 `ConfigurationLoader.load()` 读取的代码。`Instance.SINGLETON`（默认）与 `Instance.PROTOTYPE` 的选择参考「注意事项」判断
-7. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+7. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
 
@@ -140,7 +140,7 @@ XSD 模式按以下优先级顺序被搜索。
 2. 确认 XSD 模式的 `targetNamespace` 与配置类・`ObjectFactory` 的 `namespace` 属性一致
 3. 确认 XML 配置文件相对于 XSD 模式是合法的
 4. 使用 `save()` 时，确认保存后调用了 `clearCache()`
-5. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 6. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的产出物。若项目另有面向 Java 的代码评审・安全检查技能，请使用该技能
 
 ## 与其他技能的边界

@@ -1,10 +1,18 @@
-# intra-mart Accel Platform 脚本开发项目
+# intra-mart Accel Platform 开发项目
 
 ## 概述
 
-本项目使用 intra-mart Accel Platform 的脚本开发模型（JSSP）进行开发。
+本项目在 intra-mart Accel Platform 上进行开发，组合使用以下开发模型。
+
+| 开发模型 | 用途 |
+|------|------|
+| JSSP（脚本开发模型） | 画面及各类插件的源代码 |
+| Java（JavaEE 开发模型） | 除画面外的各类插件的源代码 |
+| IM-LogicDesigner / IM-Workflow / IM-BPM | 低代码资材 |
 
 ## 技术栈
+
+### JSSP（脚本开发模型）
 
 | 项目 | 技术 |
 |------|------|
@@ -15,7 +23,11 @@
 | 工作流 | IM-Workflow / ApplyManager |
 | 低代码 | IM-LogicDesigner |
 
-## 必须遵守的规则（禁止省略）
+### Java（JavaEE 开发模型）
+
+详情参见 `.github/instructions/java-architecture.instructions.md`。分层结构、依赖规则、命名规约等请参见 `.github/instructions/README.md` 中面向 Java 的规约一览。
+
+## 必须遵守的规则（禁止省略・JSSP）
 
 **新建或编辑** JSSP 文件（`.js` / `.html`）后，在报告完成之前必须**执行**以下步骤。
 无论上下文是否被压缩、会话是否重新开始、工作量多少，均不得省略或推迟。
@@ -26,9 +38,9 @@
 
 > 仅当技能本身不存在时才可跳过。不得以"耗时较长"或"文件数量太多"等理由跳过。
 
-## 子代理分割方针
+## 子代理分割方针（JSSP）
 
-在涉及多文件的大规模实现中，为防止主会话上下文过度膨胀，请按以下方针将工作委托给子代理。
+在涉及多文件的大规模 JSSP 实现中，为防止主会话上下文过度膨胀，请按以下方针将工作委托给子代理。
 
 ### 执行顺序（存在依赖关系，必须严格遵守）
 
@@ -76,9 +88,9 @@
 
 各类技能集放置于 `.github/skills/` 目录下。技能一览及内容请参考 `.github/skills/README.md`。
 
-### API 类型定义（d.ts）
+### API 类型定义（d.ts、JSSP）
 
-实现函数容器时，请参考 `d.ts/` 目录下的 TypeScript 类型定义文件。
+实现 JSSP 函数容器时，请参考 `d.ts/` 目录下的 TypeScript 类型定义文件。
 其中定义了 SSJS 中可用的全局类、函数和对象的 API 规格（参数、返回值、类型）。
 
 | 目录 | 内容 |

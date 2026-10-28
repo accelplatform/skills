@@ -94,7 +94,7 @@ intra-mart Accel Platform の IM-Copilot が提供する **Agent フレームワ
 4. カスタムツールを実装する場合、入力パラメータ DTO に `SchemaProperties` アノテーションを付与し、`JsonSchemaGenerator.generateSchema(...)` でスキーマを生成する
 5. IM-Copilot のチャットUIと連携させる場合、`@Assistant` を付与した `AbstractCopilotAssistant<T>` サブクラスを作成する（`doExecute` 内で `Agent` を構築・実行する）。**パラメータクラス `T` は `AssistantParameter`（`jp.co.intra_mart.foundation.copilot.assistant.model`）自身、またはそのサブクラスにする**（`reference/assistant-integration-api-reference.md`「`AssistantParameter`」参照。独自の POJO にするとチャットUIでプロンプトを入力できなくなる）
 6. Assistant を作成した場合、**`AssistantScanPackageFactory` の実装・登録と、IM-Authz での権限付与の両方を必ず行う**（いずれか一方でも欠けるとアシスタント一覧に表示されない。`assets/copilot-agent-basic-usage.md` パターン9）
-7. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+7. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -126,7 +126,7 @@ intra-mart Accel Platform の IM-Copilot が提供する **Agent フレームワ
 5. `AgentException`/`CopilotAssistantException` 等の検査例外が握りつぶされていないか
 6. Assistant を作成した場合、パラメータクラス `T` が `AssistantParameter` 自身またはそのサブクラスになっているか（独自 POJO のままだとチャットUIでプロンプトを入力できない）
 7. Assistant を作成した場合、`AssistantScanPackageFactory` を実装・登録したか、IM-Authz でリソース `im-copilot-assistant://assistant/<アシスタントID>` への許可ポリシーを付与したか（両方揃わないとアシスタント一覧に表示されない）
-8. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+8. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 9. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

@@ -11,7 +11,7 @@ AccordionGroup 是用于将多个 Accordion 组合在一起的组件。
 
 - 来源URL: https://document.intra-mart.jp/design/?path=/docs/components-accordion-accordiongroup--documentation
 - 基础类: imds-accordion-group
-- 关于各个手风琴的详细信息，请参阅 [accordion](accordion.md)
+- 关于各个手风琴的详细信息，请参阅 [accordion](imds-html-accordion.md)
 
 ## 整体结构
 
@@ -47,7 +47,7 @@ imds-accordion-group                      # 组容器（边框、位置、尺寸
 | is-medium | imds-accordion-group | 中等尺寸 | 可选 |
 | is-large | imds-accordion-group | 大尺寸 | 可选 |
 
-※ 各手风琴内部的类（imds-accordion-title、imds-accordion-content 等）请参阅 [accordion](accordion.md)。
+※ 各手风琴内部的类（imds-accordion-title、imds-accordion-content 等）请参阅 [accordion](imds-html-accordion.md)。
 
 ## HTML 代码片段
 
@@ -121,6 +121,47 @@ imds-accordion-group                      # 组容器（边框、位置、尺寸
       <li><a><span>Menu 3</span></a></li>
     </ul>
   </nav>
+</div>
+```
+
+### `is-outlined` + `imui-table`（附迁移说明）
+
+组内各手风琴需要包含详细信息表格时，将 [accordion](imds-html-accordion.md) 中的「`is-outlined` + `imui-table`（显示详细信息・附迁移说明）」模式直接作为组的子元素重复放置。注意 `imui-table` 是计划将来迁移到 `imds-table` 的临时模式（详情请参阅 accordion.md 中的说明）。
+
+```html
+<div class="imds-accordion-group is-outlined">
+  <div class="imds-accordion">
+    <input type="checkbox" id="todo-replace-:r0:" />
+    <label for="todo-replace-:r0:" class="imds-accordion-title">
+      <span class="imds-accordion-title-inner">
+        <span>工作流名称</span>
+        <span class="imds-accordion-caption">workflow-id</span>
+      </span>
+      <span class="imds-icon is-small imds-accordion-chevron"><i class="fa-solid fa-angle-down"></i></span>
+    </label>
+    <div class="imds-accordion-content">
+      <div class="imds-px-4 imds-pt-3 imds-pb-1">
+        <table class="imui-table">
+          <tbody>
+            <tr>
+              <th colspan="2"><label>应用程序名称</label></th>
+              <td>AccelStudio应用程序名称</td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="wd-15"><label>工作流信息</label></th>
+              <th class="wd-15"><label>定义名称</label></th>
+              <td>工作流名称 （ ID: workflow-id ）</td>
+            </tr>
+            <tr>
+              <th><label>备注</label></th>
+              <td>「工作流名称」的流程定义。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- 根据需要重复 imds-accordion（id 必须唯一） -->
 </div>
 ```
 

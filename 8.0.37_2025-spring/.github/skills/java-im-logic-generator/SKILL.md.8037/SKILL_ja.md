@@ -47,7 +47,7 @@ IM-LogicDesigner の拡張ポイントは複数あるが、本スキルが対象
 6. メタデータクラス（`FlowElementMetadata` 継承）を作成し、フロー要素クラスをコンストラクタに渡す
 7. プロパティ（デザイナ画面で事前設定する値）が必要な場合は `reference/flow-element-api.md` の「プロパティの追加」に従い実装する
 8. 後処理（リソース開放等）が必要な場合は `FlowElementCloser` を実装する
-9. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認する
+9. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認する
 
 ## 最小実装例
 
@@ -159,7 +159,7 @@ src/main/java/{basePackageのパス区切り}/logicdesigner/element/{ClassName}.
 1. `@LogicFlowElement` の `id` / カテゴリの `getCategoryId()` が `im_` で始まっていないか
 2. `Task<メタデータ, 引数, 戻り値>` の3つの型パラメータと、メタデータクラスのコンストラクタに渡すフロー要素クラスが一致しているか
 3. 引数・戻り値・プロパティに使用した型が `reference/flow-element-api.md` の使用可能型一覧に含まれているか（`Collection`/`List` を使う場合は `@TypeHint` を付与しているか）
-4. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+4. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 5. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない
 
 ## 他スキルとの境界

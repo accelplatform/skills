@@ -2,34 +2,48 @@
 
 IM-共通マスタの `imACMSearch` を利用した、ロール検索ダイアログの呼び出し実装例。
 テキストボックスのクリックで検索ダイアログを開き、選択結果をフォームに反映するパターンを示す。
+ページ骨格は `jssp-imds-theme` の `assets/imds-form-page.md` に従い（ヘッダを固定表示しフォーム部分のみをスクロールさせる `pgstyle-layout-*` レイアウト）、ファンクションコンテナ（`index.js`）とプレゼンテーションページ（`index.html`）の組でそのまま画面として動作する。
 
 ## 使用コンポーネント一覧
 
 | コンポーネント | reference | 本例での用途 |
 |---------------|-----------|-------------|
 | imACMSearch | [imart-tag-acm-search.md](../reference/imart-tag-acm-search.md) | IM-共通マスタ検索ダイアログの呼び出し |
-| Field | （imds-theme） | ロール名入力フィールド |
-| TextboxControl | （imds-theme） | 検索アイコン付きテキストボックス |
+| Header | `jssp-imds-theme` の `imds-html-header.md` | ページヘッダ（アイコン・タイトル） |
+| Field | `jssp-imds-theme` の `imds-html-field.md` | ロール名入力フィールド |
+| TextboxControl | `jssp-imds-theme` の `imds-html-textbox-control.md` | 検索アイコン付きテキストボックス |
+| IconButton | `jssp-imds-theme` の `imds-html-icon-button.md` | クリアボタン（×アイコン） |
 
 ## 全体構成
 
 ```
-<imart type="head">
-├── <imart type="imACMSearch" />   ... 検索画面呼び出し用タグの読み込み
-└── <script>
-    ├── addEventListener('click')  ... テキストボックスのクリックで検索ダイアログを開く
-    ├── imACMSearch.open(parameter) ... 検索画面をポップアップ表示
-    ├── callbackFromImMaster()     ... 選択結果を受け取るコールバック関数
-    └── window.callbackFromImMaster ... コールバック関数のグローバル登録
+index.js（ファンクションコンテナ）
+├── $title / $subTitle            ... ページヘッダ・<title> に出力する画面名
+└── $targetLocale                 ... 検索ダイアログの表示ロケール（ログインユーザのロケール）
 
-<div class="imds-container">
-└── main
-    └── form.imds-form
+<imart type="head">
+├── <title> / <meta>              ... タイトル・セキュアトークン
+├── <link> / <style>              ... theme-conditional-layout.css の読み込み・pgstyle-layout-* の定義
+├── <imart type="imACMSearch" />  ... 検索画面呼び出し用タグの読み込み
+└── <script>
+    ├── callbackFromImMaster()      ... 選択結果を受け取るコールバック関数（グローバルスコープ）
+    ├── window.callbackFromImMaster ... コールバック関数のグローバル登録
+    └── DOMContentLoaded
+        ├── setSelectedRole()   ... 選択結果のフォームへの反映（window._setSelectedRole として公開）
+        ├── addEventListener('click') ... テキストボックスのクリックで検索ダイアログを開く（imACMSearch.open）
+        └── addEventListener('click') ... クリアボタンで選択結果を消去
+
+div.imds-container.pgstyle-layout-container
+├── header.imds-header            ... ページヘッダ（アイコン・タイトル）
+└── main.pgstyle-layout-main
+    └── form.imds-form.pgstyle-layout-content
         └── section
             └── imds-field-container
                 └── imds-field（ロール名）
-                    ├── input[type="hidden"]    ... ロールID（隠しフィールド）
-                    └── imds-textbox-control    ... ロール名（検索アイコン付き・readonly）
+                    └── imds-field-control
+                        ├── input[type="hidden"]    ... ロールID（隠しフィールド）
+                        ├── imds-textbox-control    ... ロール名（検索アイコン付き・readonly）
+                        └── button.imds-button      ... クリアボタン（×アイコン）
 ```
 
 ## 1. head 部（検索ダイアログの設定）
@@ -55,93 +69,7 @@ IM-共通マスタの `imACMSearch` を利用した、ロール検索ダイア�
 
 ```html
 <script type="text/javascript">
-  // ロール名 クリック時イベント
-  document.getElementById(':roleName:').addEventListener('click', () => {
-    const parameter = {
-      tabs: [{
-        id   : "jp.co.intra_mart.master.app.search.tabs.role.list",
-        title: "キーワード"
-      }],
-      prop: {
-        'jp.co.intra_mart.master.app.search.tabs.role.list' : ['role_id']
-      },
-      callback_function : 'callbackFromImMaster',
-      basic_area        : 'jp.co.intra_mart.master.app.search.headers.readonly',
-      wnd_title         : "ロール検索",
-      message           : "ロール検索",
-      wnd_close         : true,
-      type              : 'single',
-      deleted_data      : false,
-      target_locale     : 'ja'
-    };
-
-    // 検索画面を開く
-    imACMSearch.open(parameter);
-  });
-</script>
-```
-
-**ポイント:**
-- `tabs` でロール検索のプラグインID `jp.co.intra_mart.master.app.search.tabs.role.list` を指定する
-- ロール検索はキーワード検索タブのみ（ツリー検索タブはない）
-- `prop` でコールバック関数に渡される取得項目を指定する（`role_id`）
-- `type: 'single'` で単一選択モード、`'multiple'` で複数選択モードになる
-- `wnd_close: true` で選択後にダイアログを自動的に閉じる
-
-### 1.3 コールバック関数
-
-検索ダイアログで選択されたロールの情報を受け取り、フォームのフィールドに反映する。
-
-```html
-<script type="text/javascript">
-  // コールバック関数
-  function callbackFromImMaster(result) {
-    const roleId = result[0].data.role_id;
-    document.getElementById(':roleId:').value   = roleId;
-    document.getElementById(':roleName:').value = result[0].displayName;
-  }
-  // グローバルに関数を置く
-  window.callbackFromImMaster = callbackFromImMaster;
-</script>
-```
-
-**ポイント:**
-- コールバック関数には選択結果がオブジェクト配列で渡される
-- 単一選択（`type: 'single'`）の場合は `result[0]` で取得する
-- ロール検索の `data` には `role_id` が含まれる。ロール名は `data` に含まれないため、`result[0].displayName` から取得する
-- コールバック関数は `window.関数名 = 関数名` でグローバルスコープに登録する必要がある
-
-## 2. body 部（フォーム要素）
-
-隠しフィールド（コード値の保持用）と、検索アイコン付き readonly テキストボックス（名称表示用）を配置する。
-
-```html
-<div class="imds-field is-horizontal imds-w-15 sample-role">
-  <div class="imds-field-label"><label for=":roleName:">ロール名</label></div>
-  <div class="imds-field-control">
-    <div class="imds-textbox-control">
-      <input type="hidden" id=":roleId:" value="">
-      <input type="text" id=":roleName:" placeholder="ロール名を選択" class="imds-textbox" readonly value="">
-      <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
-    </div>
-  </div>
-</div>
-```
-
-**ポイント:**
-- `input[type="hidden"]` でロールIDを保持し、サーバ送信時に使用する
-- 表示用テキストボックスは `readonly` にして、検索ダイアログからの選択のみ許可する
-- `imds-textbox-control` 内に虫眼鏡アイコン（`fa-magnifying-glass`）を配置し、検索可能であることを示す
-- `is-horizontal imds-w-15` でラベルとフィールドを横並びにし、ラベル幅を統一する
-
-## 全体コード
-
-```html
-<imart type="head">
-  <!-- IM-共通マスタ検索画面呼び出し用タグ -->
-  <imart type="imACMSearch" />
-
-  <script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', () => {
     // ロール名 クリック時イベント
     document.getElementById(':roleName:').addEventListener('click', () => {
       const parameter = {
@@ -159,49 +87,268 @@ IM-共通マスタの `imACMSearch` を利用した、ロール検索ダイア�
         wnd_close         : true,
         type              : 'single',
         deleted_data      : false,
-        target_locale     : 'ja'
+        target_locale     : '<imart type="string" value=$targetLocale escapeXml="false" escapeJs="true"></imart>'
       };
 
       // 検索画面を開く
       imACMSearch.open(parameter);
     });
+  });
+</script>
+```
 
-    // コールバック関数
-    function callbackFromImMaster(result) {
-      const roleId = result[0].data.role_id;
+**ポイント:**
+- `tabs` でロール検索のプラグインID `jp.co.intra_mart.master.app.search.tabs.role.list` を指定する
+- ロール検索はキーワード検索タブのみ（ツリー検索タブはない）
+- `prop` でコールバック関数に渡される取得項目を指定する（`role_id`）
+- `type: 'single'` で単一選択モード、`'multiple'` で複数選択モードになる
+- `wnd_close: true` で選択後にダイアログを自動的に閉じる
+- 要素を参照するため、イベントの登録は `DOMContentLoaded` 内で行う（`<imart type="head">` 内のスクリプトは本文の要素より先に実行される）
+- `target_locale` には、ファンクションコンテナでバインドした `$targetLocale`（ログインユーザのロケール。`Contexts.getAccountContext().locale`）を出力し、検索ダイアログをログインユーザのロケールで表示する。`<script>` 内の文字列リテラルのため `escapeXml="false" escapeJs="true"` を指定する（`.agents/requirements/jssp-presentation-page/AGENTS.md`「JavaScript の文字列リテラルとして使用する場合」）
+
+### 1.3 コールバック関数
+
+検索ダイアログで選択されたロールの情報を受け取り、1.4 の反映関数を呼び出してフォームのフィールドに反映する。
+
+```html
+<script type="text/javascript">
+  // コールバック関数（imACMSearch から関数名で呼び出されるため、グローバルスコープに定義する）
+  function callbackFromImMaster(result) {
+    // 未選択の場合は何もしない（現在の値を保持する）
+    if (!result || result.length === 0) {
+      return;
+    }
+    if (typeof window._setSelectedRole === 'function') {
+      window._setSelectedRole(result[0].data.role_id, result[0].displayName);
+    }
+  }
+  // グローバルに関数を置く
+  window.callbackFromImMaster = callbackFromImMaster;
+</script>
+```
+
+**ポイント:**
+- コールバック関数には選択結果がオブジェクト配列で渡される
+- 単一選択（`type: 'single'`）の場合は `result[0]` で取得する
+- 選択結果が空（未選択）の場合は何もせず、現在の値を保持する。選択結果の消去はクリアボタンで行う
+- ロール検索の `data` には `role_id` が含まれる。ロール名は `data` に含まれないため、`result[0].displayName` から取得する
+- コールバック関数は `window.関数名 = 関数名` でグローバルスコープに登録する必要がある
+- コールバック関数からは `DOMContentLoaded` 内の関数を直接参照できないため、`window._setSelectedRole` として公開した関数を経由してフォームに反映する（`.agents/requirements/jssp-presentation-page/AGENTS.md`「グローバルスコープのコールバック関数（imACMSearch 等）」）
+
+### 1.4 選択結果の反映とクリア
+
+`DOMContentLoaded` 内で選択結果をフォームに反映する関数を定義し、コールバック関数用に `window._setSelectedRole` として公開する。クリアボタンは同じ関数に空文字を渡して選択結果を消去する。
+
+```html
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', () => {
+    // 選択結果をフォームに反映する（クリア時は空文字を渡す）
+    function setSelectedRole(roleId, roleName) {
       document.getElementById(':roleId:').value   = roleId;
-      document.getElementById(':roleName:').value = result[0].displayName;
+      document.getElementById(':roleName:').value = roleName;
+    }
+    // グローバルスコープのコールバック関数から呼び出せるように公開する
+    window._setSelectedRole = setSelectedRole;
+
+    // クリアボタン クリック時イベント
+    document.getElementById('role-clear-button').addEventListener('click', () => {
+      setSelectedRole('', '');
+    });
+  });
+</script>
+```
+
+**ポイント:**
+- 隠しフィールド（コード値）と表示用テキストボックス（名称）を同じ関数で更新し、両者の値がずれないようにする
+- 表示用テキストボックスは `readonly` のため、選択結果の消去はクリアボタンで行う
+
+## 2. body 部（フォーム要素）
+
+隠しフィールド（コード値の保持用）と、検索アイコン付き readonly テキストボックス（名称表示用）を配置する。
+名称表示欄の右には、選択結果を消去するクリアボタンを併置する（`jssp-imds-theme` の `imds-html-textbox-control.md`「検索アイコン＋クリアボタン」）。
+
+```html
+<div class="imds-field is-horizontal imds-w-15 sample-role">
+  <div class="imds-field-label"><label for=":roleName:">ロール名</label></div>
+  <div class="imds-field-control">
+    <input type="hidden" id=":roleId:" value="">
+    <div class="imds-textbox-control">
+      <input type="text" id=":roleName:" placeholder="ロール名を選択" class="imds-textbox" readonly value="">
+      <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
+    </div>
+    <button type="button" id="role-clear-button" class="imds-button is-ghost" title="クリア">
+      <span class="imds-icon"><i class="fa-regular fa-xmark-circle"></i></span>
+    </button>
+  </div>
+</div>
+```
+
+**ポイント:**
+- `input[type="hidden"]` でロールIDを保持し、サーバ送信時に使用する
+- 表示用テキストボックスは `readonly` にして、検索ダイアログからの選択のみ許可する
+- `imds-textbox-control` 内に虫眼鏡アイコン（`fa-magnifying-glass`）を配置し、検索可能であることを示す
+- `input[type="hidden"]` は `imds-textbox-control` の外（`imds-field-control` の直下）に置き、`imds-textbox-control` の中は `input.imds-textbox` と `span.imds-icon` のみにする
+- クリアボタンはアイコンのみのボタンのため、`title` 属性で操作内容を示す（`imds-html-icon-button.md`）
+- `is-horizontal imds-w-15` でラベルとフィールドを横並びにし、ラベル幅を統一する
+
+## 全体コード
+
+### ファンクションコンテナ（index.js）
+
+```javascript
+/**
+ * ロール検索画面
+ *
+ * @file index.js
+ * @description IM-共通マスタの検索ダイアログで選択した値をフォームに表示する画面を構成します。
+ */
+
+// ========================================
+// バインド変数（プレゼンテーションページ連携用）
+// ========================================
+let $title = 'ロール検索';
+let $subTitle = 'IM-共通マスタ サンプル';
+let $targetLocale = '';    // 検索ダイアログの表示ロケール（ログインユーザのロケール）
+
+// ========================================
+// エントリーポイント
+// ========================================
+/**
+ * 画面表示のエントリーポイントです。
+ * 画面のURLにアクセスされたとき、最初に実行されます。
+ * 検索ダイアログの表示ロケールとして、ログインユーザのロケールをバインド変数に設定します。
+ *
+ * @param {Object} request - リクエストオブジェクト
+ */
+function init(request) {
+  // ログインユーザのロケールを検索ダイアログの表示ロケールとする
+  $targetLocale = Contexts.getAccountContext().locale;
+}
+```
+
+### プレゼンテーションページ（index.html）
+
+```html
+<!-- ヘッダ -->
+<imart type="head">
+  <!-- タイトル -->
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
+  <!-- セキュアトークン -->
+  <meta name="im_secure_token" content="<imart type="imSecureToken" mode="value" />">
+  <!-- テーマごとに異なるコンテンツ表示領域の高さ・幅を制御する CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
+  <!-- プレゼンテーションページの独自スタイル -->
+  <style>
+    /* レイアウト制御用スタイル */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
+      display: flex;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+  </style>
+  <!-- IM-共通マスタ検索画面呼び出し用タグ -->
+  <imart type="imACMSearch" />
+
+  <script type="text/javascript">
+    // コールバック関数（imACMSearch から関数名で呼び出されるため、グローバルスコープに定義する）
+    function callbackFromImMaster(result) {
+      // 未選択の場合は何もしない（現在の値を保持する）
+      if (!result || result.length === 0) {
+        return;
+      }
+      if (typeof window._setSelectedRole === 'function') {
+        window._setSelectedRole(result[0].data.role_id, result[0].displayName);
+      }
     }
     // グローバルに関数を置く
     window.callbackFromImMaster = callbackFromImMaster;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 選択結果をフォームに反映する（クリア時は空文字を渡す）
+      function setSelectedRole(roleId, roleName) {
+        document.getElementById(':roleId:').value   = roleId;
+        document.getElementById(':roleName:').value = roleName;
+      }
+      // グローバルスコープのコールバック関数から呼び出せるように公開する
+      window._setSelectedRole = setSelectedRole;
+
+      // ロール名 クリック時イベント
+      document.getElementById(':roleName:').addEventListener('click', () => {
+        const parameter = {
+          tabs: [{
+            id   : "jp.co.intra_mart.master.app.search.tabs.role.list",
+            title: "キーワード"
+          }],
+          prop: {
+            'jp.co.intra_mart.master.app.search.tabs.role.list' : ['role_id']
+          },
+          callback_function : 'callbackFromImMaster',
+          basic_area        : 'jp.co.intra_mart.master.app.search.headers.readonly',
+          wnd_title         : "ロール検索",
+          message           : "ロール検索",
+          wnd_close         : true,
+          type              : 'single',
+          deleted_data      : false,
+          target_locale     : '<imart type="string" value=$targetLocale escapeXml="false" escapeJs="true"></imart>'
+        };
+
+        // 検索画面を開く
+        imACMSearch.open(parameter);
+      });
+
+      // クリアボタン クリック時イベント
+      document.getElementById('role-clear-button').addEventListener('click', () => {
+        setSelectedRole('', '');
+      });
+    });
   </script>
 </imart>
 
 <!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
+  <!-- ヘッダ -->
   <header class="imds-header">
     <div class="imds-header-icon">
       <span class="imds-icon-wrapper is-large">
-        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+        <span class="imds-icon is-medium"><i class="fa-solid fa-user-shield"></i></span>
       </span>
     </div>
     <div class="imds-header-title">
-      <p>IM-共通マスタ サンプル</p>
-      <h1>ロール検索</h1>
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
     </div>
   </header>
-  <main>
-    <form class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+
+  <!-- メインコンテンツ -->
+  <main class="pgstyle-layout-main">
+    <form class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
       <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
         <div class="imds-field-container has-accent-color">
           <div class="imds-field is-horizontal imds-w-15 sample-role">
             <div class="imds-field-label"><label for=":roleName:">ロール名</label></div>
             <div class="imds-field-control">
+              <input type="hidden" id=":roleId:" value="">
               <div class="imds-textbox-control">
-                <input type="hidden" id=":roleId:" value="">
                 <input type="text" id=":roleName:" placeholder="ロール名を選択" class="imds-textbox" readonly value="">
                 <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
               </div>
+              <button type="button" id="role-clear-button" class="imds-button is-ghost" title="クリア">
+                <span class="imds-icon"><i class="fa-regular fa-xmark-circle"></i></span>
+              </button>
             </div>
           </div>
         </div>
@@ -218,10 +365,15 @@ IM-共通マスタの `imACMSearch` を利用した、ロール検索ダイア�
 - `tabs` でプラグインIDを明示的に指定し、`prop` のキーと一致させること
 - ロール名は `data` に含まれないため、表示名には `result[i].displayName` を使用すること
 - 表示用フィールドは `readonly` にし、検索ダイアログからの選択のみ許可すること
-- `:roleId:`, `:roleName:` はプレースホルダーであり、実装時に一意の ID に置き換えること
+- `:roleId:`, `:roleName:` は `.agents/requirements/jssp-presentation-page/AGENTS.md`「id 属性の命名規約」に従った入力要素の id である。1 画面に同じ検索欄を複数置く場合は、これらの id・クリアボタンの id・反映関数名が重複しないように変更すること
 - `sample-` プレフィックスのクラスはレイアウト調整用の独自クラスであり、imds テーマの標準クラスではない
+- ヘッダのタイトル・サブタイトルは直書きせず、ファンクションコンテナでバインドした `$title` / `$subTitle` を出力すること
+- `target_locale` は `'ja'` 等を直書きせず、ファンクションコンテナでバインドした `$targetLocale`（ログインユーザのロケール）を `escapeXml="false" escapeJs="true"` で出力すること
+- `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` は置き換えない固定クラス名である。`<imart type="head">` で `theme-conditional-layout.css` を読み込み、`<style>` にレイアウト制御用スタイルを定義すること（`jssp-imds-theme` の `assets/imds-form-page.md`）
+- コールバックの `result` が空（未選択）の場合は何もせず、現在の値を消去しないこと
 - 複数選択モード（`type: 'multiple'`）の場合は、コールバック内で `result` を `for` ループで処理すること
 - 複数選択モードでは、コールバックの `result` を変数に保持し、再検索時に `default_selected` パラメータとして渡すことで、選択済みの項目をダイアログ上に復元すること。実装パターンは以下の通り:
   - 保持変数の宣言: `let selectedRole = [];`
-  - コールバック内で保存: `selectedRole = result;`
+  - コールバック内で保存（`result` が空の場合は保存せず、選択済みの項目を保持する）: `selectedRole = result;`
   - ダイアログ起動時に渡す: `default_selected: selectedRole`
+  - クリア時に空にする: `selectedRole = [];`

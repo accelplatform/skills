@@ -114,7 +114,7 @@ PropagationManager#send(operationType, dataClass, data, resultClass)
 2. 送信側を実装する場合、`assets/sender-usage.md` を参照し、データモデル → `GenericModel`（`AbstractGeneric` 継承）→ `Encoder`（`AbstractEncoder` 継承）→ `PropagationManager` 呼び出しコード → 送信設定ファイルの順に実装（メソッドのシグネチャは `reference/propagation-api-reference.md` を必ず参照し、記憶や推測で書かない）
 3. 受信側を実装する場合、`assets/receiver-usage.md` を参照し、`Decoder`（`AbstractDecoder` 継承）→ `Procedure`（`AbstractProcedure` または `AbstractSessionableProcedure` 継承）→ 受信設定ファイルの順に実装。**`source`/`operationType` は送信側（自作の場合は手順2、intra-mart 標準データの場合は `assets/standard-listener-usage.md` の一覧）と完全一致させる**。**`Decoder<G, D>` の `G` に指定するクラスに `public` な引数なしコンストラクタが存在するか、実装前に必ず確認する**（無い場合に受信登録すると送信元の処理自体が壊れる。「注意事項」参照）。**intra-mart 標準データを受信する場合は、`G` にドメインモデルクラスを直接使わず、`jp.co.intra_mart.foundation.propagation.model.generic` パッケージの対応する `Generic*` クラスを使う**（`assets/standard-listener-usage.md` の対応表を参照し、検証用環境での事前確認も行う）
 4. `GenericModel` のクラス・フィールド構成は送信側・受信側で完全に同一クラスである必要はないが、フィールド名・型が大きく乖離すると復元時にデータが失われる。送受信間で同じ `GenericModel` クラス（共有ライブラリ等に配置）を使うか、フィールド構成を意識して個別に定義するかをユーザと合意する
-5. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+5. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認
 
 ## 配置規約
 
@@ -187,7 +187,7 @@ src/main/conf/propagation-config.xml                       … 全体設定（�
 5. **`Decoder<G, D>` の `G` に指定したクラスが `public` な引数なしコンストラクタを持っているか（独自クラスに追加のコンストラクタを定義した場合は特に要確認）。intra-mart 標準データを受信する場合、`G` にドメインモデルクラスを直接使わず `jp.co.intra_mart.foundation.propagation.model.generic` パッケージの対応する `Generic*` クラスを使っているか、本番相当の環境へ配置する前に検証用環境で動作確認したか**
 6. 受信側の Procedure が DB トランザクションを必要とするか否かで `AbstractProcedure`/`AbstractSessionableProcedure` を適切に選択しているか
 7. 設定ファイルの配置先が `src/main/conf/propagation-senders-config/`・`src/main/conf/propagation-receivers-config/`（`src/main/webapp/WEB-INF/conf/` ではない）になっているか
-8. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+8. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 9. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

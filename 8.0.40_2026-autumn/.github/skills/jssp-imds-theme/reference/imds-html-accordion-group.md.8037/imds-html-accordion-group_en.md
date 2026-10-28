@@ -11,7 +11,7 @@ AccordionGroup is a component for grouping multiple Accordions together.
 
 - Source URL: https://document.intra-mart.jp/design/?path=/docs/components-accordion-accordiongroup--documentation
 - Base class: imds-accordion-group
-- For details on individual accordions, see [accordion](accordion.md)
+- For details on individual accordions, see [accordion](imds-html-accordion.md)
 
 ## Overall Structure
 
@@ -47,7 +47,7 @@ Border, chevron position, and size set on `imds-accordion-group` are applied to 
 | is-medium | imds-accordion-group | Medium size | Optional |
 | is-large | imds-accordion-group | Large size | Optional |
 
-* For classes inside each accordion (imds-accordion-title, imds-accordion-content, etc.), see [accordion](accordion.md).
+* For classes inside each accordion (imds-accordion-title, imds-accordion-content, etc.), see [accordion](imds-html-accordion.md).
 
 ## HTML Snippets
 
@@ -121,6 +121,47 @@ Adding `is-last-child-borderless` hides the border at the end of the menu.
       <li><a><span>Menu 3</span></a></li>
     </ul>
   </nav>
+</div>
+```
+
+### `is-outlined` + `imui-table` (With Migration Note)
+
+When each accordion in the group holds a detail information table, repeat the "`is-outlined` + `imui-table` (Displaying Detail Information, With Migration Note)" pattern from [accordion](imds-html-accordion.md) as child elements of the group. Note that `imui-table` is an interim pattern planned to migrate to `imds-table` (see the note in accordion.md for details).
+
+```html
+<div class="imds-accordion-group is-outlined">
+  <div class="imds-accordion">
+    <input type="checkbox" id="todo-replace-:r0:" />
+    <label for="todo-replace-:r0:" class="imds-accordion-title">
+      <span class="imds-accordion-title-inner">
+        <span>Workflow Name</span>
+        <span class="imds-accordion-caption">workflow-id</span>
+      </span>
+      <span class="imds-icon is-small imds-accordion-chevron"><i class="fa-solid fa-angle-down"></i></span>
+    </label>
+    <div class="imds-accordion-content">
+      <div class="imds-px-4 imds-pt-3 imds-pb-1">
+        <table class="imui-table">
+          <tbody>
+            <tr>
+              <th colspan="2"><label>Application Name</label></th>
+              <td>AccelStudio Application Name</td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="wd-15"><label>Workflow Information</label></th>
+              <th class="wd-15"><label>Definition Name</label></th>
+              <td>Workflow Name ( ID: workflow-id )</td>
+            </tr>
+            <tr>
+              <th><label>Remarks</label></th>
+              <td>Flow definition of "Workflow Name".</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Repeat imds-accordion as needed (id must be unique) -->
 </div>
 ```
 

@@ -128,7 +128,7 @@ DAO（`Xxx` + `DAO`）
 5. 若需要认可检查，添加 `@Authz(uri=..., action=...)`，并确认对应的认可资源是否已在 IM-Authz 一侧注册（若未注册，向用户确认是否需要用 `java-im-authz-usage` 实现注册处理）
 6. 若需要 OAuth 认证，在确认已导入 Web API Maker OAuth 认证模块的前提下添加 `@OAuth(scope=...)`，并完善 `oauth-client-scopes-config`/`oauth-client-resources-config`/`oauth-client-details-config` 这 3 项
 7. **若同时实现调用该 API 的客户端（JSSP 展示页面・外部系统等），必须加入解开响应的 `error` / `data` 包装的处理**（`assets/web-api-maker-basic-usage.md` 模式7-4）。若客户端由其他负责人・其他技能实现，则应将响应结构（成功时・发生异常时的 JSON 示例）作为交接事项明确告知用户
-8. 确认是否遵循 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+8. 确认是否遵循 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
@@ -157,7 +157,7 @@ DAO（`Xxx` + `DAO`）
 9. Endpoint 类是否未像 `new StandardXxxService()` 那样直接生成 Service 的具体类，而是通过 `XxxServiceFactory.getInstance()`（基于 `ServiceLoaderUtil.loadTopPriority` 的工厂）获取
 10. 若将 Endpoint 接口化，`@IMAuthentication` 等类注解、`@Path`/`@GET`/参数注解是否声明在接口一侧而非实现类，工厂类 `@ProvideService` 方法的**返回值类型是否为接口**（若仍为实现类类型，注解将不被识别，导致端点无法注册）
 11. **客户端（画面・外部系统）一侧的实现是否在解开响应的 `error` / `data` 包装之后再使用业务数据。** 是否存在 `fetch(url).then(function (res) { return res.json(); }).then(function (order) { order.xxx; })` 这类不解开包装就直接引用的写法（正确写法是 `body.data.xxx`）。是否指定了 `Accept: application/json`。对于不会被包装的情形（未认证时的 `404`、`406`、无法识别的 `500` 等），是否在响应体解析失败时作为预期外错误处理。若客户端不由本技能实现，是否已将成功时・发生异常时的响应结构交接给用户
-12. 是否遵循 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+12. 是否遵循 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 13. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目中另有面向 Java 的代码评审・安全检查技能，请使用该技能
 
 ## 与其他技能的边界

@@ -26,13 +26,13 @@ This skill generates both `.js` (function containers) and `.html` (presentation 
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-presentation-page.md` | 🟢 **Required** — HTML structure, validation, id naming for `.html` |
-| `jssp-function-container.md` | 🟢 **Required** — `init()` structure, validateRequest |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 Required |
-| `jssp-error-handling.md` / `jssp-security.md` | 🟢 Required — both apply since forms + APIs are involved |
-| `jssp-2way-sql.md` | 🟡 **Only when the implementation includes DB operations**. Skip for read-only UIs etc. that do not touch the DB |
-| `jssp-logging.md` | 🟡 Only when implementing logging |
-| `jssp-accessibility.md` | 🟠 **Business-requirement-dependent** — apply thickly only when explicitly required by the spec; otherwise stay minimal (`imdsConfirm`, `aria-label`, `aria-hidden` on decorative icons, etc.) |
+| `.github/instructions/jssp-presentation-page.instructions.md` | 🟢 **Required** — HTML structure, validation, id naming for `.html` |
+| `.github/instructions/jssp-function-container.instructions.md` | 🟢 **Required** — `init()` structure, validateRequest |
+| `.github/instructions/jssp-naming.instructions.md` / `.github/instructions/jssp-code-style.instructions.md` / `.github/instructions/jssp-file-structure.instructions.md` | 🟢 Required |
+| `.github/instructions/jssp-error-handling.instructions.md` / `.github/instructions/jssp-security.instructions.md` | 🟢 Required — both apply since forms + APIs are involved |
+| `.github/instructions/jssp-2way-sql.instructions.md` | 🟡 **Only when the implementation includes DB operations**. Skip for read-only UIs etc. that do not touch the DB |
+| `.github/instructions/jssp-logging.instructions.md` | 🟡 Only when implementing logging |
+| `.github/instructions/jssp-accessibility.instructions.md` | 🟠 **Business-requirement-dependent** — apply thickly only when explicitly required by the spec; otherwise stay minimal (`imdsConfirm`, `aria-label`, `aria-hidden` on decorative icons, etc.) |
 
 ## When to Use
 
@@ -61,6 +61,11 @@ Confirm the following from the user:
 - Whether a new table is needed
 - **Whether the screen includes any field that asks the user to select an IM common master value (user / department / company / group / role)** → if so, combine with the `jssp-im-master-usage` skill to implement it as a master search dialog (manual code entry via a plain `<input>` is prohibited)
 - **Whether the screen may be placed multiple times on the same portal page as a portlet (widget)** → if so, use `assets/simple-portlet.md` (it follows a different implementation policy than a normal screen: no header/footer, `$data` scoped with an IIFE, etc.)
+- **UI theme**: If the prompt or specification explicitly names a UI theme (plain HTML, a custom theme, etc.), follow it. When generating with a non-imds theme, skip Step 3 and do not apply the items in Step 5 that concern imds class names and structure. Reuse only the JS processing and comments from the assets, and build the HTML with that theme
+
+#### Default UI Theme (imds)
+
+If no UI theme is explicitly specified, generate with the imds theme (see "Choosing the UI Theme" in `.github/instructions/jssp-presentation-page.instructions.md`).
 
 ---
 
@@ -83,6 +88,7 @@ This step must not be skipped. Assets contain usage examples of imds-compliant s
 
 ### Step 3: Load imds Component References
 
+Perform this step when generating with the imds theme.
 Refer to the `jssp-imds-theme` skill and **open and load the corresponding reference file for each UI component using the Read tool.**
 Do not write imds class names or tag structures from memory or guesswork.
 

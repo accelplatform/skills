@@ -7,13 +7,13 @@ description: Generates new REST-API resources published via the OAuth provider f
 
 Confirm the following before starting implementation. Do not proceed if any item is unchecked.
 
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) has been read and understood
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) has been read and understood
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) has been read and understood
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) has been read and understood
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) has been read and understood
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) has been read and understood
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) has been read and understood
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) has been read and understood
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) has been read and understood
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) has been read and understood
 
 
 # im_oauth REST-API Resource Generation Skill

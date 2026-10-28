@@ -117,7 +117,7 @@ XSD スキーマは以下の優先順位で検索される。
 4. 動的更新が不要な設定は手順2で導出したファイル名で `src/main/conf/{name}.xml` に配置（`src/main/webapp/WEB-INF/conf/` ではない）。管理画面等から動的に更新する設定は `ConfigurationLoader.save()` を使うコードを実装（SystemStorage の `conf/` 配下に書き込まれる。運用担当者が直接編集するファイルではない）。**この2つは同一の設定に対して併用しない**（`WEB-INF/conf/{name}.xml` を配置すると `save()` の内容が反映されなくなる。「配置先ディレクトリ」参照）
 5. XSD スキーマを `src/main/schema/{name}.xsd` に**パッケージ階層を作らず直置き**で配置（`WEB-INF/schema/` にそのままコピーされるため）
 6. 呼び出し元（サービスクラス等）から `ConfigurationLoader.load()` で読み込むコードを実装。`Instance.SINGLETON`（既定）と `Instance.PROTOTYPE` のどちらを使うかは「注意事項」を参照して判断
-7. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+7. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -139,7 +139,7 @@ XSD スキーマは以下の優先順位で検索される。
 2. XSD スキーマの `targetNamespace` と、設定クラス・`ObjectFactory` の `namespace` 属性が一致していること
 3. XML 設定ファイルが XSD スキーマに対して妥当であること
 4. `save()` を使う場合、保存後に `clearCache()` を呼んでいること
-5. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+5. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 6. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

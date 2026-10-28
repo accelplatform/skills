@@ -67,7 +67,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのキ
 3. `assets/cache-basic-usage.md` を参照して実装（メソッドのシグネチャは `reference/cache-api-reference.md` を必ず参照し、記憶や推測で書かない）
 4. キャッシュキー・値のクラスが `java.io.Serializable` を実装しているか確認
 5. `Cache#get()` の戻り値が `null` の場合の再読み込み処理（データソースからの取得 → `put()` によるキャッシュ登録）を実装
-6. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+6. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -94,7 +94,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのキ
 3. `Cache#get()` の戻り値の `null` チェックと、キャッシュミス時の再読み込み・再登録処理が実装されているか
 4. `CacheManagerFactory.getCacheManager()` を呼び出す実行環境にテナントコンテキストが存在するか（ジョブスケジューラ等、テナントに紐づかない実行環境で呼んでいないか）
 5. キャッシュに機密情報を格納する場合、テナント間・ユーザ間の意図しない参照が起きない設計になっているか
-6. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+6. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 7. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

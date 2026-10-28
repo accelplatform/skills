@@ -69,7 +69,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 2. 决定使用 `get()` 还是 `make()`（参考上表的判断标准。**若用户有明确指定，优先遵循用户指定**；业务数据的编号默认使用 `get()`）
 3. 参考 `assets/identifier-basic-usage.md` 实现（方法签名务必参考 `reference/identifier-api-reference.md`，不要凭记忆或推测编写）
 4. 使用 `get()` 时，应根据 `assets/identifier-basic-usage.md` 中的模式决定是将 `IOException` 包装为业务异常，还是通过 `throws` 传播（若项目后续新增了 Java 专用的错误处理规约，应优先遵循该规约）
-5. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+5. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
@@ -87,7 +87,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 1. `get()` / `make()` 的选择是否符合所要求的唯一性范围（分布式环境还是单一进程）
 2. 使用 `get()` 的地方是否存在吞掉 `IOException` 的情况
 3. 是否误用于安全令牌等要求不可预测性的用途
-4. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+4. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 5. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。若项目中另有针对 Java 的代码评审・安全检查技能，应使用该技能
 
 ## 与其他技能的边界

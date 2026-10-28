@@ -197,16 +197,40 @@ function transferErrorPage(code, message) {
 <!-- 头部 -->
 <imart type="head">
   <!-- 标题 -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- 安全令牌（处理模态方式中使用 http-equiv 形式） -->
   <meta http-equiv="X-Intramart-Secure-Token" content="<imart type="imSecureToken" mode="value" />"/>
   <!-- 处理模态 API（defer 必须） -->
   <script src="im_workflow/js/api_base.js" defer></script>
+  <!-- 用于控制各主题不同的内容显示区域高度和宽度的 CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- 表现页面的自定义样式 -->
   <style>
-    .button-spacing {
+    /* 布局控制样式 */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
     }
   </style>
   <!-- 表现页面的脚本 -->
@@ -330,6 +354,11 @@ function transferErrorPage(code, message) {
         };
       }
 
+      // 防止因表单隐式提交（在输入框中按 Enter 键）导致页面重新加载
+      document.getElementById('main-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+      });
+
       // "返回"按钮 点击时事件
       document.getElementById('back-button').addEventListener('click', () => {
         imWorkflow.transition.returnTo();
@@ -375,8 +404,9 @@ function transferErrorPage(code, message) {
         // 申请/重新申请完成后的处理
         if (result && result.isProcessDone) {
           imuiShowSuccessMessage(isReapply ? '重新申请已完成。' : '申请已完成。');
-          imWorkflow.transition.afterProcess();
         }
+        // 关闭模态后的页面跳转（无论完成还是取消都调用）
+        imWorkflow.transition.afterProcess();
       });
 
       // "暂存"按钮 点击时事件（async 必须）
@@ -403,8 +433,9 @@ function transferErrorPage(code, message) {
         // 暂存完成后的处理
         if (result && result.isProcessDone) {
           imuiShowSuccessMessage('暂存已完成。');
-          imWorkflow.transition.afterProcess();
         }
+        // 关闭模态后的页面跳转（无论完成还是取消都调用）
+        imWorkflow.transition.afterProcess();
       });
 
       // 入口点
@@ -420,10 +451,10 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- 页面整体容器（因会被放置在 intra-mart 主题的 imui-container 内部，所以不附加 id） -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" id="back-button" class="imds-button is-ghost is-large" aria-label="返回">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="返回" aria-label="返回">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></span>
       </button>
     </div>
@@ -437,8 +468,8 @@ function transferErrorPage(code, message) {
       <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
     </div>
   </header>
-  <main>
-    <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+  <main class="pgstyle-layout-main">
+    <form id="main-form" class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
       <!-- TODO: 在此实现区块和字段 -->
       <!-- 以下为示例结构（字段实现示例） -->
       <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
@@ -454,7 +485,7 @@ function transferErrorPage(code, message) {
                 <div class="imds-field-control">
                   <input type="text" id=":field1:" class="imds-textbox" value="" />
                 </div>
-                <span class="imds-error-text" for=":field1:" style="display:none;"></span>
+                <span class="imds-error-text" for=":field1:" id="error-field1" style="display:none;"></span>
               </div>
             </div>
           </div>
@@ -473,8 +504,8 @@ function transferErrorPage(code, message) {
           </div>
         </div>
       </section>
-    </div>
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+    </form>
+    <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
       <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">申请</button>
       <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">暂存</button>
     </div>
@@ -505,15 +536,17 @@ function transferErrorPage(code, message) {
 - **使 `userParameter` 的键名与动作处理的 `userParam` 一致**
   - 与动作处理（`action_process.js`）中以 `userParam.fieldName` 读取的键名完全一致
   - 汇总到 `buildUserParameter()` 函数中，可使申请、暂存两个按钮传递相同的数据
-- **`showApply()` / `showTemporarySave()` 均仅在 `isProcessDone` 为 true 时调用 `imWorkflow.transition.afterProcess()`**
-  - `showApply()`：仅在申请完成时调用（申请完成后跳转到申请一览）
-  - `showTemporarySave()`：仅在暂存完成时调用（失败、取消时停留在画面，使用户可以修改）
+- **`showApply()` / `showTemporarySave()` 均无论完成还是取消，都调用 `imWorkflow.transition.afterProcess()`**
+  - 完成时（`isProcessDone` 为 true）显示完成消息后，跳转到调用方画面
+  - 取消时由于未执行案件处理，`afterProcess()` 不执行任何操作，停留在画面（用户可修正输入内容）
 - **注意安全令牌标签的格式**
   - 使用 `<meta http-equiv="X-Intramart-Secure-Token">` 而非 `<meta name="im_secure_token">`
 - **不要省略 `api_base.js` 的 `defer` 属性**
 - **在头部放置"返回"按钮**
   - 将 `imds-header-back-button` div + `back-button` id 的按钮放置在 `imds-header-icon` 之前
   - 点击时调用 `imWorkflow.transition.returnTo()`
+- **用 `<form id="main-form" class="imds-form">` 包裹输入栏**（与 `jssp-imds-theme` 的 `assets/imds-form-page.md` 相同的骨架）
+  - 所有按钮均为 `type="button"`，通过 JS 打开处理模态，因此表单不会进行原生提交。为防止在输入栏中按 Enter 键的隐式提交导致页面重新加载，在 `submit` 事件中调用 `preventDefault()`
 - **申请、暂存按钮的事件监听器须为 `async` 函数**
 - **不要忘记创建路由 XML**
   - 如果申请画面的 URL 未在 `routing-jssp-config` 中注册，将无法访问

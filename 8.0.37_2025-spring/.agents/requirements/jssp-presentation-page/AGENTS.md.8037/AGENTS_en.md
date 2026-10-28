@@ -2,6 +2,17 @@
 
 > **Application Scope**: 🟢 **Always** — Applies when generating presentation pages (`.html`): HTML structure, validation, `id` naming rules, etc.
 
+## Choosing the UI Theme
+
+- If the prompt or specification explicitly names a UI theme (plain HTML, a custom theme, etc.), follow it
+- When not using the imds theme, see "Implementation Policy" for how to handle the root tag
+
+### imds Theme (Default)
+
+- If no UI theme is explicitly specified, generate screens with the imds theme
+- Use the full-page templates in `.agents/skills/jssp-imds-theme/assets/` for the page skeleton and the same skill's `reference/` for UI components (see the `jssp-imds-theme` skill for details)
+- Message display APIs such as `imuiShowErrorMessage` / `imuiShowSuccessMessage` / `imuiShowWarningMessage` and `imuiCalendar` may be used together with the imds theme
+
 ## Standard Implementation Policy for Presentation Pages
 
 ### Basic Structure
@@ -125,7 +136,7 @@
 ### Variable Declarations
 
 JavaScript inside presentation pages runs in the browser, so Rhino restrictions do not apply.
-The `const` restriction in `jssp-code-style.md` is exclusive to function containers (`.js`) and must not be applied to scripts inside HTML.
+The `const` restriction in `.agents/requirements/jssp-code-style/AGENTS.md` is exclusive to function containers (`.js`) and must not be applied to scripts inside HTML.
 
 - **Variables that are not reassigned**: use `const`
 - **Variables that are reassigned**: use `let`
@@ -180,6 +191,25 @@ Good example:
 ```html
 <imart type="string" value=$data escapeXml="false" escapeJs="false" />    <!-- OK -->
 ```
+
+#### 3. Tags are processed even inside HTML comments or JavaScript comments
+
+Like JSP tags, `<imart>` tags are processed on the server side, so writing one inside an HTML comment (`<!-- -->`) or a JavaScript comment (`//`, `/* */`) in `<script>` does not disable it; it is replaced with its processing result (the substituted string). The result is not shown on screen, but it is output to the HTML source.
+
+Bad examples (in each case the `<imart>` tag is executed and the value of `$data.foo` is output inside the comment):
+```html
+<!--
+<imart type="string" value=$data.foo />
+-->
+```
+```html
+<script>
+  // <imart type="string" value=$data.foo />
+  /* <imart type="string" value=$data.foo /> */
+</script>
+```
+
+To disable an `<imart>` tag, delete the tag itself instead of enclosing it in a comment.
 
 ## How to Use Bind Variables
 
@@ -600,7 +630,7 @@ async function register(request) {
   - If the API expects application/x-www-form-urlencoded, specify request parameters using `URLSearchParams`
   - If the API expects application/json, specify request parameters using `JSON.stringify()`
 - Use Promises for asynchronous processing, and use `async` and `await` to make code readable
-- The response format is `{error: bool, data | errorMessage}` (see `jssp-error-handling.md` "API Response Structure (JSON)")
+- The response format is `{error: bool, data | errorMessage}` (see `.agents/requirements/jssp-error-handling/AGENTS.md` "API Response Structure (JSON)")
   - Branch on `result.error` and, on error, display `result.errorMessage` (in `[code] message` format) directly
   - The HTTP status code (200 / 400 / 405 / 500) is set by the API. The client should not check it individually and should branch only on `result.error`
 - On successful completion, display a completion message using `imuiShowSuccessMessage()`

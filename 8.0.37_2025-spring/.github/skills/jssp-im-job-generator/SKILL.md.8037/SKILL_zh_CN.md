@@ -17,12 +17,12 @@ allowed-tools: Bash, Read, Write, Glob
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-function-container.md` | 🟢 **必读** — `execute()` 入口的结构 |
-| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必读** — 批处理通常需要详细的日志与错误处理 |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必读 |
-| `jssp-2way-sql.md` | 🟡 **仅当批处理包含 DB 操作时**（批处理中常见） |
-| `jssp-security.md` | 🟡 仅在处理外部输入（如作业参数）时 |
-| `jssp-presentation-page.md` / `jssp-accessibility.md` | 🔴 **不需要；无画面** |
+| `.github/instructions/jssp-function-container.instructions.md` | 🟢 **必读** — `execute()` 入口的结构 |
+| `.github/instructions/jssp-error-handling.instructions.md` / `.github/instructions/jssp-logging.instructions.md` | 🟢 **必读** — 批处理通常需要详细的日志与错误处理 |
+| `.github/instructions/jssp-naming.instructions.md` / `.github/instructions/jssp-code-style.instructions.md` / `.github/instructions/jssp-file-structure.instructions.md` | 🟢 必读 |
+| `.github/instructions/jssp-2way-sql.instructions.md` | 🟡 **仅当批处理包含 DB 操作时**（批处理中常见） |
+| `.github/instructions/jssp-security.instructions.md` | 🟡 仅在处理外部输入（如作业参数）时 |
+| `.github/instructions/jssp-presentation-page.instructions.md` / `.github/instructions/jssp-accessibility.instructions.md` | 🔴 **不需要；无画面** |
 
 ## 生成对象
 

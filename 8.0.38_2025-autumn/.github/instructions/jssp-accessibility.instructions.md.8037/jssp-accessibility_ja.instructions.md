@@ -25,7 +25,7 @@ WCAG 2.1 レベル AA 相当を目標とする。
 intra-mart Accel Platform のグローバルヘッダ・グローバルメニュー・フッタは **プラットフォーム（テーマ）が出力する**。
 そのため、各プレゼンテーションページで `<header>` / `<nav>` / `<footer>` を **追加してはならない**（プラットフォーム提供のランドマークと二重になる）。
 
-画面のルート構造は `jssp-presentation-page.md` の規約に従い、`<main>` のみを配置する。ルートタグ（`<div>`。class は使用する UI テーマの規約に従う）には、通常画面では `id` を付与しない（intra-mart テーマが出力する `<div id="imui-container">` の内側に配置されるため）。ポートレット画面のみ例外的に `id="app-portlet-{機能ID}-container"` を付与する。
+画面のルート構造は `.github/instructions/jssp-presentation-page.instructions.md` の規約に従い、`<main>` のみを配置する。ルートタグ（`<div>`。class は使用する UI テーマの規約に従う）には、通常画面では `id` を付与しない（intra-mart テーマが出力する `<div id="imui-container">` の内側に配置されるため）。ポートレット画面のみ例外的に `id="app-portlet-{機能ID}-container"` を付与する。
 
 ```html
 <div>
@@ -85,7 +85,7 @@ JSSP の慣習として、入力要素の `id` は `:userName:` のようにコ�
 
 ### エラー表示
 
-`jssp-presentation-page.md` の標準パターン（`.imds-field` + `.imds-validation-error` クラス、`.imds-error-text` を `style.display` で出し入れ）を踏襲した上で、ARIA 属性を追加する。
+`.github/instructions/jssp-presentation-page.instructions.md` の標準パターン（`.imds-field` + `.imds-validation-error` クラス、`.imds-error-text` を `style.display` で出し入れ）を踏襲した上で、ARIA 属性を追加する。
 
 ```html
 <div class="imds-field" for=":age:">
@@ -262,7 +262,7 @@ function clearValidationError() {
 
 ## ダイアログ・モーダル
 
-確認ダイアログは **`imdsConfirm()` を第一選択** とする（`jssp-presentation-page.md` 参照）。
+確認ダイアログは **`imdsConfirm()` を第一選択** とする（`.github/instructions/jssp-presentation-page.instructions.md` 参照）。
 imds が提供する標準ダイアログは ARIA 属性・フォーカス制御・キーボード操作に対応している。
 
 ```javascript
@@ -307,7 +307,7 @@ imdsConfirm(
 
 ### 第一選択: imui の標準メッセージ関数
 
-`jssp-presentation-page.md` の規約に従い、以下の関数を使用する。
+`.github/instructions/jssp-presentation-page.instructions.md` の規約に従い、以下の関数を使用する。
 これらは intra-mart のテーマが内部でライブリージョン相当の処理を行う。
 
 | 用途 | 関数 |

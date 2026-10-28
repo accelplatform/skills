@@ -76,7 +76,7 @@ If it's not explicitly stated that this is for an MCP server or Java annotations
 3. Add a dependency on `im_copilot_mcp` to `pom.xml` (with an explicit version — see "Dependency" in `reference/mcp-annotation-api-reference.md`). If the project already has this dependency, reuse it rather than adding a duplicate
 4. Implement the `@MCPServer` class, the tool implementation classes, and the parameter DTOs by consulting `assets/mcp-server-basic-usage.md` (always consult `reference/mcp-annotation-api-reference.md` for the attribute signatures; do not write from memory or guesswork)
 5. **Register the MCP server (never skip this).** If the project already has a `McpScanPackageFactory` implementation, simply place the new class under its target package. Otherwise, create one following Pattern 4 in `assets/mcp-server-basic-usage.md`
-6. Verify compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Verify compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -96,7 +96,7 @@ Rather than an automated validation script, verify the following items manually.
 3. Whether every field of the parameter DTO carries the `SchemaProperties` annotation appropriate to its purpose (`StringProperty`/`IntegerProperty`/`BooleanProperty`/`NumberProperty`/`EnumProperty`/`ObjectProperty`/`ArrayProperty`)
 4. Whether `required` is set on parameters that should be mandatory
 5. Whether the `@Tool`'s `description` is specific enough for an LLM to judge the tool's purpose and when to use it
-6. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+6. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 7. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-specific code review/security check skills, use those instead
 
 ## Boundaries with Other Skills

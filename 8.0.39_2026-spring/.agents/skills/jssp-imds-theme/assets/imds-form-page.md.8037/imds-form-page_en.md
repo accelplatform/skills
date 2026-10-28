@@ -9,18 +9,18 @@ This page uses the fixed header layout, where the header and footer stay fixed w
 
 | Component | reference | Usage in this example |
 |---------------|-----------|-------------|
-| Header | [header.md](../reference/header.md) | Page header with back button |
-| Field | [field.md](../reference/field.md) | Each input item |
-| FieldGroup | [field-group.md](../reference/field-group.md) | Grouping of input items |
-| Textbox | [textbox.md](../reference/textbox.md) | Text input |
-| TextboxControl | [textbox-control.md](../reference/textbox-control.md) | Text input with search icon |
-| Select | [select.md](../reference/select.md) | Dropdown selection |
-| Radio | [radio.md](../reference/radio.md) | Radio button |
-| Checkbox | [checkbox.md](../reference/checkbox.md) | Checkbox |
-| Button | [button.md](../reference/button.md) | Action button |
-| IconButton | [icon-button.md](../reference/icon-button.md) | Clear button (x icon) |
-| FileUpload | [file-upload.md](../reference/file-upload.md) | File upload |
-| IconFont | [icon-font.md](../reference/icon-font.md) | Various icons |
+| Header | [imds-html-header.md](../reference/imds-html-header.md) | Page header with back button |
+| Field | [imds-html-field.md](../reference/imds-html-field.md) | Each input item |
+| FieldGroup | [imds-html-field-group.md](../reference/imds-html-field-group.md) | Grouping of input items |
+| Textbox | [imds-html-textbox.md](../reference/imds-html-textbox.md) | Text input |
+| TextboxControl | [imds-html-textbox-control.md](../reference/imds-html-textbox-control.md) | Text input with search icon |
+| Select | [imds-html-select.md](../reference/imds-html-select.md) | Dropdown selection |
+| Radio | [imds-html-radio.md](../reference/imds-html-radio.md) | Radio button |
+| Checkbox | [imds-html-checkbox.md](../reference/imds-html-checkbox.md) | Checkbox |
+| Button | [imds-html-button.md](../reference/imds-html-button.md) | Action button |
+| IconButton | [imds-html-icon-button.md](../reference/imds-html-icon-button.md) | Clear button (x icon) |
+| FileUpload | [imds-html-file-upload.md](../reference/imds-html-file-upload.md) | File upload |
+| IconFont | [imds-html-icon-font.md](../reference/imds-html-icon-font.md) | Various icons |
 
 ## Overall Structure
 
@@ -635,7 +635,7 @@ Place a primary button (Register) and an outline button (Save as Draft) side by 
 **Key points:**
 - Use `imds-border-t-1` to display a border line against the form area
 - Use `is-primary` for the main action (Register) and `is-outlined is-primary` for the sub-action (Save as Draft)
-- For width control, don't define a custom `min-width-8em`-style class; use the inline `style="min-width: 8em;"` instead (see the anti-pattern in `jssp-presentation-page.md`, "Controlling Input Field Width" — a custom class has the same specificity as imds standard classes and can be overridden by them)
+- For width control, don't define a custom `min-width-8em`-style class; use the inline `style="min-width: 8em;"` instead (see the anti-pattern in `.agents/requirements/jssp-presentation-page/AGENTS.md`, "Controlling Input Field Width" — a custom class has the same specificity as imds standard classes and can be overridden by them)
 
 ## Implementation Notes
 
@@ -699,5 +699,5 @@ There are three variants of required marks. **Always standardize on a single var
 - Implementation patterns:
   - For server-side validation, include the input values as-is in the error response, and re-display them on the function container side using `<imart type="string" value=$xxx>`
   - For client-side validation, simply stop form submission with `preventDefault()` etc., without modifying the input value DOM
-  - For the error display itself, show `<span class="imds-error-text">` directly under the corresponding `imds-field`, and toggle the `imds-validation-error` class on the `imds-field` to visually emphasize it (see "Form Implementation Patterns" in SKILL.md for details)
+- For the error display itself, show `<span class="imds-error-text">` directly under the corresponding `imds-field`, and toggle the `imds-validation-error` class on the `imds-field` to visually emphasize it (see "Form Implementation Patterns" in SKILL.md for details)
 - Ensure that input values are not lost across page transitions or temporary re-displays (e.g. opening and closing another dialog)

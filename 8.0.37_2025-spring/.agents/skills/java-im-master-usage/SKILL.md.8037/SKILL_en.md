@@ -146,7 +146,7 @@ If the request falls into the following categories, explain that it is out of sc
 6. When using search methods for groups or for corporations/customers/item categories/items/currencies (`list*`/`search*`/`count*`), obtain the column name to pass to `AppCmnSearchCondition` from the `toString()` of the corresponding enum for each entity (e.g. `ImmPublicGroupColumn`, `ImmCustomerColumn`, an implementation of `ImmTableColumn`)
 7. When using search methods on `CustomerManager`/`ItemManager` (`search`/`list`/`count`/`total`), check that you have not forgotten to pass the first argument `companyCd` (unlike other classes, these use a generic signature whose method name does not include the entity name)
 8. Since group single-retrieval methods (`get*`) return `null` when the target does not exist, perform a null check on the caller side
-9. Verify compliance with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+9. Verify compliance with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## Notes
 
@@ -197,7 +197,7 @@ Rather than an automated validation script, verify the following items manually.
 10. Whether `CorporationManager` (corporation) and `CorporationGroupManager` (corporation group) are being confused
 11. Whether `companyCd` is passed to the search methods of `CustomerManager`/`ItemManager`
 12. Whether `startDate`/`endDate`, which do not exist, are being set for currency `Currency`/`CurrencyConversion`/`CurrencyPrecision` (only `CurrencyRate` has the concept of a term)
-13. Whether the code complies with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+13. Whether the code complies with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 14. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-specific code review/security check skills, use those instead
 
 ## Boundaries with Other Skills

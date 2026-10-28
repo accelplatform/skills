@@ -20,7 +20,7 @@
 intra-mart Accel Platform 的全局页眉、全局菜单和页脚由**平台（主题）输出**。
 因此，各展示页面中**不得添加** `<header>` / `<nav>` / `<footer>`（否则会与平台提供的地标重复）。
 
-页面的根结构遵循 `jssp-presentation-page.md` 的规范，只放置 `<main>`。根标签（`<div>`；class 遵循所使用的 UI 主题）在普通画面中不附加 `id`（因其位于 intra-mart 主题输出的 `<div id="imui-container">` 内部）。仅 Portlet 画面例外，附加 `id="app-portlet-{功能ID}-container"`。
+页面的根结构遵循 `.agents/requirements/jssp-presentation-page/AGENTS.md` 的规范，只放置 `<main>`。根标签（`<div>`；class 遵循所使用的 UI 主题）在普通画面中不附加 `id`（因其位于 intra-mart 主题输出的 `<div id="imui-container">` 内部）。仅 Portlet 画面例外，附加 `id="app-portlet-{功能ID}-container"`。
 
 ```html
 <div>
@@ -80,7 +80,7 @@ intra-mart Accel Platform 的全局页眉、全局菜单和页脚由**平台（�
 
 ### 错误显示
 
-在遵循 `jssp-presentation-page.md` 标准模式（`.imds-field` + `.imds-validation-error` 类，通过 `style.display` 显示/隐藏 `.imds-error-text`）的基础上，添加 ARIA 属性。
+在遵循 `.agents/requirements/jssp-presentation-page/AGENTS.md` 标准模式（`.imds-field` + `.imds-validation-error` 类，通过 `style.display` 显示/隐藏 `.imds-error-text`）的基础上，添加 ARIA 属性。
 
 ```html
 <div class="imds-field" for=":age:">
@@ -257,7 +257,7 @@ function clearValidationError() {
 
 ## 对话框与模态框
 
-确认对话框以 **`imdsConfirm()` 为首选**（参见 `jssp-presentation-page.md`）。
+确认对话框以 **`imdsConfirm()` 为首选**（参见 `.agents/requirements/jssp-presentation-page/AGENTS.md`）。
 imds 提供的标准对话框支持 ARIA 属性、焦点控制和键盘操作。
 
 ```javascript
@@ -302,7 +302,7 @@ imdsConfirm(
 
 ### 首选：imui 标准消息函数
 
-遵循 `jssp-presentation-page.md` 的规范，使用以下函数。
+遵循 `.agents/requirements/jssp-presentation-page/AGENTS.md` 的规范，使用以下函数。
 这些函数使 intra-mart 主题在内部执行等效于实时区域的处理。
 
 | 用途 | 函数 |

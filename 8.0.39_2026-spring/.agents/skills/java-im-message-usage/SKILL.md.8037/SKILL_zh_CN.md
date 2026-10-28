@@ -76,7 +76,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 特有�
 3. 确定消息键，并按照 `assets/message-manager-usage.md` 中的「消息键命名规约」创建或追加属性文件（`.properties`，分别对应 `ja`/`en`/`zh_CN`/默认各区域设置）
 4. 参照 `assets/message-manager-usage.md` 编写 Java 实现（方法签名务必参照 `reference/message-manager-api-reference.md`，不要凭记忆或推测编写）
 5. 决定 `AccessSecurityException` 的处理方式（遵循 `assets/message-manager-usage.md` 中的模式。原则上应向上层传播，或作为内部错误处理）
-6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
@@ -95,7 +95,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 特有�
 2. 消息键是否符合 `assets/message-manager-usage.md` 中的命名规约（仅用点分隔，禁止下划线、连字符）
 3. 属性文件是否齐备 ja / en / zh_CN / 默认各区域设置，且各文件间的键集合是否一致
 4. `AccessSecurityException` 是否被吞掉未处理
-5. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+5. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 6. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目另有 Java 专用的代码评审/安全检查技能，请使用该技能
 
 ## 与其他技能的边界

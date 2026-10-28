@@ -7,16 +7,16 @@ description: intra-mart IM-Workflow 連携プログラムを新規生成する�
 
 実装着手前に、以下を確認すること。未チェック項目がある場合は着手不可。
 
-- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-function-container](../../../requirements/jssp-function-container/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-accessibility](../../requirements/jssp-accessibility/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-function-container](../../requirements/jssp-function-container/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-presentation-page](../../requirements/jssp-presentation-page/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
 
 
 # IM-Workflow プログラム生成支援スキル
@@ -32,17 +32,19 @@ intra-mart Accel Platform の IM-Workflow 連携プログラムを新規に生�
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-presentation-page.md` | 🟢 **必読** — 申請・承認画面の HTML 構造・バリデーション・id 命名 |
-| `jssp-function-container.md` | 🟢 **必読** — `init()` 構造・workflowOpenPage パラメータ受け取り |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必読 |
-| `jssp-error-handling.md` / `jssp-security.md` | 🟢 必読 |
-| `jssp-2way-sql.md` | 🔴 **画面側では原則不要**（申請画面 / 承認画面は `workflowOpenPage` で送信するだけで DB 操作なし）。アクション処理側で `db.executeByTemplate` を使う場合のみ参照 |
-| `jssp-logging.md` | 🟡 アクション処理でログ実装時のみ |
-| `jssp-accessibility.md` | 🟠 **業務要件次第** — 仕様書で明示要求があった場合のみ厚く適用。指示がなければ最小限（`imdsConfirm`、`aria-label`、装飾アイコンの `aria-hidden` 等の基本）に留める |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | 🟢 **必読** — 申請・承認画面の HTML 構造・バリデーション・id 命名 |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **必読** — `init()` 構造・workflowOpenPage パラメータ受け取り |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` / `.agents/requirements/jssp-file-structure/AGENTS.md` | 🟢 必読 |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-security/AGENTS.md` | 🟢 必読 |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🔴 **画面側では原則不要**（申請画面 / 承認画面は `workflowOpenPage` で送信するだけで DB 操作なし）。アクション処理側で `db.executeByTemplate` を使う場合のみ参照 |
+| `.agents/requirements/jssp-logging/AGENTS.md` | 🟡 アクション処理でログ実装時のみ |
+| `.agents/requirements/jssp-accessibility/AGENTS.md` | 🟠 **業務要件次第** — 仕様書で明示要求があった場合のみ厚く適用。指示がなければ最小限（`imdsConfirm`、`aria-label`、装飾アイコンの `aria-hidden` 等の基本）に留める |
 
 ## 生成対象とテンプレート
 
 ### 画面
+
+画面の UI テーマは `.agents/requirements/jssp-presentation-page/AGENTS.md` の「UI テーマの選択」に従う。下表のテンプレートは機能固有の部分（`<imart type="workflowOpenPage">`、処理モーダルの呼び出し、アクション処理との連携等）の正本であり、HTML 骨格・UI 部品の正本ではない。`jssp-imds-theme` スキルが存在しない場合、または imds 以外のテーマを明示指定された場合は、JS と機能固有の部分のみを流用し、HTML はそのテーマで組み立てる。
 
 | 生成対象 | テンプレート | 配置先 |
 |---------|------------|-------|
@@ -52,6 +54,10 @@ intra-mart Accel Platform の IM-Workflow 連携プログラムを新規に生�
 | 承認画面（処理画面）— 処理モーダル方式 ★推奨 (.html / .js) | `assets/modal-approve-screen.md` | `{機能名}/workflow/approve/` |
 | 確認画面 — workflowOpenPage 方式 (.html / .js) | `assets/simple-confirm-screen.md` | `{機能名}/workflow/confirm/` |
 | 確認画面 — 処理モーダル方式 ★推奨 (.html / .js) | `assets/modal-confirm-screen.md` | `{機能名}/workflow/confirm/` |
+
+#### imds テーマで生成する場合
+
+テンプレートの HTML を写経せず、先に `jssp-imds-theme` スキルの SKILL.md と対応するページテンプレート（入力・承認系の画面は `assets/imds-form-page.md`）、使用する UI 部品の reference を Read してから画面を組み立てる。テンプレートからは機能固有の部分のみを移植し、生成後は「ステップ 4」の imds 準拠チェックで `validate-imds.js` を実行する。
 
 ### バッチ処理
 
@@ -271,22 +277,27 @@ node .agents/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 4. intra-mart 内部テーブル（`im` で始まるテーブル）を SQL で直接参照していないか（ユーザからの明確な指示がある場合のみ許可）
 5. 画面のセレクトボックス・日付入力に適切な `max-width` が指定されているか
 
-### ステップ 4: 画面 HTML の imds 準拠 再チェック（HTML 生成時のみ）
+### ステップ 4: 画面 HTML の再チェック（HTML 生成時のみ）
 
-申請画面・承認画面・詳細画面・確認画面など **`.html` を生成した場合は必ず実行する**。`validate-workflow-code.js` は `imds-selectbox` のような既知の誤クラス名は検出するが、**reference 全体との完全な突き合わせはカバーしない**ため、`.agents/skills/jssp-imds-theme/reference/` を引いて目視で再確認する。
+申請画面・承認画面・詳細画面・確認画面など **`.html` を生成した場合は必ず実行する**。
 
-#### 実施手順
+#### imds 準拠チェック
 
-1. 生成した各 `.html` をスキャンし、使用している imds コンポーネントを洗い出す（テキストボックス・テキストエリア・セレクト・チェックボックス・ラジオ・ボタン・テーブル・ダイアログ・フィールド・タブ・カレンダー入力・バナー/インラインメッセージ等）
-2. コンポーネントごとに `.agents/skills/jssp-imds-theme/reference/imds-html-{component}.md` を **Read ツールで開いて再確認する**（記憶に頼らない）
-3. reference のクラス名・タグ構造・属性と、生成 HTML を突き合わせる
+imds テーマで生成した画面が対象（imds 以外のテーマを明示指定された場合はスキップする）。`validate-workflow-code.js` は `imds-selectbox` のような既知の誤クラス名は検出するが、**reference 全体との完全な突き合わせはカバーしない**ため、`validate-imds.js` による構造検証と、`.agents/skills/jssp-imds-theme/reference/` を引いた目視の再確認を行う。
 
-#### 重点チェック項目
+##### 実施手順
+
+1. `node .agents/skills/jssp-imds-theme/scripts/validate-imds.js <生成した画面のディレクトリ>` を実行し、エラーが 0 件になるまで修正する
+2. 生成した各 `.html` をスキャンし、使用している imds コンポーネントを洗い出す（テキストボックス・テキストエリア・セレクト・チェックボックス・ラジオ・ボタン・テーブル・ダイアログ・フィールド・タブ・カレンダー入力・バナー/インラインメッセージ等）
+3. コンポーネントごとに `.agents/skills/jssp-imds-theme/reference/imds-html-{component}.md` を **Read ツールで開いて再確認する**（記憶に頼らない）
+4. reference のクラス名・タグ構造・属性と、生成 HTML を突き合わせる
+
+##### 重点チェック項目
 
 | 観点 | 確認ポイント | 不一致時の対処 |
 |------|------------|--------------|
 | クラス名の存在 | `imds-selectbox` / `imds-input` 等、reference に存在しないクラスを使っていないか | reference の正式名（`imds-select` / `imds-textbox` 等）に置換 |
-| フィールド階層 | `imds-field-container has-accent-color` > `imds-field-group is-horizontal imds-w-15` > `imds-field-group-label` / `imds-field-group-control` > `imds-field` の入れ子になっているか（アセット `simple-apply-screen.md` / `simple-approve-screen.md` の写経どおりか） | アセットから 1 行ずつ写経し直す。`imds-field` 単独へ簡略化しない |
+| フィールド階層 | `imds-field-container has-accent-color` > `imds-field-group is-horizontal imds-w-15` > `imds-field-group-label` / `imds-field-group-control` > `imds-field` の入れ子になっているか（`jssp-imds-theme` の `assets/imds-form-page.md` のフォーム構造どおりか） | テンプレートの構造に合わせて組み直す。`imds-field` 単独へ簡略化しない |
 | 必須ラベル | 必須項目に `<span class="imds-required-label-required" data-required-label="必須">` が付いているか | 付与する。`imds-required-label-required` のクラス名と `data-required-label` 属性は両方必須 |
 | エラー表示 | `imds-field` に `for=":fieldName:"` 属性、直下に `<span class="imds-error-text" for=":fieldName:" style="display:none;"></span>` が配置されているか | 規約どおりに配置。display:none の初期非表示も忘れない |
 | テーブル | `imds-table` > `imds-table-inner` > `table` の二重ラッパー構造になっているか | ラッパーを補う |
@@ -295,7 +306,7 @@ node .agents/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 | アイコンボタン | テキストありは `<span class="imds-button-text">` で囲み、アイコン単品は通常サイズで表示しているか | `imds-html-icon-button.md` に従う |
 | imuiCalendar | `floatable="true"` を指定し、`altField` が hidden 以外を参照しているか | `imui-html-calendar.md` どおりに修正 |
 | バナー/インライン | カスタム CSS で警告色を付けていないか（`imds-banner-message` / `imds-inline-message` を使うべき） | 該当する状態クラス（`is-warning` 等）へ置換 |
-| アセット改変 | アセット (`simple-apply-screen.md` / `simple-approve-screen.md`) の HTML 構造を**独自判断でレイアウト変更**していないか（`is-horizontal` → `is-vertical` 等）| アセットの構造に戻す。変更が必要ならユーザへ事前確認 |
+| テンプレート改変 | `jssp-imds-theme` のページテンプレートの HTML 構造を**独自判断でレイアウト変更**していないか（`is-horizontal` → `is-vertical` 等） | テンプレートの構造に戻す。変更が必要ならユーザへ事前確認 |
 
 #### `<imart type="workflowOpenPage">` 関連の追加チェック（workflowOpenPage 方式のみ）
 
@@ -314,7 +325,7 @@ node .agents/skills/jssp-page-generator/scripts/validate-ddl.js src/main/storage
 - 申請ボタンのイベントリスナーが `async` 関数になっているか（`await imWorkflow.modal.showApply(...)` のため必須）
 - `workflowOpenPage('0')` 等の pageType 呼び出しが残っていないか（処理モーダル方式では使わない）
 - `$imwFlowId` / `$imwMatterName` 等の `$imw*` バインド変数が残っていないか（処理モーダル方式では不要）
-- 一時保存ボタン・戻るボタンが削除されているか（処理モーダル方式では不要）
+- ヘッダに戻るボタンが配置され、クリック時に `imWorkflow.transition.returnTo()` を呼び出しているか（申請画面は一時保存ボタンで `imWorkflow.modal.showTemporarySave()` を呼び出しているか）
 - ルーティング XML（`routing-jssp-config/*.xml`）が作成されているか
 - `flowId` に実際のフローIDが設定されているか、または TODO コメントが残っているか（仮の値ではなく正しい値か確認）
 - 一時保存・処理（承認/否認）・確認画面の場合、`imWorkflow.transition.afterProcess()` が `then()` または `await` の後に呼び出されているか（完了・キャンセルどちらでも呼び出す必要がある）

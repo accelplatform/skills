@@ -27,7 +27,7 @@ div.imds-container                    # ルート div（intra-mart テーマの 
 
 ## ルート div は 1 つにする（中間ラッパーを作らない）
 
-`jssp-presentation-page.md` の規約により、プレゼンテーションページのルートタグには id を付与しない（intra-mart のテーマ機能が `<div id="imui-container">` で画面内容を自動的に包むため、画面側で id を重ねると無駄な二重ラッパーになる）。
+`.github/instructions/jssp-presentation-page.instructions.md` の規約により、プレゼンテーションページのルートタグには id を付与しない（intra-mart のテーマ機能が `<div id="imui-container">` で画面内容を自動的に包むため、画面側で id を重ねると無駄な二重ラッパーになる）。
 一方で `imds-container` は imds テーマの CSS が前提とするクラスであり、これは画面のルート相当の要素に付与する。
 **中間ラッパーを増やさず、ルートの `<div>` に直接 `class="imds-container ..."` を付与することで満たす。** `<div>` の内側にさらに `<div class="imds-container">` を入れ子にする必要は無い。
 
@@ -152,7 +152,7 @@ div.imds-container                    # ルート div（intra-mart テーマの 
 
 生成物に `cc-app-*` や `sample-*` のようなプレースホルダ prefix がそのまま残っていないか、最終確認すること。
 
-## 実装後の確認（目視・実機）
+## 実装後の確認（ブラウザでの目視確認）
 
 CSS・DOM の実装だけでなく、実際にブラウザで画面を開いて以下を確認すること（自動検証では担保できない）。
 
@@ -166,8 +166,8 @@ CSS・DOM の実装だけでなく、実際にブラウザで画面を開いて�
 
 - ルートの `<div class="imds-container ...">` には id を付与せず 1 要素に統合し、内側にさらに `imds-container` を入れ子にした中間ラッパーを作らない
 - `grid-template-rows` の 2 行目は必ず `minmax(0, 1fr)` にする（`1fr` 単独ではスクロール領域の高さが確定しない）
-- `imds-container` に付与する高さは `height: 100vh` を推奨する（`height: 100%` は祖先要素の高さ解決に依存し、環境によってスクロール領域が高さ 0 に潰れる不具合が実際に発生したため）
+- 本ファイルの `cc-app-*` 方式で `imds-container` に付与する高さは `height: 100vh` を推奨する（`height: 100%` は祖先要素の高さ解決に依存し、環境によってスクロール領域が高さ 0 に潰れる不具合が実際に発生したため）。`pgstyle-layout-*` を使うテンプレートでは、`height: 100%` と `theme-conditional-layout.css` の読み込みを組み合わせて高さを確定させる
 - `overflow: auto` は `main` 自身ではなく、`imds-scrollbar` を付与したスクロール対象の子要素にのみ付与する
 - フッタ（操作ボタン群）は `<main>` 直下・スクロール領域の外に置き、`flex: 0 0 auto` で固定する
 - カスタムクラスのプレースホルダ prefix（`cc-app-*` 等）は機能名に応じて置換するが、`imds-` で始まる標準クラスは名前を変えずそのまま使う
-- レイアウトの単純化（ナビゲーションやスクロールが不要な極小画面等）で本パターンが過剰な場合は、`imds-container` に直接 `height: 100vh` 系のグリッドを組まず、`assets/imds-list-page.md` 等の簡易な縦積み構成を使ってもよい。ただしフッタ固定・部分スクロールが要件にある画面では本パターンを使用すること
+- レイアウトの単純化（ナビゲーションやスクロールが不要な極小画面等）で本パターンが過剰な場合は、`imds-container` に直接 `height: 100vh` 系のグリッドを組まず、`<main>` 以下を通常の縦積み（ページ全体のスクロール）にしてもよい。ただしフッタ固定・部分スクロールが要件にある画面では本パターンを使用すること

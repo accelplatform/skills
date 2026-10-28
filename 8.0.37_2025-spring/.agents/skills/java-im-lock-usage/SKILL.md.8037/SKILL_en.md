@@ -72,7 +72,7 @@ Also, **when the mutual exclusion only needs to cover concurrency within a singl
 2. Decide whether to use an ordinary lock or a request-scope lock (see the decision criteria table above. **Prioritize the user's explicit specification if given**; default to the ordinary lock when it is self-contained within a single method)
 3. Implement by referring to `assets/lock-basic-usage.md` (always refer to `reference/lock-api-reference.md` for method signatures — do not write from memory or guesswork)
 4. Design the lock ID (the `NewLock` constructor argument): use a key that uniquely represents the target being guarded (e.g., `loginGroupId + ":" + <path of the target resource>`). Avoid an overly broad granularity (e.g., a single fixed string), which would serialize unrelated processing together
-5. Confirm compliance with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+5. Confirm compliance with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## Notes
 
@@ -92,7 +92,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 2. Whether the choice between an ordinary lock and a request-scope lock matches the lock's intended holding scope (self-contained within a single method, or spanning multiple points)
 3. Whether `NewLock.releaseRequestScope()` (`@Deprecated`) is being called directly from application code
 4. Whether the lock ID's granularity is appropriate for the target being guarded (neither too coarse nor too fine)
-5. Whether the code complies with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+5. Whether the code complies with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 6. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has a separate Java-specific code review / security check skill, use that instead
 
 ## Boundaries with Other Skills

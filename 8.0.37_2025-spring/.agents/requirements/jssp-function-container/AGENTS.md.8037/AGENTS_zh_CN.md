@@ -152,6 +152,7 @@ function transferErrorPage(code, message) {
   - 对输出的 JSON 字符串使用 `.replace(/\//g, '\\/')` 进行转义，使斜杠无害化
     - 为防止 JSON 字符串中包含 `</script>` 时，展示页面中脚本意外终止
 - 不使用 `new Packages.***`（直接实例化 Java 类）。这会导致内存泄漏和处理锁，影响性能。请改用 `d.ts/` 中定义的 SSJS 全局类和 API
+  - 仅限于 d.ts 的 SSJS API 或现有技能无法实现的处理（例：使用 Apache POI 操作 Excel 文件），在 Java 端创建包装类并注册为 JSSP API 后调用（`jssp-im-java-wrapper` 技能，可在包含 Java 开发功能的项目中使用）。对于可通过 d.ts 的 API 实现的处理，不要创建包装类
 - **按照 d.ts 中的类型定义调用 API**
   - 若参数类型不包含 `null`（没有 `?` 或 `| null`），则不得传入 `null`。是否可省略，以 `?`（可选参数）的有无为准。即使想表达"无条件"，也要传入对应类型的空对象（例如：`new AppCmnSearchCondition()`）
   - **不得凭猜测调用 d.ts 中未定义的方法名**。必须在 d.ts 或参考文档（`reference/` 目录）中确认方法名和参数类型后再实现。
@@ -162,11 +163,11 @@ function transferErrorPage(code, message) {
   - 超过 50 行时考虑拆分
 - 嵌套最多 4 层
 
-### IM-共通マスタ API（IMMUserManager / IMMCompanyManager 等）的注意事项
+### IM 通用主数据 API（IMMUserManager / IMMCompanyManager 等）的注意事项
 
 - **不得向搜索条件参数（`AppCmnSearchCondition` 类型）传入 `null`**。Java 侧会发生 `IllegalArgumentException`
 - 即使要无条件获取全部记录，也必须**传入空的 `new AppCmnSearchCondition()`**
-- 获取用户名、所属部门时，应使用 IM-共通マスタ API，而非直接访问数据库（如 `SELECT FROM im_user` 等）
+- 获取用户名、所属部门时，应使用 IM 通用主数据 API，而非直接访问数据库（如 `SELECT FROM im_user` 等）
   - 用户名：`IMMUserManager.getUser(bizKey, date, localeId)` → `result.data.locales[locale].userName`
   - 所属部门（优先当前组织）：`Contexts.getUserContext().currentDepartment.departmentName`
     - 登录用户本身时，优先使用当前组织

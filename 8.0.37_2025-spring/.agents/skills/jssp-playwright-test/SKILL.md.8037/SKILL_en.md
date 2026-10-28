@@ -7,7 +7,7 @@ description: Generates Playwright E2E tests for intra-mart JSSP presentation pag
 
 Confirm the following before starting implementation. Do not proceed if any item is unchecked.
 
-- [ ] [jssp-testing](../../../requirements/jssp-testing/AGENTS.md) has been read and understood
+- [ ] [jssp-testing](../../requirements/jssp-testing/AGENTS.md) has been read and understood
 
 
 # Playwright E2E Test Generation Skill

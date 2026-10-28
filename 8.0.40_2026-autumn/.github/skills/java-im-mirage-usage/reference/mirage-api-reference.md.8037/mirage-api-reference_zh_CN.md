@@ -320,7 +320,7 @@ public @interface Priority {
 
 ## 2WaySQL 语法（im_mirage 版）
 
-| 语法 | 用途 | 与 JSSP 侧（`jssp-2way-sql.md`）的差异 |
+| 语法 | 用途 | 与 JSSP 侧（`.github/instructions/jssp-2way-sql.instructions.md`）的差异 |
 |------|------|------|
 | `/*IF condition*/.../*END*/` | 条件分支 | 相同 |
 | `/*BEGIN*/.../*END*/` | 可选块 | 相同 |

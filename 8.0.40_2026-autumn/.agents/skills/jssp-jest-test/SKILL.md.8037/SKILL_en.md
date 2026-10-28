@@ -7,8 +7,8 @@ description: Supports creation of unit tests for function containers (.js) using
 
 Confirm the following before starting implementation. Do not proceed if any item is unchecked.
 
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
-- [ ] [jssp-testing](../../../requirements/jssp-testing/AGENTS.md) has been read and understood
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
+- [ ] [jssp-testing](../../requirements/jssp-testing/AGENTS.md) has been read and understood
 
 
 # jest-on-rhino Test Development Guide

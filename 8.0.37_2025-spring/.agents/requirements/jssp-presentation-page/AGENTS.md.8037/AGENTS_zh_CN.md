@@ -2,6 +2,17 @@
 
 > **适用范围**: 🟢 **始终** — 生成展示页面（`.html`）时适用。HTML 结构、验证、id 命名规约等。
 
+## UI 主题的选择
+
+- 提示词或规格书中明确指定了 UI 主题（纯 HTML、自定义主题等）时，遵循该指定
+- 不使用 imds 主题时，根标签的处理方式参见「实现方针」
+
+### imds 主题（默认）
+
+- 未明确指定 UI 主题时，使用 imds 主题生成画面
+- 页面骨架参考 `.agents/skills/jssp-imds-theme/assets/` 中的整页模板，UI 组件参考同一技能的 `reference/`（详情参见 `jssp-imds-theme` 技能）
+- `imuiShowErrorMessage` / `imuiShowSuccessMessage` / `imuiShowWarningMessage` 等消息显示 API 以及 `imuiCalendar` 可与 imds 主题同时使用
+
 ## 展示页面的标准实现方针
 
 ### 基本结构
@@ -125,7 +136,7 @@
 ### 变量声明
 
 展示页面内的 JavaScript 在浏览器中执行，因此不适用 Rhino 的限制。
-`jssp-code-style.md` 中的 `const` 限制仅适用于函数容器（`.js`），不得应用于 HTML 内的脚本。
+`.agents/requirements/jssp-code-style/AGENTS.md` 中的 `const` 限制仅适用于函数容器（`.js`），不得应用于 HTML 内的脚本。
 
 - **不重新赋值的变量**：使用 `const`
 - **重新赋值的变量**：使用 `let`
@@ -180,6 +191,25 @@ var participants = [];                  // 不使用 var
 ```html
 <imart type="string" value=$data escapeXml="false" escapeJs="false" />    <!-- 可以 -->
 ```
+
+#### 3. 即使写在 HTML 注释或 JavaScript 注释中也会被处理
+
+`<imart>` 标签与 JSP 标签一样在服务器端处理，因此即使写在 HTML 注释（`<!-- -->`）或 `<script>` 内的 JavaScript 注释（`//`・`/* */`）中也不会失效，而是会被替换为处理结果（替换后的字符串）。替换结果不会显示在画面上，但会输出到 HTML 源代码中。
+
+不好的示例（均会执行 `<imart>` 标签，`$data.foo` 的值会输出到注释中）:
+```html
+<!--
+<imart type="string" value=$data.foo />
+-->
+```
+```html
+<script>
+  // <imart type="string" value=$data.foo />
+  /* <imart type="string" value=$data.foo /> */
+</script>
+```
+
+如需使 `<imart>` 标签失效，请删除标签本身，而不要用注释括起来。
 
 ## 绑定变量的使用方法
 
@@ -600,7 +630,7 @@ async function register(request) {
   - API 预期 application/x-www-form-urlencoded 时，使用 `URLSearchParams` 指定请求参数
   - API 预期 application/json 时，使用 `JSON.stringify()` 指定请求参数
 - 异步处理使用 Promise，并使用 `async`、`await` 提高代码可读性
-- 响应格式为 `{error: bool, data | errorMessage}`（参见 `jssp-error-handling.md`「API 响应结构（JSON）」）
+- 响应格式为 `{error: bool, data | errorMessage}`（参见 `.agents/requirements/jssp-error-handling/AGENTS.md`「API 响应结构（JSON）」）
   - 通过 `result.error` 进行分支，错误时直接显示 `result.errorMessage`（`[代码] 消息` 格式）
   - HTTP 状态码（200 / 400 / 405 / 500）由 API 端设置。客户端不进行单独判断，仅以 `result.error` 进行判断
 - 正常结束时使用 `imuiShowSuccessMessage()` 显示处理完成消息

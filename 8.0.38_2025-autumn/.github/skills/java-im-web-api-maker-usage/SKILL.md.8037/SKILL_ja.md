@@ -129,7 +129,7 @@ DAO（`Xxx` + `DAO`）
 5. 認可チェックが必要な場合、`@Authz(uri=..., action=...)` を付与し、対応する認可リソースが IM-Authz 側に登録済みか確認する（未登録なら `java-im-authz-usage` で登録処理を実装するようユーザに確認）
 6. OAuth 認証が必要な場合、Web API Maker OAuth認証モジュールが導入されているか確認したうえで `@OAuth(scope=...)` を付与し、`oauth-client-scopes-config`/`oauth-client-resources-config`/`oauth-client-details-config` の 3 点を整備する
 7. **API を呼び出すクライアント（JSSP プレゼンテーションページ・外部システム等）を併せて実装する場合は、レスポンスの `error` / `data` ラッパーを解く処理を必ず入れる**（`assets/web-api-maker-basic-usage.md` パターン7-4）。クライアントを別担当・別スキルが実装する場合は、レスポンス構造（成功時・例外発生時の JSON サンプル）を申し送り事項としてユーザに明示する
-8. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+8. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -158,7 +158,7 @@ DAO（`Xxx` + `DAO`）
 9. Endpoint クラスが `new StandardXxxService()` のように Service の具象クラスを直接生成せず、`XxxServiceFactory.getInstance()`（`ServiceLoaderUtil.loadTopPriority` によるファクトリ）で取得しているか
 10. Endpoint をインタフェース化した場合、`@IMAuthentication` 等のクラスアノテーション・`@Path`/`@GET`/引数アノテーションが実装クラスではなくインタフェース側に宣言されているか、ファクトリクラスの `@ProvideService` メソッドの**戻り値型がインタフェース**になっているか（実装クラス型のままだとアノテーションが認識されずエンドポイントが登録されない）
 11. **クライアント（画面・外部システム）側の実装が、レスポンスの `error` / `data` ラッパーを解いてから業務データを利用しているか。** `fetch(url).then(function (res) { return res.json(); }).then(function (order) { order.xxx; })` のようにラッパーを解かずに参照していないか（正しくは `body.data.xxx`）。`Accept: application/json` を指定しているか。未認証時（`404`）や `406`/想定外の `500` 等、ラップが保証されないケースをボディパース失敗として想定外エラー扱いにできているか。クライアントを本スキルで実装しない場合は、成功時・例外発生時のレスポンス構造をユーザに申し送りしたか
-12. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+12. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 13. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

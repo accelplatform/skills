@@ -74,7 +74,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのユ
 3. `assets/profile-basic-usage.md` を参照して実装（メソッドのシグネチャは `reference/profile-api-reference.md` を必ず参照し、記憶や推測で書かない）
 4. 実装は `UserProfileImageManagerFactory.getFactory().getService()` を経由し、`UserProfileImageManagerImpl` を直接 `new` しない
 5. `setUserProfileImage(UserImage)` を使う場合、`UserImage#setStorage()` に渡す `Storage<?>` の取得・クローズは `java-im-storage-usage` の規約（`try-with-resources` 必須等）に従う
-6. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+6. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -94,7 +94,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのユ
 3. `setUserProfileImage(UserImage)` を使う箇所で、`Storage<?>` の取得元が `try-with-resources` 等で適切にクローズされているか（`java-im-storage-usage` の規約に準拠しているか）
 4. `BizApiException` を握りつぶしていないか
 5. ユーザ基本情報の CRUD や IM-LogicDesigner 連携が本スキルの範囲に紛れ込んでいないか
-6. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+6. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 7. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

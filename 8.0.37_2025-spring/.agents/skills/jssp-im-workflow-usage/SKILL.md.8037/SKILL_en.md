@@ -7,16 +7,16 @@ description: Generates new IM-Workflow integration programs. Provides implementa
 
 Confirm the following before starting implementation. Do not proceed if any item is unchecked.
 
-- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) has been read and understood
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) has been read and understood
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
-- [ ] [jssp-function-container](../../../requirements/jssp-function-container/AGENTS.md) has been read and understood
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) has been read and understood
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) has been read and understood
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) has been read and understood
-- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) has been read and understood
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) has been read and understood
+- [ ] [jssp-accessibility](../../requirements/jssp-accessibility/AGENTS.md) has been read and understood
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) has been read and understood
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
+- [ ] [jssp-function-container](../../requirements/jssp-function-container/AGENTS.md) has been read and understood
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) has been read and understood
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) has been read and understood
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) has been read and understood
+- [ ] [jssp-presentation-page](../../requirements/jssp-presentation-page/AGENTS.md) has been read and understood
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) has been read and understood
 
 
 # IM-Workflow Program Generation Skill
@@ -32,17 +32,19 @@ This skill generates application/approval screens (`.html` + `.js`) and action p
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-presentation-page.md` | 🟢 **Required** — HTML structure, validation, id naming for the application/approval screens |
-| `jssp-function-container.md` | 🟢 **Required** — `init()` structure, receiving workflowOpenPage parameters |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 Required |
-| `jssp-error-handling.md` / `jssp-security.md` | 🟢 Required |
-| `jssp-2way-sql.md` | 🔴 **Not needed on the screen side** (the application / approval screens only submit via `workflowOpenPage` and have no DB access). Reference only when the action processing side uses `db.executeByTemplate` |
-| `jssp-logging.md` | 🟡 Only when implementing logging in action processing |
-| `jssp-accessibility.md` | 🟠 **Business-requirement-dependent** — apply thickly only when explicitly required by the spec; otherwise stay minimal (`imdsConfirm`, `aria-label`, `aria-hidden` on decorative icons, etc.) |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | 🟢 **Required** — HTML structure, validation, id naming for the application/approval screens |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **Required** — `init()` structure, receiving workflowOpenPage parameters |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` / `.agents/requirements/jssp-file-structure/AGENTS.md` | 🟢 Required |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-security/AGENTS.md` | 🟢 Required |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🔴 **Not needed on the screen side** (the application / approval screens only submit via `workflowOpenPage` and have no DB access). Reference only when the action processing side uses `db.executeByTemplate` |
+| `.agents/requirements/jssp-logging/AGENTS.md` | 🟡 Only when implementing logging in action processing |
+| `.agents/requirements/jssp-accessibility/AGENTS.md` | 🟠 **Business-requirement-dependent** — apply thickly only when explicitly required by the spec; otherwise stay minimal (`imdsConfirm`, `aria-label`, `aria-hidden` on decorative icons, etc.) |
 
 ## Generation Targets and Templates
 
 ### Screens
+
+The UI theme of screens follows "Choosing the UI Theme" in `.agents/requirements/jssp-presentation-page/AGENTS.md`. The templates in the table below are the source of truth for the feature-specific parts (`<imart type="workflowOpenPage">`, processing modal calls, integration with action processing, etc.), not for the HTML skeleton or UI components. If the `jssp-imds-theme` skill does not exist, or a non-imds theme is explicitly specified, reuse only the JS and the feature-specific parts, and build the HTML with that theme.
 
 | Generation Target | Template | Placement |
 |------------------|----------|-----------|
@@ -52,6 +54,10 @@ This skill generates application/approval screens (`.html` + `.js`) and action p
 | Approval screen (processing screen) — processing modal method ★recommended (.html / .js) | `assets/modal-approve-screen.md` | `{feature}/workflow/approve/` |
 | Confirmation screen — workflowOpenPage method (.html / .js) | `assets/simple-confirm-screen.md` | `{feature}/workflow/confirm/` |
 | Confirmation screen — processing modal method ★recommended (.html / .js) | `assets/modal-confirm-screen.md` | `{feature}/workflow/confirm/` |
+
+#### When Generating with the imds Theme
+
+Do not copy the template HTML verbatim. First Read the `jssp-imds-theme` skill's SKILL.md, the corresponding page template (`assets/imds-form-page.md` for input/approval screens), and the references of the UI components you use, then build the screen. Port only the feature-specific parts from the templates, and after generation run `validate-imds.js` in the imds compliance check of "Step 4".
 
 ### Batch Processing
 
@@ -67,7 +73,8 @@ This skill generates application/approval screens (`.html` + `.js`) and action p
 
 | Generation Target | Template | Placement |
 |------------------|----------|-----------|
-| Processing target person plugin (.js) | `assets/simple-authority-exec-event-listener.md` | `{feature}/workflow/plugin/` |
+| Processing target person plugin (.js) (SSJS implementation) | `assets/simple-authority-exec-event-listener.md` | `{feature}/workflow/plugin/` |
+| Processing target person plugin (IM-LogicDesigner integration) | `assets/logic-flow-authority-plugin.md` | `src/main/storage/public/im_logic/` |
 | Incomplete case deletion listener (.js) | `assets/simple-actv-matter-delete-listener.md` | `{feature}/workflow/` |
 | Completed case deletion listener (.js) | `assets/simple-cpl-matter-delete-listener.md` | `{feature}/workflow/` |
 | Past case deletion listener (.js) | `assets/simple-arc-matter-delete-listener.md` | `{feature}/workflow/` |
@@ -136,6 +143,8 @@ When the user makes requests such as:
 - "Implement branching conditions"
 - "Create arrival processing"
 - "Implement a processing target person plugin"
+- "I want to determine processing target persons with IM-LogicDesigner"
+- "I want to determine approvers dynamically with a logic flow"
 - "Add a case deletion listener"
 
 ## Implementation Steps
@@ -268,22 +277,27 @@ Pay special attention to the following items where bugs have occurred in the pas
 4. Are intra-mart internal tables (tables starting with `im`) directly referenced in SQL? (Only permitted with explicit user instruction)
 5. Are appropriate `max-width` values specified for select boxes and date inputs on screens?
 
-### Step 4: Re-Check Screen HTML for imds Compliance (Only When HTML Was Generated)
+### Step 4: Re-Check Screen HTML (Only When HTML Was Generated)
 
-**Always execute this step when `.html` files were generated** (apply / approve / detail / confirm screens, etc.). While `validate-workflow-code.js` detects known invalid class names like `imds-selectbox`, **it does not cover a complete cross-check against the reference**. Open `.agents/skills/jssp-imds-theme/reference/` and visually re-verify.
+**Always execute this step when `.html` files were generated** (apply / approve / detail / confirm screens, etc.).
 
-#### Procedure
+#### imds Compliance Check
 
-1. Scan each generated `.html` and enumerate the imds components in use (textbox, textarea, select, checkbox, radio, button, table, dialog, field, tab, calendar input, banner / inline message, etc.)
-2. For each component, **open `.agents/skills/jssp-imds-theme/reference/imds-html-{component}.md` with the Read tool** to re-verify (do not rely on memory)
-3. Cross-check the reference's class names, tag structure, and attributes against the generated HTML
+Applies to screens generated with the imds theme (skip it if a non-imds theme was explicitly specified). While `validate-workflow-code.js` detects known invalid class names like `imds-selectbox`, **it does not cover a complete cross-check against the reference**, so run the structural validation with `validate-imds.js` and visually re-verify against `.agents/skills/jssp-imds-theme/reference/`.
 
-#### Key Check Items
+##### Procedure
+
+1. Run `node .agents/skills/jssp-imds-theme/scripts/validate-imds.js <directory of the generated screens>` and fix until there are 0 errors
+2. Scan each generated `.html` and enumerate the imds components in use (textbox, textarea, select, checkbox, radio, button, table, dialog, field, tab, calendar input, banner / inline message, etc.)
+3. For each component, **open `.agents/skills/jssp-imds-theme/reference/imds-html-{component}.md` with the Read tool** to re-verify (do not rely on memory)
+4. Cross-check the reference's class names, tag structure, and attributes against the generated HTML
+
+##### Key Check Items
 
 | Aspect | Verification Point | Action on Mismatch |
 |--------|--------------------|--------------------|
 | Class name existence | Are non-existent classes like `imds-selectbox` / `imds-input` used? | Replace with the correct names from the reference (`imds-select` / `imds-textbox`, etc.) |
-| Field hierarchy | Is the nesting `imds-field-container has-accent-color` > `imds-field-group is-horizontal imds-w-15` > `imds-field-group-label` / `imds-field-group-control` > `imds-field` preserved (matching the assets `simple-apply-screen.md` / `simple-approve-screen.md` line-for-line)? | Re-copy the structure from the asset line by line. Do not simplify to standalone `imds-field` |
+| Field hierarchy | Is the nesting `imds-field-container has-accent-color` > `imds-field-group is-horizontal imds-w-15` > `imds-field-group-label` / `imds-field-group-control` > `imds-field` preserved (matching the form structure of `assets/imds-form-page.md` in `jssp-imds-theme`)? | Rebuild it to match the template structure. Do not simplify to standalone `imds-field` |
 | Required labels | Do required fields have `<span class="imds-required-label-required" data-required-label="必須">`? | Add it. Both the `imds-required-label-required` class **and** the `data-required-label` attribute are required |
 | Error display | Does `imds-field` have the `for=":fieldName:"` attribute, and is `<span class="imds-error-text" for=":fieldName:" style="display:none;"></span>` placed immediately inside? | Place per the convention. Do not forget the initial `display:none` |
 | Tables | Is the double wrapper `imds-table` > `imds-table-inner` > `table` used? | Add the missing wrappers |
@@ -292,7 +306,7 @@ Pay special attention to the following items where bugs have occurred in the pas
 | Icon buttons | Is text wrapped in `<span class="imds-button-text">` for buttons with both text and icon, and are icon-only buttons in normal size? | Follow `imds-html-icon-button.md` |
 | imuiCalendar | Is `floatable="true"` specified, and does `altField` reference a non-hidden input? | Fix per `imui-html-calendar.md` |
 | Banner / inline | Is custom CSS used for warning colors? (Should use `imds-banner-message` / `imds-inline-message`) | Replace with the corresponding state class (`is-warning`, etc.) |
-| Asset alterations | Has the HTML structure from the assets (`simple-apply-screen.md` / `simple-approve-screen.md`) been **altered by independent judgment** (`is-horizontal` → `is-vertical`, etc.)? | Revert to the asset structure. If a change is needed, confirm with the user beforehand |
+| Template alterations | Has the HTML structure of the `jssp-imds-theme` page templates been **altered by independent judgment** (`is-horizontal` → `is-vertical`, etc.)? | Revert to the template structure. If a change is needed, confirm with the user beforehand |
 
 #### Additional Checks Related to `<imart type="workflowOpenPage">` (workflowOpenPage Method Only)
 
@@ -311,7 +325,7 @@ Pay special attention to the following items where bugs have occurred in the pas
 - Is the apply button's event listener an `async` function? (required for `await imWorkflow.modal.showApply(...)`)
 - Are there no leftover pageType calls such as `workflowOpenPage('0')`? (not used in the processing modal method)
 - Are there no leftover `$imw*` bind variables such as `$imwFlowId` / `$imwMatterName`? (not needed in the processing modal method)
-- Have the temporary save button and back button been removed? (not needed in the processing modal method)
+- Is a Back button placed in the header, calling `imWorkflow.transition.returnTo()` on click? (For the apply screen, does the temporary save button call `imWorkflow.modal.showTemporarySave()`?)
 - Has the routing XML (`routing-jssp-config/*.xml`) been created?
 - Is the actual flow ID set in `flowId`, or is a TODO comment left? (confirm it is the correct value, not a placeholder)
 - For the temporary save / processing (approve/deny) / confirmation screens, is `imWorkflow.transition.afterProcess()` called after `then()` or `await`? (it must be called on both completion and cancellation)

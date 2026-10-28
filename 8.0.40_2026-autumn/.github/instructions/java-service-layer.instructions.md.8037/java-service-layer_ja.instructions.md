@@ -9,7 +9,7 @@ description: "サービス層実装規約（Java）（service パッケージの
 
 ## 概要
 
-サービス層はビジネスロジックを実装し、複数のリポジトリにまたがる操作をオーケストレーションする。アーキテクチャ全体のレイヤー構造は `java-architecture.md` を参照。
+サービス層はビジネスロジックを実装し、複数のリポジトリにまたがる操作をオーケストレーションする。アーキテクチャ全体のレイヤー構造は `.github/instructions/java-architecture.instructions.md` を参照。
 
 ## サービスインターフェースと実装
 
@@ -71,7 +71,7 @@ public {ResultType} process{BusinessOperation}({InputType} input) throws {Servic
 
 - **必須** `RepositoryException` は `{ServiceName}ServiceException` でラップすること（cause を保持）
 - **必須** 予期しない `RuntimeException` はそのままスローすること（キャッチしない）
-- 例外メッセージは日本語、トラブルシューティングに必要な変数値を含めること。ログ出力の要否・レベルは `java-logging.md` を参照
+- 例外メッセージは日本語、トラブルシューティングに必要な変数値を含めること。ログ出力の要否・レベルは `.github/instructions/java-logging.instructions.md` を参照
 
 ## 主要な要件
 
@@ -83,7 +83,7 @@ public {ResultType} process{BusinessOperation}({InputType} input) throws {Servic
 
 ## 関連
 
-- `java-architecture.md` - アーキテクチャ原則・レイヤー構造
-- `java-entity.md` - Entity クラス規約
-- `java-logging.md` - ログ出力規約
+- `.github/instructions/java-architecture.instructions.md` - アーキテクチャ原則・レイヤー構造
+- `.github/instructions/java-entity.instructions.md` - Entity クラス規約
+- `.github/instructions/java-logging.instructions.md` - ログ出力規約
 - 完全なサービス実装テンプレートは `.github/skills/java-im-service-layer/SKILL.md` を参照

@@ -72,7 +72,7 @@ JSSP 版（SSJS の `PublicStorage` 等、`d.ts/platform/storage/*.d.ts` で定�
 1. ユーザの要件をヒアリング（永続/一時のどちらか、テキスト/バイナリ、読み込み/書き込み/削除等の操作種別、配置先パッケージ）
 2. 用途に応じて `PublicStorage` / `SessionScopeStorage` / `SystemStorage` のいずれを使うか決定（上表参照。**ユーザの指定があればそちらを優先**）
 3. 該当する `assets/` テンプレートを参照して実装（メソッドのシグネチャは `reference/storage-api-reference.md` を必ず参照し、記憶や推測で書かない）
-4. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+4. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -92,7 +92,7 @@ JSSP 版（SSJS の `PublicStorage` 等、`d.ts/platform/storage/*.d.ts` で定�
 2. `PublicStorage` / `SessionScopeStorage` / `SystemStorage` の選択が用途（永続/一時、公開/内部）に合っているか
 3. `SessionScopeStorage` を使った一時ファイルが、処理完了後または例外時に確実に削除されるか
 4. ユーザ入力をパスに使う箇所でパストラバーサル対策が入っているか
-5. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+5. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 6. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

@@ -17,10 +17,10 @@ allowed-tools: Bash, Read, Write, Glob, mcp__im_workflow__list_authority_plugins
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-file-structure.md` | 🟢 必读 — XML 的输出位置（`src/main/storage/public/im_workflow/`） |
-| `jssp-naming.md` | 🟢 必读 — workflowName / shortName 等命名 |
-| `jssp-function-container.md` / `jssp-presentation-page.md` / `jssp-code-style.md` 等 | 🔴 **本技能单独不需要**（仅 XML 生成。`.js` / `.html` 的实现由 `jssp-im-workflow-usage` 负责） |
-| `jssp-2way-sql.md` / `jssp-accessibility.md` / `jssp-logging.md` 等 | 🔴 **本技能单独不需要** |
+| `.github/instructions/jssp-file-structure.instructions.md` | 🟢 必读 — XML 的输出位置（`src/main/storage/public/im_workflow/`） |
+| `.github/instructions/jssp-naming.instructions.md` | 🟢 必读 — workflowName / shortName 等命名 |
+| `.github/instructions/jssp-function-container.instructions.md` / `.github/instructions/jssp-presentation-page.instructions.md` / `.github/instructions/jssp-code-style.instructions.md` 等 | 🔴 **本技能单独不需要**（仅 XML 生成。`.js` / `.html` 的实现由 `jssp-im-workflow-usage` 负责） |
+| `.github/instructions/jssp-2way-sql.instructions.md` / `.github/instructions/jssp-accessibility.instructions.md` / `.github/instructions/jssp-logging.instructions.md` 等 | 🔴 **本技能单独不需要** |
 
 ## 生成对象
 

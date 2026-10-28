@@ -76,7 +76,7 @@ node scripts/fetch-logic-swagger.js --base-url http://127.0.0.1/imart --route <�
 按照 `reference/swagger-routing-call.md` 中的 fetch 调用模式，在 JSSP 展示页面的 `<script>` 中实现代码。完整示例参见 `assets/sample-call.md`。
 
 实现时的必须规则：
-- 调用 URL 以 `logic/api/<route>` 的**相对路径**指定（遵循 `jssp-presentation-page.md` 的 URL 指定方针）
+- 调用 URL 以 `logic/api/<route>` 的**相对路径**指定（遵循 `.agents/requirements/jssp-presentation-page/AGENTS.md` 的 URL 指定方针）
 - 成功/失败判定使用 **HTTP 状态码（`response.ok`）**，而非 JSSP 自有的 `{error, errorMessage}` 格式——路由的响应就是流程的输出数据本身，不遵循 JSSP 的 API 响应规约
 - 请求体的字段需严格对应 `definitions` 的 `properties`，不得凭猜测增减字段
 - 若类型不明或 spec 信息不足，应在生成代码前与用户确认
@@ -85,11 +85,11 @@ node scripts/fetch-logic-swagger.js --base-url http://127.0.0.1/imart --route <�
 
 | 规约/技能 | 处理方式 |
 |------|---------|
-| `jssp-presentation-page.md` | 🟢 必读 — URL 指定方针・`fetch` 调用的基本形式 |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | 🟢 必读 — URL 指定方针・`fetch` 调用的基本形式 |
 | `reference/swagger-routing-call.md`（本技能） | 🟢 必读 — swagger 结构解读・fetch 调用模式・已知注意事项 |
 | `jssp-im-logic-generator` 的 `reference/route_definition.schema.json` / `routing-response.md` | 🟡 参考 — 路由定义侧的规格（`secured`、`responseType` 等），用于佐证 swagger 中不包含的信息 |
-| `jssp-error-handling.md` | 🔴 本技能单独使用时不需要 — 逻辑流程 API 的响应不遵循 JSSP 的 API 响应规约 |
-| `jssp-security.md` | 🟡 参考 — 仅在确认目标路由 `secured: true` 时才附加 CSRF 令牌（`X-Intramart-Secure-Token`）头 |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` | 🔴 本技能单独使用时不需要 — 逻辑流程 API 的响应不遵循 JSSP 的 API 响应规约 |
+| `.agents/requirements/jssp-security/AGENTS.md` | 🟡 参考 — 仅在确认目标路由 `secured: true` 时才附加 CSRF 令牌（`X-Intramart-Secure-Token`）头 |
 
 ## 参照
 

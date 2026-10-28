@@ -1,21 +1,21 @@
 ---
 name: jssp-im-contents-search-generator
-description: Generates custom Crawlers for IM-ContentsSearch (Solr index registration/deletion Jobs) and custom content display Search Result Templates. Use when mentioned: create a Crawler, register to Solr, enable full-text search, add content search, extend IM-ContentsSearch, create a Search Result Template. Combine with jssp-im-job-generator to also guide Job registration steps.
+description: Generates custom Crawlers for IM-ContentsSearch (Solr index registration/deletion Jobs) and custom content display Search Result Templates. Use when mentioned "create a Crawler", "register to Solr", "enable full-text search", "add content search", "extend IM-ContentsSearch", or "create a Search Result Template". Combine with jssp-im-job-generator to also guide Job registration steps.
 ---
 
 ■■ Required Rules Checklist (Mandatory) ■■
 
 Confirm the following before starting implementation. Do not proceed if any item is unchecked.
 
-- [ ] [jssp-accessibility](../../../requirements/jssp-accessibility/AGENTS.md) has been read and understood
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) has been read and understood
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) has been read and understood
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) has been read and understood
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) has been read and understood
-- [ ] [jssp-presentation-page](../../../requirements/jssp-presentation-page/AGENTS.md) has been read and understood
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) has been read and understood
+- [ ] [jssp-accessibility](../../requirements/jssp-accessibility/AGENTS.md) has been read and understood
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) has been read and understood
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) has been read and understood
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) has been read and understood
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) has been read and understood
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) has been read and understood
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) has been read and understood
+- [ ] [jssp-presentation-page](../../requirements/jssp-presentation-page/AGENTS.md) has been read and understood
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) has been read and understood
 
 
 # IM-ContentsSearch Extension Program Generation Skill
@@ -42,12 +42,12 @@ Both Crawler-only and template-only generation are supported depending on the si
 
 | Convention | Handling |
 |------|---------|
-| `jssp-function-container.md` | 🟢 **Required** — `init()` structure of the template JS |
-| `jssp-naming.md` / `jssp-code-style.md` | 🟢 Required |
-| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **Required** — Crawlers require detailed logging and error handling |
-| `jssp-2way-sql.md` | 🟡 **Reference only when using 2WaySQL** (e.g., when using 2WaySQL for Crawler source queries) |
-| `jssp-presentation-page.md` | 🟡 Basic structure of the template HTML (imcs-specific classes: refer to this skill's assets first) |
-| `jssp-security.md` | 🟡 Refer to the XSS countermeasure section when implementing template HTML. Since search result content (the `request` argument) comes from Apache Solr, the risk of stored XSS is not zero. Use `textContent` for DOM manipulation and restrict `innerHTML` to iAP-internally-generated HTML only |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **Required** — `init()` structure of the template JS |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` | 🟢 Required |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-logging/AGENTS.md` | 🟢 **Required** — Crawlers require detailed logging and error handling |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🟡 **Reference only when using 2WaySQL** (e.g., when using 2WaySQL for Crawler source queries) |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` | 🟡 Basic structure of the template HTML (imcs-specific classes: refer to this skill's assets first) |
+| `.agents/requirements/jssp-security/AGENTS.md` | 🟡 Refer to the XSS countermeasure section when implementing template HTML. Since search result content (the `request` argument) comes from Apache Solr, the risk of stored XSS is not zero. Use `textContent` for DOM manipulation and restrict `innerHTML` to iAP-internally-generated HTML only |
 
 ---
 

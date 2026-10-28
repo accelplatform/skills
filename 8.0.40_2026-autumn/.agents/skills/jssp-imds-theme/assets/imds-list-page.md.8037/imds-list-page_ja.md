@@ -9,13 +9,13 @@ imds テーマのコンポーネントを組み合わせた、業務一覧画面
 
 | コンポーネント | reference | 本例での用途 |
 |---------------|-----------|-------------|
-| Header | [header.md](../reference/header.md) | アイコン付きページヘッダ |
-| InputGroup | [input-group.md](../reference/input-group.md) | 検索キーワード入力欄 |
-| Textbox | [textbox.md](../reference/textbox.md) | 検索テキスト入力 |
-| Button | [button.md](../reference/button.md) | 検索ボタン・新規作成ボタン |
-| Table | [table.md](../reference/table.md) | データ一覧テーブル |
-| Pagination | [pagination.md](../reference/pagination.md) | ページ切替ナビゲーション |
-| IconFont | [icon-font.md](../reference/icon-font.md) | 検索アイコン |
+| Header | [imds-html-header.md](../reference/imds-html-header.md) | アイコン付きページヘッダ |
+| InputGroup | [imds-html-input-group.md](../reference/imds-html-input-group.md) | 検索キーワード入力欄 |
+| Textbox | [imds-html-textbox.md](../reference/imds-html-textbox.md) | 検索テキスト入力 |
+| Button | [imds-html-button.md](../reference/imds-html-button.md) | 検索ボタン・新規作成ボタン |
+| Table | [imds-html-table.md](../reference/imds-html-table.md) | データ一覧テーブル |
+| Pagination | [imds-html-pagination.md](../reference/imds-html-pagination.md) | ページ切替ナビゲーション |
+| IconFont | [imds-html-icon-font.md](../reference/imds-html-icon-font.md) | 検索アイコン |
 
 ## 全体構成
 
@@ -72,12 +72,12 @@ div.imds-container.pgstyle-layout-container    ... ルート div（intra-mart �
 <form id="search-form" class="imds-form">
   <div class="pgstyle-toolbar imds-mb-2">
     <div class="imds-input-group">
-      <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="検索キーワード" aria-label="検索キーワード">
+      <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="商品コード・商品名で検索" aria-label="商品コード・商品名で検索">
       <button type="submit" title="検索" class="imds-button is-outlined">
         <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
       </button>
     </div>
-    <button type="button" id="create-button" class="imds-button is-primary">新規作成</button>
+    <button type="button" id="create-button" class="imds-button is-primary" style="min-width: 8em;">新規作成</button>
   </div>
 </form>
 ```
@@ -96,6 +96,8 @@ document.getElementById('search-form').addEventListener('submit', function (even
 - 「新規作成」ボタンは検索とは無関係の操作のため `type="button"` のままとし、`<form>` の submit に巻き込まれないようにする
 - 検索ボタンには `title="検索"` でアクセシビリティを確保
 - `imds-mb-2` でテーブルとの間にマージンを設ける
+- 検索欄の幅は `<style>` に `.pgstyle-toolbar > .imds-input-group { max-width: 30em; flex: 1 0 20em; }` を定義して指定する（「実装上の注意」の CSS 参照）。値はプレースホルダーや想定される検索キーワードの長さに合わせて画面ごとに調整してよい。新規クラスは作らず子孫セレクタで指定する（imds 既定の `.imds-input-group` と詳細度が並び、定義順次第で上書きできなくなるのを避けるため）
+- 新規作成ボタンはアイコンなしを基準とし（必要性があればアイコンを付けてもよい）、`style="min-width: 8em;"` で最小幅を指定する
 
 **検索ボタンの色は `is-primary` にしない（重要）:**
 検索ボタンには **無色（プレーンな `imds-button`）または `is-outlined` を使い、`is-primary` は付与しない**。
@@ -105,7 +107,10 @@ document.getElementById('search-form').addEventListener('submit', function (even
 
 **検索入力の `aria-label` は必須（重要）:**
 検索テキストボックスは `placeholder` はあっても可視の `<label>` を持たないため、スクリーンリーダー利用者が入力欄の用途を判別できない。
-**可視ラベルの無い検索入力には必ず `aria-label`（例: `aria-label="検索キーワード"` や `aria-label="検索"`）を付与すること。** `placeholder` は `aria-label` の代替にならない（フォーカス時に消える・支援技術での扱いが不安定なため）。
+**可視ラベルの無い検索入力には必ず `aria-label`（例: `aria-label="商品コード・商品名で検索"`）を付与すること。** `placeholder` は `aria-label` の代替にならない（フォーカス時に消える・支援技術での扱いが不安定なため）。
+
+**検索入力の `placeholder` / `aria-label` の表記:**
+「〈検索対象の項目名〉で検索」とする（例: 「品目名で検索」「商品コード・商品名で検索」）。「検索キーワード」のような汎用語や「品目名」のような項目名だけにはしない（何で検索できるかを利用者に示し、画面間で表記を統一するため）。`placeholder` と `aria-label` は同じ文言にする。
 
 ### 2-B. 検索欄なし（新規作成ボタンのみ）
 
@@ -113,10 +118,7 @@ document.getElementById('search-form').addEventListener('submit', function (even
 
 ```html
 <div style="display:flex; justify-content:flex-end; margin-bottom: 0.75em;">
-  <button type="button" id="create-button" class="imds-button is-primary">
-    <span class="imds-icon"><i class="fa-solid fa-plus"></i></span>
-    <span class="imds-button-text">新規作成</span>
-  </button>
+  <button type="button" id="create-button" class="imds-button is-primary" style="min-width: 8em;">新規作成</button>
 </div>
 ```
 
@@ -131,9 +133,8 @@ document.getElementById('search-form').addEventListener('submit', function (even
     <table>
       <thead>
         <tr>
-          <th class="col-edit has-text-centered"><span>編集</span></th>
-          <th><span>商品コード</span></th>
           <th><span>商品名</span></th>
+          <th><span>商品コード</span></th>
           <th><span>単価</span></th>
           <th><span>在庫数</span></th>
           <th><span>倉庫番号</span></th>
@@ -148,15 +149,27 @@ document.getElementById('search-form').addEventListener('submit', function (even
 
 **ポイント:**
 - `tbody` は空で定義し、`id="stock-table-body"` を指定して JavaScript から行を動的に挿入する
-- 「編集」列には独自クラス `col-edit` を付与し、列幅を CSS で制御する
+- 「編集」等の操作専用列は設けず、行を識別する主要項目（本例では商品名）を先頭列に置き、セル内リンク（`<td><span><a href="...">商品名</a></span></td>`）で編集・詳細画面へ遷移させる
+- リンクのテキストは `textContent`、`href` は `setAttribute` で設定する（`innerHTML` の文字列連結で属性値を組み立てると、属性値からの抜け出しによる XSS の余地が生じるため）
+
+```javascript
+const link = document.createElement('a');
+link.textContent = item.productName;
+link.setAttribute('href', 'sample/stock/edit?productCode=' + encodeURIComponent(item.productCode));
+const span = document.createElement('span');
+span.appendChild(link);
+const cell = document.createElement('td');
+cell.appendChild(span);
+```
 - `is-area-bordered is-sticky is-narrow is-hoverable` と `style="height: 100%"` を付与し、`pgstyle-layout-content` のスクロール領域いっぱいにテーブルを表示する（`is-sticky` によりヘッダ固定・縦スクロールにも対応する）
+- `is-narrow` は必須ではないが、一覧テーブルでは標準で付与する（一度に表示する行数を増やし、情報密度を高めるため）
 - 列に `has-text-right` で右寄せする数値列がある場合は、`imds-table` に `is-bordered` も追加する
 - 必要に応じて `imds-table` に `is-stripe` 等を追加できる
 
 ## 4. ページネーション
 
 テーブル下部にページ切替ナビゲーションを配置する領域。
-`id="pagination"` を指定し、JavaScript で `imds-pagination` を動的に生成する。
+`id="pagination"` を指定し、JavaScript で `imds-pagination` を動的に生成する。生成する `nav` には `imds-pagination is-small` を付与し、小サイズで表示する。
 
 ```html
 <div class="imds-mt-2" id="pagination"></div>
@@ -165,6 +178,7 @@ document.getElementById('search-form').addEventListener('submit', function (even
 **ポイント:**
 - `imds-mt-2` でテーブルとの間に上マージンを設ける
 - ページネーションの HTML は JavaScript で動的に生成する（検索結果の件数に応じてページ数が変動するため）
+- 検索結果が 0 件の場合は `#pagination` 自体を `style.display = 'none'` で非表示にし、1 件以上になったら `style.display = ''` に戻す（中身を空にするだけでは `imds-mt-2` の余白が残るため）
 
 ## 全体コード
 
@@ -188,12 +202,12 @@ document.getElementById('search-form').addEventListener('submit', function (even
       <form id="search-form" class="imds-form">
         <div class="pgstyle-toolbar imds-mb-2">
           <div class="imds-input-group">
-            <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="検索キーワード" aria-label="検索キーワード">
+            <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="商品コード・商品名で検索" aria-label="商品コード・商品名で検索">
             <button type="submit" title="検索" class="imds-button is-outlined">
               <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
             </button>
           </div>
-          <button type="button" id="create-button" class="imds-button is-primary">新規作成</button>
+          <button type="button" id="create-button" class="imds-button is-primary" style="min-width: 8em;">新規作成</button>
         </div>
       </form>
       <div class="imds-table is-area-bordered is-sticky is-narrow is-hoverable" id="stock-table" style="height: 100%">
@@ -201,9 +215,8 @@ document.getElementById('search-form').addEventListener('submit', function (even
           <table>
             <thead>
               <tr>
-                <th class="col-edit has-text-centered"><span>編集</span></th>
-                <th><span>商品コード</span></th>
                 <th><span>商品名</span></th>
+                <th><span>商品コード</span></th>
                 <th><span>単価</span></th>
                 <th><span>在庫数</span></th>
                 <th><span>倉庫番号</span></th>
@@ -223,7 +236,6 @@ document.getElementById('search-form').addEventListener('submit', function (even
 ## 実装上の注意
 
 - `pgstyle-toolbar` は imds テーマの標準クラスではなく、検索欄と新規作成ボタンの横並びレイアウト用の独自クラスである
-- `col-edit` も独自クラスであり、編集列の幅調整に使用する
 - `:searchKeywords:` はプレースホルダーであり、実装時に一意の ID に置き換えること
 - テーブルの行データとページネーションは JavaScript で動的に生成・制御する
 - 単価・在庫数など数値列は `td` に `has-text-right` を付与して右寄せにすることを推奨
@@ -262,6 +274,11 @@ document.getElementById('search-form').addEventListener('submit', function (even
     width: 100%;
     justify-content: space-between;
     gap: 0.5em 1em;
+  }
+  /* 検索欄の幅（値は画面ごとに調整してよい） */
+  .pgstyle-toolbar > .imds-input-group {
+    max-width: 30em;
+    flex: 1 0 20em;
   }
   ```
 
@@ -307,7 +324,7 @@ div.imds-container.pgstyle-layout-container（固定ヘッダーレイアウト�
   <!-- 左カラム: ナビゲーション（横幅 250px 固定） -->
   <nav style="width:250px; flex:0 0 250px; display:flex; flex-direction:column;">
     <div class="imds-input-group imds-mb-2">
-      <input type="search" class="imds-textbox" placeholder="カテゴリ検索" aria-label="カテゴリ検索">
+      <input type="search" class="imds-textbox" placeholder="カテゴリ名で検索" aria-label="カテゴリ名で検索">
       <button type="button" title="検索" class="imds-button is-outlined is-small">
         <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
       </button>
@@ -333,12 +350,12 @@ div.imds-container.pgstyle-layout-container（固定ヘッダーレイアウト�
     <form id="search-form" class="imds-form">
       <div class="pgstyle-toolbar imds-mb-2">
         <div class="imds-input-group">
-          <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="検索キーワード" aria-label="検索キーワード">
+          <input id=":searchKeywords:" type="search" class="imds-textbox" placeholder="商品コード・商品名で検索" aria-label="商品コード・商品名で検索">
           <button type="submit" title="検索" class="imds-button is-outlined">
             <span class="imds-icon is-small"><i class="fa-solid fa-magnifying-glass"></i></span>
           </button>
         </div>
-        <button type="button" id="create-button" class="imds-button is-primary">新規作成</button>
+        <button type="button" id="create-button" class="imds-button is-primary" style="min-width: 8em;">新規作成</button>
       </div>
     </form>
     <div class="imds-table is-area-bordered is-sticky is-narrow is-hoverable" id="stock-table" style="height: 100%">
@@ -346,8 +363,8 @@ div.imds-container.pgstyle-layout-container（固定ヘッダーレイアウト�
         <table>
           <thead>
             <tr>
-              <th><span>商品コード</span></th>
               <th><span>商品名</span></th>
+              <th><span>商品コード</span></th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -375,9 +392,8 @@ div.imds-container.pgstyle-layout-container（固定ヘッダーレイアウト�
     <table>
       <thead>
         <tr>
-          <th class="col-edit has-text-centered"><span>編集</span></th>
-          <th><span>商品コード</span></th>
           <th><span>商品名</span></th>
+          <th><span>商品コード</span></th>
         </tr>
       </thead>
       <tbody id="stock-table-body"></tbody>
@@ -431,6 +447,8 @@ div.imds-container.pgstyle-layout-container（固定ヘッダーレイアウト�
 **ポイント:**
 - 「検索結果 0 件」の場合、テーブルが存在する画面ではテーブルヘッダ（`thead`）はそのまま表示し、`tbody` 部分に空状態メッセージを表示する（列見出し自体は消さない）
 - どちらのパターンでもページネーションは表示しない
+- 「データ未登録」の場合は、検索欄・新規作成ボタンを含む操作エリア、テーブル、ページネーションをすべて非表示にし、EmptyState のみを表示する（検索欄は不要で、空のテーブルを表示する意義も薄いため）。一覧エリアと空状態エリアを別ブロックにして、データ有無で表示を切り替える
+- 「データ未登録」の EmptyState はサイズクラスを付けない既定サイズ（`is-large` 相当）とし、`imds-empty-state-content` 内に新規作成ボタンを配置する（`is-small` / `is-x-small` ではアクションボタンを使用できないため）
 - 具体的な `imds-empty-state` の HTML 構造・バリエーションは `reference/imds-html-empty-state.md` を参照すること（本ファイルでは概要のみ扱う）
 
 ## 9. 検索条件保持ルール（画面遷移・状態管理）

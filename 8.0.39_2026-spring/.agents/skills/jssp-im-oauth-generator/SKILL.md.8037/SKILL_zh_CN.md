@@ -7,13 +7,13 @@ description: 新建 intra-mart Accel Platform OAuth 提供方功能（im_oauth�
 
 实施前必须确认以下内容。有未确认项目时不得开始。
 
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) 已参考并理解内容
 
 
 # im_oauth REST-API 资源生成技能

@@ -22,7 +22,7 @@ JSSP 版（`jssp-im-workflow-usage`）与 Java 版针对相同的扩展点，是
 | 错误通知 | `result.resultFlag = false; result.message = e.message;` | 让方法的 `throws Exception` 直接传播（由工作流引擎侧捕获并作为错误处理） |
 | 注册方法 | 在导入用 XML 的 `plugins[].parameter` 中设置 **JSSP 文件路径**（不含扩展名） | 在导入用 XML 的 `plugins[].parameter` 中设置 **实现类的完全限定名（FQCN）** |
 | 配置 | `src/main/jssp/src/{功能名}/workflow/...` | `src/main/java/{basePackage}/{功能名}/workflow/...`（需编译后配置到 Java 运行环境的类路径上） |
-| 编码规约 | `.agents/requirements/` 下的 jssp 系规约一套 | `.agents/requirements/` 下的 java 系规约一套（`java-naming.md` / `java-code-style.md` / `java-javadoc.md` / `java-logging.md`） |
+| 编码规约 | `.agents/requirements/` 下的 jssp 系规约一套 | `.agents/requirements/` 下的 java 系规约一套（`.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` / `.agents/requirements/java-logging/AGENTS.md`） |
 
 **本技能生成的终究只是 Java 源文件（`.java`）。** 工作流定义侧的导入用 XML（在 `plugins[].parameter` 中设置 FQCN 的部分），请参照 `base-im-workflow-generator` 的 Java 对应章节（「注册 Java 类执行（JavaEE 开发模型）时」）生成。
 
@@ -36,7 +36,7 @@ JSSP 版（`jssp-im-workflow-usage`）与 Java 版针对相同的扩展点，是
 | `.agents/requirements/java-logging/AGENTS.md` | 🟡 实现日志时（`Logger.getLogger(XxxClass.class)`） |
 | `.agents/requirements/jssp-error-handling/AGENTS.md` | 🟡 **仅作为思路参考**（错误代码体系的思想。实现时需转换为 Java 的异常机制） |
 
-`jssp-*` 系列规约（`jssp-code-style.md` 等）不在本技能范围内（不适用于 Java 文件）。
+`jssp-*` 系列规约（`.agents/requirements/jssp-code-style/AGENTS.md` 等）不在本技能范围内（不适用于 Java 文件）。
 
 ## 生成对象与模板
 
@@ -82,7 +82,7 @@ JSSP 版（`jssp-im-workflow-usage`）与 Java 版针对相同的扩展点，是
    - **未使用的方法保留父类的默认实现**（空的 `return null;` / `return true;` / 不做任何事）。不要强行填充动作处理中不实现的方法（例如不使用 `reserve`）
    - 参数类的字段务必参照 `reference/parameter-reference.md`（请勿凭记忆或猜测编写 `getXxx()`）
 3. 决定包・配置路径（参见下方「配置规约」）
-4. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+4. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 5. 告知用户需要在导入用 XML 侧的 `plugins[].parameter` 中设置所生成类的 FQCN（参见 `base-im-workflow-generator` 的 Java 对应章节。本技能本身不生成 XML）
 
 ## 配置规约
@@ -161,7 +161,7 @@ src/main/java/{basePackage 的路径分隔}/{功能名}/workflow/{种类}/{Class
 
 1. 继承来源的类・实现的接口的 FQCN 是否与 `reference/parameter-reference.md` 中的记载一致
 2. 覆盖的方法签名（参数类型・返回值类型・`throws`）是否与抽象类/接口的定义完全一致（添加 `@Override` 让编译器进行验证）
-3. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+3. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 4. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。若项目另有针对 Java 的代码评审・安全检查技能，请使用该技能
 
 ## 与其他技能的边界

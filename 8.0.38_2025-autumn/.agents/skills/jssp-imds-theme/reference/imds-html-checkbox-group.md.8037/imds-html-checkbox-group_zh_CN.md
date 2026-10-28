@@ -87,9 +87,38 @@ CheckboxGroup 是控制 Checkbox 排列方向的组件。
 </div>
 ```
 
+### 等间距排列（imds-w-33）
+
+选项较多跨越多行时，为提高可读性，在 `div.imds-checkbox-group` 上添加 `imds-w-33`，将各选项等间距（三等分）排列。即使标签字数参差不齐，列也不会错位。
+
+```html
+<div class="imds-field">
+  <div class="imds-field-label"><label for="todo-replace-:ra:">Label</label></div>
+  <div class="imds-field-control">
+    <div class="imds-checkbox-group is-horizontal imds-w-33">
+      <label class="imds-checkbox">
+        <input type="checkbox" />
+        <span>xxxxxxxxxx</span>
+      </label>
+      <label class="imds-checkbox">
+        <input type="checkbox" />
+        <span>xxx</span>
+      </label>
+      <label class="imds-checkbox">
+        <input type="checkbox" />
+        <span>xxxxx</span>
+      </label>
+      <!-- 根据需要重复相同结构的 label -->
+    </div>
+  </div>
+</div>
+```
+
+不添加 `imds-w-33` 时，下一选项的起始位置会因选项字数不同而参差不齐，降低可读性（NG 示例），因此选项较多时必须添加。
+
 ## 无障碍支持
 
-- 当选项较多跨越多行时，请等间距排列以提高可读性
+- 选项较多跨越多行时，为提高可读性，使用 `imds-w-33` 等间距排列
 
 ## 实现注意事项
 
@@ -97,3 +126,5 @@ CheckboxGroup 是控制 Checkbox 排列方向的组件。
 - 各复选框的结构遵循 Checkbox 组件规范
 - 在输入表单中使用时，需用 Field（`imds-field`）包裹
 - 验证错误时，在 `imds-field` 上添加 `imds-validation-error`，并用 `imds-error-text` 显示错误消息
+- 不使用 `fieldset`/`legend`。分组使用 `imds-field` + `imds-checkbox-group` + `label` 的组合（实际 DOM 中不存在使用 `fieldset`/`legend` 的示例）
+- 选项较多跨越多行时，添加 `imds-w-33` 进行等间距排列

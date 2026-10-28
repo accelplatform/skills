@@ -94,7 +94,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart IM-Copi
 4. 实现自定义工具时，为输入参数 DTO 添加 `SchemaProperties` 注解，并通过 `JsonSchemaGenerator.generateSchema(...)` 生成模式
 5. 需要与 IM-Copilot 聊天界面对接时，创建标注了 `@Assistant` 的 `AbstractCopilotAssistant<T>` 子类（在 `doExecute` 内构建并执行 `Agent`）。**参数类 `T` 必须是 `AssistantParameter`（`jp.co.intra_mart.foundation.copilot.assistant.model`）本身，或其子类**（参见 `reference/assistant-integration-api-reference.md` 中的「`AssistantParameter`」；使用自定义 POJO 会导致聊天界面无法输入提示词）
 6. 创建了 Assistant 时，**务必同时完成 `AssistantScanPackageFactory` 的实现・注册，以及 IM-Authz 权限的授予**（二者缺一，Assistant 都不会出现在助手一览中。参见 `assets/copilot-agent-basic-usage.md` 模式 9）
-7. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+7. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
@@ -126,7 +126,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart IM-Copi
 5. `AgentException`/`CopilotAssistantException` 等受检异常是否被吞掉未处理
 6. 创建了 Assistant 时，参数类 `T` 是否为 `AssistantParameter` 本身或其子类（若仍为自定义 POJO，聊天界面将无法输入提示词）
 7. 创建了 Assistant 时，是否已实现・注册 `AssistantScanPackageFactory`，是否已在 IM-Authz 中为资源 `im-copilot-assistant://assistant/<助手ID>` 授予许可策略（二者均满足才会出现在助手一览中）
-8. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+8. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 9. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目另有 Java 专用的代码评审/安全检查技能，请使用该技能
 
 ## 与其他技能的边界

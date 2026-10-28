@@ -17,10 +17,10 @@ This skill generates **only XML definition files** (`.xml`); it does not impleme
 
 | Convention | Handling |
 |------------|----------|
-| `jssp-file-structure.md` | 🟢 Required — the XML output directory (`src/main/storage/public/im_workflow/`) |
-| `jssp-naming.md` | 🟢 Required — naming such as workflowName / shortName |
-| `jssp-function-container.md` / `jssp-presentation-page.md` / `jssp-code-style.md`, etc. | 🔴 **Not needed for this skill alone** (XML generation only; `.js` / `.html` implementation is the responsibility of `jssp-im-workflow-usage`) |
-| `jssp-2way-sql.md` / `jssp-accessibility.md` / `jssp-logging.md`, etc. | 🔴 **Not needed for this skill alone** |
+| `.github/instructions/jssp-file-structure.instructions.md` | 🟢 Required — the XML output directory (`src/main/storage/public/im_workflow/`) |
+| `.github/instructions/jssp-naming.instructions.md` | 🟢 Required — naming such as workflowName / shortName |
+| `.github/instructions/jssp-function-container.instructions.md` / `.github/instructions/jssp-presentation-page.instructions.md` / `.github/instructions/jssp-code-style.instructions.md`, etc. | 🔴 **Not needed for this skill alone** (XML generation only; `.js` / `.html` implementation is the responsibility of `jssp-im-workflow-usage`) |
+| `.github/instructions/jssp-2way-sql.instructions.md` / `.github/instructions/jssp-accessibility.instructions.md` / `.github/instructions/jssp-logging.instructions.md`, etc. | 🔴 **Not needed for this skill alone** |
 
 ## Generation Targets
 

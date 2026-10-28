@@ -22,7 +22,7 @@ JSSP 版（`jssp-im-workflow-usage`）と Java 版は、同じ拡張ポイント
 | エラー通知 | `result.resultFlag = false; result.message = e.message;` | メソッドの `throws Exception` をそのまま伝播させる（ワークフローエンジン側で捕捉しエラー扱いになる） |
 | 登録方法 | インポート用 XML の `plugins[].parameter` に **JSSP ファイルパス**（拡張子なし） | インポート用 XML の `plugins[].parameter` に **実装クラスの完全修飾名（FQCN）** |
 | 配置 | `src/main/jssp/src/{機能名}/workflow/...` | `src/main/java/{basePackage}/{機能名}/workflow/...`（コンパイルされ Java 実行環境のクラスパス上に配置される必要がある） |
-| コーディング規約 | `.agents/requirements/` 配下の jssp 系規約一式 | `.agents/requirements/` 配下の java 系規約一式（`java-naming.md` / `java-code-style.md` / `java-javadoc.md` / `java-logging.md`） |
+| コーディング規約 | `.agents/requirements/` 配下の jssp 系規約一式 | `.agents/requirements/` 配下の java 系規約一式（`.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` / `.agents/requirements/java-logging/AGENTS.md`） |
 
 **このスキルが生成するのはあくまで Java ソースファイル（`.java`）である。** ワークフロー定義側のインポート用 XML（`plugins[].parameter` に FQCN を設定する部分）は `base-im-workflow-generator` の Java 対応セクション（「Java クラス実行（JavaEE 開発モデル）を登録する場合」）を参照して生成すること。
 
@@ -36,7 +36,7 @@ JSSP 版（`jssp-im-workflow-usage`）と Java 版は、同じ拡張ポイント
 | `.agents/requirements/java-logging/AGENTS.md` | 🟡 ログ実装時（`Logger.getLogger(XxxClass.class)`） |
 | `.agents/requirements/jssp-error-handling/AGENTS.md` | 🟡 **考え方のみ参考にする**（エラーコード体系の思想。実装は Java の例外機構に読み替える） |
 
-`jssp-*` の規約（`jssp-code-style.md` 等）はこのスキルの対象外（Java ファイルには適用しない）。
+`jssp-*` の規約（`.agents/requirements/jssp-code-style/AGENTS.md` 等）はこのスキルの対象外（Java ファイルには適用しない）。
 
 ## 生成対象とテンプレート
 
@@ -82,7 +82,7 @@ JSSP 版（`jssp-im-workflow-usage`）と Java 版は、同じ拡張ポイント
    - **未使用のメソッドは継承元のデフォルト実装のまま残す**（空の `return null;` / `return true;` / 何もしない）。アクション処理で実装しないメソッド（例: `reserve` を使わない）まで無理に埋めない
    - パラメータクラスのフィールドは `reference/parameter-reference.md` を必ず参照する（記憶や推測で `getXxx()` を書かない）
 3. パッケージ・配置先パスを決定（下記「配置規約」参照）
-4. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+4. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 5. インポート用 XML 側の `plugins[].parameter` に生成したクラスの FQCN を設定する必要がある旨をユーザに案内する（`base-im-workflow-generator` の Java 対応セクション参照。本スキルは XML 自体は生成しない）
 
 ## 配置規約
@@ -161,7 +161,7 @@ src/main/java/{basePackageのパス区切り}/{機能名}/workflow/{種別}/{Cla
 
 1. 継承元クラス・実装インタフェースの FQCN が `reference/parameter-reference.md` の記載と一致しているか
 2. オーバーライドしたメソッドのシグネチャ（引数型・戻り値型・`throws`）が抽象クラス/インタフェースの定義と完全一致しているか（`@Override` を付けてコンパイラに検証させること）
-3. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+3. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 4. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

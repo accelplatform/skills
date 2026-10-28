@@ -6,7 +6,7 @@ AccordionGroup は、複数の Accordion をグループ化するための部品
 
 - 抽出元URL: https://document.intra-mart.jp/design/?path=/docs/components-accordion-accordiongroup--documentation
 - 基本クラス: imds-accordion-group
-- 個別のアコーディオンの詳細は [accordion](accordion.md) を参照
+- 個別のアコーディオンの詳細は [accordion](imds-html-accordion.md) を参照
 
 ## 全体構造
 
@@ -42,7 +42,7 @@ imds-accordion-group                      # グループコンテナ（枠線・
 | is-medium | imds-accordion-group | 中サイズ | オプション |
 | is-large | imds-accordion-group | 大サイズ | オプション |
 
-※ 各アコーディオン内部のクラス（imds-accordion-title, imds-accordion-content 等）は [accordion](accordion.md) を参照。
+※ 各アコーディオン内部のクラス（imds-accordion-title, imds-accordion-content 等）は [accordion](imds-html-accordion.md) を参照。
 
 ## HTML スニペット
 

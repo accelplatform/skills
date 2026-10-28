@@ -80,7 +80,7 @@ Requests such as "I want to assign a role to a user" or "I want to change the ro
 2. Decide which `RoleInfo` constructor to use (auto-numbered role ID vs. explicitly specified) and whether role name/category/locale-specific display names need to be set
 3. Implement by referring to `assets/role-basic-usage.md` (always refer to `reference/role-api-reference.md` for method signatures — do not write from memory or guesswork)
 4. When working with a sub-role hierarchy, default to `addSubRoleInfo`/`deleteSubRoleInfo(s)` (the summary-auto-updating versions); use the `WithoutCreatingSummary` methods plus a single trailing call to `regenerateRoleSummary()` only when performance becomes an issue for large-scale bulk updates
-5. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+5. Confirm compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -103,7 +103,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 5. Whether the `@Deprecated` methods `getCategoryCount` and `isUpdate` are avoided in new implementations
 6. Whether destructive operations such as `moveCategory`, `deleteRoleInfo(s)`, and `deleteCategory(ies)` execute only within the scope the requirements call for
 7. Whether `AdminException` (a checked exception) is being swallowed anywhere
-8. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+8. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 9. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has a separate Java-specific code review / security check skill, use that instead
 
 ## Boundaries with Other Skills

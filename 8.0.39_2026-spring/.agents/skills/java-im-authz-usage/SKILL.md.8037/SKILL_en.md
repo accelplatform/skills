@@ -92,7 +92,7 @@ Requests such as "I want to create a new role" or "I want to assign a role to a 
 3. Organize the subject condition (a single `Subject`, or a composite condition built with `Expression.AND`/`OR`/`NOT`? Also check whether a built-in group — `getAuthenticatedUsers`/`getGuestSubjectGroup` — is sufficient)
 4. Implement by referring to `assets/authz-basic-usage.md` (always consult `reference/authz-api-reference.md` for method signatures — do not write from memory or guesswork)
 5. When implementing a permission check, share the resource URI construction logic between the registration code and the check code (to avoid mismatches causing incorrect decisions)
-6. Confirm compliance with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. Confirm compliance with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## Notes
 
@@ -118,7 +118,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 6. Does the resource URI start with a registered resource type ID, and is the `action` passed to `setPolicy`/`authorize` one of the actions defined by that resource type (`c`/`r`/`u`/`d` for `flat-crud`)?
 7. Are destructive operations such as `removeAllPolicies`, `removeResourceGroup`, `removePoliciesForResourceGroup`, `removePoliciesForSubjectGroup` executed only within the intended scope?
 8. Is `SubjectManagingException` (a checked exception) never silently swallowed?
-9. Does the code comply with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`?
+9. Does the code comply with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`?
 10. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-oriented code review/security check skills, use those instead
 
 ## Boundaries with Other Skills

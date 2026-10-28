@@ -16,10 +16,10 @@ IM-Workflow のインポート用 XML 定義ファイルを、プロンプトの
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-file-structure.md` | 🟢 必読 — XML の出力先（`src/main/storage/public/im_workflow/`） |
-| `jssp-naming.md` | 🟢 必読 — workflowName / shortName 等の命名 |
-| `jssp-function-container.md` / `jssp-presentation-page.md` / `jssp-code-style.md` 等 | 🔴 **本スキル単独では不要**（XML 生成のみ。`.js` / `.html` の実装は `jssp-im-workflow-usage` の責務） |
-| `jssp-2way-sql.md` / `jssp-accessibility.md` / `jssp-logging.md` 等 | 🔴 **本スキル単独では不要** |
+| `.agents/requirements/jssp-file-structure/AGENTS.md` | 🟢 必読 — XML の出力先（`src/main/storage/public/im_workflow/`） |
+| `.agents/requirements/jssp-naming/AGENTS.md` | 🟢 必読 — workflowName / shortName 等の命名 |
+| `.agents/requirements/jssp-function-container/AGENTS.md` / `.agents/requirements/jssp-presentation-page/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` 等 | 🔴 **本スキル単独では不要**（XML 生成のみ。`.js` / `.html` の実装は `jssp-im-workflow-usage` の責務） |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` / `.agents/requirements/jssp-accessibility/AGENTS.md` / `.agents/requirements/jssp-logging/AGENTS.md` 等 | 🔴 **本スキル単独では不要** |
 
 ## 生成対象
 

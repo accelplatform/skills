@@ -249,4 +249,4 @@ Accordion は、常に表示する必要のないエリアを閉じておく際�
 - `id` 属性は必ず一意の値に置き換えること（`todo-replace-:r1:` はプレースホルダー）
 - checkbox ベースの開閉のため JavaScript は不要だが、プログラムから開閉状態を制御する場合は `checked` 属性を操作する
 - `imds-accordion-content` 内のパディングは `imds-px-4 imds-py-3` で調整している。コンテンツに応じて変更可能
-- 複数のアコーディオンをグループ化する場合は [accordion-group](accordion-group.md) を使用する
+- 複数のアコーディオンをグループ化する場合は [accordion-group](imds-html-accordion-group.md) を使用する

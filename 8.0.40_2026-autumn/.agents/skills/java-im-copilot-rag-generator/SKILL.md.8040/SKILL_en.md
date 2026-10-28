@@ -78,7 +78,7 @@ If the request falls into the following categories, explain that it is out of sc
 4. When integrating with the IM-Copilot chat UI, create an `AbstractCopilotAssistant<T>` subclass annotated with `@Assistant`. **The parameter class `T` must be `AssistantParameter` itself, or a subclass of it** (a bespoke POJO leaves the chat UI unable to accept a prompt)
 5. When an Assistant is created, **always implement/register `AssistantScanPackageFactory` and grant the IM-Authz permission** (omitting either one leaves the assistant missing from the assistant list; see "Platform Registration" in `java-im-copilot-agent-generator`'s `reference/assistant-integration-api-reference.md` for details — the registration mechanism itself is shared with the Agent framework's Assistant)
 6. The data preparation job needs to be registered with the job scheduler (tenant configuration assets such as `job-scheduler.xml`; handled by `jssp-tenant-setup-generator`)
-7. Verify compliance with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+7. Verify compliance with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## Notes
 
@@ -101,7 +101,7 @@ Rather than an automated validation script, verify the following items manually.
 4. Whether the `Embedder` adapter converts `EmbeddingsAction`'s exceptions (`CopilotServiceConfigurationException`/`CopilotServiceActionException`) into `EmbedderException`
 5. When an Assistant was created, whether the parameter class `T` is `AssistantParameter` itself or a subclass of it
 6. When an Assistant was created, whether `AssistantScanPackageFactory` was implemented/registered, and whether a permit policy was granted for the resource `im-copilot-assistant://assistant/<assistant ID>` in IM-Authz
-7. Whether the code complies with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+7. Whether the code complies with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 8. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-specific code review/security check skills, use those instead
 
 ## Boundaries with Other Skills

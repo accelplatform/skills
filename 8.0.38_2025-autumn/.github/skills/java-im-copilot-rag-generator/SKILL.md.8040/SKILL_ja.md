@@ -79,7 +79,7 @@ RAG は「データ準備フェーズ」（文書を分割・ベクトル化し�
 4. IM-Copilot のチャットUIと連携させる場合、`@Assistant` を付与した `AbstractCopilotAssistant<T>` サブクラスを作成する。**パラメータクラス `T` は `AssistantParameter` 自身、またはそのサブクラスにする**（独自の POJO にするとチャットUIでプロンプトを入力できなくなる）
 5. Assistant を作成した場合、**`AssistantScanPackageFactory` の実装・登録と、IM-Authz での権限付与の両方を必ず行う**（いずれか一方でも欠けるとアシスタント一覧に表示されない。詳細は `java-im-copilot-agent-generator` の `reference/assistant-integration-api-reference.md`「プラットフォームへの登録」を参照。登録の仕組み自体は Agent フレームワークの Assistant と共通）
 6. データ準備ジョブは、ジョブスケジューラへの登録（`job-scheduler.xml` 等のテナント設定資材）が必要（`jssp-tenant-setup-generator` の対象）
-7. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+7. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -102,7 +102,7 @@ RAG は「データ準備フェーズ」（文書を分割・ベクトル化し�
 4. `Embedder` アダプタが `EmbeddingsAction` の例外（`CopilotServiceConfigurationException`/`CopilotServiceActionException`）を `EmbedderException` へ変換しているか
 5. Assistant を作成した場合、パラメータクラス `T` が `AssistantParameter` 自身またはそのサブクラスになっているか
 6. Assistant を作成した場合、`AssistantScanPackageFactory` を実装・登録したか、IM-Authz でリソース `im-copilot-assistant://assistant/<アシスタントID>` への許可ポリシーを付与したか
-7. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+7. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 8. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

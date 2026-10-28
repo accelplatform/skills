@@ -37,7 +37,7 @@ src/main/java/{package}/
 
 ## 命名規則
 
-クラス名・メソッド名・変数名の基本規則は `java-naming.md` を参照。本規約ではレイヤー横断のクラス種別のみ補足する。
+クラス名・メソッド名・変数名の基本規則は `.agents/requirements/java-naming/AGENTS.md` を参照。本規約ではレイヤー横断のクラス種別のみ補足する。
 
 | 種別 | 命名パターン | 例 |
 |---|---|---|
@@ -57,8 +57,8 @@ src/main/java/{package}/
 | `{DomainName}Exception` / `{ServiceName}ServiceException` | `Exception`（検査例外） | ドメイン層 |
 | `{DomainName}RuntimeException` | `RuntimeException`（非検査例外） | インフラストラクチャ層・ファクトリ |
 
-- 例外変換は下位層の例外を上位層の例外でラップし、cause を保持すること（サービス層の詳細は `java-service-layer.md`）
-- ログ出力可否は例外種別に依存する。詳細は `java-logging.md` の「例外タイプ別ログレベル判断」を参照
+- 例外変換は下位層の例外を上位層の例外でラップし、cause を保持すること（サービス層の詳細は `.agents/requirements/java-service-layer/AGENTS.md`）
+- ログ出力可否は例外種別に依存する。詳細は `.agents/requirements/java-logging/AGENTS.md` の「例外タイプ別ログレベル判断」を参照
   - 特に **禁止**: `ValidationException` と認可エラーでのログ出力
 
 ## ファクトリパターン
@@ -76,14 +76,14 @@ REST API エンドポイントの実装（Web API Maker のアノテーション
 
 ## セキュリティ原則
 
-- **必須** 機密情報（パスワード、トークン、個人データ）をログに記録しないこと（詳細は `java-logging.md`）
+- **必須** 機密情報（パスワード、トークン、個人データ）をログに記録しないこと（詳細は `.agents/requirements/java-logging/AGENTS.md`）
 - **必須** すべてのユーザー入力をプレゼンテーション層で検証・サニタイズすること
 - **必須** SQL 操作にはパラメータ化クエリ（2WaySQL）を使用すること。詳細は `java-im-mirage-usage` を参照
 - 認証・認可・OAuth・セキュアトークン検証は `java-im-web-api-maker-usage` / `java-im-authz-usage` を参照
 
 ## ドキュメント規約
 
-クラス・メソッドの JavaDoc は `java-javadoc.md` を参照。
+クラス・メソッドの JavaDoc は `.agents/requirements/java-javadoc/AGENTS.md` を参照。
 
 ## コードレビューの観点
 
@@ -95,10 +95,10 @@ REST API エンドポイントの実装（Web API Maker のアノテーション
 
 ## 関連
 
-- `java-naming.md` - 命名規則
-- `java-code-style.md` - コーディングスタイル
-- `java-javadoc.md` - JavaDoc 規約
-- `java-logging.md` - ログ出力規約
-- `java-service-layer.md` - サービス層実装規約
-- `java-entity.md` - Entity クラス規約
+- `.agents/requirements/java-naming/AGENTS.md` - 命名規則
+- `.agents/requirements/java-code-style/AGENTS.md` - コーディングスタイル
+- `.agents/requirements/java-javadoc/AGENTS.md` - JavaDoc 規約
+- `.agents/requirements/java-logging/AGENTS.md` - ログ出力規約
+- `.agents/requirements/java-service-layer/AGENTS.md` - サービス層実装規約
+- `.agents/requirements/java-entity/AGENTS.md` - Entity クラス規約
 - 頻出アンチパターン集・全レイヤー縦断実装例は `.agents/skills/java-im-architecture/SKILL.md` を参照

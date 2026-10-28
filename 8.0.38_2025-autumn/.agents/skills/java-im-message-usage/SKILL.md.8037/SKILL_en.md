@@ -76,7 +76,7 @@ If it's not explicitly stated whether the target is JSSP or Java, confirm with t
 3. Decide the message key, and create or append to the properties files (`.properties`, one for each of `ja`/`en`/`zh_CN`/default) following "Message Key Naming Convention" in `assets/message-manager-usage.md`
 4. Implement the Java code by consulting `assets/message-manager-usage.md` (always consult `reference/message-manager-api-reference.md` for method signatures; do not write from memory or guesswork)
 5. Decide how to handle `AccessSecurityException` (follow the patterns in `assets/message-manager-usage.md`. In principle, propagate it upward or treat it as an internal error)
-6. Verify compliance with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. Verify compliance with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## Notes
 
@@ -95,7 +95,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 2. Whether message keys comply with the naming convention in `assets/message-manager-usage.md` (dot-separated, no underscores or hyphens)
 3. Whether the properties files exist for all of ja / en / zh_CN / default, and whether the key sets match across them
 4. Whether `AccessSecurityException` is being swallowed anywhere
-5. Whether the code complies with `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+5. Whether the code complies with `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 6. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-specific code review/security check skills, use those instead
 
 ## Boundaries with Other Skills

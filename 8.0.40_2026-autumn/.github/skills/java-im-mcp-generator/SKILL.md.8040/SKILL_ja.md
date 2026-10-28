@@ -76,7 +76,7 @@ intra-mart Accel Platform の `im_copilot_mcp` モジュールが提供するア
 3. `pom.xml` に `im_copilot_mcp` への依存を追加する（バージョンを明示指定。`reference/mcp-annotation-api-reference.md` の「依存関係」参照）。プロジェクトに既存の依存があれば流用し、重複追加しない
 4. `assets/mcp-server-basic-usage.md` を参照して `@MCPServer` クラス・ツール実装クラス・パラメータ DTO を実装する（属性のシグネチャは `reference/mcp-annotation-api-reference.md` を必ず参照し、記憶や推測で書かない）
 5. **MCP サーバの登録を行う（省略厳禁）。** プロジェクトに `McpScanPackageFactory` 実装が既に存在すれば、対象パッケージ配下に新しいクラスを置くだけでよい。無ければ `assets/mcp-server-basic-usage.md` パターン4に従い新規作成する
-6. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認する
+6. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認する
 
 ## 注意事項
 
@@ -96,7 +96,7 @@ intra-mart Accel Platform の `im_copilot_mcp` モジュールが提供するア
 3. パラメータ DTO の全フィールドに、用途に対応する `SchemaProperties` アノテーション（`StringProperty`/`IntegerProperty`/`BooleanProperty`/`NumberProperty`/`EnumProperty`/`ObjectProperty`/`ArrayProperty`）が付与されているか
 4. `required = true` にすべき必須パラメータに `required` が付いているか
 5. `@Tool` の `description` が、LLM がツールの用途・使い所を判断できるだけの具体性を持っているか
-6. `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+6. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 7. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

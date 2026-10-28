@@ -9,11 +9,11 @@ The initial value of the user code is retrieved from query parameters.
 ## File Structure
 
 ```
-src/main/jssp/src/simple_form/view/
+src/main/jssp/src/sample/simple_form/view/
   ├── index.js              # Function container
   └── index.html            # Presentation page
 
-src/main/jssp/src/simple_form/api/
+src/main/jssp/src/sample/simple_form/api/
   └── register.js           # Registration API
 
 src/main/conf/routing-jssp-config/
@@ -22,7 +22,7 @@ src/main/conf/routing-jssp-config/
 
 ---
 
-## Function Container (simple_form/view/index.js)
+## Function Container (sample/simple_form/view/index.js)
 
 ```javascript
 /**
@@ -157,7 +157,7 @@ function transferErrorPage(code, message) {
 
 ---
 
-## Presentation Page (simple_form/view/index.html)
+## Presentation Page (sample/simple_form/view/index.html)
 
 ```html
 <!-- Header -->
@@ -166,11 +166,35 @@ function transferErrorPage(code, message) {
   <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- Secure token -->
   <meta name="im_secure_token" content="<imart type="imSecureToken" mode="value" />">
+  <!-- CSS that controls the height/width of the content area, which differs per theme -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- Presentation page custom styles -->
   <style>
-    .button-spacing {
+    /* Layout control styles */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
     }
   </style>
   <!-- Presentation page scripts (scope $data via an IIFE instead of leaving it in the global scope) -->
@@ -181,6 +205,19 @@ function transferErrorPage(code, message) {
       let activeValidation = false;
 
       // Display confirmation dialog
+      /**
+       * Displays a confirmation dialog and returns the user's selection result.
+       *
+       * @param {string} message - Body text
+       * @param {string} [title='Confirm'] - Title
+       * @param {Function} [onOk] - Callback when OK button is pressed
+       * @param {Function} [onCancel] - Callback when Cancel button is pressed
+       * @param {Object} [options]
+       * @param {'info'|'danger'|'warning'} [options.mode='info'] - Dialog type
+       * @param {{text?: string}} [options.okButton] - OK button options
+       * @param {{text?: string}} [options.cancelButton] - Cancel button options
+       * @returns {Promise<boolean>} true when OK button is pressed, false when Cancel is pressed
+       */
       function imdsConfirm(message, title, onOk, onCancel, options) {
         // If already displayed, return false immediately
         if (imdsConfirm._active) {
@@ -196,19 +233,19 @@ function transferErrorPage(code, message) {
         const cancelText = (options && options.cancelButton && options.cancelButton.text) || 'Cancel';
         const dialogTitle = title || 'Confirm';
 
-        // Settings by mode
+        // Mode-specific configuration
         const iconClass = mode === 'info' ? 'fa-circle-question' : 'fa-triangle-exclamation';
         const okButtonClass = mode === 'danger' ? 'imds-button is-danger' : 'imds-button is-primary';
 
-        // Create dialog element
+        // Generate dialog element
         const dialog = document.createElement('dialog');
         dialog.className = 'imds-confirm-wrapper';
 
         dialog.innerHTML =
           '<div class="imds-confirm is-' + mode + '">' +
             '<div class="imds-confirm-content-wrapper">' +
-              '<button class="imds-confirm-close imds-button is-ghost" aria-label="Close">' +
-                '<span class="imds-icon" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>' +
+              '<button class="imds-confirm-close imds-button is-ghost">' +
+                '<span class="imds-icon"><i class="fa-solid fa-xmark"></i></span>' +
               '</button>' +
               '<div class="imds-confirm-content">' +
                 '<div class="imds-confirm-message-wrapper">' +
@@ -232,28 +269,18 @@ function transferErrorPage(code, message) {
             '</div>' +
           '</div>';
 
-        // Safely insert user input via textContent (XSS countermeasure)
+        // Safely insert user input with textContent (XSS protection)
         dialog.querySelector('.imds-confirm-message-title').textContent = dialogTitle;
         dialog.querySelector('.imds-confirm-cancel-button').textContent = cancelText;
         dialog.querySelector('.imds-confirm-ok-button').textContent = okText;
 
-        // Allow line breaks with newline characters in message
-        const contentEl = dialog.querySelector('.imds-confirm-message-content');
+        // Allow line breaks in message using newline characters
+        const contentElement = dialog.querySelector('.imds-confirm-message-content');
         const lines = String(message).split('\n');
         for (let i = 0; i < lines.length; i++) {
-          if (i > 0) contentEl.appendChild(document.createElement('br'));
-          contentEl.appendChild(document.createTextNode(lines[i]));
+          if (i > 0) contentElement.appendChild(document.createElement('br'));
+          contentElement.appendChild(document.createTextNode(lines[i]));
         }
-
-        // Remember trigger element before opening dialog (to return focus after closing)
-        const triggerElement = document.activeElement;
-
-        // ARIA attributes
-        dialog.setAttribute('role', 'dialog');
-        dialog.setAttribute('aria-modal', 'true');
-        const titleId = 'imds-confirm-title-' + Date.now();
-        dialog.setAttribute('aria-labelledby', titleId);
-        dialog.querySelector('.imds-confirm-message-title').id = titleId;
 
         document.body.appendChild(dialog);
 
@@ -264,77 +291,41 @@ function transferErrorPage(code, message) {
             if (settled) return;
             settled = true;
             imdsConfirm._active = false;
-            dialog.removeEventListener('keydown', onKeyDown);
             dialog.close();
             document.body.removeChild(dialog);
-            // Return focus to trigger element
-            if (triggerElement && typeof triggerElement.focus === 'function') {
-              triggerElement.focus();
-            }
             resolve(result);
           }
 
-          const okButton = dialog.querySelector('.imds-confirm-ok-button');
-          const cancelButton = dialog.querySelector('.imds-confirm-cancel-button');
-          const closeButton = dialog.querySelector('.imds-confirm-close');
-
           // OK button
-          okButton.addEventListener('click', function() {
+          dialog.querySelector('.imds-confirm-ok-button').addEventListener('click', function() {
             if (typeof onOk === 'function') onOk();
             close(true);
           });
 
           // Cancel button
-          cancelButton.addEventListener('click', function() {
+          dialog.querySelector('.imds-confirm-cancel-button').addEventListener('click', function() {
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
 
-          // × button (treated as cancel)
-          closeButton.addEventListener('click', function() {
+          // X button (treated as cancel)
+          dialog.querySelector('.imds-confirm-close').addEventListener('click', function() {
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
 
-          // Close with Escape key (treated as cancel)
+          // Close by Escape key (treated as cancel)
           dialog.addEventListener('cancel', function(e) {
             e.preventDefault();
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
 
-          // Keyboard operation
-          // - Enter:  Confirm as OK button (if cancel/× has focus, those button actions take priority)
-          // - Tab:    No additional implementation needed as native dialog provides focus trap
-          // - Escape: Handled by cancel event
-          function onKeyDown(e) {
-            if (e.key === 'Enter') {
-              const focused = document.activeElement;
-              if (focused === cancelButton || focused === closeButton) {
-                return;
-              }
-              e.preventDefault();
-              okButton.click();
-            }
-          }
-          dialog.addEventListener('keydown', onKeyDown);
-
           dialog.showModal();
-
-          // Initial focus
-          // - danger mode: Focus on cancel button to prevent accidental operation
-          // - Others:      Focus on OK button
-          setTimeout(function() {
-            if (mode === 'danger') {
-              cancelButton.focus();
-            } else {
-              okButton.focus();
-            }
-          }, 0);
         });
       }
 
-      /** @type {boolean} Display flag (to prevent double display) */
+      /** @type {boolean} Display flag (prevents double display) */
       imdsConfirm._active = false;
 
       // Get secure token
@@ -489,13 +480,16 @@ function transferErrorPage(code, message) {
         imdsConfirm(
           'Are you sure you want to register?',
           'Register',
-          async () => {
-            const isSuccess = await register(request);
-            if (isSuccess) {
-              clearValidationError();
-            }
+          null,
+          null,
+          { mode: 'info', okButton: { text: 'Register' } }
+        ).then(async (result) => {
+          if (!result) return;
+          const isSuccess = await register(request);
+          if (isSuccess) {
+            clearValidationError();
           }
-        );
+        });
       });
 
       // Entry point
@@ -511,11 +505,11 @@ function transferErrorPage(code, message) {
 </imart>
 
 <!-- Page-level container (no id is added here because it sits inside the intra-mart theme's imui-container) -->
-<div class="imds-container">
+<div class="imds-container pgstyle-layout-container">
   <!-- Header -->
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" class="imds-button is-ghost is-large">
+      <button type="button" class="imds-button is-ghost is-large" title="Back">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
       </button>
     </div>
@@ -531,8 +525,8 @@ function transferErrorPage(code, message) {
   </header>
 
   <!-- Main content -->
-  <main>
-    <form id="main-form" class="imds-form has-background-color-gray imds-scrollbar imds-py-4 imds-px-6">
+  <main class="pgstyle-layout-main">
+    <form id="main-form" class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
       <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
         <h2 class="imds-heading is-bordered is-size-2 is-cyan">Basic Information</h2>
         <div class="imds-field-container has-accent-color">
@@ -545,7 +539,7 @@ function transferErrorPage(code, message) {
                 <div class="imds-field-control">
                   <input type="text" id=":userCode:" class="imds-textbox" name="userCode" value="" />
                 </div>
-                <span class="imds-error-text" for=":userCode:">Error message is displayed here.</span>
+                <span class="imds-error-text" for=":userCode:" id="error-userCode" style="display:none;"></span>
               </div>
             </div>
           </div>
@@ -563,7 +557,7 @@ function transferErrorPage(code, message) {
                     <div class="imds-field-control">
                       <input type="text" id=":userLastName:" class="imds-textbox" name="userLastName" value="" />
                     </div>
-                    <span class="imds-error-text" for=":userLastName:">Error message is displayed here.</span>
+                    <span class="imds-error-text" for=":userLastName:" id="error-userLastName" style="display:none;"></span>
                   </div>
                   <div class="imds-field" for=":userFirstName:">
                     <div class="imds-field-label">
@@ -572,7 +566,7 @@ function transferErrorPage(code, message) {
                     <div class="imds-field-control">
                       <input type="text" id=":userFirstName:" class="imds-textbox" name="userFirstName" value="" />
                     </div>
-                    <span class="imds-error-text" for=":userFirstName:">Error message is displayed here.</span>
+                    <span class="imds-error-text" for=":userFirstName:" id="error-userFirstName" style="display:none;"></span>
                   </div>
                 </div>
               </div>
@@ -586,7 +580,7 @@ function transferErrorPage(code, message) {
                   <label for=":age:">Age</label>
                 </div>
                 <div class="imds-field-control">
-                  <select id=":age:" class="imds-select" name="age">
+                  <select id=":age:" class="imds-select" name="age" style="max-width: 15em;">
                     <option value="">Please select</option>
                     <option value="10">Teens</option>
                     <option value="20">Twenties</option>
@@ -602,7 +596,7 @@ function transferErrorPage(code, message) {
         </div>
       </section>
     </form>
-    <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+    <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
       <button type="button" id="register-button" class="imds-button is-primary" style="min-width: 8em;">Register</button>
       <button type="button" id="temporary-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">Save Draft</button>
       <button type="button" id="delete-button" class="imds-button is-outlined is-danger" style="min-width: 8em;">Delete</button>
@@ -613,7 +607,7 @@ function transferErrorPage(code, message) {
 
 ---
 
-## Registration API (simple_form/api/register.js)
+## Registration API (sample/simple_form/api/register.js)
 
 ```javascript
 /**
@@ -793,7 +787,7 @@ function processBusinessLogic(request) {
   };
 
   // Retrieve request parameters
-  let request = {
+  let parameter = {
     userCode: request['userCode'],
     userFirstName: request['userFirstName'],
     userLastName: request['userLastName'],

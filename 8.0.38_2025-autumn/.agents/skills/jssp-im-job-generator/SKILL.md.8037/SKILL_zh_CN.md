@@ -7,14 +7,14 @@ description: 新建在 intra-mart 作业调度器中执行的作业程序（批�
 
 实施前必须确认以下内容。有未确认项目时不得开始。
 
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-function-container](../../../requirements/jssp-function-container/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) 已参考并理解内容
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-function-container](../../requirements/jssp-function-container/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) 已参考并理解内容
 
 
 # 作业调度器 作业程序生成技能
@@ -30,12 +30,12 @@ description: 新建在 intra-mart 作业调度器中执行的作业程序（批�
 
 | 规约 | 处理方式 |
 |------|---------|
-| `jssp-function-container.md` | 🟢 **必读** — `execute()` 入口的结构 |
-| `jssp-error-handling.md` / `jssp-logging.md` | 🟢 **必读** — 批处理通常需要详细的日志与错误处理 |
-| `jssp-naming.md` / `jssp-code-style.md` / `jssp-file-structure.md` | 🟢 必读 |
-| `jssp-2way-sql.md` | 🟡 **仅当批处理包含 DB 操作时**（批处理中常见） |
-| `jssp-security.md` | 🟡 仅在处理外部输入（如作业参数）时 |
-| `jssp-presentation-page.md` / `jssp-accessibility.md` | 🔴 **不需要；无画面** |
+| `.agents/requirements/jssp-function-container/AGENTS.md` | 🟢 **必读** — `execute()` 入口的结构 |
+| `.agents/requirements/jssp-error-handling/AGENTS.md` / `.agents/requirements/jssp-logging/AGENTS.md` | 🟢 **必读** — 批处理通常需要详细的日志与错误处理 |
+| `.agents/requirements/jssp-naming/AGENTS.md` / `.agents/requirements/jssp-code-style/AGENTS.md` / `.agents/requirements/jssp-file-structure/AGENTS.md` | 🟢 必读 |
+| `.agents/requirements/jssp-2way-sql/AGENTS.md` | 🟡 **仅当批处理包含 DB 操作时**（批处理中常见） |
+| `.agents/requirements/jssp-security/AGENTS.md` | 🟡 仅在处理外部输入（如作业参数）时 |
+| `.agents/requirements/jssp-presentation-page/AGENTS.md` / `.agents/requirements/jssp-accessibility/AGENTS.md` | 🔴 **不需要；无画面** |
 
 ## 生成对象
 

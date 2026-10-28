@@ -67,7 +67,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 3. 参考 `assets/cache-basic-usage.md` 实现（方法签名务必参考 `reference/cache-api-reference.md`，不要凭记忆或推测编写）
 4. 确认缓存键・值的类是否实现了 `java.io.Serializable`
 5. 实现 `Cache#get()` 返回值为 `null` 时的重新加载处理（从数据源获取 → 通过 `put()` 注册到缓存）
-6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
@@ -94,7 +94,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 3. 是否实现了对 `Cache#get()` 返回值的 `null` 检查，以及缓存未命中时的重新加载・重新注册处理
 4. 调用 `CacheManagerFactory.getCacheManager()` 的执行环境是否存在租户上下文（是否在任务调度器等不隶属于租户的执行环境中调用）
 5. 若在缓存中存储敏感信息，设计上是否避免了租户间・用户间的意外访问
-6. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md`
+6. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 7. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。若项目中另有针对 Java 的代码评审・安全检查技能，应使用该技能
 
 ## 与其他技能的边界

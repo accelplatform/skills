@@ -7,13 +7,13 @@ description: intra-mart Accel Platform の OAuth プロバイダ機能（im_oaut
 
 実装着手前に、以下を確認すること。未チェック項目がある場合は着手不可。
 
-- [ ] [jssp-code-style](../../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-error-handling](../../../requirements/jssp-error-handling/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-file-structure](../../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-logging](../../../requirements/jssp-logging/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-naming](../../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-overview](../../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
-- [ ] [jssp-security](../../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-code-style](../../requirements/jssp-code-style/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-error-handling](../../requirements/jssp-error-handling/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-file-structure](../../requirements/jssp-file-structure/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-logging](../../requirements/jssp-logging/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-naming](../../requirements/jssp-naming/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-overview](../../requirements/jssp-overview/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-security](../../requirements/jssp-security/AGENTS.md) を参照し、内容を理解した
 
 
 # im_oauth REST-API リソース生成スキル

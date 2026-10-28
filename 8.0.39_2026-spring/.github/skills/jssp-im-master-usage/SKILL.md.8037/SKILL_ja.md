@@ -28,11 +28,11 @@ intra-mart Accel Platform の IM-共通マスタ検索（imACMSearch）を利用
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-presentation-page.md` | 🟢 **必読** — HTML 構造・id 命名 |
-| `jssp-naming.md` / `jssp-file-structure.md` | 🟢 必読 |
-| `jssp-imds-theme` スキルの reference | 🟢 必読（HTML クラス名は記憶で書かない） |
-| `jssp-function-container.md` / `jssp-2way-sql.md` / `jssp-error-handling.md` 等 | 🔴 **本スキル単独では不要**（呼び出し元スキル側で適用） |
-| `jssp-accessibility.md` | 🟠 **業務要件次第** — マスタ検索ダイアログは imds 標準実装で基本的な ARIA を持つので、追加で厚塗りする必要は通常なし |
+| `.github/instructions/jssp-presentation-page.instructions.md` | 🟢 **必読** — HTML 構造・id 命名 |
+| `.github/instructions/jssp-naming.instructions.md` / `.github/instructions/jssp-file-structure.instructions.md` | 🟢 必読 |
+| `jssp-imds-theme` スキルの reference | 🟢 imds テーマで生成する場合は必読（HTML クラス名は記憶で書かない） |
+| `.github/instructions/jssp-function-container.instructions.md` / `.github/instructions/jssp-2way-sql.instructions.md` / `.github/instructions/jssp-error-handling.instructions.md` 等 | 🔴 **本スキル単独では不要**（呼び出し元スキル側で適用） |
+| `.github/instructions/jssp-accessibility.instructions.md` | 🟠 **業務要件次第** — マスタ検索ダイアログは imds 標準実装で基本的な ARIA を持つので、追加で厚塗りする必要は通常なし |
 
 ## 完成品サンプル
 
@@ -164,4 +164,8 @@ intra-mart Accel Platform の IM-共通マスタ検索（imACMSearch）を利用
 
 - リファレンスを必ず参照し、記憶や推測でプラグインIDやフィールド名を使用しないこと
 - 完成品サンプルの構成パターン（イベントリスナー、パラメータ構築、コールバック、window 登録）を踏襲すること
-- HTML 部分は `jssp-imds-theme` スキルの規約に従い、imds のクラスを使用すること
+- 完成品サンプルは imACMSearch の呼び出し・コールバック等の機能固有の部分の正本であり、入力欄・ボタン等の UI 部品の正本ではない。UI テーマは `.github/instructions/jssp-presentation-page.instructions.md` の「UI テーマの選択」に従う。`jssp-imds-theme` スキルが存在しない場合、または imds 以外のテーマを明示指定された場合は、機能固有の部分のみを流用し、入力欄・ボタン等はそのテーマで組み立てること
+
+### imds テーマで生成する場合
+
+完成品サンプルの HTML を写経せず、先に `jssp-imds-theme` スキルの SKILL.md と使用する UI 部品の reference（`imds-html-textbox-control.md`・`imds-html-field.md`・`imds-html-button.md` 等）を Read してから入力欄を組み立てる。サンプルからは imACMSearch の呼び出し・コールバック等の機能固有の部分のみを移植する。生成後は、呼び出し元スキルの検証手順（`jssp-page-verifier`）で `validate-imds.js` による構造検証を行う。

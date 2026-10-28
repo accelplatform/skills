@@ -1,22 +1,22 @@
-# Scrollbar（スクロールバーユーティリティ）
+# Scrollbar (Scrollbar Utility)
 
-## 基本情報
+## Overview
 
-Scrollbar は、スクロールバーの主張を抑え、コンテンツ領域の見やすさを保つための imds ヘルパークラスである。これは imds のユーティリティクラスであり、`overflow: auto` / `overflow: scroll` 等が指定されたブロック要素（Flexbox や Grid のオーバーフロー領域等）と組み合わせて使う。単独のコンポーネントとして使うものではない。
+Scrollbar is an imds helper class that makes scrollbars less prominent and keeps content areas easy to read. It is an imds utility class used in combination with block elements that have `overflow: auto` / `overflow: scroll` or similar (such as overflow areas of Flexbox or Grid). It is not used as a standalone component.
 
-- 抽出元: `uiux-share/helper/Scrollbar.md`
+- Source: `uiux-share/helper/Scrollbar.md`
 
 ## CSS Classes Reference
 
-| クラス名 | 用途 | 値（Property: Value） |
+| Class name | Purpose | Value (Property: Value) |
 |----------|------|----------------------|
-| `imds-scrollbar` | スクロールバーを細く視認性の高いデザインにする | `scrollbar-color: hsl(0deg, 0%, 69%) hsl(0deg, 0%, 100%); scrollbar-width: thin;` |
+| `imds-scrollbar` | Gives the scrollbar a thin, highly visible design | `scrollbar-color: hsl(0deg, 0%, 69%) hsl(0deg, 0%, 100%); scrollbar-width: thin;` |
 
-## 使用例
+## Usage Examples
 
-### テキストを含むスクロール領域
+### Scroll area containing text
 
-適用前（標準のスクロールバー）
+Before (standard scrollbar)
 
 ```html
 <div class="sample-box">
@@ -30,7 +30,7 @@ Scrollbar は、スクロールバーの主張を抑え、コンテンツ領域�
 </div>
 ```
 
-適用後（`imds-scrollbar` を追加）
+After (`imds-scrollbar` added)
 
 ```html
 <div class="sample-box">
@@ -44,7 +44,7 @@ Scrollbar は、スクロールバーの主張を抑え、コンテンツ領域�
 </div>
 ```
 
-## 実装上の注意
+## Implementation Notes
 
-- `imds-scrollbar` を適用する際は、スクロールバーを表示させるために対象コンテナに `overflow: auto` や `overflow: scroll` 等のオーバーフロー指定が必要である。必要に応じてインライン `style` やレイアウト側のスタイルで指定する。
-- `imds-scrollbar` 自体はスクロールバーの見た目のみを変更するものであり、オーバーフローの挙動そのものは制御しない。
+- When applying `imds-scrollbar`, the target container needs an overflow setting such as `overflow: auto` or `overflow: scroll` for the scrollbar to appear. Specify it with an inline `style` or layout-side styles as needed.
+- `imds-scrollbar` changes only the appearance of the scrollbar and does not control the overflow behavior itself.

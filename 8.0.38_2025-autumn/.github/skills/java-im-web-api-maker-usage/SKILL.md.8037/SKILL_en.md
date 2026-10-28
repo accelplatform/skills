@@ -129,7 +129,7 @@ For requests to "newly register an authorization (Authz) resource/policy for a R
 5. If an authorization check is needed, attach `@Authz(uri=..., action=...)` and confirm whether the corresponding authorization resource is already registered on the IM-Authz side (if not registered, confirm with the user whether to implement the registration process using `java-im-authz-usage`)
 6. If OAuth authentication is needed, confirm whether the Web API Maker OAuth Authentication Module is installed, then attach `@OAuth(scope=...)` and prepare all 3 of `oauth-client-scopes-config`/`oauth-client-resources-config`/`oauth-client-details-config`
 7. **When you also implement the client that calls the API (a JSSP presentation page, an external system, etc.), always include logic that unwraps the response's `error` / `data` envelope** (`assets/web-api-maker-basic-usage.md`, Pattern 7-4). When the client is implemented by someone else or by another skill, explicitly hand over the response structure (JSON samples for success and for exceptions) to the user
-8. Verify compliance with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+8. Verify compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
 
@@ -158,7 +158,7 @@ Rather than an automated validation script (such as the JSSP version's `validate
 9. Whether the Endpoint class avoids directly instantiating a concrete Service class (such as `new StandardXxxService()`) and instead obtains it via `XxxServiceFactory.getInstance()` (a factory based on `ServiceLoaderUtil.loadTopPriority`)
 10. If the Endpoint has been split into an interface, whether the class-level annotations (such as `@IMAuthentication`), `@Path`/`@GET`, and argument annotations are declared on the interface rather than the implementation class, and whether the **return type** of the factory class's `@ProvideService` method **is the interface** (if it remains the implementation class type, the annotations are not recognized and the endpoint is not registered)
 11. **Whether the client-side (screen / external system) implementation unwraps the response's `error` / `data` envelope before using the business data.** Whether it reads the response without unwrapping, as in `fetch(url).then(function (res) { return res.json(); }).then(function (order) { order.xxx; })` (the correct form is `body.data.xxx`). Whether `Accept: application/json` is specified. Whether cases where the wrapper is not applied (unauthenticated `404`, `406`, an unrecognized `500`, etc.) are handled as unexpected errors when the body cannot be parsed. When the client is not implemented by this skill, whether the response structure for success and for exceptions was handed over to the user
-12. Whether it complies with `.github/instructions/java-naming.instructions.md` / `java-code-style.md` / `java-javadoc.md`
+12. Whether it complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 13. `jssp-code-review` / `jssp-security-check` are JSSP-specific and are not applied to the output of this skill. If a separate code review/security check skill for Java exists in the project, use that instead
 
 ## Boundaries with Other Skills

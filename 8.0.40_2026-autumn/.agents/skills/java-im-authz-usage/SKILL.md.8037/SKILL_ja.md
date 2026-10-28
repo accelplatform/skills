@@ -92,7 +92,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの認
 3. サブジェクトの条件を整理（単一の `Subject` か、`Expression.AND`/`OR`/`NOT` で組む複合条件か。組込みグループ（`getAuthenticatedUsers`/`getGuestSubjectGroup`）で足りるかも確認）
 4. `assets/authz-basic-usage.md` を参照して実装（メソッドのシグネチャは `reference/authz-api-reference.md` を必ず参照し、記憶や推測で書かない）
 5. 権限確認を実装する場合、リソースURIの組み立てロジックを登録処理と確認処理で共通化する（表記ゆれによる判定ミスを防ぐため）
-6. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+6. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -118,7 +118,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの認
 6. リソースURI の先頭が登録済みのリソースタイプID になっているか、かつ `setPolicy`/`authorize` の `action` がそのリソースタイプの定義済みアクション（`flat-crud` なら `c`/`r`/`u`/`d`）になっているか
 7. `removeAllPolicies`・`removeResourceGroup`・`removePoliciesForResourceGroup`・`removePoliciesForSubjectGroup` 等の破壊的操作について、要件通りの範囲でのみ実行されるか
 8. `SubjectManagingException`（チェック例外）を握りつぶしていないか
-9. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+9. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 10. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

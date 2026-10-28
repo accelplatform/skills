@@ -1,6 +1,6 @@
 ---
 name: jssp-imds-theme
-description: 生成符合 intra-mart Design System（imds）规范的展示页面 HTML 组件。在使用表格、按钮、表单、对话框、复选框、单选按钮、下拉选择、文本框、标签页、手风琴、分页等 UI 部件时必须使用。不得凭记忆或推测书写 imds 的类名，必须参考本技能的 reference。当提及编写 HTML、创建界面外观、放置 UI 组件时使用。
+description: 生成符合 intra-mart Design System（imds）规范的展示页面 HTML 组件。在使用表格、按钮、表单、对话框、复选框、单选按钮、下拉选择、文本框、标签页、手风琴、分页、空状态显示、间距・网格等工具类、搜索布局和多语言输入栏等复合模式等 UI 部件时必须使用。不得凭记忆或推测书写 imds 的类名，必须参考本技能的 reference。当提及编写 HTML、创建界面外观、放置 UI 组件时使用。未明确指定 UI 主题的 JSSP 画面生成默认使用本技能（明确指定了纯 HTML、自定义主题等时不使用）。
 ---
 
 # imds 规范 HTML 代码生成技能
@@ -13,7 +13,7 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 
 生成 HTML 时，按以下步骤进行：
 
-1. **先确认整页模板**（列表页面使用 `assets/imds-list-page.md`，表单页面使用 `assets/imds-form-page.md`）
+1. **先确认整页模板**（列表页面使用 `assets/imds-list-page.md`，表单页面使用 `assets/imds-form-page.md`，导出页面使用 `assets/imds-export-screen.md`，导入页面使用 `assets/imds-import-screen.md`）
    - `<header class="imds-header">` 的放置位置及其与 `<main>` 的关系仅在此处说明
 2. 根据用户需求确定要使用的 UI 组件
 3. 读取 `reference/` 目录下对应组件的参考文件
@@ -38,14 +38,29 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 |------|------------------|
 | 列表页面（列表 + 操作按钮） | `assets/imds-list-page.md` |
 | 输入表单页面（CRUD） | `assets/imds-form-page.md` |
+| 导出页面（使用步进器的多阶段页面） | `assets/imds-export-screen.md` |
+| 导入页面（使用步进器的多阶段页面 + 导入结果摘要） | `assets/imds-import-screen.md` |
 
-新建页面时，请先阅读这两个文件之一，以页面骨架为基础后再参考各个组件的 reference。
+新建页面时，请先阅读这 4 个文件之一，以页面骨架为基础后再参考各个组件的 reference。
+
+### `reference/` 目录下的文件分类（文件名前缀）
+
+`reference/` 目录下按用途分为 3 类文件。请根据用户需求查找相应分类的文件。
+
+| 前缀 | 内容 | 例 |
+|---|---|---|
+| `imds-html-*` | 单个 UI 组件（按钮・表格・对话框等） | `imds-html-button.md`, `imds-html-table.md` |
+| `imds-helper-*` | 间距・文字・背景色・边框・宽度・行截断・滚动条等工具类（不单独使用，与组件组合使用） | `imds-helper-spacing.md`（`imds-p-*`/`imds-m-*`）, `imds-helper-flexbox-grid.md`（`imds-grid`・`has-cols-N`・`is-col-span-N`） |
+| `imds-common-*` | 组合多个组件的业务常用模式（搜索布局・多语言输入栏・不确定状态复选框・固定标题布局等） | `imds-common-search-layout.md`, `imds-common-multilingual-input.md`, `imds-common-fixed-header-layout.md` |
+
+不要用自定义 CSS 实现间距・文字大小・网格布局等，请先确认 `imds-helper-*` 中是否有相应的类。实现搜索栏・多语言输入・数据列表联动等复合 UI 时，请先确认 `imds-common-*` 中是否有相应的模式。
 
 ### `<header class="imds-header">` 中的图标必填
 
 `<header class="imds-header">` 中**不允许**仅放置 `imds-header-title`。
 **必须在开头放置图标区域（`imds-header-icon` 或 `imds-header-nav`，两者互斥，不可同时放置）或 `imds-header-back-button` 中的至少一个**。
 `imds-header-back-button` **可以与** `imds-header-icon` / `imds-header-nav` **并用**，并非图标的替代。需要返回引导的页面（详情/编辑画面等），基本做法是在放置 back-button 的同时**保留图标区域**，而不是删除它（详见 `reference/imds-html-header.md` 的 "backItemExists"）。
+另外，不放置 `imds-header-icon` / `imds-header-back-button` / `imds-header-nav` 中任何一个的「仅标题」构成，在 uiux-share 上本身就是正当的变体，既非「不推荐」也不会「导致设计错乱」（参见 `reference/imds-html-header.md`）。在本项目的业务页面中，为保持页面间外观的一致性，**作为运营规则**要求必须放置上述任一元素。
 
 | 用途 | 放置的元素 | 图标示例 |
 |------|------------|------------|
@@ -100,7 +115,7 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 
 `<header class="imds-header">` 必须放置在 **`<main>` 外部**，并位于 `<div class="imds-container">` 的**直接下方**。imds 主题的 CSS 以此位置为前提应用样式，放在 `<main>` 内部会导致布局错乱（图标消失等）。
 
-**根 `<div>` 必须整合为一个（不要制造中间包装层）。** 根据 `jssp-presentation-page.md` 的规约，intra-mart 的主题功能会自动用 `<div id="imui-container">` 包裹页面内容，因此展示页面的根标签**不应附加 id**，只需附加 `imds-container` 类即可。无需再嵌套一层 `imds-container` 的 `<div>`。
+**根 `<div>` 必须整合为一个（不要制造中间包装层）。** 根据 `.github/instructions/jssp-presentation-page.instructions.md` 的规约，intra-mart 的主题功能会自动用 `<div id="imui-container">` 包裹页面内容，因此展示页面的根标签**不应附加 id**，只需附加 `imds-container` 类即可。无需再嵌套一层 `imds-container` 的 `<div>`。
 
 ```html
 <!-- OK：直接在根 div 上附加 imds-container 类，将 header/main 并列放在 imds-container 的直接下方 -->
@@ -128,7 +143,11 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 </div>
 ```
 
-另外，`jssp-accessibility.md` 中所写「不得在展示页面添加 `<header>`」的含义是**避免与平台的全局 `<header>` 重复**，imds 的 `<header class="imds-header">`（页内 header）不在此规则范围内。
+另外，`.github/instructions/jssp-accessibility.instructions.md` 中所写「不得在展示页面添加 `<header>`」的含义是**避免与平台的全局 `<header>` 重复**，imds 的 `<header class="imds-header">`（页内 header）不在此规则范围内。
+
+### 固定显示页眉・页脚，仅让内容区域滚动的情况
+
+在列表・表单・向导等页面中，如需「始终固定显示页眉（以及操作按钮组的页脚），仅让内容区域纵向滚动」，请使用固定类名 `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` / `pgstyle-layout-footer` 的布局控制模式（`assets/imds-list-page.md` / `assets/imds-form-page.md`，向导请参阅 `assets/imds-export-screen.md` / `assets/imds-import-screen.md`），并在 `<imart type="head">` 中加载 `theme-conditional-layout.css`。对于简单纵向堆叠即可满足的小规模页面无需强行应用，但需求中包含页脚固定・局部滚动的页面必须遵循此模式。对于这些模板未涵盖的特殊布局，请参考 `reference/imds-common-fixed-header-layout.md` 的说明。
 
 ### 不要在 `imds-header-actions` 中放置业务数据的操作按钮
 
@@ -181,11 +200,11 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 | `imds-required-mark`（span） | 在 `<span>`/`<label>` 上添加 `imds-required-label-required` 类 |
 | `imds-inline-message is-error`（用于字段错误显示） | `<span class="imds-error-text">` |
 
-判断不清时请执行 `validate-imds.js`，确认是否出现 `IMDS-U-001` 警告（详见后述）。
+判断不清时请执行 `validate-imds.js`，确认是否出现 `IMDS-UNKNOWN-001` 警告（详见后述）。
 
-### 表单实现模式（必须参考: `assets/simple-form.md`）
+### 表单实现模式（必须参考: `assets/imds-form-page.md`）
 
-实现输入表单时，必须遵循 `.github/skills/jssp-page-generator/assets/simple-form.md` 的标准模式。
+实现输入表单时，必须遵循 `assets/imds-form-page.md`（页面骨架、底部、各种输入组件的组合）以及以下的标准模式。
 单独并列裸 `imds-field` 是错误的。标准是嵌套结构：**`imds-field-container > imds-field-group > imds-field-group-label + imds-field-group-control > imds-field`**。
 
 ```html
@@ -242,6 +261,8 @@ description: 生成符合 intra-mart Design System（imds）规范的展示页�
 - `<div>` 根需要自行实现这些功能，遗漏将成为 bug 温床
 - 详见 `reference/imds-html-dialog.md`
 - 在对话框中放置输入表单的复合模式（新建、编辑对话框等）请参考 `reference/imds-html-dialog-form.md`
+- 在对话框中以表格形式显示只读信息的模式（详情显示・查看对话框）请参考 `reference/imds-html-dialog-detail.md`
+- 在对话框中放置搜索框 + 列表表格、从列表中选择值的模式（数据选择・查找对话框）请参考 `reference/imds-html-dialog-select.md`
 
 ### 对话框内内容的内边距
 
@@ -284,9 +305,15 @@ padding 的调整：`imds-p-2`（窄） / `imds-p-4`（标准） / `imds-p-6`（
 各组件根据用途设有状态类，应根据执行的操作类型来使用状态类，而非出于颜色目的。
 例如，不得为了使元素变红而使用 `is-danger`，也不应通过 CSS 设置颜色。
 
+### 标题（`imds-heading`）的粗体与间距
+
+- 对于不添加 `is-bordered` 的 `imds-heading`，初次提案时添加 `has-text-weight-bold`（避免在页面中被淹没。可在目视确认页面平衡后去除）
+- 对于放在带内边距（`imds-py-4` / `imds-p-4` 等）的区块开头的标题（前面没有兄弟元素的标题），添加 `imds-mt-0`（区块的内边距与标题的上外边距会重叠，造成双重间距）
+
 ### 表格结构注意事项
 
 表格必须使用 `imds-table` 和 `imds-table-inner` 的双层结构实现。
+变体类（`is-area-bordered` / `is-hoverable` / `is-sticky` / `is-bordered` / `is-narrow`）的添加标准及 `width: fit-content` 的使用场景，请参阅 `reference/imds-html-table.md` 的「实现注意事项」。
 
 ```html
 <div class="imds-table" style="width: 100%; height: 100%; max-height: 250px;">
@@ -332,13 +359,17 @@ node .github/skills/jssp-imds-theme/scripts/validate-imds.js <目标文件或目
 | Tag | `imds-tag` 仅限 `span` 元素 |
 | Textarea | `imds-textarea` 仅限 `textarea` 元素（不要与 textbox 混淆） |
 | 标签种类 | `imds-select`=`select`、`imds-textbox`=`input`、`imds-textarea`=`textarea`、`imds-checkbox`/`imds-radio`=`label` 等各组件基础类的标签种类 |
-| 未定义类检测 | 带 `imds-*` 前缀但在 `reference/`、`.github/instructions/` 中均未记载的类，将作为 `IMDS-U-001`（warning）报告。可发现拼写错误/虚构类（例如 `imds-page-header`） |
+| Header（互斥类） | `header.imds-header` 内是否同时放置了 `imds-header-nav` 和 `imds-header-icon`（`IMDS-HEADER-300`） |
+| Tag（intent 类误用） | `imds-tag` 上是否添加了 `is-success`/`is-danger`/`is-warning`/`is-error` 等 tag 中不存在的 intent 类（`IMDS-TAG-400`） |
+| Table（0 条显示的 colspan） | 0 条显示等单单元格行（`<td colspan="N">`）的 `N` 是否与同一表格的 `<th>` 实际数量一致（`IMDS-TABLE-500`，warning） |
+| Divider（标签种类） | `imds-divider` 是否为 `hr`（水平分隔）或 `div`+`is-vertical`（垂直分隔）之一（`IMDS-DIVIDER-500`） |
+| 未定义类检测 | 带 `imds-*` 前缀但在 `reference/`、`.github/instructions/` 中均未记载的类，将作为 `IMDS-UNKNOWN-001`（warning）报告。可发现拼写错误/虚构类（例如 `imds-page-header`） |
 
 ### 验证结果的处理
 
 - `PASS` → 直接完成
 - `ERROR` → 修正指示行的 HTML 结构，反复验证直到 PASS
-- `WARN [IMDS-U-001]` → 使用了参考文件中不存在的 `imds-*` 类。很可能是拼写错误或虚构类。请确认参考文件并修正为正确的类名。若有意自定义，请确认相应的 CSS 已生效，并考虑在规约文件中追记
+- `WARN [IMDS-UNKNOWN-001]` → 使用了参考文件中不存在的 `imds-*` 类。很可能是拼写错误或虚构类。请确认参考文件并修正为正确的类名。若有意自定义，请确认相应的 CSS 已生效，并考虑在规约文件中追记
 
 ## 实现工作流示例
 
@@ -354,7 +385,7 @@ node .github/skills/jssp-imds-theme/scripts/validate-imds.js <目标文件或目
 
 1. 读取 `table.md`，获取基本表格结构
 2. 读取 `button.md`，放置新建按钮（`is-primary`）和编辑按钮（`is-outlined`）
-3. 根据需要读取 `imds-html-dialog.md`，实现确认对话框（如果是包含输入表单的对话框，请使用 `imds-html-dialog-form.md`）
+3. 根据需要读取 `imds-html-dialog.md`，实现确认对话框（如果是包含输入表单的对话框，请使用 `imds-html-dialog-form.md`；如果是只读的详情显示对话框，请使用 `imds-html-dialog-detail.md`；如果是从列表中选择数据的对话框，请使用 `imds-html-dialog-select.md`）
 4. 执行 `node .github/skills/jssp-imds-theme/scripts/validate-imds.js <生成文件>`，确认 PASS
 
 ## 故障排除

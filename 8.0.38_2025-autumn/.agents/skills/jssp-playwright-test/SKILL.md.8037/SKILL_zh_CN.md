@@ -7,7 +7,7 @@ description: 为 intra-mart JSSP 表示页面（HTML）生成 Playwright E2E 测
 
 实施前必须确认以下内容。有未确认项目时不得开始。
 
-- [ ] [jssp-testing](../../../requirements/jssp-testing/AGENTS.md) 已参考并理解内容
+- [ ] [jssp-testing](../../requirements/jssp-testing/AGENTS.md) 已参考并理解内容
 
 
 # Playwright E2E 测试生成技能

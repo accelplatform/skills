@@ -7,7 +7,7 @@ description: intra-mart JSSP プレゼンテーションページ（HTML）の P
 
 実装着手前に、以下を確認すること。未チェック項目がある場合は着手不可。
 
-- [ ] [jssp-testing](../../../requirements/jssp-testing/AGENTS.md) を参照し、内容を理解した
+- [ ] [jssp-testing](../../requirements/jssp-testing/AGENTS.md) を参照し、内容を理解した
 
 
 # Playwright E2E テスト生成スキル

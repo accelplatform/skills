@@ -17,10 +17,10 @@ IM-Workflow のインポート用 XML 定義ファイルを、プロンプトの
 
 | 規約 | 取り扱い |
 |------|---------|
-| `jssp-file-structure.md` | 🟢 必読 — XML の出力先（`src/main/storage/public/im_workflow/`） |
-| `jssp-naming.md` | 🟢 必読 — workflowName / shortName 等の命名 |
-| `jssp-function-container.md` / `jssp-presentation-page.md` / `jssp-code-style.md` 等 | 🔴 **本スキル単独では不要**（XML 生成のみ。`.js` / `.html` の実装は `jssp-im-workflow-usage` の責務） |
-| `jssp-2way-sql.md` / `jssp-accessibility.md` / `jssp-logging.md` 等 | 🔴 **本スキル単独では不要** |
+| `.github/instructions/jssp-file-structure.instructions.md` | 🟢 必読 — XML の出力先（`src/main/storage/public/im_workflow/`） |
+| `.github/instructions/jssp-naming.instructions.md` | 🟢 必読 — workflowName / shortName 等の命名 |
+| `.github/instructions/jssp-function-container.instructions.md` / `.github/instructions/jssp-presentation-page.instructions.md` / `.github/instructions/jssp-code-style.instructions.md` 等 | 🔴 **本スキル単独では不要**（XML 生成のみ。`.js` / `.html` の実装は `jssp-im-workflow-usage` の責務） |
+| `.github/instructions/jssp-2way-sql.instructions.md` / `.github/instructions/jssp-accessibility.instructions.md` / `.github/instructions/jssp-logging.instructions.md` 等 | 🔴 **本スキル単独では不要** |
 
 ## 生成対象
 

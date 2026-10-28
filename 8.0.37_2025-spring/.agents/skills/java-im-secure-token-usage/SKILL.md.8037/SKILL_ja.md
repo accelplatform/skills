@@ -74,7 +74,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのセ
 3. `assets/secure-token-basic-usage.md` を参照して実装（メソッドのシグネチャは `reference/secure-token-api-reference.md` を必ず参照し、記憶や推測で書かない）
 4. `HttpServletRequest` の取得方法を決定（引数で渡される文脈かどうかで `assets/secure-token-basic-usage.md` パターン1/パターン2を使い分ける）
 5. `verify()` が `false` を返した場合のレスポンス（`403` 等）と、`SecureTokenException` 発生時のハンドリングを分けて実装する（`assets/secure-token-basic-usage.md` パターン5）
-6. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
+6. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか確認
 
 ## 注意事項
 
@@ -92,7 +92,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのセ
 2. `verify()` の `false` 判定（アクセス拒否）と `SecureTokenException`（システムエラー）が区別して処理されているか
 3. `HttpServletRequest` の取得方法（引数直接／`HTTPContextManager`）が実装コンテキストに合っているか
 4. パラメータ連動トークンを使う場合、発行時・検証時で同一形式のパラメータを渡しているか
-5. `.agents/requirements/java-naming/AGENTS.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+5. `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md` に準拠しているか
 6. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## 他スキルとの境界

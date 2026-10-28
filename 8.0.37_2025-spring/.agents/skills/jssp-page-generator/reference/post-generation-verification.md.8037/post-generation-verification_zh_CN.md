@@ -237,7 +237,7 @@ load('/room/common/datetime_util.js');
 load('/room/common/datetime_util');
 ```
 
-- 传递给 2WaySQL 的 `executeByTemplate` / `fetchByTemplate` 的路径同样遵循不添加 `.sql` 的规则（参照 `jssp-2way-sql.md`）。记住 intra-mart 外部资源引用路径指定**原则上不包含扩展名**
+- 传递给 2WaySQL 的 `executeByTemplate` / `fetchByTemplate` 的路径同样遵循不添加 `.sql` 的规则（参照 `.agents/requirements/jssp-2way-sql/AGENTS.md`）。记住 intra-mart 外部资源引用路径指定**原则上不包含扩展名**
 - 统一使用功能文件夹起点的绝对路径（带前置斜杠）：`load('/room/common/xxx')`
 
 **验证方法：** `validate-jssp-code.js` 的 `JSSP-JS-025` 自动检测 `load('...*.js')` 模式。
@@ -439,7 +439,7 @@ function getUserName(userId, localeId, tenantLocale) {
 - `IMMUserManager.getUsers()` 是批量获取，但根据服务器环境和版本，`data` 可能返回空数组或 `error: true`（静默失败）
 - 在需要可靠解析用户名的情况（如参与者列表等），**循环调用 `getUser()`（单数）**
 - 通过 `result.data.locales[locale].userName` 访问（`displayName` 属性只存在于 `UserListNodeInfo`，不存在于 `UserInfo`。`JSSP-JS-019` 自动检测误用）
-- 必须对 `locales` 本身进行 null 检查并添加语言环境回退（参照 `jssp-function-container.md`）
+- 必须对 `locales` 本身进行 null 检查并添加语言环境回退（参照 `.agents/requirements/jssp-function-container/AGENTS.md`）
 - 获取失败时使用 `userId` 作为回退（不吞没异常，输出 `warn` 日志）
 
 ### 4-2. 画面侧的初始化代码
