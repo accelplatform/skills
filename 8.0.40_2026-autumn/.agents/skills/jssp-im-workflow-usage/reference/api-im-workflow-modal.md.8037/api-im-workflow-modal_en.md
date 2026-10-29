@@ -30,7 +30,7 @@ Opens the apply process modal.
 imWorkflow.modal.showApply({
   processParameter: {
     flowId:     'flw_my_workflow',  // Flow ID (required)
-    matterName: '案件名'             // Matter name (required)
+    matterName: 'Matter name'       // Matter name (required)
   },
   optionalParameter: {
     userParameter: {                 // Business data passed to action processing (optional)
@@ -69,7 +69,7 @@ document.getElementById('apply-button').addEventListener('click', async () => {
   const result = await imWorkflow.modal.showApply({
     processParameter: {
       flowId:     'flw_my_workflow',
-      matterName: 'フォーム申請_' + document.getElementById(':formCode:').value
+      matterName: 'Form application_' + document.getElementById(':formCode:').value
     },
     optionalParameter: {
       userParameter: {
@@ -81,9 +81,12 @@ document.getElementById('apply-button').addEventListener('click', async () => {
 
   // Processing when the application is complete
   if (result && result.isProcessDone) {
-    imuiShowSuccessMessage('申請が完了しました。案件番号: ' + result.data.matterNumber);
+    imuiShowSuccessMessage('The application has been completed. Matter number: ' + result.data.matterNumber);
     clearForm();
   }
+
+  // Page transition after the modal closes (call it regardless of completion or cancel)
+  imWorkflow.transition.afterProcess();
 });
 ```
 
@@ -106,6 +109,7 @@ The key names in `userParameter` must exactly match the key names referenced by 
 - `imWorkflow.modal.showApply()` is a client-side (browser) API and cannot be used on the server side (SSJS / Rhino)
 - While the modal is displayed, page operations are blocked (JS execution stops at `await`)
 - Closing the modal does not throw an exception. It simply returns `isProcessDone: false`
+- After the modal closes, call `imWorkflow.transition.afterProcess()` regardless of completion or cancel (it does nothing if the matter has not been processed)
 - When the user performs a temporary save, `isProcessDone: false` is returned (temporary save completion is `false`; only application completion is `true`)
 - For the secure token meta tag, use the `<meta http-equiv="X-Intramart-Secure-Token">` form, not the `<meta name="im_secure_token">` form
 - An apply screen using the process modal approach is a standalone screen accessed directly from a URL, so it must be registered for routing in the `routing-jssp-config` XML

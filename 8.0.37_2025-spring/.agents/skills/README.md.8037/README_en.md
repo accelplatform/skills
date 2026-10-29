@@ -142,6 +142,13 @@ To reduce token consumption by coding agents, it is recommended to pick out only
   - ⇒ `test-spec-generator`
     - Generates an xlsx (using officecli) or HTML test perspective list / test spec from the specification files
 
+### I want to call Java processing from JSSP
+
+- I want to call my own Java processing from JSSP (script development model) (publish it as a JSSP API without using `Packages`)
+  - ⇒ `jssp-im-java-wrapper`
+    - Provides the implementation of wrapper classes extending `ScriptableObject` (static-function type / instance type), registration to JSSP via `conf/products/initializer/initializer-<moduleId>.xml`, and the steps to create d.ts type definitions
+    - Implement the Java-side business processing called from the wrapper with Java skills such as `java-im-architecture`
+
 ### I want to use intra-mart-specific features in the JavaEE development model
 
 - I want to build file operation processing in Java (JavaEE development model) using PublicStorage / SessionScopeStorage / SystemStorage

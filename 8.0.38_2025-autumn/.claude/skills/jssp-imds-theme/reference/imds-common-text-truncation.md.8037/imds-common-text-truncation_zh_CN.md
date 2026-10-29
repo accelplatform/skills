@@ -3,48 +3,48 @@ paths:
   - "src/main/jssp/**/*.html"
 ---
 
-# 長いテキストの省略表示（common-parts）
+# 长文本的省略显示（common-parts）
 
-## 基本情報
+## 基本信息
 
-テーブルセル・詳細フォーム・カード等で長文テキストを初期1行省略し、クリックで展開/折りたたみする場合に使用する複合パターンである。
-テキストの範囲選択（コピー）操作を妨げない配慮が含まれる。
+这是在表格单元格、详情表单、卡片等中将长文本初始省略为1行，并通过点击展开/折叠时使用的复合模式。
+包含不妨碍文本范围选择（复制）操作的考量。
 
-- 抽出元: `uiux-share/common-parts/長いテキストの省略表示.md`
-- テーブルの備考列・説明列で展開/折りたたみが必要な場合、詳細参照でフィールド内の長文テキストを省略表示する場合、カード・パネル等で長文説明を折りたたむ場合に用いる。
+- 提取来源: `uiux-share/common-parts/長いテキストの省略表示.md`
+- 用于表格的备注列、说明列需要展开/折叠的情况，在详情查看中省略显示字段内长文本的情况，以及在卡片、面板等中折叠长说明的情况。
 
-**既存パターン「テーブルセルの長文省略（LineClamp 単体）」との使い分け**:
-- LineClamp 単体: `imds-line-clamp-*` クラスを付与するだけの静的省略。インタラクションなし。
-- 本パターン: クリックで展開/折りたたみを切り替えるインタラクション付き。caret アイコンで状態を視覚化する。
+**与现有模式「表格单元格的长文本省略（仅 LineClamp）」的区分使用**:
+- 仅 LineClamp: 只添加 `imds-line-clamp-*` 类的静态省略。无交互。
+- 本模式: 带有通过点击切换展开/折叠的交互。通过 caret 图标使状态可视化。
 
-## 構成コンポーネント
+## 构成组件
 
-| 使用する基本コンポーネント | 対応 reference |
+| 使用的基本组件 | 对应 reference |
 |---|---|
 | IconFont（`imds-icon`） | [imds-html-icon-font.md](imds-html-icon-font.md) |
 
-`imds-line-clamp-*` は helper 系のユーティリティクラス（LineClamp）であり、単独の reference ファイルは未整備。本パターンでは `imds-line-clamp-1`（1行省略）をトリガー要素内の `<p>` に付与する形で使用する。
+`imds-line-clamp-*` 是 helper 类的工具类（LineClamp）（详见 [imds-helper-line-clamp.md](imds-helper-line-clamp.md)）。本模式以将 `imds-line-clamp-1`（1行省略）添加到触发元素内 `<p>` 上的形式使用。
 
-## HTML スニペット
+## HTML 代码片段
 
-caret アイコンとテキストを flex で横並びにし、コンテナ全体をクリック領域にする。
-`[REPLACE: unique-id]` にはページ内で一意な ID を付与し JS でバインドする。
+将 caret 图标与文本通过 flex 横向排列，使整个容器成为点击区域。
+`[REPLACE: unique-id]` 中指定页面内唯一的 ID，并通过 JS 绑定。
 
 ```html
-<div class="imds-line-clamp-trigger" id="[REPLACE: unique-id]" title="[REPLACE: テキストを開く]"
+<div class="imds-line-clamp-trigger" id="[REPLACE: unique-id]" title="[REPLACE: 展开文本]"
      style="display: flex; align-items: flex-start; cursor: pointer; max-width: 100%;">
   <span class="imds-icon imds-mr-2">
     <i class="fa-solid fa-caret-right"></i>
   </span>
   <p class="imds-line-clamp-1">
-    [REPLACE: 省略表示したい長文テキスト]
+    [REPLACE: 需要省略显示的长文本]
   </p>
 </div>
 ```
 
-## JS 制御
+## JS 控制
 
-複数の展開ブロックが同一画面にある場合、`.imds-line-clamp-trigger` クラスでまとめて対象要素を取得し、各コンテナ内の `p` / `i` を子孫探索で特定する。
+同一画面中存在多个展开块时，通过 `.imds-line-clamp-trigger` 类统一获取目标元素，并在各容器内通过后代查找确定 `p` / `i`。
 
 ```javascript
 document.addEventListener("DOMContentLoaded", () => {
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.stopPropagation();
 
       if (window.getSelection()?.toString()) {
-        // テキスト選択中（コピー操作）はトグルしない
+        // 正在选择文本（复制操作）时不切换
         return;
       }
 
@@ -65,27 +65,27 @@ document.addEventListener("DOMContentLoaded", () => {
       if (iconElement.classList.contains("fa-caret-right")) {
         iconElement.classList.remove("fa-caret-right");
         iconElement.classList.add("fa-caret-down");
-        container.setAttribute("title", "閉じる");
+        container.setAttribute("title", "收起");
       } else {
         iconElement.classList.remove("fa-caret-down");
         iconElement.classList.add("fa-caret-right");
-        container.setAttribute("title", "開く");
+        container.setAttribute("title", "展开");
       }
     });
   });
 });
 ```
 
-## CSS 意図
+## CSS 意图
 
-トリガーコンテナのレイアウト意図（`sample-explanation` に相当する説明用クラスは生成物には含めず、インライン `style` で代替する）:
+触发容器的布局意图（相当于 `sample-explanation` 的说明用类不包含在生成物中，以内联 `style` 代替）:
 
-- `display: flex; align-items: flex-start` → アイコンとテキストの先頭揃え横並び
-- `cursor: pointer` → クリック可能を示す
-- `max-width: 100%` → 親コンテナ幅に収める
+- `display: flex; align-items: flex-start` → 图标与文本顶端对齐横向排列
+- `cursor: pointer` → 表示可点击
+- `max-width: 100%` → 限制在父容器宽度内
 
-## 実装上の注意
+## 实现注意事项
 
-- `window.getSelection().toString()` が空でない場合（テキスト選択中）はトグルしない。コピー操作を妨げないための必須の配慮である。
-- クリックのたびに `imds-line-clamp-1` の付与/除去と `fa-caret-right` / `fa-caret-down` の切り替え、`title` 属性の更新（「開く」⇔「閉じる」）を同期させること。
-- `sample-*` の説明用クラスは生成物には含めない。レイアウトはインライン `style` で代替する。
+- `window.getSelection().toString()` 不为空时（正在选择文本）不切换。这是为了不妨碍复制操作的必要考量。
+- 每次点击时，须同步进行 `imds-line-clamp-1` 的添加/移除、`fa-caret-right` / `fa-caret-down` 的切换以及 `title` 属性的更新（「展开」⇔「收起」）。
+- `sample-*` 的说明用类不包含在生成物中。布局以内联 `style` 代替。

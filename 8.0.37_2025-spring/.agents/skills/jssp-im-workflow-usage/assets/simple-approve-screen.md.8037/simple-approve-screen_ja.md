@@ -257,14 +257,42 @@ function transferErrorPage(code, message) {
 <!-- ヘッダ -->
 <imart type="head">
   <!-- タイトル -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- ワークフロー画面遷移用 CSJS -->
   <imart type="workflowOpenPageCsjs" />
+  <!-- テーマごとに異なるコンテンツ表示領域の高さ・幅を制御する CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- プレゼンテーションページの独自スタイル -->
   <style>
-    .button-spacing {
+    /* レイアウト制御用スタイル */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
+    }
+    /* workflowOpenPage タグが出力する <form> 自体はボックスを生成せず、内側のコンテンツ領域・フッタを pgstyle-layout-main の flex アイテムとして配置する */
+    .pgstyle-layout-main > form {
+      display: contents;
     }
   </style>
   <!-- プレゼンテーションページのスクリプト -->
@@ -306,43 +334,43 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- ワークフロー画面呼び出し用フォーム -->
-<imart type="workflowOpenPage"
-    name="workflowOpenPageForm"
-    method="POST"
-    target="_top"
-    imwAuthUserCode=$imwAuthUserCode
-    imwSystemMatterId=$imwSystemMatterId
-    imwUserDataId=$imwUserDataId
-    imwNodeId=$imwNodeId
-    imwApplyBaseDate=$imwApplyBaseDate
-    imwFlowId=$imwFlowId
-    imwCallOriginalParams=$imwCallOriginalParams
-    imwNextPagePath=$imwNextPagePath
-    imwNextScriptPath=$imwNextScriptPath
-    imwNextApplicationId=$imwNextApplicationId
-    imwNextServiceId=$imwNextServiceId>
+<!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
+<div class="imds-container pgstyle-layout-container">
+  <header class="imds-header">
+    <div class="imds-header-back-button">
+      <button type="button" id="imw-back-button" class="imds-button is-ghost is-large" title="戻る">
+        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+      </button>
+    </div>
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+  </header>
+  <main class="pgstyle-layout-main">
+    <!-- ワークフロー画面呼び出し用フォーム -->
+    <imart type="workflowOpenPage"
+        name="workflowOpenPageForm"
+        method="POST"
+        target="_top"
+        imwAuthUserCode=$imwAuthUserCode
+        imwSystemMatterId=$imwSystemMatterId
+        imwUserDataId=$imwUserDataId
+        imwNodeId=$imwNodeId
+        imwApplyBaseDate=$imwApplyBaseDate
+        imwFlowId=$imwFlowId
+        imwCallOriginalParams=$imwCallOriginalParams
+        imwNextPagePath=$imwNextPagePath
+        imwNextScriptPath=$imwNextScriptPath
+        imwNextApplicationId=$imwNextApplicationId
+        imwNextServiceId=$imwNextServiceId>
 
-  <!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-back-button">
-        <button type="button" id="imw-back-button" class="imds-button is-ghost is-large">
-          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-        </button>
-      </div>
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-      </div>
-    </header>
-    <main>
-      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+      <div class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
         <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
           <h2 class="imds-heading is-bordered is-size-2 is-cyan">発注情報</h2>
           <div class="imds-field-container has-accent-color">
@@ -353,7 +381,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":partCode:" class="imds-text"></span>
+                    <span id=":partCode:"></span>
                   </div>
                 </div>
               </div>
@@ -365,7 +393,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":partName:" class="imds-text"></span>
+                    <span id=":partName:"></span>
                   </div>
                 </div>
               </div>
@@ -377,7 +405,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":unitPrice:" class="imds-text"></span>
+                    <span id=":unitPrice:"></span>
                   </div>
                 </div>
               </div>
@@ -389,7 +417,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":quantity:" class="imds-text"></span>
+                    <span id=":quantity:"></span>
                   </div>
                 </div>
               </div>
@@ -401,7 +429,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":totalAmount:" class="imds-text"></span>
+                    <span id=":totalAmount:"></span>
                   </div>
                 </div>
               </div>
@@ -418,7 +446,7 @@ function transferErrorPage(code, message) {
               <div class="imds-field-group-control">
                 <div class="imds-field">
                   <div class="imds-field-control">
-                    <span id=":reason:" class="imds-text"></span>
+                    <span id=":reason:"></span>
                   </div>
                 </div>
               </div>
@@ -426,17 +454,17 @@ function transferErrorPage(code, message) {
           </div>
         </section>
       </div>
-      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+      <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
         <button type="button" id="process-button" class="imds-button is-primary" style="min-width: 8em;">処理</button>
       </div>
-    </main>
-  </div>
-</imart>
+    </imart>
 
-<!-- ワークフローページ遷移用フォーム -->
-<imart type="tag" tagname="form" name="imwBackForm" id="imwBackForm" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
-  <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
-</imart>
+    <!-- ワークフローページ遷移用フォーム -->
+    <imart type="tag" tagname="form" id="imw-back-form" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
+      <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
+    </imart>
+  </main>
+</div>
 ```
 
 ---
@@ -460,10 +488,11 @@ function transferErrorPage(code, message) {
 
 ## 使用可能なテンプレート
 
-- **承認画面**: [assets/simple-approve.md](assets/simple-approve.md)
+- **承認画面**: [simple-approve-screen.md](simple-approve-screen.md)
   - IM-Workflow の承認画面（workflowOpenPage タグ使用）
   - 申請済みデータを読み取り専用で表示
   - 処理ボタン: `workflowOpenPage('4')`
+  - HTML の骨格（`<imart type="workflowOpenPage">` の配置位置・`display: contents`）は `simple-apply-screen.md` の「生成時の注意事項」と同じ
 
 ### 生成時の指示例
 

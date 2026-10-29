@@ -236,6 +236,8 @@
 
 ## 使用示例
 
+`<imart type="head">` 内的脚本先于正文元素执行，因此元素的引用（`getElementById` 等）需在 `DOMContentLoaded` 内进行。回调函数定义在全局作用域，并通过在 `DOMContentLoaded` 内以 `window._函数名` 公开的反映函数将值反映到表单（参见 `.agents/requirements/jssp-presentation-page/AGENTS.md`「全局作用域的回调函数（imACMSearch 等）」）。
+
 ### 用户搜索（仅关键词・单选）
 
 ```html
@@ -244,39 +246,55 @@
   <imart type="imACMSearch" />
 
   <script>
-    // 用户名 单击时事件
-    document.getElementById(':userName:').addEventListener('click', () => {
-      const parameter = {
-        tabs: [{
-          id   : 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
-          title: '关键词'
-        }],
-        prop: {
-          'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
-        },
-        callback_function           : 'callbackFromImMaster',
-        wnd_title                   : '用户搜索',
-        message                     : '用户搜索',
-        wnd_close                   : true,
-        type                        : 'single'
-      };
-
-      // 打开搜索画面
-      imACMSearch.open(parameter);
-    });
-
-    // 回调函数
+    // 回调函数（imACMSearch 按函数名调用，因此定义在全局作用域）
     function callbackFromImMaster(result) {
-      if (result.length > 0) {
-        console.log(result[0].data.user_code, result[0].data.user_name);
-      } else {
-        console.log('未选择用户');
+      // 未选择时不做任何处理（保留当前值）
+      if (!result || result.length === 0) {
+        return;
+      }
+      if (typeof window._setSelectedUser === 'function') {
+        window._setSelectedUser(result[0].data.user_cd, result[0].data.user_name);
       }
     }
     // 将函数放置到全局
     window.callbackFromImMaster = callbackFromImMaster;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 将选择结果反映到表单
+      function setSelectedUser(userCode, userName) {
+        document.getElementById(':userCode:').value = userCode;
+        document.getElementById(':userName:').value = userName;
+      }
+      // 公开该函数，以便全局作用域的回调函数调用
+      window._setSelectedUser = setSelectedUser;
+
+      // 用户名 单击时事件
+      document.getElementById(':userName:').addEventListener('click', () => {
+        const parameter = {
+          tabs: [{
+            id   : 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
+            title: '关键词'
+          }],
+          prop: {
+            'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
+          },
+          callback_function           : 'callbackFromImMaster',
+          wnd_title                   : '用户搜索',
+          message                     : '用户搜索',
+          wnd_close                   : true,
+          type                        : 'single'
+        };
+
+        // 打开搜索画面
+        imACMSearch.open(parameter);
+      });
+    });
   </script>
 </imart>
+
+<!-- 正文（表单元素） -->
+<input type="hidden" id=":userCode:" value="">
+<input type="text" id=":userName:" readonly value="">
 ```
 
 ### 用户搜索（关键词＋组织树形・多选）
@@ -287,46 +305,73 @@
   <imart type="imACMSearch" />
 
   <script>
-    // 用户名 单击时事件
-    document.getElementById(':userName:').addEventListener('click', () => {
-      const parameter = {
-        tabs: [{
-          id: 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
-          title: '关键词'
-        }, {
-          id: 'jp.co.intra_mart.master.app.search.tabs.department.tree',
-          title: '组织（树形）'
-        }],
-        prop: {
-          'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
-        },
-        default_tab_id    : 'jp.co.intra_mart.master.app.search.tabs.department.tree',
-        callback_function : 'callbackFromImMaster',
-        wnd_title         : '用户搜索',
-        wnd_close         : true,
-        type              : 'multiple'
-      };
-
-      // 打开搜索画面
-      imACMSearch.open(parameter);
-    });
-
-    // 回调函数
+    // 回调函数（imACMSearch 按函数名调用，因此定义在全局作用域）
     function callbackFromImMaster(result) {
-      for (let i = 0; i < result.length; i++) {
-        console.log(result[i].data.user_cd, result[i].data.user_name);
+      // 未选择时不做任何处理（保留当前值）
+      if (!result || result.length === 0) {
+        return;
+      }
+      if (typeof window._setSelectedUsers === 'function') {
+        window._setSelectedUsers(result);
       }
     }
     // 将函数放置到全局
     window.callbackFromImMaster = callbackFromImMaster;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 将选择结果（多个）反映到表单
+      function setSelectedUsers(result) {
+        const userCodes = [];
+        const userNames = [];
+        for (let i = 0; i < result.length; i++) {
+          userCodes.push(result[i].data.user_cd);
+          userNames.push(result[i].data.user_name);
+        }
+        document.getElementById(':userCodes:').value = userCodes.join(',');
+        document.getElementById(':userNames:').value = userNames.join(', ');
+      }
+      // 公开该函数，以便全局作用域的回调函数调用
+      window._setSelectedUsers = setSelectedUsers;
+
+      // 用户名 单击时事件
+      document.getElementById(':userNames:').addEventListener('click', () => {
+        const parameter = {
+          tabs: [{
+            id: 'jp.co.intra_mart.master.app.search.tabs.user.list_user',
+            title: '关键词'
+          }, {
+            id: 'jp.co.intra_mart.master.app.search.tabs.department.tree',
+            title: '组织（树形）'
+          }],
+          prop: {
+            'jp.co.intra_mart.master.app.search.tabs.user.list_user': ['user_cd', 'user_name']
+          },
+          default_tab_id    : 'jp.co.intra_mart.master.app.search.tabs.department.tree',
+          callback_function : 'callbackFromImMaster',
+          wnd_title         : '用户搜索',
+          wnd_close         : true,
+          type              : 'multiple'
+        };
+
+        // 打开搜索画面
+        imACMSearch.open(parameter);
+      });
+    });
   </script>
 </imart>
+
+<!-- 正文（表单元素） -->
+<input type="hidden" id=":userCodes:" value="">
+<input type="text" id=":userNames:" readonly value="">
 ```
 
 ## 注意事项
 
 - `<imart type="imACMSearch" />` 标签必须放置在 HTML 的 `<head>` 标签内
 - 回调函数必须在全局作用域中定义（在立即执行函数内无法引用）
+- 回调函数无法直接引用 `DOMContentLoaded` 内的函数，因此需通过以 `window._函数名` 公开的函数将值反映到表单。元素的引用（`getElementById` 等）不要在加载 `<imart type="head">` 内的脚本时进行，而应在 `DOMContentLoaded` 内进行
+- 回调函数的 `result` 为空（未选择）时不做任何处理，保留当前值
 - 指定 `target` 时，与该对象关联的所有标签页将全部启用。若只想显示特定标签页，请省略 `target` 并用 `tabs` 进行指定
 - `target` 设置不当时可能会发生 parseJSON 错误
 - 传递给 `prop` 的字段名必须与标签页实现返回的键一致
+- `target_locale` 是搜索画面的显示区域设置。以登录用户的区域设置显示时，不要直接书写 `'ja'` 等值，而是在函数容器中绑定 `$targetLocale = Contexts.getAccountContext().locale;`，并输出为 `target_locale: '<imart type="string" value=$targetLocale escapeXml="false" escapeJs="true"></imart>'`（参见 `.agents/requirements/jssp-presentation-page/AGENTS.md`「作为 JavaScript 字符串字面量使用时」）

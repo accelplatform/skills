@@ -30,7 +30,7 @@ This skill generates HTML snippets (with `imACMSearch` calls) that get embedded 
 |------------|----------|
 | `jssp-presentation-page.md` | 🟢 **Required** — HTML structure, id naming |
 | `jssp-naming.md` / `jssp-file-structure.md` | 🟢 Required |
-| References in the `jssp-imds-theme` skill | 🟢 Required (do not write imds class names from memory) |
+| References in the `jssp-imds-theme` skill | 🟢 Required when generating with the imds theme (do not write imds class names from memory) |
 | `jssp-function-container.md` / `jssp-2way-sql.md` / `jssp-error-handling.md` etc. | 🔴 **Not needed for this skill alone** (the calling skill applies them) |
 | `jssp-accessibility.md` | 🟠 **Business-requirement-dependent** — the master search dialog already has basic ARIA via the imds standard implementation, so additional thick layering is usually unnecessary |
 
@@ -164,4 +164,8 @@ For details on plugin IDs and retrieval fields, refer to `reference/imart-tag-ac
 
 - Always refer to the reference; never use plugin IDs or field names from memory or guesswork
 - Follow the structural pattern of the finished samples (event listener, parameter construction, callback, window registration)
-- For the HTML portion, use imds classes following the conventions of the `jssp-imds-theme` skill
+- The finished samples are the source of truth for the feature-specific parts such as the imACMSearch call and callbacks, not for UI components such as input fields and buttons. The UI theme follows "Choosing the UI Theme" in `jssp-presentation-page.md`. If the `jssp-imds-theme` skill does not exist, or a non-imds theme is explicitly specified, reuse only the feature-specific parts and build the input fields, buttons, etc. with that theme
+
+### When Generating with the imds Theme
+
+Do not copy the HTML of the finished samples verbatim. First Read the `jssp-imds-theme` skill's SKILL.md and the references of the UI components you use (`imds-html-textbox-control.md`, `imds-html-field.md`, `imds-html-button.md`, etc.), then build the input fields. Port only the feature-specific parts such as the imACMSearch call and callbacks from the samples. After generation, perform the structural validation with `validate-imds.js` in the calling skill's verification procedure (`jssp-page-verifier`).

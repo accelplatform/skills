@@ -149,17 +149,30 @@ function transferErrorPage(code, message) {
         return div.innerHTML;
       }
 
+      // 本画面的根元素（DOM 操作限定在该元素之下）
+      const root = document.getElementById('app-portlet-{功能名}-container');
+
       // 渲染列表表格
       function renderTable(list) {
-        const tbody = document.getElementById('portlet-sample-table-body');
-        tbody.innerHTML = '';
+        const tbody = root.querySelector('#portlet-sample-table-body');
+        tbody.textContent = '';
 
+        // 数据为 0 条时，在表格内显示空状态 UI（is-small）
         if (list.length === 0) {
           const tr = document.createElement('tr');
           const td = document.createElement('td');
           td.setAttribute('colspan', '3');
-          td.style.textAlign = 'center';
-          td.textContent = '没有数据。';
+          td.innerHTML =
+            '<div class="imds-empty-state-container">' +
+              '<div class="imds-empty-state is-small">' +
+                '<div class="imds-empty-state-message-wrapper">' +
+                  '<span class="imds-empty-state-icon">' +
+                    '<span class="imds-icon is-gray-light"><i class="fa-solid fa-circle-info"></i></span>' +
+                  '</span>' +
+                  '<div class="imds-empty-state-message"><p class="imds-empty-state-message-title">没有数据。</p></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
           tr.appendChild(td);
           tbody.appendChild(tr);
           return;
@@ -189,7 +202,7 @@ function transferErrorPage(code, message) {
 <!-- 整个页面的容器（由于是 Portlet 部件，不包含页头、页脚。当同一门户页面配置了多个不同的 Portlet 时，为了按画面区分 DOM 操作的作用范围，附加 id="app-portlet-{功能名}-container"） -->
 <div id="app-portlet-{功能名}-container" class="imds-container">
   <main>
-    <div class="imds-table is-narrow" id="portlet-sample-table">
+    <div class="imds-table is-area-bordered is-hoverable is-narrow" id="portlet-sample-table">
       <div class="imds-table-inner">
         <table>
           <thead>

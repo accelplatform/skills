@@ -191,6 +191,52 @@ Available icon examples:
 - `fa-solid fa-triangle-exclamation` - Warning
 - `fa-solid fa-circle-info` - Information / Supplementary
 
+### `is-outlined` + `imui-table` (Displaying Detail Information, With Migration Note)
+
+Use this to keep detail information hidden and let users view it only when needed. Add `is-outlined` to `div.imds-accordion` and place a `table.imui-table` (an imui component from the legacy theme) inside `imds-accordion-content`.
+
+> **Migration note**: `imui-table` is planned to be replaced by `imds-table`. `imds-table` does not fully support this pattern (label/value table layout with `th`/`td` and mixed `rowspan`/`colspan`), so a combination with `imui-table` is provided as an interim sample. The `imds-accordion is-outlined` structure itself remains usable after migrating to `imds-table`.
+
+```html
+<div class="imds-accordion is-outlined">
+  <input type="checkbox" id="todo-replace-:r6:" />
+  <label for="todo-replace-:r6:" class="imds-accordion-title">
+    <span class="imds-accordion-title-inner">
+      <span>Workflow Name</span>
+      <span class="imds-accordion-caption">workflow-id</span>
+    </span>
+    <span class="imds-icon is-small imds-accordion-chevron"><i class="fa-solid fa-angle-down"></i></span>
+  </label>
+  <div class="imds-accordion-content">
+    <div class="imds-px-4 imds-pt-3 imds-pb-1">
+      <table class="imui-table">
+        <tbody>
+          <tr>
+            <th colspan="2"><label>Application Name</label></th>
+            <td>AccelStudio Application Name</td>
+          </tr>
+          <tr>
+            <th rowspan="2" class="wd-15"><label>Workflow Information</label></th>
+            <th class="wd-15"><label>Definition Name</label></th>
+            <td>Workflow Name ( ID: workflow-id )</td>
+          </tr>
+          <tr>
+            <th><label>Remarks</label></th>
+            <td>
+              <p>
+                Flow definition of "Workflow Name".
+                <br />
+                This flow definition is a sample.
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+```
+
 ## Accessibility
 
 - Match the `id` / `for` attributes of `input[type="checkbox"]` and `label` so clicking opens/closes the accordion

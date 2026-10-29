@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "agent": "claude-code"
+  }
+}

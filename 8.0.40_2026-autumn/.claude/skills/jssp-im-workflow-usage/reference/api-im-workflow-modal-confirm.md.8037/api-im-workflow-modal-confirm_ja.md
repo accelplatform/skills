@@ -135,5 +135,5 @@ document.getElementById('confirm-button').addEventListener('click', async () => 
 
 - `imWorkflow.modal.showConfirm()` はクライアントサイドの API。サーバサイド（SSJS / Rhino）では使用不可
 - `systemMatterId` と `nodeId` は URL パラメータ等から取得する必要がある
-- 確認画面には独自の「戻る」ボタンを配置しないこと。`imWorkflow.transition.afterProcess()` に遷移を委ねること
+- 確認画面のヘッダには「戻る」ボタンを配置し、クリック時は `imWorkflow.transition.returnTo()` で呼び出し元画面へ戻ること。確認モーダルを閉じた後の遷移は `imWorkflow.transition.afterProcess()` に委ねること
 - `showProcess()` と異なり `processType` の指定がない（確認処理は単一のアクション）

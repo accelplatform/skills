@@ -128,11 +128,11 @@ Header は、ページ上部のエリアを表示する部品です。
       type="button"
       class="imds-button is-ghost is-large"
       aria-haspopup="true"
-      aria-controls="imds-popover-:r1:">
+      aria-controls="sample-popover-1">
       <span class="imds-icon is-medium is-primary"><i class="imds-iconfont imds-application"></i></span>
       <span class="imds-icon is-x-small is-primary"><i class="fa-solid fa-caret-down"></i></span>
     </button>
-    <div id="imds-popover-:r1:" role="menu" class="imds-popover-menu">
+    <div id="sample-popover-1" role="menu" class="imds-popover-menu">
       <div class="imds-popover-content">
         <nav class="imds-menu">
           <ul class="imds-menu-list">
@@ -218,5 +218,5 @@ Header は、ページ上部のエリアを表示する部品です。
   - `imds-header-icon` と `imds-header-nav` は排他（同時に配置しない。アイコン領域はどちらか一方）
   - `imds-header-back-button` は `imds-header-icon` / `imds-header-nav` と**併用可能**（back-button を置いてもアイコン領域は消さない。詳細は「backItemExists」バリエーションを参照）
   - `imds-header-back-button` と `imds-header-nav` の併用パターンは本リファレンスでは扱わない。従来通り排他として扱う
-- ドロップダウンメニューの `id` / `aria-controls` は一意の値に置き換えること（`:r1:` はプレースホルダー）
+- ドロップダウンメニューの `id` / `aria-controls` は一意の値に置き換えること（`sample-popover-N` はプレースホルダー。機能に合わせた一意な名前にし、入力要素ではないためコロンは付けない）
 - ドロップダウンメニューの開閉は JavaScript で制御する必要がある

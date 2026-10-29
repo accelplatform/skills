@@ -41,7 +41,7 @@
     {
       "type": "regex",
       "pattern": "\\{\\{XML-VALIDATOR-MAVEN-PLUGIN-VERSION\\}\\}",
-      "replacement": "1.1.0"
+      "replacement": "1.2.0"
     },
     {
       "type": "regex",

@@ -1,6 +1,6 @@
 ---
 name: jssp-imds-theme
-description: intra-mart Design System（imds）に準拠したプレゼンテーションページの HTML コンポーネントを生成する。テーブル、ボタン、フォーム、ダイアログ、チェックボックス、ラジオボタン、セレクト、テキストボックス、タブ、アコーディオン、ページネーション、空状態表示、余白・グリッド等のユーティリティクラス、検索レイアウトや多言語入力欄等の複合パターン等の UI 部品を使う場面で必ず使用。imds のクラス名は記憶や推測で書かず、必ずこのスキルの reference を参照すること。HTML を書く、画面の見た目を作る、UI コンポーネントを配置する、と言及されたときに使用。
+description: intra-mart Design System（imds）に準拠したプレゼンテーションページの HTML コンポーネントを生成する。テーブル、ボタン、フォーム、ダイアログ、チェックボックス、ラジオボタン、セレクト、テキストボックス、タブ、アコーディオン、ページネーション、空状態表示、余白・グリッド等のユーティリティクラス、検索レイアウトや多言語入力欄等の複合パターン等の UI 部品を使う場面で必ず使用。imds のクラス名は記憶や推測で書かず、必ずこのスキルの reference を参照すること。HTML を書く、画面の見た目を作る、UI コンポーネントを配置する、と言及されたときに使用。UI テーマの明示指定が無い JSSP 画面生成では既定でこのスキルを使う（ピュア HTML・独自テーマ等が明示指定された場合は使用しない）。
 ---
 
 # imds 準拠 HTML コード生成スキル
@@ -147,7 +147,7 @@ HTML コンポーネントを生成する前に、必ず対応するリファレ
 
 ### ヘッダ・フッタを固定表示し、コンテンツ領域のみをスクロールさせる場合
 
-一覧・フォーム・ウィザード等で「ヘッダ（および操作ボタン群のフッタ）を常に固定表示し、コンテンツ領域だけを縦スクロールさせたい」場合は、`reference/imds-common-fixed-header-layout.md` の 2 行グリッド構成（`imds-container` に `height:100vh` + `grid-template-rows`、`<main>` に縦 flex、スクロール対象の子要素に `flex:1 0 0; overflow:auto` + `imds-scrollbar`）を使用すること。単純な縦積みで十分な小規模画面では無理に適用しなくてよいが、フッタ固定・部分スクロールが要件にある画面では必ずこのパターンに従う。
+一覧・フォーム・ウィザード等で「ヘッダ（および操作ボタン群のフッタ）を常に固定表示し、コンテンツ領域だけを縦スクロールさせたい」場合は、固定クラス名 `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` / `pgstyle-layout-footer` を使うレイアウト制御パターン（`assets/imds-list-page.md` / `assets/imds-form-page.md`、ウィザードは `assets/imds-export-screen.md` / `assets/imds-import-screen.md`）を使用し、`<imart type="head">` で `theme-conditional-layout.css` を読み込むこと。単純な縦積みで十分な小規模画面では無理に適用しなくてよいが、フッタ固定・部分スクロールが要件にある画面では必ずこのパターンに従う。これらのテンプレートで扱わない特殊なレイアウトでは `reference/imds-common-fixed-header-layout.md` の解説を参考にする。
 
 ### `imds-header-actions` に業務データの操作ボタンを置かない
 
@@ -200,11 +200,11 @@ HTML コンポーネントを生成する前に、必ず対応するリファレ
 | `imds-required-mark`（span） | `imds-required-label-required` クラスを `<span>`/`<label>` に付与 |
 | `imds-inline-message is-error`（フィールドのエラー表示用途） | `<span class="imds-error-text">` |
 
-判断に迷う場合は `validate-imds.js` を実行し、`IMDS-U-001` 警告が出ないか確認する（後述）。
+判断に迷う場合は `validate-imds.js` を実行し、`IMDS-UNKNOWN-001` 警告が出ないか確認する（後述）。
 
-### フォーム実装パターン（必須参照: `assets/simple-form.md`）
+### フォーム実装パターン（必須参照: `assets/imds-form-page.md`）
 
-入力フォームを実装する際は、必ず `.github/skills/jssp-page-generator/assets/simple-form.md` の正規パターンに従う。
+入力フォームを実装する際は、必ず `assets/imds-form-page.md`（ページ骨格・フッタ・各種入力部品の組み合わせ）と以下の正規パターンに従う。
 個別の `imds-field` を裸で並べるのは誤り。標準は **`imds-field-container > imds-field-group > imds-field-group-label + imds-field-group-control > imds-field`** の入れ子構造。
 
 ```html
@@ -305,9 +305,15 @@ CSS での独自定義は最終手段とすること。
 各コンポーネントは目的ごとに状態クラスを持っているため、色を付ける目的ではなく、どのような操作が行われるかで状態クラスを使用すること。
 例えば、赤くする目的で `is-danger` を使ったり、CSS で色を付けることはしないこと。
 
+### 見出し（`imds-heading`）の太字・余白
+
+- `is-bordered` を付けない `imds-heading` には、初期提案時は `has-text-weight-bold` を付与する（ページ内で埋もれないようにするため。ページのバランスを目視で確認したうえで外してよい）
+- パディング（`imds-py-4` / `imds-p-4` 等）を持つセクションの先頭に置く見出し（直前に兄弟要素が無い見出し）には `imds-mt-0` を付与する（セクションのパディングと見出しの上マージンが重なり、余白が二重になるため）
+
 ### テーブル構造の注意
 
 テーブルは必ず `imds-table` と `imds-table-inner` の二重構造で実装すること。
+バリエーションクラス（`is-area-bordered` / `is-hoverable` / `is-sticky` / `is-bordered` / `is-narrow`）の付与基準と `width: fit-content` の使いどころは `reference/imds-html-table.md`「実装上の注意」を参照すること。
 
 ```html
 <div class="imds-table" style="width: 100%; height: 100%; max-height: 250px;">
@@ -357,13 +363,13 @@ node .github/skills/jssp-imds-theme/scripts/validate-imds.js <対象ファイル
 | Tag（intent クラス誤用） | `imds-tag` に `is-success`/`is-danger`/`is-warning`/`is-error` 等、tag に存在しない intent クラスが付与されていないか（`IMDS-TAG-400`） |
 | Table（0件表示の colspan） | 0件表示等の単一セル行（`<td colspan="N">`）の `N` が、同一テーブルの `<th>` 実数と一致しているか（`IMDS-TABLE-500`、warning） |
 | Divider（タグ種別） | `imds-divider` が `hr`（水平区切り）または `div`+`is-vertical`（垂直区切り）のいずれかになっているか（`IMDS-DIVIDER-500`） |
-| 未定義クラス検出 | `imds-*` プレフィックスを持つが `reference/` ・`.github/instructions/` いずれにも記載が無いクラスを `IMDS-U-001`（warning）として通知。typo / 架空クラス（例: `imds-page-header`）を発見できる |
+| 未定義クラス検出 | `imds-*` プレフィックスを持つが `reference/` ・`.github/instructions/` いずれにも記載が無いクラスを `IMDS-UNKNOWN-001`（warning）として通知。typo / 架空クラス（例: `imds-page-header`）を発見できる |
 
 ### 検証結果の対応
 
 - `PASS` → そのまま完了
 - `ERROR` → 指摘された行の HTML 構造を修正し、再度 PASS になるまで検証を繰り返す
-- `WARN [IMDS-U-001]` → リファレンスに無い `imds-*` クラスが使われている。typo か架空クラスの可能性が高い。リファレンスを確認して正しいクラス名に修正する。意図的に独自定義する場合はそのクラスを定義する CSS が当たっているか確認し、規約ファイルへの追記を検討する
+- `WARN [IMDS-UNKNOWN-001]` → リファレンスに無い `imds-*` クラスが使われている。typo か架空クラスの可能性が高い。リファレンスを確認して正しいクラス名に修正する。意図的に独自定義する場合はそのクラスを定義する CSS が当たっているか確認し、規約ファイルへの追記を検討する
 
 ## 実装ワークフロー例
 

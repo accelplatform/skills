@@ -3,7 +3,7 @@
 结合 imds 主题组件的业务导入画面实现示例。
 以"助手定义"画面为题材，展示页头、步骤条、文件选择、内容确认、导入结果的构成模式。
 
-本页面采用固定头部布局：页头固定显示，仅步骤条各步骤内容纵向滚动。CSS 设计・DOM 结构的标准模式请参考 [imds-common-fixed-header-layout.md](../reference/imds-common-fixed-header-layout.md)。
+本页面固定显示页头，仅步骤条各步骤内容纵向滚动。采用基于固定类名 `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` / `pgstyle-layout-footer` 的布局控制模式（由于以 `height: 100%` 为基础，必须在 `<imart type="head">` 中加载 `theme-conditional-layout.css`。详情请参考"实现注意事项"）。按功能使用不同占位符 prefix 的旧方式的说明请参考 [imds-common-fixed-header-layout.md](../reference/imds-common-fixed-header-layout.md)。
 
 ## 使用组件列表
 
@@ -20,14 +20,14 @@
 
 ## 整体结构
 
-固定头部布局（`imds-container` 采用 2 行网格、`<main>` 采用纵向 flex、步骤内容设置 `flex:1 0 0; overflow:auto`）的详细说明请参考 [imds-common-fixed-header-layout.md](../reference/imds-common-fixed-header-layout.md)。
+为 `imds-container` 附加 `pgstyle-layout-container`（2 行网格），为 `<main>` 附加 `pgstyle-layout-main`（纵向 flex），为步骤内容的滚动区域附加 `pgstyle-layout-content`（`flex:1 0 0; overflow:auto`），为固定页脚附加 `pgstyle-layout-footer`（`flex:0 0 auto`）。
 
 ```
-div.imds-container                    ... 根 div（会被放置在 intra-mart 主题的 imui-container 内部，因此不附加 id，也不夹带中间包装层）
+div.imds-container.pgstyle-layout-container    ... 根 div（会被放置在 intra-mart 主题的 imui-container 内部，因此不附加 id，也不夹带中间包装层）
 ├── header.imds-header               ... 页头（关联画面菜单・标题。固定显示）
-└── main（纵向 flex 容器）
+└── main.pgstyle-layout-main（纵向 flex 容器）
     ├── div.imds-stepper              ... 进度步骤条（3 个步骤。固定显示，flex:0 0 auto）
-    └── section（按步骤切换。附加 imds-scrollbar，flex:1 0 0; overflow:auto）
+    └── section.pgstyle-layout-content（按步骤切换。附加 imds-scrollbar，flex:1 0 0; overflow:auto）
         ├── 步骤1：选择文件
         │   ├── imds-message         ... 补充说明消息（支持的格式等）
         │   ├── imds-file-upload      ... 文件上传区域
@@ -36,43 +36,18 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
         ├── 步骤2：内容确认
         │   ├── imds-collapse-message × N ... 状态补充说明・注意事项
         │   ├── imds-table            ... 导入内容列表（含状态列）
-        │   └── 页脚（位于 main 之下・滚动区域之外，flex:0 0 auto） ... 返回・执行导入
+        │   └── div.pgstyle-layout-footer（位于 main 之下・滚动区域之外，flex:0 0 auto） ... 返回・执行导入
         └── 步骤3：导入结果
             ├── sample-import-result-container ... 结果图标 + 消息 + 操作按钮
             └── imds-table            ... 结果汇总表格
 ```
 
-```css
-.assistant-import-layout-container {
-  height: 100vh;
-  display: grid;
-  grid-template-rows: 5rem minmax(0, 1fr);
-  grid-template-columns: 100%;
-}
-.assistant-import-layout-container > .imds-header {
-  grid-row: 1 / 2;
-}
-.assistant-import-layout-main {
-  grid-row: 2 / 3;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.assistant-import-step-panel {
-  flex: 1 0 0;
-  overflow: auto;
-}
-.assistant-import-footer {
-  flex: 0 0 auto;
-}
-```
-
 ```html
-<div class="imds-container assistant-import-layout-container">
+<div class="imds-container pgstyle-layout-container">
   <header class="imds-header">…</header>
-  <main class="assistant-import-layout-main">
+  <main class="pgstyle-layout-main">
     <div class="imds-stepper">…</div>
-    <section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar">
+    <section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar">
       <!-- 各步骤对应的内容（参见下方 3〜5） -->
     </section>
   </main>
@@ -141,8 +116,8 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
 由补充说明消息 + 文件上传区域 + 上传后的文件列表构成。
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar">
-  <div class="imds-message is-outlined is-info imds-mb-5">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar">
+  <div class="imds-message is-outlined is-info imds-mb-4">
     <div class="imds-message-title">
       <span class="imds-icon is-medium"><i class="fa-solid fa-circle-info"></i></span>
       <p>选择文件</p>
@@ -184,7 +159,7 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
       </tbody>
     </table>
   </div>
-  <button type="button" id="to-confirm-button" class="imds-button is-primary imds-mt-7" style="min-width:8em;" disabled>
+  <button type="button" id="to-confirm-button" class="imds-button is-primary imds-mt-7" style="min-width: 8em;" disabled>
     前往内容确认
   </button>
 </section>
@@ -192,6 +167,7 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
 
 **要点：**
 - "前往内容确认"按钮在文件上传完成之前应保持 `disabled` 状态
+- 该步骤仅用于文件上传，内容量较少，因此按钮不做成固定页脚，而是放置在内容正下方（属于 [imds-html-stepper.md](../reference/imds-html-stepper.md)"实现注意事项"中的例外）
 - 文件列表（`imds-file-upload-list`）在上传完成后由 JavaScript 插入。每行配置文件图标、文件名、上传日期时间、大小、删除按钮
 - 点击删除按钮取消文件后，若列表变为空，则应将"前往内容确认"按钮重新设为 `disabled`
 
@@ -200,7 +176,7 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
 显示可按状态（新增・更新・删除・无变化）确认已上传文件内容的列表。
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar">
   <div class="imds-collapse-message is-outlined is-small is-info imds-mb-3">
     <input type="checkbox" id="status-note-toggle">
     <label for="status-note-toggle">
@@ -246,7 +222,7 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
       </div>
     </div>
   </div>
-  <div class="imds-table is-sticky" style="max-height: 400px;">
+  <div class="imds-table is-area-bordered is-sticky is-narrow is-hoverable" style="max-height: 400px;">
     <div class="imds-table-inner">
       <table>
         <thead>
@@ -261,10 +237,10 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
     </div>
   </div>
 </section>
-<!-- 页脚放置在 main 之下・滚动区域（section）之外，通过 flex:0 0 auto 固定 -->
-<div class="assistant-import-footer imds-py-2 imds-px-8 imds-border-t-1">
-  <button type="button" id="back-to-file-select" class="imds-button is-outlined" style="min-width:8em;">返回</button>
-  <button type="button" id="import-execute-button" class="imds-button is-primary" style="min-width:8em;">导入</button>
+<!-- 页脚放置在 main 之下・滚动区域（section）之外，通过 pgstyle-layout-footer（flex:0 0 auto）固定 -->
+<div class="pgstyle-layout-footer imds-py-2 imds-px-6 imds-border-t-1">
+  <button type="button" id="back-to-file-select" class="imds-button is-outlined" style="min-width: 8em;">返回</button>
+  <button type="button" id="import-execute-button" class="imds-button is-primary" style="min-width: 8em;">导入</button>
 </div>
 ```
 
@@ -272,6 +248,8 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
 - 状态补充说明・注意事项使用 `imds-collapse-message`（折叠消息）显示，仅在需要时配置。消息内使用表格时，采用 `is-bordered is-area-bordered is-narrow` 等 Table 变体
 - 应明确说明"无变化"的数据同样属于导入对象，仅会更新更新者・更新日期时间
 - 点击返回按钮返回步骤1（选择文件）
+- 确认表格附加 `is-area-bordered is-sticky is-narrow is-hoverable`（[imds-html-table.md](../reference/imds-html-table.md)"实现注意事项"中变体类的附加标准）
+- 页脚的横向内边距（`imds-px-6`）与区块的横向内边距保持一致
 
 ## 5. 步骤3：导入结果
 
@@ -280,7 +258,7 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
 ### 5-A. 成功时
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar sample-import-result-container">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar sample-import-result-container">
   <div class="sample-import-result-icon">
     <span class="imds-icon is-success"><i class="fa-regular fa-circle-check"></i></span>
   </div>
@@ -329,7 +307,7 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
 ### 5-B. 警告时（部分失败）
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar sample-import-result-container">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar sample-import-result-container">
   <div class="sample-import-result-icon">
     <span class="imds-icon is-warning"><i class="imds-iconfont imds-warning"></i></span>
   </div>
@@ -376,8 +354,12 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
     <input type="checkbox" id="show-failed-only" checked>
     <span>仅显示失败项</span>
   </label>
-  <div class="imds-table is-bordered" id="import-result-detail-table">
-    <!-- 失败数据的详细列表（由 JS 生成） -->
+  <div class="imds-table is-area-bordered is-bordered is-sticky is-narrow is-hoverable" id="import-result-detail-table" style="max-height: 400px;">
+    <div class="imds-table-inner">
+      <table>
+        <!-- 失败数据的详细列表（由 JS 生成） -->
+      </table>
+    </div>
   </div>
 </section>
 ```
@@ -385,7 +367,7 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
 ### 5-C. 错误时（全部失败）
 
 ```html
-<section class="assistant-import-step-panel imds-py-6 imds-px-8 imds-scrollbar sample-import-result-container">
+<section class="imds-py-4 imds-px-6 pgstyle-layout-content imds-scrollbar sample-import-result-container">
   <div class="sample-import-result-icon">
     <span class="imds-icon is-error"><i class="fa-regular fa-circle-xmark"></i></span>
   </div>
@@ -434,5 +416,43 @@ div.imds-container                    ... 根 div（会被放置在 intra-mart �
 - 相当于 `${示例}` 的部分（数据种类名称），应替换为实现对象的数据种类名称
 - 可用于导入的文件格式，应同时在 `<input type="file" accept="...">` 与补充说明消息中明确标注
 - 由于本画面通常与导出画面成对存在，页头的 `imds-header-nav` 菜单中通常会包含指向导出画面・列表画面的入口
-- 步骤2的确认表格・步骤3的结果表格，可根据需要使用 `imds-table is-sticky` 固定表头（参见列表画面模板中的 `isSticky` 一节）
-- `sample-import-*` / `assistant-import-*` 为占位符 prefix。实现时应替换为与功能名称相符的 prefix（以 `imds-` 开头的标准类不做修改）
+- 对于步骤2的确认表格・步骤3的失败详细表格这类可能出现纵向滚动的列表表格，使用 `is-sticky` 固定表头（参见列表画面模板中的 `isSticky` 一节）
+- `sample-import-*` 为占位符 prefix。实现时应替换为与功能名称相符的 prefix（以 `imds-` 开头的标准类不做修改）
+- `pgstyle-layout-container` / `pgstyle-layout-main` / `pgstyle-layout-content` / `pgstyle-layout-footer` **不是**按功能替换的占位符，而是固定类名。生成时也不要修改类名
+- 本模板仅包含 HTML 部分，因此应在 `<imart type="head">` 的 `<style>` 中定义以下布局控制用样式（仅列出本文件使用的类）
+
+  ```css
+  /* 布局控制用样式 */
+  .pgstyle-layout-container {
+    grid-template-rows: 5rem minmax(0, 1fr);
+    grid-template-columns: 100%;
+    height: 100%;
+    display: grid;
+  }
+  .pgstyle-layout-container > .imds-header {
+    grid-row: 1 / 2;
+  }
+  .pgstyle-layout-main {
+    flex-direction: column;
+    grid-row: 2 / 3;
+    height: 100%;
+    display: flex;
+  }
+  .pgstyle-layout-content {
+    flex: 1 0 0;
+    overflow: auto;
+  }
+  .pgstyle-layout-footer {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: left;
+    gap: 2em;
+  }
+  ```
+
+- 此外，`<imart type="head">` 中还必须加载 `im_design_system/theme/css/theme-conditional-layout.css`（控制各主题不同的内容显示区域高度・宽度的 CSS）。缺少该文件时，`.imds-container` 的高度无法确定，`pgstyle-layout-content` 的 `flex: 1 0 0` 失去伸展目标，内容区域会被压缩为高度 0。
+
+  ```html
+  <!-- 控制各主题不同的内容显示区域高度・宽度的 CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
+  ```

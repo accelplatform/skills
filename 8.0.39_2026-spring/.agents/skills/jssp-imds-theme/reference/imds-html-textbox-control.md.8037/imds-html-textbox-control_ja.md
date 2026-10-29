@@ -118,7 +118,7 @@ Popover と組み合わせてドロップダウン選択を実現する。
         <input type="text" placeholder="カテゴリを選択" class="imds-textbox" readonly value="" />
         <span class="imds-icon is-x-small"><i class="fa-solid fa-chevron-down"></i></span>
       </div>
-      <div id="imds-popover-todo-replace-:r1:" role="menu" class="imds-popover-menu">
+      <div id="todo-replace-popover" role="menu" class="imds-popover-menu">
         <div class="imds-popover-content">contents</div>
       </div>
     </div>

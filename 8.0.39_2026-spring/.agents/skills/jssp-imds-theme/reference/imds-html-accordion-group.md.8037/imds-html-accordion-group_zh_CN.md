@@ -119,6 +119,47 @@ imds-accordion-group                      # 组容器（边框、位置、尺寸
 </div>
 ```
 
+### `is-outlined` + `imui-table`（附迁移说明）
+
+组内各手风琴需要包含详细信息表格时，将 [accordion](imds-html-accordion.md) 中的「`is-outlined` + `imui-table`（显示详细信息・附迁移说明）」模式直接作为组的子元素重复放置。注意 `imui-table` 是计划将来迁移到 `imds-table` 的临时模式（详情请参阅 accordion.md 中的说明）。
+
+```html
+<div class="imds-accordion-group is-outlined">
+  <div class="imds-accordion">
+    <input type="checkbox" id="todo-replace-:r0:" />
+    <label for="todo-replace-:r0:" class="imds-accordion-title">
+      <span class="imds-accordion-title-inner">
+        <span>工作流名称</span>
+        <span class="imds-accordion-caption">workflow-id</span>
+      </span>
+      <span class="imds-icon is-small imds-accordion-chevron"><i class="fa-solid fa-angle-down"></i></span>
+    </label>
+    <div class="imds-accordion-content">
+      <div class="imds-px-4 imds-pt-3 imds-pb-1">
+        <table class="imui-table">
+          <tbody>
+            <tr>
+              <th colspan="2"><label>应用程序名称</label></th>
+              <td>AccelStudio应用程序名称</td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="wd-15"><label>工作流信息</label></th>
+              <th class="wd-15"><label>定义名称</label></th>
+              <td>工作流名称 （ ID: workflow-id ）</td>
+            </tr>
+            <tr>
+              <th><label>备注</label></th>
+              <td>「工作流名称」的流程定义。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- 根据需要重复 imds-accordion（id 必须唯一） -->
+</div>
+```
+
 ## 实现注意事项
 
 - `id` 属性必须替换为唯一值（`todo-replace-:r1:` 等为占位符）

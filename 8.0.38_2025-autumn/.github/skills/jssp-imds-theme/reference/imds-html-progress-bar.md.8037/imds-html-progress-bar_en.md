@@ -42,7 +42,7 @@ ProgressBar is a component that visually and intuitively displays the progress o
 
 ## HTML Snippets
 
-### Basic progress bar
+### Basic Progress Bar
 
 ```html
 <div class="imds-progress-bar">
@@ -57,7 +57,7 @@ The following sections show only the differences from the basic progress bar.
 
 ## Variations
 
-### color
+### color (Color)
 
 Add a color class to `div.imds-progress-bar`.
 
@@ -78,7 +78,7 @@ Add a color class to `div.imds-progress-bar`.
 <div class="imds-progress-bar is-white">    <!-- White -->
 ```
 
-### size
+### size (Size)
 
 Add a size class to `div.imds-progress-bar`.
 
@@ -90,7 +90,7 @@ Add a size class to `div.imds-progress-bar`.
 <div class="imds-progress-bar is-large">    <!-- Large -->
 ```
 
-### showProgressWithIcon (display progress with icon)
+### showProgressWithIcon (Display Progress with Icon)
 
 Display the progress state with an icon instead of text.
 Replace `imds-progress-bar-text` with `imds-icon`.
@@ -106,6 +106,29 @@ Replace `imds-progress-bar-text` with `imds-icon`.
     <i class="fa-solid fa-circle-check"></i>
   </span>
 </div>
+```
+
+### Icon Mapping by Status
+
+Choose the icon used with `showProgressWithIcon` according to the status (color class) as follows.
+
+| Status | Color class | Icon | Example meaning |
+|-----------|-------------|---------|---------|
+| Success | is-success | fa-circle-check | Completed |
+| Warning | is-warning | fa-triangle-exclamation | Progress is delayed |
+| Danger | is-danger | fa-triangle-exclamation | Progress is significantly delayed |
+| Error | is-error | fa-circle-xmark | An error occurred |
+
+```html
+<span class="imds-icon is-warning" title="Progress is delayed">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+</span>
+<span class="imds-icon is-danger" title="Progress is significantly delayed">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+</span>
+<span class="imds-icon is-error" title="An error occurred">
+  <i class="fa-solid fa-circle-xmark"></i>
+</span>
 ```
 
 ## Implementation Notes

@@ -255,14 +255,42 @@ function transferErrorPage(code, message) {
 <!-- ヘッダ -->
 <imart type="head">
   <!-- タイトル -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- ワークフロー画面遷移用 CSJS -->
   <imart type="workflowOpenPageCsjs" />
+  <!-- テーマごとに異なるコンテンツ表示領域の高さ・幅を制御する CSS -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- プレゼンテーションページの独自スタイル -->
   <style>
-    .button-spacing {
+    /* レイアウト制御用スタイル */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
+    }
+    /* workflowOpenPage タグが出力する <form> 自体はボックスを生成せず、内側のコンテンツ領域・フッタを pgstyle-layout-main の flex アイテムとして配置する */
+    .pgstyle-layout-main > form {
+      display: contents;
     }
   </style>
   <!-- プレゼンテーションページのスクリプト -->
@@ -447,55 +475,55 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- ワークフロー画面呼び出し用フォーム -->
-<imart type="workflowOpenPage"
-    name="workflowOpenPageForm"
-    method="POST"
-    target="_top"
-    imwAuthUserCode=$imwAuthUserCode
-    imwSystemMatterId=$imwSystemMatterId
-    imwUserDataId=$imwUserDataId
-    imwNodeId=$imwNodeId
-    imwApplyBaseDate=$imwApplyBaseDate
-    imwFlowId=$imwFlowId
-    imwCallOriginalParams=$imwCallOriginalParams
-    imwNextPagePath=$imwNextPagePath
-    imwNextScriptPath=$imwNextScriptPath
-    imwNextApplicationId=$imwNextApplicationId
-    imwNextServiceId=$imwNextServiceId>
+<!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
+<div class="imds-container pgstyle-layout-container">
+  <header class="imds-header">
+    <div class="imds-header-back-button">
+      <button type="button" id="imw-back-button" class="imds-button is-ghost is-large" title="戻る">
+        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+      </button>
+    </div>
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+  </header>
+  <main class="pgstyle-layout-main">
+    <!-- ワークフロー画面呼び出し用フォーム -->
+    <imart type="workflowOpenPage"
+        name="workflowOpenPageForm"
+        method="POST"
+        target="_top"
+        imwAuthUserCode=$imwAuthUserCode
+        imwSystemMatterId=$imwSystemMatterId
+        imwUserDataId=$imwUserDataId
+        imwNodeId=$imwNodeId
+        imwApplyBaseDate=$imwApplyBaseDate
+        imwFlowId=$imwFlowId
+        imwCallOriginalParams=$imwCallOriginalParams
+        imwNextPagePath=$imwNextPagePath
+        imwNextScriptPath=$imwNextScriptPath
+        imwNextApplicationId=$imwNextApplicationId
+        imwNextServiceId=$imwNextServiceId>
 
-  <!-- 案件名（申請ボタン押下時に JavaScript で設定） -->
-  <input type="hidden" id="imwMatterName" name="imwMatterName" value="" />
+      <!-- 案件名（申請ボタン押下時に JavaScript で設定） -->
+      <input type="hidden" id="imwMatterName" name="imwMatterName" value="" />
 
-  <!-- 業務データ送信用 hidden フィールド。表示用 input には name を付けず、
-       送信直前に setUserDataToHidden() で値をコピーする（name 付きフィールドが userParam として渡る）。 -->
-  <input type="hidden" id="hidden-partCode" name="partCode" value="" />
-  <input type="hidden" id="hidden-partName" name="partName" value="" />
-  <input type="hidden" id="hidden-unitPrice" name="unitPrice" value="" />
-  <input type="hidden" id="hidden-quantity" name="quantity" value="" />
-  <input type="hidden" id="hidden-totalAmount" name="totalAmount" value="" />
-  <input type="hidden" id="hidden-reason" name="reason" value="" />
+      <!-- 業務データ送信用 hidden フィールド。表示用 input には name を付けず、
+           送信直前に setUserDataToHidden() で値をコピーする（name 付きフィールドが userParam として渡る）。 -->
+      <input type="hidden" id="hidden-partCode" name="partCode" value="" />
+      <input type="hidden" id="hidden-partName" name="partName" value="" />
+      <input type="hidden" id="hidden-unitPrice" name="unitPrice" value="" />
+      <input type="hidden" id="hidden-quantity" name="quantity" value="" />
+      <input type="hidden" id="hidden-totalAmount" name="totalAmount" value="" />
+      <input type="hidden" id="hidden-reason" name="reason" value="" />
 
-  <!-- ページ全体のコンテナ（intra-mart テーマの imui-container の内側に配置されるため id は付与しない） -->
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-back-button">
-        <button type="button" id="imw-back-button" class="imds-button is-ghost is-large">
-          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-        </button>
-      </div>
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-      </div>
-    </header>
-    <main>
-      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+      <div class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
         <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
           <h2 class="imds-heading is-bordered is-size-2 is-cyan">発注情報</h2>
           <div class="imds-field-container has-accent-color">
@@ -508,7 +536,7 @@ function transferErrorPage(code, message) {
                   <div class="imds-field-control">
                     <input type="text" id=":partCode:" class="imds-textbox" value="" />
                   </div>
-                  <span class="imds-error-text" for=":partCode:" style="display:none;"></span>
+                  <span class="imds-error-text" for=":partCode:" id="error-partCode" style="display:none;"></span>
                 </div>
               </div>
             </div>
@@ -580,25 +608,25 @@ function transferErrorPage(code, message) {
           </div>
         </section>
       </div>
-      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+      <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
         <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">申請</button>
         <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">一時保存</button>
       </div>
-    </main>
-  </div>
-</imart>
+    </imart>
 
-<!-- ワークフローページ遷移用フォーム -->
-<imart type="tag" tagname="form" id="imw-back-form" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
-  <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
-</imart>
+    <!-- ワークフローページ遷移用フォーム -->
+    <imart type="tag" tagname="form" id="imw-back-form" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
+      <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
+    </imart>
+  </main>
+</div>
 ```
 
 ---
 
 ## 使用可能なテンプレート
 
-- **申請画面**: [assets/simple-apply.md](assets/simple-apply.md)
+- **申請画面**: [simple-apply-screen.md](simple-apply-screen.md)
   - IM-Workflow の申請画面（workflowOpenPage タグ使用）
   - ワークフローパラメータの受け渡しパターン
   - フォーム内の入力項目はアクション処理の `userParameter` に渡される
@@ -615,17 +643,21 @@ function transferErrorPage(code, message) {
   - 処理モーダル方式（`showTemporarySave`）は内部で自動採番するが、**workflowOpenPage 方式には自動採番が無い**ため、`init` で `request['imwUserDataId'] || Identifier.get()` のように採番する。
   - 採番が無いと、新規一時保存時にキーが空のまま保存され、申請画面で再表示しても入力内容が復元されない。
 - **`<imart type="workflowOpenPage">` タグに `id` 属性を付けてはならない**。
-  - `workflowOpenPage` タグは `id` 属性をサポートしておらず、生成される `<form>` 要素に `id` が付与されない。`document.getElementById('workflowOpenPageForm')` は `null` を返す
+  - 生成される `<form>` 要素の `id` 属性はタグが自動で付与するため、タグ側で `id` 属性を指定しない
   - フォーム要素を JS から参照する場合は `name` 属性を使い、`document.forms['workflowOpenPageForm']` でアクセスすること
 - **`workflowOpenPage` フォーム内の入力フィールドに `name` 属性を付けてはならない**。
   - フォーム内に `<input type="hidden" name="vendorId">` と `<select name="vendorId">` のように同じ `name` が存在すると、フォーム送信時に `userParam.vendorId` が配列（NativeArray）になり、アクション処理で `Cannot convert NativeArray` エラーが発生する。
   - 入力フィールド（`select`, `input[type=text]`, `input[type=number]`, `textarea`）からは `name` を除去し、申請ボタン押下時に JS で hidden フィールドに値をコピーすること。
   - **ラジオボタン**はグループ化のために `name` が必要だが、hidden フィールドとは異なる名前にすること（例: 入力用 `name="urgencyTypeInput"` / hidden `name="urgencyType"`）
+- **`<imart type="workflowOpenPage">` は `<main class="pgstyle-layout-main">` の直下に置き、その内側にコンテンツ領域（`<div class="imds-form">`）とフッタ（`pgstyle-layout-footer`）を置くこと**。
+  - このタグは実行時に `<form>` を出力するため、内側に `<form class="imds-form">` を書くとフォームがネストし、HTML5 パーサが内側の `<form>` 開始タグを無視する（`imds-form` クラスも適用されない）。そのためコンテンツ領域は `div.imds-form` とする
+  - ルート `div.imds-container.pgstyle-layout-container` は `jssp-imds-theme` の `assets/imds-form-page.md` と同じく最外側に置き、`.pgstyle-layout-main > form { display: contents; }` でタグが出力する `<form>` をレイアウト上透過させる（ヘッダ・フッタを固定し、コンテンツ領域のみをスクロールさせるため）
+  - 戻り用フォーム（`imw-back-form`）もルート `div` 配下（`<main>` 内）に置く
 - **`<imart>` タグに `filter` 属性は存在しない**。
   - JSON 内の個別の値（ユーザ名・部署名等）を HTML に表示するには、`<span id="..."></span>` を配置し、JavaScript の `initializeView` 内で `element.textContent = result.xxx` でセットすること。
   - `<imart type="string" value=$data filter="json:result.xxx" />` のような記法は動作しない
 - **アイコンとテキストを併用するボタン**では、テキストを必ず `<span class="imds-button-text">` で囲むこと。直接テキストノードを配置するとレイアウトが崩れる（imds-html-icon-button.md 参照）
-- **アイコン単品のボタン**（テキストなし、例: 削除ゴミ箱アイコン）は通常サイズを使用すること。`is-small` / `is-x-small` にするとアイコンが小さすぎて操作しにくい
+- **アイコン単品のボタン**（テキストなし、例: 削除ゴミ箱アイコン）は通常サイズを使用すること。`is-small` / `is-x-small` にするとアイコンが小さすぎて操作しにくい。操作内容を示す `title` 属性を付与すること（例: ヘッダの戻るボタン `title="戻る"`）
 - 必須入力項目のラベルには必ず必須マークを付与すること（`imds-required-label-required` クラス + `data-required-label="必須"`）
 - 日付入力には `<input type="date">` ではなく `imuiCalendar`（`floatable="true"` を必ず指定）を使用すること。インライン表示（`floatable` 未指定）は使用しない
 - **バリデーションの実装は `.github/instructions/jssp-presentation-page.instructions.md` の規約に従うこと**（以下は主要ルール）:
@@ -634,7 +666,7 @@ function transferErrorPage(code, message) {
   - `showValidationError` は `errorElement.closest('.imds-field')` で親を取得し、末尾で `activeValidation = true` を設定する
   - 初回バリデーションエラー後、入力値変更時にリアルタイム再バリデーションを行う（`activeValidation` フラグ + `input`/`change` イベントリスナー）
   - エントリーポイントで `clearValidationError()` を呼び出す
-  - 必須フィールドの `imds-field` タグに `for=":fieldName:"` 属性を付与し、直下に `<span class="imds-error-text" for=":fieldName:" style="display:none;"></span>` を配置する
+  - 必須フィールドの `imds-field` タグに `for=":fieldName:"` 属性を付与し、直下に `<span class="imds-error-text" for=":fieldName:" id="error-fieldName" style="display:none;"></span>` を配置する
   - ボタンのイベントは `onclick` 属性ではなく `addEventListener` で登録する
 - **imuiCalendar（altField）とリアルタイム再バリデーションの併用時の注意**: imuiCalendar の `altField` は jQuery の `.val()` で DOM プロパティを直接セットするため、ネイティブの `change` イベントが発火しない。`Object.defineProperty` で `value` プロパティのセッターをオーバーライドし、`change` イベントを発行すること:
   ```javascript

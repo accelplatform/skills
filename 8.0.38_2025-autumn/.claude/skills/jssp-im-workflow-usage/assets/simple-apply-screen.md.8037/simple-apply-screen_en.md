@@ -255,14 +255,42 @@ function transferErrorPage(code, message) {
 <!-- Header -->
 <imart type="head">
   <!-- Title -->
-  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></title>
+  <title><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart> - <imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></title>
   <!-- CSJS for workflow screen transition -->
   <imart type="workflowOpenPageCsjs" />
+  <!-- CSS that controls the height/width of the content area, which differs per theme -->
+  <link rel="stylesheet" type="text/css" href="im_design_system/theme/css/theme-conditional-layout.css" />
   <!-- Presentation page custom styles -->
   <style>
-    .button-spacing {
+    /* Layout control styles */
+    .pgstyle-layout-container {
+      grid-template-rows: 5rem minmax(0, 1fr);
+      grid-template-columns: 100%;
+      height: 100%;
+      display: grid;
+    }
+    .pgstyle-layout-container > .imds-header {
+      grid-row: 1 / 2;
+    }
+    .pgstyle-layout-main {
+      flex-direction: column;
+      grid-row: 2 / 3;
+      height: 100%;
       display: flex;
-      gap: 3em;
+    }
+    .pgstyle-layout-content {
+      flex: 1 0 0;
+      overflow: auto;
+    }
+    .pgstyle-layout-footer {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: left;
+      gap: 2em;
+    }
+    /* The <form> output by the workflowOpenPage tag generates no box itself, so the inner content area and footer are laid out as flex items of pgstyle-layout-main */
+    .pgstyle-layout-main > form {
+      display: contents;
     }
   </style>
   <!-- Presentation page scripts -->
@@ -447,55 +475,55 @@ function transferErrorPage(code, message) {
   </script>
 </imart>
 
-<!-- Form for workflow screen call -->
-<imart type="workflowOpenPage"
-    name="workflowOpenPageForm"
-    method="POST"
-    target="_top"
-    imwAuthUserCode=$imwAuthUserCode
-    imwSystemMatterId=$imwSystemMatterId
-    imwUserDataId=$imwUserDataId
-    imwNodeId=$imwNodeId
-    imwApplyBaseDate=$imwApplyBaseDate
-    imwFlowId=$imwFlowId
-    imwCallOriginalParams=$imwCallOriginalParams
-    imwNextPagePath=$imwNextPagePath
-    imwNextScriptPath=$imwNextScriptPath
-    imwNextApplicationId=$imwNextApplicationId
-    imwNextServiceId=$imwNextServiceId>
+<!-- Page overall container (no id, since it is placed inside the intra-mart theme's imui-container) -->
+<div class="imds-container pgstyle-layout-container">
+  <header class="imds-header">
+    <div class="imds-header-back-button">
+      <button type="button" id="imw-back-button" class="imds-button is-ghost is-large" title="Back">
+        <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
+      </button>
+    </div>
+    <div class="imds-header-icon">
+      <span class="imds-icon-wrapper is-large">
+        <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
+      </span>
+    </div>
+    <div class="imds-header-title">
+      <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
+      <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
+    </div>
+  </header>
+  <main class="pgstyle-layout-main">
+    <!-- Form for workflow screen call -->
+    <imart type="workflowOpenPage"
+        name="workflowOpenPageForm"
+        method="POST"
+        target="_top"
+        imwAuthUserCode=$imwAuthUserCode
+        imwSystemMatterId=$imwSystemMatterId
+        imwUserDataId=$imwUserDataId
+        imwNodeId=$imwNodeId
+        imwApplyBaseDate=$imwApplyBaseDate
+        imwFlowId=$imwFlowId
+        imwCallOriginalParams=$imwCallOriginalParams
+        imwNextPagePath=$imwNextPagePath
+        imwNextScriptPath=$imwNextScriptPath
+        imwNextApplicationId=$imwNextApplicationId
+        imwNextServiceId=$imwNextServiceId>
 
-  <!-- Matter name (set by JavaScript when apply button is pressed) -->
-  <input type="hidden" id="imwMatterName" name="imwMatterName" value="" />
+      <!-- Matter name (set by JavaScript when apply button is pressed) -->
+      <input type="hidden" id="imwMatterName" name="imwMatterName" value="" />
 
-  <!-- Hidden fields for submitting business data. Display input fields have no name;
-       values are copied just before submission via setUserDataToHidden() (the name-bearing fields are passed as userParam). -->
-  <input type="hidden" id="hidden-partCode" name="partCode" value="" />
-  <input type="hidden" id="hidden-partName" name="partName" value="" />
-  <input type="hidden" id="hidden-unitPrice" name="unitPrice" value="" />
-  <input type="hidden" id="hidden-quantity" name="quantity" value="" />
-  <input type="hidden" id="hidden-totalAmount" name="totalAmount" value="" />
-  <input type="hidden" id="hidden-reason" name="reason" value="" />
+      <!-- Hidden fields for submitting business data. Display input fields have no name;
+           values are copied just before submission via setUserDataToHidden() (the name-bearing fields are passed as userParam). -->
+      <input type="hidden" id="hidden-partCode" name="partCode" value="" />
+      <input type="hidden" id="hidden-partName" name="partName" value="" />
+      <input type="hidden" id="hidden-unitPrice" name="unitPrice" value="" />
+      <input type="hidden" id="hidden-quantity" name="quantity" value="" />
+      <input type="hidden" id="hidden-totalAmount" name="totalAmount" value="" />
+      <input type="hidden" id="hidden-reason" name="reason" value="" />
 
-  <!-- Page overall container (no id, since it is placed inside the intra-mart theme's imui-container) -->
-  <div class="imds-container">
-    <header class="imds-header">
-      <div class="imds-header-back-button">
-        <button type="button" id="imw-back-button" class="imds-button is-ghost is-large">
-          <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
-        </button>
-      </div>
-      <div class="imds-header-icon">
-        <span class="imds-icon-wrapper is-large">
-          <span class="imds-icon is-medium"><i class="imds-iconfont imds-application"></i></span>
-        </span>
-      </div>
-      <div class="imds-header-title">
-        <p><imart type="string" value=$subTitle escapeXml="true" escapeJs="false"></imart></p>
-        <h1><imart type="string" value=$title escapeXml="true" escapeJs="false"></imart></h1>
-      </div>
-    </header>
-    <main>
-      <div class="imds-form has-background-color-gray sample-layout-content imds-scrollbar imds-py-4 imds-px-6">
+      <div class="imds-form has-background-color-gray pgstyle-layout-content imds-scrollbar imds-py-4 imds-px-6">
         <section class="imds-section imds-pt-0 imds-pb-5 imds-px-4 imds-content-normal-width">
           <h2 class="imds-heading is-bordered is-size-2 is-cyan">Order Information</h2>
           <div class="imds-field-container has-accent-color">
@@ -508,7 +536,7 @@ function transferErrorPage(code, message) {
                   <div class="imds-field-control">
                     <input type="text" id=":partCode:" class="imds-textbox" value="" />
                   </div>
-                  <span class="imds-error-text" for=":partCode:" style="display:none;"></span>
+                  <span class="imds-error-text" for=":partCode:" id="error-partCode" style="display:none;"></span>
                 </div>
               </div>
             </div>
@@ -580,25 +608,25 @@ function transferErrorPage(code, message) {
           </div>
         </section>
       </div>
-      <div class="button-spacing imds-py-2 imds-px-8 imds-border-t-1">
+      <div class="pgstyle-layout-footer imds-py-2 imds-px-8 imds-border-t-1">
         <button type="button" id="apply-button" class="imds-button is-primary" style="min-width: 8em;">Apply</button>
         <button type="button" id="temp-save-button" class="imds-button is-outlined is-primary" style="min-width: 8em;">Temporary Save</button>
       </div>
-    </main>
-  </div>
-</imart>
+    </imart>
 
-<!-- Form for workflow page transition -->
-<imart type="tag" tagname="form" id="imw-back-form" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
-  <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
-</imart>
+    <!-- Form for workflow page transition -->
+    <imart type="tag" tagname="form" id="imw-back-form" method="POST" action=$imwNextPagePath escapeXml="true" escapeJs="false" >
+      <imart type="hidden" imwCallOriginalParams=$imwCallOriginalParams escapeXml="true" escapeJs="false" />
+    </imart>
+  </main>
+</div>
 ```
 
 ---
 
 ## Available Templates
 
-- **Application Screen**: [assets/simple-apply.md](assets/simple-apply.md)
+- **Application Screen**: [simple-apply-screen.md](simple-apply-screen.md)
   - IM-Workflow application screen (using workflowOpenPage tag)
   - Workflow parameter passing pattern
   - Input items in the form are passed to `userParameter` of the action process
@@ -615,17 +643,21 @@ When a user requests "Create a workflow application screen", use the code in the
   - The process modal method (`showTemporarySave`) issues it automatically internally, but **the workflowOpenPage method has no automatic numbering**, so issue it in `init` like `request['imwUserDataId'] || Identifier.get()`.
   - Without issuing it, the key stays empty when newly saving temporarily, and the entered content is not restored even when the application screen is redisplayed.
 - **Do not add an `id` attribute to the `<imart type="workflowOpenPage">` tag**.
-  - The `workflowOpenPage` tag does not support the `id` attribute, so the `id` is not assigned to the generated `<form>` element. `document.getElementById('workflowOpenPageForm')` returns `null`
+  - The tag automatically assigns the `id` attribute of the generated `<form>` element, so do not specify an `id` attribute on the tag
   - When referencing form elements from JS, use the `name` attribute and access via `document.forms['workflowOpenPageForm']`
 - **Do not add `name` attributes to input fields inside the `workflowOpenPage` form**.
   - If the same `name` exists for both `<input type="hidden" name="vendorId">` and `<select name="vendorId">` in the form, `userParam.vendorId` becomes an array (NativeArray) when the form is submitted, causing a `Cannot convert NativeArray` error in the action process.
   - Remove `name` from input fields (`select`, `input[type=text]`, `input[type=number]`, `textarea`), and copy values to hidden fields via JS when the apply button is pressed.
   - **Radio buttons** need `name` for grouping, but use a different name from the hidden field (e.g., input `name="urgencyTypeInput"` / hidden `name="urgencyType"`)
+- **Place `<imart type="workflowOpenPage">` directly under `<main class="pgstyle-layout-main">`, and put the content area (`<div class="imds-form">`) and the footer (`pgstyle-layout-footer`) inside it**.
+  - This tag outputs a `<form>` at runtime, so writing `<form class="imds-form">` inside it nests forms and the HTML5 parser ignores the inner `<form>` start tag (the `imds-form` class is not applied either). Therefore the content area is `div.imds-form`
+  - Keep the root `div.imds-container.pgstyle-layout-container` outermost, as in `assets/imds-form-page.md` of `jssp-imds-theme`, and make the `<form>` output by the tag transparent to the layout with `.pgstyle-layout-main > form { display: contents; }` (so that the header and footer stay fixed and only the content area scrolls)
+  - Place the back form (`imw-back-form`) under the root `div` as well (inside `<main>`)
 - **The `<imart>` tag does not have a `filter` attribute**.
   - To display individual values in JSON (user names, department names, etc.) in HTML, place `<span id="..."></span>` and set them with `element.textContent = result.xxx` in JavaScript's `initializeView`.
   - Notation like `<imart type="string" value=$data filter="json:result.xxx" />` does not work
 - **For buttons combining icons and text**, always enclose the text in `<span class="imds-button-text">`. Placing direct text nodes causes layout issues (see imds-html-icon-button.md)
-- **Icon-only buttons** (no text, e.g., delete trash icon) should use normal size. Using `is-small` / `is-x-small` makes the icon too small to operate
+- **Icon-only buttons** (no text, e.g., delete trash icon) should use normal size. Using `is-small` / `is-x-small` makes the icon too small to operate. Add a `title` attribute describing the operation (e.g., `title="Back"` on the header back button)
 - Required input field labels must always have required marks (`imds-required-label-required` class + `data-required-label="Required"`)
 - Use `imuiCalendar` (always specify `floatable="true"`) instead of `<input type="date">` for date input. Do not use inline display (without `floatable`)
 - **Implement validation according to the conventions in `.claude/rules/jssp-presentation-page.md`** (key rules below):
@@ -634,7 +666,7 @@ When a user requests "Create a workflow application screen", use the code in the
   - `showValidationError` gets the parent with `errorElement.closest('.imds-field')` and sets `activeValidation = true` at the end
   - After the first validation error, perform real-time re-validation when input values change (`activeValidation` flag + `input`/`change` event listeners)
   - Call `clearValidationError()` at the entry point
-  - Add `for=":fieldName:"` attribute to `imds-field` tags for required fields, and place `<span class="imds-error-text" for=":fieldName:" style="display:none;"></span>` directly below
+  - Add `for=":fieldName:"` attribute to `imds-field` tags for required fields, and place `<span class="imds-error-text" for=":fieldName:" id="error-fieldName" style="display:none;"></span>` directly below
   - Register button events with `addEventListener`, not `onclick` attribute
 - **Note on combining imuiCalendar (altField) with real-time re-validation**: imuiCalendar's `altField` sets the DOM property directly via jQuery's `.val()`, so the native `change` event does not fire. Override the `value` property setter with `Object.defineProperty` and dispatch a `change` event:
   ```javascript

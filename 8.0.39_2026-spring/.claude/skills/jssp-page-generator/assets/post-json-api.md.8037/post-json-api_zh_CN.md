@@ -385,8 +385,8 @@ function init(request) {
 
 ## 测试画面 展示页面（sample_api/view/post_json_test.html）
 
-并列布置请求体用文本区域和响应显示用文本区域的验证画面。
-通过"加载样本"载入用于运行验证的 JSON，"发送"触发 `fetch`，显示 HTTP 状态、接收类型、摘要、响应体。
+将请求体用文本区域与响应显示区域（HTTP 状态・接收类型・摘要的详细表格，以及响应体的只读文本区域）纵向排列的验证画面。
+通过"加载样本"载入用于运行验证的 JSON，"发送"触发 `fetch` 并显示响应。
 
 ```html
 <imart type="head">
@@ -397,40 +397,6 @@ function init(request) {
       display: flex;
       gap: 0.75em;
       align-items: center;
-      margin-top: 0.5em;
-    }
-    .post-json-response {
-      background-color: var(--imds-color-background-secondary, #f5f7fa);
-      border: 1px solid var(--imds-color-border, #d0d7de);
-      border-radius: 0.5em;
-      padding: 1em 1.5em;
-      margin-top: 1em;
-    }
-    .post-json-response-meta {
-      display: flex;
-      gap: 1.5em;
-      flex-wrap: wrap;
-      margin-bottom: 0.75em;
-      font-size: 0.875em;
-    }
-    .post-json-response-meta dt {
-      font-weight: bold;
-      display: inline;
-      margin-right: 0.5em;
-    }
-    .post-json-response-meta dd {
-      display: inline;
-      margin: 0;
-    }
-    .post-json-response-body {
-      width: 100%;
-      min-height: 12em;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.875em;
-    }
-    .post-json-request-body {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.875em;
     }
   </style>
   <!-- 将 $data 通过 IIFE 作用域化，而不放入全局作用域 -->
@@ -568,7 +534,7 @@ function init(request) {
     <imart type="imSecureToken" />
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="request-section-title">
-      <h2 id="request-section-title" class="imds-mb-3">请求</h2>
+      <h2 id="request-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">请求</h2>
       <div class="imds-field" for=":requestBody:">
         <div class="imds-field-label">
           <label for=":requestBody:" class="has-text-weight-bold">JSON 请求体</label>
@@ -577,13 +543,14 @@ function init(request) {
           <textarea
             id=":requestBody:"
             name="requestBody"
-            class="imds-textarea post-json-request-body"
+            class="imds-textarea is-small"
             rows="10"
+            style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"
             placeholder='{ "key": "value" }'></textarea>
-          <span class="imds-help-text">以 POST 方法、Content-Type: application/json 发送。</span>
         </div>
+        <span class="imds-help-text">以 POST 方法、Content-Type: application/json 发送。</span>
       </div>
-      <div class="post-json-actions">
+      <div class="post-json-actions imds-mt-2">
         <button type="button" class="imds-button is-primary" id="send-button">
           <span class="imds-icon"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></span>
           <span class="imds-button-text">发送</span>
@@ -598,23 +565,29 @@ function init(request) {
     </section>
 
     <section class="imds-py-3 imds-px-4" aria-labelledby="response-section-title">
-      <h2 id="response-section-title" class="imds-mb-3">响应</h2>
-      <div id="post-json-response" class="post-json-response" style="display:none;" role="status" aria-live="polite">
-        <dl class="post-json-response-meta">
-          <div>
-            <dt>HTTP 状态</dt>
-            <dd id=":responseStatus:"></dd>
+      <h2 id="response-section-title" class="imds-heading is-bordered is-size-2 is-cyan imds-mt-0">响应</h2>
+      <div id="post-json-response" class="has-background-color-gray imds-border-1 imds-p-4" style="display:none;" role="status" aria-live="polite">
+        <div class="imds-table is-area-bordered is-bordered is-narrow" style="width: fit-content;">
+          <div class="imds-table-inner">
+            <table>
+              <tbody>
+                <tr>
+                  <th><span>HTTP 状态</span></th>
+                  <td><span id=":responseStatus:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>接收类型</span></th>
+                  <td><span id=":responseValueType:"></span></td>
+                </tr>
+                <tr>
+                  <th><span>摘要</span></th>
+                  <td><span id=":responseSummary:"></span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div>
-            <dt>接收类型</dt>
-            <dd id=":responseValueType:"></dd>
-          </div>
-          <div>
-            <dt>摘要</dt>
-            <dd id=":responseSummary:"></dd>
-          </div>
-        </dl>
-        <div class="imds-field" for=":responseBody:">
+        </div>
+        <div class="imds-field imds-mt-4" for=":responseBody:">
           <div class="imds-field-label">
             <label for=":responseBody:" class="has-text-weight-bold">响应体</label>
           </div>
@@ -622,8 +595,9 @@ function init(request) {
             <textarea
               id=":responseBody:"
               name="responseBody"
-              class="imds-textarea post-json-response-body"
+              class="imds-textarea is-small is-static"
               rows="15"
+              style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"
               readonly></textarea>
           </div>
         </div>
@@ -636,6 +610,8 @@ function init(request) {
 ---
 
 ## 路由配置（sample_api.xml）
+
+`file-upload-download-api.md` / `post-json-api.md` 的路由均定义在 `sample_api.xml` 中。在同一项目中同时使用两者时，请将 `file-mapping` 合并到同一个 `sample_api.xml` 中。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
