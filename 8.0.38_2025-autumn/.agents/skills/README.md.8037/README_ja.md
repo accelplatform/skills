@@ -25,6 +25,23 @@
   - ⇒ `jssp-im-master-usage`
     - ユーザ・会社・組織・役職・パブリックグループ・プライベートグループ・ロールの検索機能を組み込み
 
+### TypeScript（TSSP）で画面を作りたい
+
+- TypeScript で SSJS を書き、`tssp build` で JSSP に変換して開発したい（TypeScript 向けプロジェクトにのみ配備）
+  - ⇒ `tssp-usage`
+    - `.ts` / `.html` の置き場所、`tssp build` の処理順、d.ts による型検査、Rhino 向け lint の禁止事項、出力先の衝突の直し方
+- TSSP（TypeScript）で業務画面を新規作成したい
+  - ⇒ `tssp-page-generator` + `jssp-imds-theme`
+    - ファンクションコンテナ（ts）・プレゼンテーションページ（html）・ルーティングテーブル（xml）を一括生成。`jssp-page-generator` の TypeScript 版
+- TSSP 画面生成後の検証・修正を実行したい（`tssp-page-generator` から自動委譲）
+  - ⇒ `tssp-page-verifier`
+    - `tssp build --dev`（型検査・Rhino 向け lint）とビルド出力の機械的な検証をサブエージェントとして担当
+- TSSP コードのレビューをコーディングエージェントに実行させたい
+  - ⇒ `tssp-code-review`
+    - `jssp-code-review` の観点に加え、型（interface・d.ts との一致）と型検査の回避を確認
+
+> TSSP の `.ts` の書き方の規約は `.agents/requirements/tssp-typescript/AGENTS.md` を参照すること（jssp 規約を TypeScript に適用するときに書き方が変わる点をまとめている）。
+
 ### サーバサイドキャッシュを使いたい
 
 - JSSP（スクリプト開発モデル）のファンクションコンテナで、参照結果や計算コストの高い処理結果をキャッシュして高速化したい

@@ -7,6 +7,20 @@
   "rename": [
     {
       "condition": {
+        "and": [
+          {
+            "packageManager": "yarn"
+          },
+          {
+            "javascript": false
+          }
+        ]
+      },
+      "from": "yarn_ts.lock",
+      "to": "yarn.lock"
+    },
+    {
+      "condition": {
         "packageManager": "yarn"
       },
       "from": "yarn.lock",

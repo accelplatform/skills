@@ -25,6 +25,23 @@
   - ⇒ `jssp-im-master-usage`
     - 嵌入用户・公司・组织・职位・公共组・私有组・角色的检索功能
 
+### 想要使用 TypeScript（TSSP）创建画面
+
+- 想用 TypeScript 编写 SSJS，并通过 `tssp build` 转换为 JSSP 进行开发（仅部署到面向 TypeScript 的项目）
+  - ⇒ `tssp-usage`
+    - `.ts` / `.html` 的存放位置、`tssp build` 的处理顺序、基于 d.ts 的类型检查、面向 Rhino 的 lint 的禁止事项、输出目标冲突的修复方法
+- 想用 TSSP（TypeScript）新建业务画面
+  - ⇒ `tssp-page-generator` + `jssp-imds-theme`
+    - 一次性生成功能容器（ts）・展示页面（html）・路由表（xml）。是 `jssp-page-generator` 的 TypeScript 版
+- 想在 TSSP 画面生成后执行验证与修复（由 `tssp-page-generator` 自动委托）
+  - ⇒ `tssp-page-verifier`
+    - 作为子代理负责 `tssp build --dev`（类型检查・面向 Rhino 的 lint）和构建输出的机械验证
+- 想让编码代理对 TSSP 代码进行评审
+  - ⇒ `tssp-code-review`
+    - 除 `jssp-code-review` 的评审视角外，还检查类型（与 interface・d.ts 的一致性）以及对类型检查的规避
+
+> TSSP 的 `.ts` 写法规约请参考 `.agents/requirements/tssp-typescript/AGENTS.md`（汇总了将 jssp 规约适用于 TypeScript 时写法发生变化的部分）。
+
 ### 想要使用服务端缓存
 
 - 想在 JSSP（脚本开发模型）的功能容器中，通过缓存检索结果或计算成本较高的处理结果来提升性能

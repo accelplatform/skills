@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/main/jssp/**/*.js"
+  - "src/main/tssp/**/*.ts"
 ---
 
 # 错误处理规约

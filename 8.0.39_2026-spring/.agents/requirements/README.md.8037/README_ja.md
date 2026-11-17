@@ -42,6 +42,14 @@
 | `.agents/requirements/jssp-performance/AGENTS.md` | コンパイラ設定 / session.js | 🟡 パフォーマンスチューニング時 |
 | `.agents/requirements/jssp-accessibility/AGENTS.md` | ARIA / WCAG 2.1 AA / スクリーンリーダー | 🟠 **業務要件次第**（仕様書に明示指示があるときのみ厚く適用。指示がなければ `imdsConfirm` / 基本的な `aria-label` 等の最低限のみ） |
 
+### TSSP（TypeScript）向け
+
+TypeScript 向けプロジェクトにのみ配備される。
+
+| ファイル | 一行要約 | 適用範囲 |
+|---------|---------|---------|
+| `.agents/requirements/tssp-typescript/AGENTS.md` | jssp 規約を `.ts` に適用するときの書き方（型注釈 / `interface` / d.ts の型） | 🟢 常時（`.ts` 生成時） |
+
 ### 共通（JSSP / Java 両対応）
 
 | ファイル | 一行要約 | 適用範囲 |

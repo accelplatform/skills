@@ -1,5 +1,5 @@
 ---
-applyTo: "src/main/jssp/**/*.js,src/main/jssp/**/*.html"
+applyTo: "src/main/jssp/**/*.js,src/main/jssp/**/*.html,src/main/tssp/**/*.ts,src/main/tssp/**/*.html"
 description: "セキュリティ規約（XSS対策、SQLインジェクション対策）"
 ---
 

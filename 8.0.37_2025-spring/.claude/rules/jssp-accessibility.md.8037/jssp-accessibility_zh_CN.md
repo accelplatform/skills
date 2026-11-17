@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/main/jssp/**/*.html"
+  - "src/main/tssp/**/*.html"
 ---
 
 # 无障碍规范（屏幕阅读器支持）

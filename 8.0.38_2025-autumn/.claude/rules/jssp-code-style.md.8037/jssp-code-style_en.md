@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/main/jssp/**/*.js"
+  - "src/main/tssp/**/*.ts"
 ---
 
 # Coding Standards (Function Containers Only)

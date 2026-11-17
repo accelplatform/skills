@@ -42,6 +42,14 @@
 | `.agents/requirements/jssp-performance/AGENTS.md` | 编译器设置 / session.js | 🟡 性能调优时 |
 | `.agents/requirements/jssp-accessibility/AGENTS.md` | ARIA / WCAG 2.1 AA / 屏幕阅读器 | 🟠 **业务需求依赖** — 仅在规格书有明确要求时厚涂适用；无要求时保持基本（`imdsConfirm`、基础 `aria-label` 等） |
 
+### 面向 TSSP（TypeScript）
+
+仅部署到面向 TypeScript 的项目。
+
+| 文件 | 一行摘要 | 适用范围 |
+|------|---------|---------|
+| `.agents/requirements/tssp-typescript/AGENTS.md` | 将 jssp 规约适用于 `.ts` 时的写法（类型注解 / `interface` / d.ts 的类型） | 🟢 始终（`.ts` 生成时） |
+
 ### 通用（JSSP / Java 两者适用）
 
 | 文件 | 一行摘要 | 适用范围 |

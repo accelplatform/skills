@@ -1,5 +1,5 @@
 ---
-applyTo: "src/main/jssp/**/*.js"
+applyTo: "src/main/jssp/**/*.js,src/main/tssp/**/*.ts"
 description: "コーディングスタイル"
 ---
 
