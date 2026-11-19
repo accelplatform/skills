@@ -1,0 +1,17 @@
+{
+  "name": "{{ARTIFACT_ID}}",
+  "version": "{{PROJECT_VERSION}}",
+  "description": "{{PROJECT_DESCRIPTION}}",
+  "private": true,
+  "scripts": {
+    "build": "mvn -s settings.xml clean package",
+    "validate": "mvn -q -s settings.xml xml-validator:validate -Dsettings=.accel/settings.json -Ddir=src/",
+    "format": "mvn -q -s settings.xml java-format:apply -Dsettings=.accel/settings.json",
+    "tssp:build": "tssp build",
+    "tssp:dev": "tssp build --dev"
+  },
+  "devDependencies": {
+    "@intra-mart/tssp": "^0.2.0",
+    "@playwright/test": "^1.52.0"
+  }
+}

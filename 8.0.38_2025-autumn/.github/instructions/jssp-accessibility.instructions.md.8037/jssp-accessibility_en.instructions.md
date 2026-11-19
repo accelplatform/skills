@@ -1,5 +1,5 @@
 ---
-applyTo: "src/main/jssp/**/*.html"
+applyTo: "src/main/jssp/**/*.html,src/main/tssp/**/*.html"
 description: "アクセシビリティ規約（スクリーンリーダー対応、ARIA、キーボード操作、WCAG 2.1 AA）"
 ---
 

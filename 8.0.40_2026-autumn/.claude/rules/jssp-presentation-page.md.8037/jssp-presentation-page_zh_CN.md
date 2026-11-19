@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/main/jssp/**/*.html"
+  - "src/main/tssp/**/*.html"
 ---
 
 # 展示页面规范

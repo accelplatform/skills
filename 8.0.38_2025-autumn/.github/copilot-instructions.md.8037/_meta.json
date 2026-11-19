@@ -7,6 +7,41 @@
   "rename": [
     {
       "condition": {
+        "and": [
+          {
+            "javascript": false
+          },
+          {
+            "locale": "ja"
+          }
+        ]
+      },
+      "from": "copilot-instructions_tssp_ja.md",
+      "to": "copilot-instructions.md"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "javascript": false
+          },
+          {
+            "locale": "zh_CN"
+          }
+        ]
+      },
+      "from": "copilot-instructions_tssp_zh_CN.md",
+      "to": "copilot-instructions.md"
+    },
+    {
+      "condition": {
+        "javascript": false
+      },
+      "from": "copilot-instructions_tssp_en.md",
+      "to": "copilot-instructions.md"
+    },
+    {
+      "condition": {
         "locale": "ja"
       },
       "from": "copilot-instructions_ja.md",

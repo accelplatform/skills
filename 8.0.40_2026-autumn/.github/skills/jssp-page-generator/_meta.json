@@ -8,6 +8,9 @@
       },
       {
         "feature": "jssp"
+      },
+      {
+        "javascript": true
       }
     ]
   }

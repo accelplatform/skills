@@ -4,6 +4,19 @@
   "conditions": {
     "accelplatformVersion": "8.0.38"
   },
+  "rename": [
+    {
+      "condition": {
+        "javascript": false
+      },
+      "from": "package_ts.json",
+      "to": "package.json"
+    },
+    {
+      "from": "package.json",
+      "to": "package.json"
+    }
+  ],
   "replacements": [
     {
       "type": "regex",

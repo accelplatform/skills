@@ -1,5 +1,5 @@
 ---
-applyTo: "src/main/jssp/**/*.html"
+applyTo: "src/main/jssp/**/*.html,src/main/tssp/**/*.html"
 description: "プレゼンテーションページの実装方針"
 ---
 

@@ -1,5 +1,5 @@
 ---
-applyTo: "src/main/jssp/**/*.js"
+applyTo: "src/main/jssp/**/*.js,src/main/tssp/**/*.ts"
 description: "ログ出力規約（ログレベル、機密情報マスク）"
 ---
 

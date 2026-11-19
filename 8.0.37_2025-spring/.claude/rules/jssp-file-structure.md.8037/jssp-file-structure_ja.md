@@ -4,6 +4,8 @@ paths:
   - "src/main/jssp/**/*.html"
   - "src/main/conf/routing-jssp-config/**/*.xml"
   - "src/test/jssp/**/*.test.js"
+  - "src/main/tssp/**/*.ts"
+  - "src/main/tssp/**/*.html"
 ---
 
 # ファイル構成規約
