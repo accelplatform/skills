@@ -21,8 +21,6 @@ interface ActvMatterCnfmInfo {
   readonly flowVersionId: string;
   /** 案件名 */
   readonly matterName: string;
-  /** 案件開始日（'yyyy/MM/dd HH:mm:ss.SSS' 形式の文字列） */
-  readonly matterStartDate: string;
   /** システム案件ID */
   readonly systemMatterId: string;
   /** ユーザデータID */
@@ -32,6 +30,8 @@ interface ActvMatterCnfmInfo {
 
   /** 申請代理フラグ（'0': 代理設定なし / '1': 代理設定あり） */
   readonly applyActFlag?: FlagStatus;
+  /** 確認可能開始日時（'yyyy/MM/dd HH:mm:ss.SSS' 形式の文字列） */
+  readonly arrivedDate?: string;
   /** 申請権限者コード */
   readonly applyAuthUserCode?: string;
   /** 申請権限者名 */
@@ -46,10 +46,10 @@ interface ActvMatterCnfmInfo {
   readonly applyExecuteUserName?: string;
   /** 確認済みフラグ（'0': 未確認 / '1': 確認済み） */
   readonly confirmCplFlag?: string;
-  /** 最終処理日（'yyyy/MM/dd HH:mm:ss.SSS' 形式の文字列） */
-  readonly lastProcessDate?: string;
   /** 案件番号 */
   readonly matterNumber?: string;
+  /** ノードID（確認ノードの ID。確認画面を開くときに使う） */
+  readonly nodeId?: string;
   /** ユーザデータ案件プロパティ情報オブジェクトの配列 */
   readonly matterProperty?: UserMatterPropertyInfo[];
   /** 優先度 */

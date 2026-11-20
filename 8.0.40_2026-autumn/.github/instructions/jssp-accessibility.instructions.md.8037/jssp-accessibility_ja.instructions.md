@@ -1,5 +1,5 @@
 ---
-applyTo: "src/main/jssp/**/*.html"
+applyTo: "src/main/jssp/**/*.html,src/main/tssp/**/*.html"
 description: "アクセシビリティ規約（スクリーンリーダー対応、ARIA、キーボード操作、WCAG 2.1 AA）"
 ---
 
@@ -97,14 +97,16 @@ JSSP の慣習として、入力要素の `id` は `:userName:` のようにコ�
 ```
 
 ```javascript
+const container = document.getElementById('imui-container'); // DOM 検索の起点（自画面のルート要素）
+
 // エラー表示時
 function showValidationError(errors) {
   errors.forEach((error) => {
-    const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+    const fieldElement = container.querySelector(`.imds-field[for=":${error.name}:"]`);
     if (fieldElement) {
       fieldElement.classList.add('imds-validation-error');
     }
-    const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+    const errorElement = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
     if (errorElement) {
       errorElement.textContent = error.message;
       errorElement.style.display = '';
@@ -119,13 +121,13 @@ function showValidationError(errors) {
 
 // エラークリア時
 function clearValidationError() {
-  document.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => {
+  container.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => {
     el.classList.remove('imds-validation-error');
   });
-  document.querySelectorAll('.imds-error-text').forEach((el) => {
+  container.querySelectorAll('.imds-error-text').forEach((el) => {
     el.style.display = 'none';
   });
-  document.querySelectorAll('[aria-invalid="true"]').forEach((el) => {
+  container.querySelectorAll('[aria-invalid="true"]').forEach((el) => {
     el.removeAttribute('aria-invalid');
   });
 }

@@ -145,6 +145,7 @@ document.getElementById('search-condition-form').addEventListener('submit', func
 - **用 `width: max-content` 的网格包裹 Popover 的内容**。不指定宽度时，面板会以触发按钮为基准收缩，横宽被压缩到标签和按钮文字逐字换行的程度
 - 将条件输入区域（带 `imds-scrollbar`、`overflow: auto`）与按钮行（用 `imds-border-t-1` 分隔）分开，使条件较多时按钮行也始终可见
 - 在 `imds-field` 上添加 `imds-w-15` 以对齐条件的标签宽度。条件项目根据画面进行替换
+- 输入框宽度：面板宽度通过 `width: max-content` 由内容决定，不会扩展到全宽。因此，代码、编号等短文本输入不添加 `max-width`（使输入框宽度保持一致）。日期、时刻等格式固定的输入，按照 `.github/instructions/jssp-presentation-page.instructions.md` 的「输入字段的宽度控制」的标准指定宽度（日期 `10em`、时刻 `8em`）
 - 按钮行右对齐，左侧为清除（标准）、右侧为检索（实心 `is-primary`）。间隔使用 `gap: 1em`，各按钮添加 `style="min-width: 8em;"`（不定义自定义类）
 - 检索按钮保持放在按钮行（`<form>` 之外），通过 `form` 属性关联到表单并设为 `type="submit"`。没有关联的 submit 按钮时，包含 2 个以上输入框的表单按 Enter 也不会提交
 - 在 `submit` 事件处理程序中必须调用 `event.preventDefault()`，防止页面重新加载。清除按钮和触发按钮设为 `type="button"`（省略 `type` 的 `<button>` 在表单内会成为 submit 按钮）

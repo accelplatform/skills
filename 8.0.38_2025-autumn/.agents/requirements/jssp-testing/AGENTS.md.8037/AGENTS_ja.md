@@ -39,7 +39,7 @@ src/
 
 ```javascript
 module.exports = {
-    testMatch: ["src/test/jssp/**/*.test.js"],
+    testRegex: "[/\\\\]src[/\\\\]test[/\\\\]jssp[/\\\\].+\\.test\\.js$",
     sourcePathMapping: {
         "src/test/jssp/src/": "src/main/jssp/src/"
     },
@@ -50,7 +50,7 @@ module.exports = {
 
 | 設定項目 | 説明 |
 |---------|------|
-| `testMatch` | テストファイルの検索パターン |
+| `testRegex` | テストファイルを照合する正規表現（絶対パスへの部分一致）。js-jest は `testMatch` / `testPathIgnorePatterns` を照合に使わないため、対象はこの項目で絞り込む。省略するとプロジェクト内のすべての `*.test.js` / `*.spec.js` が対象になる |
 | `sourcePathMapping` | テストパス → ソースパスの対応。テストファイルと同一相対パスのソースが自動的にスコープに読み込まれる |
 | `collectCoverage` | カバレッジ収集の有効化 |
 | `coverageDirectory` | カバレッジレポートの出力先 |

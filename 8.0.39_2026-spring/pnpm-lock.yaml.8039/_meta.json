@@ -7,6 +7,20 @@
   "rename": [
     {
       "condition": {
+        "and": [
+          {
+            "packageManager": "pnpm"
+          },
+          {
+            "javascript": false
+          }
+        ]
+      },
+      "from": "pnpm-lock_ts.yaml",
+      "to": "pnpm-lock.yaml"
+    },
+    {
+      "condition": {
         "packageManager": "pnpm"
       },
       "from": "pnpm-lock.yaml",

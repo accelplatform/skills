@@ -7,6 +7,41 @@
   "rename": [
     {
       "condition": {
+        "and": [
+          {
+            "javascript": false
+          },
+          {
+            "locale": "ja"
+          }
+        ]
+      },
+      "from": "CLAUDE_tssp_ja.md",
+      "to": "CLAUDE.md"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "javascript": false
+          },
+          {
+            "locale": "zh_CN"
+          }
+        ]
+      },
+      "from": "CLAUDE_tssp_zh_CN.md",
+      "to": "CLAUDE.md"
+    },
+    {
+      "condition": {
+        "javascript": false
+      },
+      "from": "CLAUDE_tssp_en.md",
+      "to": "CLAUDE.md"
+    },
+    {
+      "condition": {
         "locale": "ja"
       },
       "from": "CLAUDE_ja.md",

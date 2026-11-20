@@ -130,8 +130,8 @@ When there are **two or more** related screens, bundle them with `type="folder"`
 
 | Example | Composition |
 |---|---|
-| Master series (equipment master / category / storage location) | 3 entries under the `備品マスタ管理` folder |
-| Inventory series (execution / history) | 2 entries under the `棚卸管理` folder |
+| Master series (equipment master / category / storage location) | 3 entries under the `Equipment Master Management` folder |
+| Inventory series (execution / history) | 2 entries under the `Inventory Management` folder |
 | Usage statistics (only one screen) | Placed at the top without a folder |
 
 ### How to Assign sort-number (Recommended Convention)

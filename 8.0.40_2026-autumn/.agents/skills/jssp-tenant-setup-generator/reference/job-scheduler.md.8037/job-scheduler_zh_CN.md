@@ -145,7 +145,7 @@
       "displayNames": { "ja": "サンプルバッチ", "en": "...", "zh_CN": "..." },
       "triggers": [                                       // 任意。指定执行计划
         {
-          "description": "営業日の 8 時",
+          "description": "工作日 8 点",
           "enable": true,
           "startDate": "2026-05-14T00:00:00.000+09:00",
           "businessDay": {
@@ -231,14 +231,14 @@
       // 简单重复
       {
         "id": "...",                                // 可省略。省略时按 <jobnetId>_trigger_<N> 自动编号
-        "description": "1 回だけ",                  // 任意
+        "description": "仅一次",                    // 任意
         "enable": false,                            // 必需
         "startDate": "2026-05-14T00:00:00.000+09:00", // 必需（ISO 8601）
         "repeat": { "count": 1 }
       },
       // 日历指定
       {
-        "description": "月～金の 8 時",
+        "description": "周一至周五 8 点",
         "enable": true,
         "startDate": "2026-05-14T00:00:00.000+09:00",
         "datetime": {
@@ -250,7 +250,7 @@
       },
       // 营业日指定
       {
-        "description": "営業日の 9 時",
+        "description": "工作日 9 点",
         "enable": true,
         "startDate": "2026-05-14T00:00:00.000+09:00",
         "businessDay": {

@@ -7,6 +7,20 @@
   "rename": [
     {
       "condition": {
+        "and": [
+          {
+            "packageManager": "bun"
+          },
+          {
+            "javascript": false
+          }
+        ]
+      },
+      "from": "bun_ts.lock",
+      "to": "bun.lock"
+    },
+    {
+      "condition": {
         "packageManager": "bun"
       },
       "from": "bun.lock",

@@ -201,6 +201,9 @@ function transferErrorPage(code, message) {
   <script>
   (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
+      // DOM 検索の起点（自画面のルート要素。ページ全体を検索しない）
+      const container = document.getElementById('imui-container');
+
       // バリデーションチェック常時実行フラグ
       let activeValidation = false;
 
@@ -244,8 +247,8 @@ function transferErrorPage(code, message) {
         dialog.innerHTML =
           '<div class="imds-confirm is-' + mode + '">' +
             '<div class="imds-confirm-content-wrapper">' +
-              '<button class="imds-confirm-close imds-button is-ghost">' +
-                '<span class="imds-icon"><i class="fa-solid fa-xmark"></i></span>' +
+              '<button class="imds-confirm-close imds-button is-ghost" aria-label="閉じる">' +
+                '<span class="imds-icon" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>' +
               '</button>' +
               '<div class="imds-confirm-content">' +
                 '<div class="imds-confirm-message-wrapper">' +
@@ -282,6 +285,16 @@ function transferErrorPage(code, message) {
           contentElement.appendChild(document.createTextNode(lines[i]));
         }
 
+        // ダイアログを開く前にトリガ要素を記憶（閉じた後にフォーカスを戻すため）
+        const triggerElement = document.activeElement;
+
+        // ARIA 属性
+        dialog.setAttribute('role', 'dialog');
+        dialog.setAttribute('aria-modal', 'true');
+        const titleId = 'imds-confirm-title-' + Date.now();
+        dialog.setAttribute('aria-labelledby', titleId);
+        dialog.querySelector('.imds-confirm-message-title').id = titleId;
+
         document.body.appendChild(dialog);
 
         return new Promise(function(resolve) {
@@ -291,25 +304,34 @@ function transferErrorPage(code, message) {
             if (settled) return;
             settled = true;
             imdsConfirm._active = false;
+            dialog.removeEventListener('keydown', onKeyDown);
             dialog.close();
             document.body.removeChild(dialog);
+            // トリガ要素にフォーカスを戻す
+            if (triggerElement && typeof triggerElement.focus === 'function') {
+              triggerElement.focus();
+            }
             resolve(result);
           }
 
+          const okButton = dialog.querySelector('.imds-confirm-ok-button');
+          const cancelButton = dialog.querySelector('.imds-confirm-cancel-button');
+          const closeButton = dialog.querySelector('.imds-confirm-close');
+
           // 決定ボタン
-          dialog.querySelector('.imds-confirm-ok-button').addEventListener('click', function() {
+          okButton.addEventListener('click', function() {
             if (typeof onOk === 'function') onOk();
             close(true);
           });
 
           // キャンセルボタン
-          dialog.querySelector('.imds-confirm-cancel-button').addEventListener('click', function() {
+          cancelButton.addEventListener('click', function() {
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
 
           // × ボタン (キャンセル扱い)
-          dialog.querySelector('.imds-confirm-close').addEventListener('click', function() {
+          closeButton.addEventListener('click', function() {
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
@@ -321,7 +343,34 @@ function transferErrorPage(code, message) {
             close(false);
           });
 
+          // キーボード操作
+          // - Enter:  OK ボタンとして確定（キャンセル/× にフォーカスがある場合はそのボタンの動作を優先）
+          // - Tab:    ネイティブ dialog がフォーカストラップを行うので追加実装不要
+          // - Escape: cancel イベントでハンドリング済み
+          function onKeyDown(e) {
+            if (e.key === 'Enter' && !e.isComposing) {
+              const focused = document.activeElement;
+              if (focused === cancelButton || focused === closeButton) {
+                return;
+              }
+              e.preventDefault();
+              okButton.click();
+            }
+          }
+          dialog.addEventListener('keydown', onKeyDown);
+
           dialog.showModal();
+
+          // 初期フォーカス
+          // - danger モード: 誤操作防止のためキャンセルボタンへ
+          // - それ以外:      OK ボタンへ
+          setTimeout(function() {
+            if (mode === 'danger') {
+              cancelButton.focus();
+            } else {
+              okButton.focus();
+            }
+          }, 0);
         });
       }
 
@@ -343,11 +392,11 @@ function transferErrorPage(code, message) {
 
       // バリデーションの表示初期化
       function clearValidationError() {
-        document.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
+        container.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
           element.classList.remove('imds-validation-error');
         });
 
-        document.querySelectorAll('.imds-error-text').forEach((element) => {
+        container.querySelectorAll('.imds-error-text').forEach((element) => {
           element.style.display = 'none';
         });
       }
@@ -355,12 +404,12 @@ function transferErrorPage(code, message) {
       // バリデーションエラー表示
       function showValidationError(errors) {
         errors.forEach((error) => {
-          const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+          const fieldElement = container.querySelector(`.imds-field[for=":${error.name}:"]`);
           if (fieldElement) {
             fieldElement.classList.add('imds-validation-error');
           }
 
-          const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+          const errorElement = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
           if (errorElement) {
             errorElement.textContent = error.message;
             errorElement.style.display = '';
@@ -468,6 +517,12 @@ function transferErrorPage(code, message) {
         }
       });
 
+      // 戻るボタン クリック時イベント
+      // 遷移先は戻り先の画面のパスに置き換える。戻り先が無い画面では、ヘッダの imds-header-back-button ごと削除する
+      document.getElementById('back-button').addEventListener('click', () => {
+        location.href = 'sample/simple_form/list';
+      });
+
       // 登録ボタン クリック時イベント
       document.getElementById('register-button').addEventListener('click', () => {
         // パラメータ情報の作成
@@ -509,7 +564,7 @@ function transferErrorPage(code, message) {
   <!-- ヘッダ -->
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" class="imds-button is-ghost is-large" title="戻る">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="戻る">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
       </button>
     </div>

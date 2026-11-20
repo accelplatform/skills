@@ -10,7 +10,7 @@
  *
  * 前提:
  *   - Node.js v18 以降
- *   - xmllint-wasm が解決可能（deps/（type: "dependencies"）経由でこのスキル配下にインストール済み）
+ *   - xmllint-wasm が解決可能（スキルの依存として .accel/ensure.mjs がインストール済み）
  *
  * 終了コード: 成功=0、失敗=1
  */

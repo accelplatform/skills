@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/main/jssp/**/*.js"
+  - "src/main/tssp/**/*.ts"
 ---
 
 # 命名規則

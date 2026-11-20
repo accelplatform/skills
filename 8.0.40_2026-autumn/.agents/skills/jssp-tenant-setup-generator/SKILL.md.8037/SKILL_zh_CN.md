@@ -285,7 +285,7 @@ spec.json 中的 `workflowImport` / `logicImport` 部分，**仅在用户在 pro
   // 8. 数据库（可选） — DDL 始终按 3 个方言分别生成，DML 通过 dmlPerDialect 切换
   "database": {
     "tables": [
-      { "name": "any_app_data", "comment": "サンプルデータ" }
+      { "name": "any_app_data", "comment": "示例数据" }
     ],
     "dmlPerDialect": false                     // false（默认）：DML 单文件 / true：3 方言分别
   },

@@ -25,6 +25,23 @@ To reduce token consumption by coding agents, it is recommended to pick out only
   - ⇒ `jssp-im-master-usage`
     - Embeds search functions for users, companies, organizations, posts, public groups, private groups, and roles
 
+### I want to build screens in TypeScript (TSSP)
+
+- I want to write SSJS in TypeScript and develop by converting it to JSSP with `tssp build` (deployed only to TypeScript projects)
+  - ⇒ `tssp-usage`
+    - Where to place `.ts` / `.html`, the processing order of `tssp build`, type checking with d.ts, prohibited items in the Rhino lint, and how to fix output destination conflicts
+- I want to newly create a business screen in TSSP (TypeScript)
+  - ⇒ `tssp-page-generator` + `jssp-imds-theme`
+    - Generates function containers (ts), presentation pages (html), and routing tables (xml) in one go. The TypeScript version of `jssp-page-generator`
+- I want to run verification and fixes after TSSP screen generation (automatically delegated from `tssp-page-generator`)
+  - ⇒ `tssp-page-verifier`
+    - Handles, as a sub-agent, `tssp build --dev` (type checking and Rhino lint) and mechanical verification of the build output
+- I want a coding agent to review TSSP code
+  - ⇒ `tssp-code-review`
+    - In addition to the perspectives of `jssp-code-review`, checks types (consistency with interfaces and d.ts) and any circumvention of type checking
+
+> For the conventions on writing TSSP `.ts` files, refer to `.github/instructions/tssp-typescript.instructions.md` (it summarizes the points where the way of writing changes when the jssp conventions are applied to TypeScript).
+
 ### I want to use server-side caching
 
 - I want to speed up processing in a JSSP (script development model) function container by caching search results or the results of computationally expensive processing

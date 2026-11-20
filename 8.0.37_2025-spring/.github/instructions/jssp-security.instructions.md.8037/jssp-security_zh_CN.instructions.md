@@ -1,5 +1,5 @@
 ---
-applyTo: "src/main/jssp/**/*.js,src/main/jssp/**/*.html"
+applyTo: "src/main/jssp/**/*.js,src/main/jssp/**/*.html,src/main/tssp/**/*.ts,src/main/tssp/**/*.html"
 description: "セキュリティ規約（XSS対策、SQLインジェクション対策）"
 ---
 
@@ -157,7 +157,7 @@ function checkSession() {
 ## CSRF 对策
 
 提交表单时使用 CSRF 令牌。
-使用 `<imart type="imSecureToken" />` 时，将输出为 `<input type="imSecureToken" name="im_secure_token" value="<TOKEN>"`。
+使用 `<imart type="imSecureToken" />` 时，将输出为 `<input type="hidden" name="im_secure_token" value="<TOKEN>"`。
 
 ```html
 <form method="POST" action="sample/user/edit">

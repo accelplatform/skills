@@ -56,8 +56,8 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
   dialog.innerHTML =
     '<div class="imds-confirm is-' + mode + '">' +
       '<div class="imds-confirm-content-wrapper">' +
-        '<button class="imds-confirm-close imds-button is-ghost">' +
-          '<span class="imds-icon"><i class="fa-solid fa-xmark"></i></span>' +
+        '<button class="imds-confirm-close imds-button is-ghost" aria-label="Close">' +
+          '<span class="imds-icon" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>' +
         '</button>' +
         '<div class="imds-confirm-content">' +
           '<div class="imds-confirm-message-wrapper">' +
@@ -94,6 +94,16 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
     contentElement.appendChild(document.createTextNode(lines[i]));
   }
 
+  // Remember the trigger element before opening the dialog (to return focus after closing)
+  const triggerElement = document.activeElement;
+
+  // ARIA attributes
+  dialog.setAttribute('role', 'dialog');
+  dialog.setAttribute('aria-modal', 'true');
+  const titleId = 'imds-confirm-title-' + Date.now();
+  dialog.setAttribute('aria-labelledby', titleId);
+  dialog.querySelector('.imds-confirm-message-title').id = titleId;
+
   document.body.appendChild(dialog);
 
   return new Promise(function(resolve) {
@@ -103,25 +113,34 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
       if (settled) return;
       settled = true;
       imdsConfirm._active = false;
+      dialog.removeEventListener('keydown', onKeyDown);
       dialog.close();
       document.body.removeChild(dialog);
+      // Return focus to the trigger element
+      if (triggerElement && typeof triggerElement.focus === 'function') {
+        triggerElement.focus();
+      }
       resolve(result);
     }
 
+    const okButton = dialog.querySelector('.imds-confirm-ok-button');
+    const cancelButton = dialog.querySelector('.imds-confirm-cancel-button');
+    const closeButton = dialog.querySelector('.imds-confirm-close');
+
     // OK button
-    dialog.querySelector('.imds-confirm-ok-button').addEventListener('click', function() {
+    okButton.addEventListener('click', function() {
       if (typeof onOk === 'function') onOk();
       close(true);
     });
 
     // Cancel button
-    dialog.querySelector('.imds-confirm-cancel-button').addEventListener('click', function() {
+    cancelButton.addEventListener('click', function() {
       if (typeof onCancel === 'function') onCancel();
       close(false);
     });
 
     // X button (treated as cancel)
-    dialog.querySelector('.imds-confirm-close').addEventListener('click', function() {
+    closeButton.addEventListener('click', function() {
       if (typeof onCancel === 'function') onCancel();
       close(false);
     });
@@ -133,7 +152,34 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
       close(false);
     });
 
+    // Keyboard operation
+    // - Enter:  Confirm as the OK button (if the Cancel / x button has focus, that button's action takes precedence)
+    // - Tab:    The native dialog traps focus, so no additional implementation is needed
+    // - Escape: Already handled by the cancel event
+    function onKeyDown(e) {
+      if (e.key === 'Enter' && !e.isComposing) {
+        const focused = document.activeElement;
+        if (focused === cancelButton || focused === closeButton) {
+          return;
+        }
+        e.preventDefault();
+        okButton.click();
+      }
+    }
+    dialog.addEventListener('keydown', onKeyDown);
+
     dialog.showModal();
+
+    // Initial focus
+    // - danger mode: the Cancel button, to prevent accidental operation
+    // - otherwise:   the OK button
+    setTimeout(function() {
+      if (mode === 'danger') {
+        cancelButton.focus();
+      } else {
+        okButton.focus();
+      }
+    }, 0);
   });
 }
 
@@ -204,7 +250,7 @@ When displaying a confirmation message, use this `imdsConfirm()` instead of `win
 - **Title (`imds-confirm-message-title` / `title` argument)**: Concisely describe the operation to be performed. Examples: "Register the definition?" "Delete the definition?"
 - **Message (`imds-confirm-message-content` / `message` argument)**: Explanatory text supplementing the title. Briefly include the information users need to decide, such as the scope of impact. Examples: "Updating may affect existing behavior." "Deleting the definition also deletes XX."
 - **Button caption (`okButton.text`)**: Use wording that clearly states what happens on click. Avoid captions that do not convey the action, such as "Confirm" or "OK"; use the actual operation name such as "Register", "Update" or "Delete" (default is "Execute").
-- **Default choice**: Do not focus a button other than Cancel for irreversible operations (deletion, etc.). `imdsConfirm` places the Cancel button first and focuses it by default, so it follows this principle.
+- **Default choice**: Do not focus a button other than Cancel for irreversible operations (deletion, etc.). `imdsConfirm` sets the initial focus on the Cancel button in `mode: 'danger'` and on the OK button otherwise, so it follows this principle.
 
 ### How to use mode
 

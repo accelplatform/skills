@@ -152,7 +152,7 @@ function checkSession() {
 ## CSRF Countermeasures
 
 Use CSRF tokens when submitting forms.
-Using `<imart type="imSecureToken" />` outputs it as `<input type="imSecureToken" name="im_secure_token" value="<TOKEN>"`.
+Using `<imart type="imSecureToken" />` outputs it as `<input type="hidden" name="im_secure_token" value="<TOKEN>"`.
 
 ```html
 <form method="POST" action="sample/user/edit">

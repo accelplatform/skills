@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/main/jssp/**/*.html"
+  - "src/main/tssp/**/*.html"
 ---
 
 # 展示页面规范
@@ -33,10 +34,6 @@ paths:
   <!-- 展示页面的自定义样式 -->
   <style>
     /* TODO: 在此处添加自定义样式 */
-    .button-spacing {
-      display: flex;
-      gap: 3em;
-    }
   </style>
   <!-- 展示页面的脚本（不将 $data 置于全局作用域，而是通过 IIFE 进行作用域隔离） -->
   <script>
@@ -494,16 +491,17 @@ if (!userCode || userCode.length === 0) {
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
   let activeValidation = false; // 初次显示时不显示错误
+  const container = document.getElementById('imui-container'); // DOM 检索的起点（本画面的根元素）
 
   function clearValidationError() {
-    document.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => el.classList.remove('imds-validation-error'));
-    document.querySelectorAll('.imds-error-text').forEach((el) => { el.style.display = 'none'; });
+    container.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => el.classList.remove('imds-validation-error'));
+    container.querySelectorAll('.imds-error-text').forEach((el) => { el.style.display = 'none'; });
   }
   function showValidationError(errors) {
     errors.forEach((error) => {
-      const field = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+      const field = container.querySelector(`.imds-field[for=":${error.name}:"]`);
       if (field) field.classList.add('imds-validation-error');
-      const msg = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+      const msg = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
       if (msg) { msg.textContent = error.message; msg.style.display = ''; }
     });
     activeValidation = true; // 从此开始实时重新验证
@@ -667,13 +665,16 @@ document.getElementById('register-button').addEventListener('click', () => {
   imdsConfirm(
     '确定要注册吗？',          // 消息
     '注册',                   // 对话框标题
-    async () => {             // 点击 OK 按钮时的处理
-      const isSuccess = await register(request);
-      if (isSuccess) {
-        clearValidationError();
-      }
+    null,
+    null,
+    { mode: 'info', okButton: { text: '注册' } }
+  ).then(async (result) => { // 点击 OK 按钮时的处理
+    if (!result) return;
+    const isSuccess = await register(request);
+    if (isSuccess) {
+      clearValidationError();
     }
-  );
+  });
 });
 ```
 
@@ -692,7 +693,7 @@ document.getElementById('register-button').addEventListener('click', () => {
   - `info`（默认）：普通确认（注册、检索等）
   - `warning`：无法撤销的数据更新确认
   - `danger`：数据删除确认（`okButton.text` 中指定「删除」）
-- 点击 OK 按钮时，执行第 3 个参数的回调
+- 点击 OK 按钮时，`imdsConfirm()` 返回的 Promise 解析为 `true`（取消、×、Escape 时为 `false`）
   1. 调用 API
   2. API 处理成功时，使用 `clearValidationError()` 解除画面上的验证错误
 

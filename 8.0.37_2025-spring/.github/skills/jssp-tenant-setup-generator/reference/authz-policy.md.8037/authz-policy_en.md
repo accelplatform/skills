@@ -69,17 +69,17 @@ Can be nested. Example: `AND(S(b_m_role:account_manager), NOT(S(imm_user:aoyagi)
 
 ### Category values (comparison operator in the last argument)
 
-The last argument of `imm_department` / `imm_company_post` / `imm_public_grp` / `imm_public_grp_role` is the comparison operator against the organization hierarchy:
+The last argument of `imm_department` / `imm_company_post` / `imm_public_grp` / `imm_public_grp_role` is a comparison operator. `imm_department` / `imm_public_grp` compare by organization/group hierarchy, and `imm_company_post` / `imm_public_grp_role` compare by post/role rank (a smaller value means a higher position). For posts/roles, read "organizations" in the table below as higher/lower posts or roles:
 
 | Value | Meaning |
 |-------|---------|
 | `eq` | equal (only matches the specified organization) |
-| `lt` | less than (ancestor organizations, excluding self) |
-| `le` | less than or equal (ancestor organizations + self) |
-| `gt` | greater than (descendant organizations, excluding self) |
-| `ge` | greater than or equal (descendant organizations + self) |
+| `lt` | less than (descendant organizations, excluding self) |
+| `le` | less than or equal (descendant organizations + self) |
+| `gt` | greater than (ancestor organizations, excluding self) |
+| `ge` | greater than or equal (ancestor organizations + self) |
 
-Example: to target everyone under department `dept_other_11`, use `ge`; for self only, use `eq`; for descendants only (excluding self), use `gt`.
+Example: to target everyone under department `dept_other_11`, use `le`; for self only, use `eq`; for descendants only (excluding self), use `lt`.
 
 ### Subject specification by "company" unit
 
@@ -89,7 +89,7 @@ In the intra-mart organization model, "company" is treated as the top level of t
 S(imm_department:<company code> <company code> <company code> le)
 ```
 
-Set the company code as the 2nd argument (organization set code) and the 3rd argument (organization code), and use category `le` to mean "specified organization + ancestors" (since the company is at the top, this effectively targets all organizations under the company).
+Set the company code as the 2nd argument (organization set code) and the 3rd argument (organization code), and use category `le` to mean "specified organization + descendants" (since the company is at the top, this effectively targets all organizations under the company).
 
 Concrete examples:
 
@@ -106,14 +106,6 @@ AND(S(b_m_role:account_manager), NOT(S(imm_user:aoyagi)))
 
 # Either ueda or aoyagi
 OR(S(imm_user:ueda), S(imm_user:aoyagi))
-
-# Compound condition over the organization hierarchy (ancestors and descendants combined with AND)
-AND(
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 lt),
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 le),
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 gt),
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 ge)
-)
 ```
 
 ### Roles pre-registered as intra-mart standard (`b_m_role`)
@@ -236,7 +228,7 @@ Furthermore, this resource is only registered once the `logicImport` extension i
 - For simple cases (permitting a specific role), enumerate one row per resource. Use `AND` / `OR` / `NOT` **only for complex conditions (excluding specific users, filtering by organization hierarchy, etc.)**
 - `tenant_manager` is automatically granted on every service resource and every menu group (see "Default Policy" above). There is no need to write it in `authzPolicies`; **list only the other target roles/users**
 - Permitting `authenticated` (all authenticated users) should be limited to lightweight services such as search and selection
-- When narrowing the target to the organization hierarchy, `ge` (self + descendants) is the most common. Be aware of boundary conditions (inclusive/exclusive) of the hierarchy and choose between `eq` / `lt` / `le` / `gt` / `ge` accordingly
+- When narrowing the target to the organization hierarchy, `le` (self + descendants) is the most common. Be aware of boundary conditions (inclusive/exclusive) of the hierarchy and choose between `eq` / `lt` / `le` / `gt` / `ge` accordingly
 
 ## Limitations
 

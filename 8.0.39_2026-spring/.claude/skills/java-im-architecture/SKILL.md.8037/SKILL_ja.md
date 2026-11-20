@@ -1,6 +1,6 @@
 ---
 name: java-im-architecture
-description: Architecture principles, patterns, and conventions for application development on the intra-mart platform (Java / JavaEE development model), based on Clean Architecture/DDD principles. Detailed templates for layer structure, dependency rules, naming conventions, error handling, factory patterns, security principles, and a full-stack implementation example. The concise convention summary lives in .claude/rules/java-architecture.md — use this skill when full code templates or the anti-pattern catalog are needed.
+description: Architecture principles, patterns, and conventions for application development on the intra-mart platform (Java / JavaEE development model), based on Clean Architecture/DDD principles. Detailed templates for layer structure, dependency rules, naming conventions, error handling, factory patterns, security principles, and a full-stack implementation example. The concise convention summary lives in `java-architecture` — use this skill when full code templates or the anti-pattern catalog are needed.
 disable-model-invocation: false
 user-invocable: true
 ---

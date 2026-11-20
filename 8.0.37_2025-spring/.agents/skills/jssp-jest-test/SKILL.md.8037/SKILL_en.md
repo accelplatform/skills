@@ -45,7 +45,7 @@ mvn jp.co.intra_mart:js-jest:test
 
 - Run from the project root (the directory containing `pom.xml`)
 - The goal is `test` (`jp.co.intra_mart:js-jest:test`)
-- Targets and settings follow `testMatch` / `sourcePathMapping` in `jest.config.js`
+- Targets and settings follow `testRegex` / `sourcePathMapping` in `jest.config.js`
 - The output shows the test count and coverage (written to `target/coverage/`)
 - **Always run after generating or modifying test code, and confirm all tests pass**
 

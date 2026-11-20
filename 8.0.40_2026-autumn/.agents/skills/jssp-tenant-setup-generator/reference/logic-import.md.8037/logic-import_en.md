@@ -145,7 +145,7 @@ Split `spec.configNumber` and generate a separate `config-(N+1).xml` dedicated t
 | `config-1.xml` | Load LogicDesigner via `logicImport` (URI resources are generated) |
 | `config-2.xml` | Describe only `authzPolicies` for LogicDesigner routing (references existing resources) |
 
-When `configNumber >= 2`, the build script appends a `-<N>` suffix to the end of the base part of each file name (e.g. `equip-authz-policy-2.xml`). See [import-config.md](import-config.md#configNumber--1-のファイル名サフィックス) for details.
+When `configNumber >= 2`, the build script appends a `-<N>` suffix to the end of the base part of each file name (e.g. `equip-authz-policy-2.xml`). See [import-config.md](import-config.md#file-name-suffix-when-confignumber--1) for details.
 
 ### Example spec.json Configurations
 

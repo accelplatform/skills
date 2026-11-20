@@ -118,8 +118,8 @@ CREATE TABLE 的主体（列定义、约束）需要由用户手动追加。
 ```json
 "database": {
   "tables": [
-    { "name": "any_app_data",   "comment": "サンプルデータ" },
-    { "name": "any_app_master", "comment": "マスタ" }
+    { "name": "any_app_data",   "comment": "示例数据" },
+    { "name": "any_app_master", "comment": "主数据" }
   ],
   "dmlPerDialect": false
 }

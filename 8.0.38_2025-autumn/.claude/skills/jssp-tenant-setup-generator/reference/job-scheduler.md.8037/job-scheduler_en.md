@@ -145,7 +145,7 @@ Use the `<localize>` element to add display names. Correlate by the `id` attribu
       "displayNames": { "ja": "サンプルバッチ", "en": "...", "zh_CN": "..." },
       "triggers": [                                       // Optional. Specifies the execution schedule
         {
-          "description": "営業日の 8 時",
+          "description": "Business days at 8:00",
           "enable": true,
           "startDate": "2026-05-14T00:00:00.000+09:00",
           "businessDay": {
@@ -231,14 +231,14 @@ Example: Mon-Fri at 6, 12, and 18 o'clock 0 minutes -> `daysOfWeek: [2,3,4,5,6]`
       // Simple repetition
       {
         "id": "...",                                // Can be omitted. When omitted, auto-numbered as <jobnetId>_trigger_<N>
-        "description": "1 回だけ",                  // Optional
+        "description": "Once only",                // Optional
         "enable": false,                            // Required
         "startDate": "2026-05-14T00:00:00.000+09:00", // Required (ISO 8601)
         "repeat": { "count": 1 }
       },
       // Calendar specification
       {
-        "description": "月～金の 8 時",
+        "description": "Mon-Fri at 8:00",
         "enable": true,
         "startDate": "2026-05-14T00:00:00.000+09:00",
         "datetime": {
@@ -250,7 +250,7 @@ Example: Mon-Fri at 6, 12, and 18 o'clock 0 minutes -> `daysOfWeek: [2,3,4,5,6]`
       },
       // Business-day specification
       {
-        "description": "営業日の 9 時",
+        "description": "Business days at 9:00",
         "enable": true,
         "startDate": "2026-05-14T00:00:00.000+09:00",
         "businessDay": {

@@ -174,4 +174,4 @@ await expect(page.locator('h1#page-title')).toBeVisible();        // ③ 页面�
   - 错误类型切换时的解除
   - 验证触发前无反应
   - 多个字段的单独解除
-  - `imds-validation-error` クラスの移除
+  - 移除 `imds-validation-error` 类

@@ -4,7 +4,7 @@
 
 ```javascript
 module.exports = {
-  testMatch: ['src/test/jssp/**/*.test.js'],
+  testRegex: '[/\\\\]src[/\\\\]test[/\\\\]jssp[/\\\\].+\\.test\\.js$',
   sourcePathMapping: {
     'src/test/jssp/src/': 'src/main/jssp/src/'
   },
@@ -15,9 +15,13 @@ module.exports = {
 
 ## 配置项说明
 
-### testMatch
+### testRegex
 
-测试文件的搜索模式。目标为 `src/test/jssp/src/` 目录下的 `.test.js` 文件。
+用于匹配测试文件的正则表达式。js-jest 将该正则表达式以部分匹配的方式应用于项目根目录下各文件的绝对路径，并将匹配的文件作为测试执行。上述配置以 `src/test/jssp/` 目录下的 `.test.js` 文件为目标。
+
+- 路径分隔符因操作系统不同而为 `/` 或 `\`，因此使用 `[/\\]`（在 JS 字符串字面量中写作 `'[/\\\\]'`）同时匹配两者
+- 省略时，除 `node_modules` 外项目内所有 `*.test.js` / `*.spec.js` 均为目标（也包括 `src/test/integration` 等目录下的测试）
+- js-jest 不使用 `testMatch` / `testPathIgnorePatterns` 匹配测试文件。请使用 `testRegex` 限定目标
 
 ### sourcePathMapping
 

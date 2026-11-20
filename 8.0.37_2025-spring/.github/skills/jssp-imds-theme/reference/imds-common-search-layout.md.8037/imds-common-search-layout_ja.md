@@ -145,6 +145,7 @@ document.getElementById('search-condition-form').addEventListener('submit', func
 - **Popover の中身は `width: max-content` のグリッドで包む**。幅を指定しないとパネルがトリガボタンを基準に縮み、ラベルやボタンの文字が 1 文字ずつ折り返すほど横幅が潰れる
 - 条件の入力欄（`imds-scrollbar` 付き・`overflow: auto`）とボタン行（`imds-border-t-1` で区切る）を分け、条件が多くてもボタン行が常に見えるようにする
 - 条件のラベル幅は `imds-field` に `imds-w-15` を付与して揃える。条件の項目は画面に合わせて置き換える
+- 入力欄の幅：パネルの幅は `width: max-content` で中身から決まり、全幅に広がらない。そのため、コード・番号などの短いテキスト入力には `max-width` を付けない（入力欄の幅を揃える）。日付・時刻など書式が固定の入力は、`.github/instructions/jssp-presentation-page.instructions.md`「入力フィールドの幅制御」の目安どおり幅を指定する（日付 `10em`、時刻 `8em`）
 - ボタン行は右寄せで、左にクリア（標準）・右に検索（塗りの `is-primary`）。間隔は `gap: 1em`、各ボタンに `style="min-width: 8em;"` を付ける（独自クラスは定義しない）
 - 検索ボタンはボタン行（`<form>` の外）に置いたまま、`form` 属性でフォームに関連付けて `type="submit"` にする。関連付けた submit ボタンが無いと、入力欄が 2 つ以上のフォームでは Enter を押しても送信されない
 - `submit` イベントハンドラで必ず `event.preventDefault()` を呼び、画面の再読み込みを防ぐ。クリア・トリガボタンは `type="button"` にする（`type` を省略した `<button>` はフォーム内で submit ボタンになる）

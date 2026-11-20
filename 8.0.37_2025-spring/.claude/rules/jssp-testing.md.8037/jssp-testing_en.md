@@ -47,7 +47,7 @@ Define the path correspondence between test files and source files in `sourcePat
 
 ```javascript
 module.exports = {
-    testMatch: ["src/test/jssp/**/*.test.js"],
+    testRegex: "[/\\\\]src[/\\\\]test[/\\\\]jssp[/\\\\].+\\.test\\.js$",
     sourcePathMapping: {
         "src/test/jssp/src/": "src/main/jssp/src/"
     },
@@ -58,7 +58,7 @@ module.exports = {
 
 | Setting | Description |
 |---------|-------------|
-| `testMatch` | Search pattern for test files |
+| `testRegex` | Regular expression that selects test files (partial match against the absolute path). js-jest does not use `testMatch` / `testPathIgnorePatterns` for matching, so narrow the targets with this setting. If omitted, every `*.test.js` / `*.spec.js` in the project is targeted |
 | `sourcePathMapping` | Test path to source path mapping. The source with the same relative path as the test file is automatically loaded into scope |
 | `collectCoverage` | Enable coverage collection |
 | `coverageDirectory` | Coverage report output destination |

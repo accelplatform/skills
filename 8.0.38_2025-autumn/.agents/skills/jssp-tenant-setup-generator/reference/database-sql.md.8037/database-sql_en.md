@@ -118,8 +118,8 @@ Only when dialect-dependent syntax is absolutely required, switch to the three-d
 ```json
 "database": {
   "tables": [
-    { "name": "any_app_data",   "comment": "サンプルデータ" },
-    { "name": "any_app_master", "comment": "マスタ" }
+    { "name": "any_app_data",   "comment": "Sample data" },
+    { "name": "any_app_master", "comment": "Master" }
   ],
   "dmlPerDialect": false
 }

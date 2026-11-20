@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/main/jssp/**/*.js"
+  - "src/main/tssp/**/*.ts"
 ---
 
 # 函数容器规约

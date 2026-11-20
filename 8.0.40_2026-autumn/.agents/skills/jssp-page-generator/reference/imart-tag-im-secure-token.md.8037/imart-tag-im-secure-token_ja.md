@@ -60,5 +60,5 @@
 ## 注意事項
 
 - セッションタイムアウトなどでセッションが破棄されると、トークンが無効化される
-- ファンクションコンテナ側での検証には `SecureTokenManager.verify()` を使用する
+- ファンクションコンテナ側での検証には `new SecureTokenManager().verify()` を使用する（`verify()` はインスタンスメソッド。実装例は `reference/secure-token-check.md`）
 - `useOneTimeToken="true"` は二重送信防止にも有効

@@ -378,10 +378,10 @@ accountRoleInfo.setRoleValidEndDate(new Date(Long.MAX_VALUE));
 // null を設定すればシステム最大日付に自動リセットされるため、手計算は不要かつ不正な日付として扱われる可能性がある
 
 // NG: 直接一致検索と階層考慮検索を混同する
-accountInfoManager.getUserCdsByAccountRoleId(parentRoleId);
+accountInfoManager.getUserCdsByAccountRoleId(subRoleId);
 // getUserCdsByAccountRoleId() はロール階層を辿らない直接一致のみ。
-// 親ロールに割り当てたつもりで子ロール保有者を検索すると結果が空になる場合がある。
-// 階層を考慮したい場合は getUserCdsByRoleId(roleId, date) を使う
+// 親ロールだけを割り当てられたユーザは、サブロールIDで検索しても結果に含まれない。
+// 親ロール保有者も含めたい場合は getUserCdsByRoleId(subRoleId, date) を使う
 
 // NG: @Deprecated の isUpdate(Date) を更新有無の判定に使う
 if (accountInfoManager.isUpdate(someDate)) {
