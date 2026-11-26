@@ -37,7 +37,7 @@ mvn jp.co.intra_mart:js-jest:test
 
 - 在项目根目录（存在 `pom.xml` 的层级）执行
 - 目标为 `test`（`jp.co.intra_mart:js-jest:test`）
-- 目标文件与配置遵循 `jest.config.js` 的 `testMatch` / `sourcePathMapping`
+- 目标文件与配置遵循 `jest.config.js` 的 `testRegex` / `sourcePathMapping`
 - 执行结果会显示测试数量与覆盖率（输出至 `target/coverage/`）
 - **生成或修改测试代码后必须运行，并确认全部通过**
 

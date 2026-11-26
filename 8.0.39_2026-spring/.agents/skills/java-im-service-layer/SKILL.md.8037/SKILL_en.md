@@ -1,6 +1,6 @@
 ---
 name: java-im-service-layer
-description: Layer of service implementation rules for business logic and orchestration of repository operations. DDD service layer implementation guidelines. Service factory pattern for dependency management. Exception handling and business rule enforcement in service layer. The concise convention summary lives in the java-service-layer coding convention reference — use this skill when full code templates (single-repository / multi-repository transaction patterns) are needed.
+description: Layer of service implementation rules for business logic and orchestration of repository operations. DDD service layer implementation guidelines. Service factory pattern for dependency management. Exception handling and business rule enforcement in service layer. The concise convention summary lives in `java-service-layer` — use this skill when full code templates (single-repository / multi-repository transaction patterns) are needed.
 disable-model-invocation: false
 user-invocable: true
 ---
@@ -41,12 +41,10 @@ public class Standard{ServiceName}Service implements {ServiceName}Service {
     @Override
     public {ResultType} process{BusinessOperation}({InputType} input) throws {ServiceName}ServiceException {
         validateInput(input);
-        // The E in SessionCallback<T, E> can only be inferred as a single checked exception
-        // type, so any checked exception raised inside the lambda is converted to
-        // {ServiceName}ServiceException right where it occurs (immediately after each
-        // repository call). This keeps the checked exception propagating out of the lambda
-        // to a single type ({ServiceName}ServiceException), so SessionTemplate.execute() no
-        // longer needs to be wrapped in a try/catch.
+        // The E in SessionCallback<T, E> can only be inferred as a single checked exception type,
+        // so any checked exception raised inside the lambda is converted to {ServiceName}ServiceException right where it occurs
+        // (immediately after each repository call) before being thrown. This keeps the checked exceptions propagating out of the lambda
+        // to a single type ({ServiceName}ServiceException), so SessionTemplate.execute() no longer needs to be wrapped in a try/catch.
         return SessionTemplate.execute(s -> {
             final {DomainModel} entity;
             try {

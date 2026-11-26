@@ -34,7 +34,7 @@ public interface Agent<T> {
 
 - `run(Message/String)` はステートレス実行。呼び出しのたびに内部で一時セッションを生成するため、会話履歴は保持されない
 - `run(Session, ...)` はステートフル実行。同一 `Session` を使い回すと、過去の発話・応答が `SessionContext` に蓄積され、LLM 呼び出しに含まれる
-- `RunContext` は画面入力等の per-run データ（`Instruction` の `${...}` 変数展開に使う `inputParameters` 等）を渡すためのオブジェクト。省略可（`RunContext.empty()` 相当）
+- `RunContext` は実行ごとのデータを渡すためのオブジェクト。省略可（`RunContext.empty()` 相当）
 - 全メソッドが検査例外 `jp.co.intra_mart.foundation.copilot.agent.exception.AgentException` を送出する
 
 ## `AgentBuilder<T>`
@@ -54,11 +54,10 @@ public class AgentBuilder<T> {
     public AgentBuilder<T> maxTokens(int maxTokens);
     public AgentBuilder<T> reasoningEffort(String reasoningEffort);
     public AgentBuilder<T> verbosity(String verbosity);
-    public AgentBuilder<T> stops(List<String> stops);
     public AgentBuilder<T> modelConfig(ModelConfig modelConfig); // 上記チューニング項目をまとめて設定（未設定項目はnullへ戻る）
 
     // インストラクション（システムプロンプト）
-    public AgentBuilder<T> instruction(String instructionText); // SimpleInstruction を生成
+    public AgentBuilder<T> instruction(String instructionText); // 固定テキストの指示文
     public AgentBuilder<T> instruction(Instruction instruction);
 
     // ツール
@@ -85,7 +84,7 @@ public class AgentBuilder<T> {
     public <U> AgentBuilder<U> structuredOutputSchema(String jsonSchema); // + targetClass, maxRetries 指定版
 
     // 実行制御
-    public AgentBuilder<T> maxIterations(int maxIterations); // 未設定時の既定値: 20
+    public AgentBuilder<T> maxIterations(int maxIterations); // 未設定時の既定値: 100
     public AgentBuilder<T> timeoutMs(long timeoutMs); // 未設定時はタイムアウトなし
     public AgentBuilder<T> autoCompaction(Double triggerRatio); // 0超1以下。会話履歴の自動圧縮の発動割合
     public AgentBuilder<T> contextWindow(Long contextWindow); // 自動圧縮のしきい値算出に使うトークン数
@@ -173,9 +172,15 @@ public interface Instruction {
 }
 ```
 
-主な実装（`jp.co.intra_mart.system.copilot.agent.instruction` パッケージ）:
-- `SimpleInstruction(String text)` — 固定テキスト
-- `TemplateInstruction(String template)` — `${var}` 形式の変数展開に対応。`InstructionContext`（実装: `StandardInstructionContext`）に `setVariable(name, value)` で値を設定し、`getText(context)` で展開する
+指示文は `AgentBuilder.instruction(String)` で渡す。実行時の値（ログインユーザの名前等）を入れる場合は、Java で値を埋め込んだ文字列を作ってから渡す。非公開 API の `jp.co.intra_mart.system.copilot.agent.instruction` パッケージ（`SimpleInstruction`/`TemplateInstruction`/`StandardInstructionContext`）は使わない。
+
+```java
+// userName は呼び出し元で取得した実行時の値
+final Agent<?> agent = Agent.builder()
+        .model("gpt-4")
+        .instruction("あなたは " + userName + " さんの担当です。")
+        .build();
+```
 
 **フレームワークがツール情報を自動的にシステムプロンプトへ注入する。** `instruction` にはビジネスロジック（エージェントの役割・応答スタイル）のみを記述し、「ツールを使ってください」のような指示は書く必要がない（自動生成される）。
 
@@ -191,10 +196,18 @@ public final class RunContext implements java.io.Serializable {
     public Map<String, Object> getInputParameters();
     public String getTraceId();
     public String getParentSpanId();
+
+    public static final class Builder {
+        public Builder inputParameters(Map<String, Object> inputParameters);
+        public Builder putInputParameter(String name, Object value);
+        public Builder traceId(String traceId);
+        public Builder parentSpanId(String parentSpanId);
+        public RunContext build();
+    }
 }
 ```
 
-`RunContext.builder().inputParameters(Map)` または `.putInputParameter(name, value)` で、`Instruction`（`TemplateInstruction`）の `${...}` 展開に使う入力パラメータを渡せる。`run(message, runContext)` / `run(session, message, runContext)` の引数として使う。
+`run(message, runContext)` / `run(session, message, runContext)` の引数として使う。画面で定義したエージェントの入力パラメータは `inputParameters(Map)` で渡す（`assets/copilot-agent-basic-usage.md` パターン11）。
 
 ## `ModelConfig`/`AgentConfig`
 
@@ -205,7 +218,6 @@ public class ModelConfig implements java.io.Serializable {
     private Double temperature;      // 未設定時: モデル既定値
     private Integer maxTokens;
     private String reasoningEffort;  // モデルにより指定可能な値が異なる
-    private List<String> stops;
     private String verbosity;        // low/medium/high。OpenAI/AzureOpenAI のみ対応
 
     public static ModelConfig.ModelConfigBuilder builder();
@@ -214,6 +226,31 @@ public class ModelConfig implements java.io.Serializable {
 ```
 
 `AgentConfig` は `Agent#getConfig()` で取得できる、構築済みエージェントの設定のスナップショット（`model`/`modelConfig`/`driver`/`timeoutMs`/`agentDefinitionId`/`agentType`/`additionalParams`/`autoCompactionTriggerRatio`/`contextWindow` 等を保持）。
+
+## `AgentManagementService`（画面で定義したエージェントの読み込み）
+
+```java
+package jp.co.intra_mart.foundation.copilot.agent.definition;
+
+public abstract class AgentManagementServiceFactory {
+    public static AgentManagementServiceFactory getInstance();
+    public abstract AgentManagementService getService();
+}
+
+public interface AgentManagementService {
+    // version に null を渡すと公開中の最新版の番号を返す。公開中の版が無いと AgentVersionNotPublishedException
+    int resolvePublishedVersion(String agentId, Integer version) throws AgentDefinitionPersistenceException;
+    <T> Agent<T> getAgent(String agentId, int version) throws AgentDefinitionPersistenceException;
+    // 公開状態を問わず最新の版を読む（本番の呼び出しでは使わない）
+    <T> Agent<T> getAgent(String agentId) throws AgentDefinitionPersistenceException;
+    // 定義の登録・更新・版の管理・一覧取得のメソッドもある（画面の機能に相当するため本スキルでは扱わない）
+}
+```
+
+- 新しい版（エージェントの新規登録・版の追加）は停止の状態で作られ、画面で公開するまで `resolvePublishedVersion` の対象にならない
+- `AgentManagementService` は認可しない。エージェントを実行してよいかは呼び出し元で確かめる
+- 画面の定義で入力パラメータを持つエージェントは、`run(Message, RunContext)` で `RunContext` の入力パラメータを渡す（指示文の `${...}` が置き換わる）
+- 使い方は `assets/copilot-agent-basic-usage.md` パターン11
 
 ## 例外
 

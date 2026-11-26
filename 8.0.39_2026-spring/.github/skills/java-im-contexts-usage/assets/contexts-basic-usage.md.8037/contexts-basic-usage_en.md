@@ -1,6 +1,7 @@
 # Contexts API Basic Usage Patterns (Java Version)
 
-Implementation patterns based on the method signatures in `reference/contexts-api-reference.md`. Always verify actual method names and return types against the reference — never rely on memory or guesswork.
+Implementation patterns based on the method signatures in `reference/contexts-api-reference.md`.
+Always verify actual method names and return types against the reference — never rely on memory or guesswork.
 
 ## Pattern 1: Getting User Info / Authentication Check in the Service Layer
 
@@ -12,8 +13,7 @@ public class {ServiceName}Service {
 
     public void process() {
         // Contexts.get() never returns null (it throws ContextNotFoundException instead when unavailable),
-        // so no null check is needed for account (and AccountContext is a required context, so the
-        // exception normally does not occur either)
+        // so no null check is needed for account (and AccountContext is a required context, so the exception normally does not occur either)
         final AccountContext account = Contexts.get(AccountContext.class);
         if (!account.isAuthenticated()) {
             throw new {ServiceName}ServiceException("An authenticated user is required");
@@ -52,7 +52,9 @@ final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", locale);
 sdf.setTimeZone(timeZone);
 ```
 
-## Pattern 3: Getting the User's Organization Info
+## Pattern 3: Getting the User's Organization Info (Current Department / Main Department)
+
+For processing that starts from the login user's organization (getting members of the same organization, etc.), use the current department. At login the current department is the main department; when the user switches organizations in the screen header, it becomes the selected organization for the rest of that session.
 
 ```java
 import jp.co.intra_mart.foundation.context.Contexts;
@@ -60,6 +62,17 @@ import jp.co.intra_mart.foundation.user_context.model.Department;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
 
 final UserContext userCtx = Contexts.get(UserContext.class);
+
+// Use the current department for processing that starts from the login user's organization
+final Department currentDept = userCtx.getCurrentDepartment();
+if (currentDept != null) {
+    final String companyCd = currentDept.getCompanyCd();
+    final String departmentSetCd = currentDept.getDepartmentSetCd();
+    final String deptCd = currentDept.getDepartmentCd();
+    final String deptName = currentDept.getDepartmentName();
+}
+
+// Use getMainDepartment() only when you need the main department itself
 final Department mainDept = userCtx.getMainDepartment();
 if (mainDept != null) {
     final String deptCd = mainDept.getDepartmentCd();
@@ -119,8 +132,9 @@ public class {JobName}Job extends BaseJob {
 
 You can also retrieve `JobSchedulerContext` directly via `Contexts.get(JobSchedulerContext.class)`, but when extending `BaseJob`, prefer its `protected` utility methods (`getParameter()` / `getParameterAsInteger()`, etc.), which already implement null checks, type conversion, and default-value handling.
 
-**`JobResult` has no constant such as `SUCCESS`.** Create one via the static factory methods
-`success(String)` / `waring(String)` (**note the platform's actual spelling — `waring`, not "warning". Calling `warning(String)` does not compile, since no such method exists**) / `error(String)`, passing a message. See `reference/contexts-api-reference.md` for details.
+**`JobResult` has no constant such as `SUCCESS`.** Create one via the static factory methods `success(String)` /
+`waring(String)` (**note the platform's actual spelling — `waring`, not "warning".
+Calling `warning(String)` does not compile, since no such method exists**) / `error(String)`, passing a message. See `reference/contexts-api-reference.md` for details.
 
 ## Pattern 6: Client Type / External-User Detection
 
@@ -144,6 +158,7 @@ if (externalCtx.isExternalUser()) {
 |---|---|---|
 | Null-checking the return value of `Contexts.get()` | Dead code that never executes (`Contexts.get()` never returns null — it throws `ContextNotFoundException` instead when unavailable) | Instead of a null check, consider catching `ContextNotFoundException` in environments where the context may be unavailable |
 | Missing a null check on a nested getter's return value (e.g. `getMainDepartment()` / `getUserProfile()`) | `NullPointerException` | Unlike `Contexts.get()` itself, these can genuinely return null by spec (`getUserProfile()` is undocumented in the platform's own JavaDoc) — check them |
+| Using `getMainDepartment()` for processing that starts from the login user's organization | Disagrees with the organization the user switched to in the header (IM-Authz authorization conditioned on an organization and the header's organization display use the current department) | Use `getCurrentDepartment()` |
 | Missing authentication check | Business processing runs for an unauthenticated user | Check `isAuthenticated()` |
 | Holding/caching a context in a field | User info gets mixed up across requests | Retrieve it fresh within each method |
 | Retrieving `UserContext` inside a job | May not be retrievable depending on the execution environment | Use `JobSchedulerContext` (via `BaseJob`) instead |

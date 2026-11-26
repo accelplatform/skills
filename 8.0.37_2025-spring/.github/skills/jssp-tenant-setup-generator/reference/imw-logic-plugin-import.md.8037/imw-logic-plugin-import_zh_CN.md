@@ -52,7 +52,7 @@ config-2.xml: extendsImport（插件注册）
 ```
 
 此时，生成 config-2 用的 `sample_import-2.js`，并将其添加到 config-2.xml 的 `<extends-import-class>` 中。
-详情参见 [import-config.md](import-config.md#configNumber--1-のファイル名サフィックス)。
+详情参见 [import-config.md](import-config.md#confignumber--1-时的文件名后缀)。
 
 ---
 

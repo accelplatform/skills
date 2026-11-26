@@ -48,6 +48,7 @@ public interface VectorStore {
     List<ScoredDocument> hybridSearch(String query, List<String> keywords, LogicalOperator operator,
             Reranker reranker, ThresholdFilterExpression threshold, Integer topK) throws VectorStoreException;
     default List<ScoredDocument> hybridSearch(String query, Reranker reranker, Integer topK) throws VectorStoreException;
+    default List<ScoredDocument> hybridSearch(String query, Integer topK) throws VectorStoreException;
     default List<ScoredDocument> hybridSearch(String query) throws VectorStoreException;
 
     List<ScoredDocument> keywordSearch(List<String> keywords, LogicalOperator operator,
@@ -62,7 +63,7 @@ public interface VectorStore {
 
 - **`add`**: Registers document information (chunks) to the vector database. If `Document.getVector()` is unset, it is vectorized internally using the `Embedder` specified via `VectorStoreBuilder.embedder(...)` before being registered
 - **`deleteAll`**: Deletes all document information in the category specified by `VectorStoreBuilder.category(...)`. When re-indexing (a full rebuild), the basic pattern is to call `add(...)` after `deleteAll()`
-- **`hybridSearch`**: Combines vector similarity search and keyword search, then merges the results (rank fusion) with a `Reranker`. Call it via either the `query` (text, automatically vectorized internally) or `vector` (the vector itself specified directly) family of overloads. The commonly used 3-argument version is `hybridSearch(String query, Reranker reranker, Integer topK)`
+- **`hybridSearch`**: Combines vector similarity search and keyword search, then merges the results (rank fusion) with a `Reranker`. Call it via either the `query` (text, automatically vectorized internally) or `vector` (the vector itself specified directly) family of overloads. The versions that omit the `Reranker` (`hybridSearch(String query, Integer topK)`, etc.) merge the results with RRF
 - **`similaritySearch`**: Vector similarity search only (no keyword search)
 - **`keywordSearch`**: Keyword search only (no vector search)
 - `topK` is the maximum number of search results, `ThresholdFilterExpression` is a filter by score threshold, and `LogicalOperator` specifies `AND`/`OR` between keywords
@@ -105,12 +106,12 @@ public interface ScoredContent extends Content {
 }
 ```
 
-**There is no need to implement `Document` yourself.** The platform provides a standard implementation, `jp.co.intra_mart.system.copilot.vectorstore.document.StandardRegistrationDocument` (a `public` no-argument constructor plus various setters, with all of `Document`'s methods implemented). Use it as-is for registration purposes.
+**Implement the `Document` for registration yourself.** The public API has no implementation class of `Document` (implementation classes under `jp.co.intra_mart.system.*` are non-public APIs). Prepare a class that holds each field and keeps the metadata as a JSON string produced by Jackson (`assets/rag-basic-usage.md` Pattern 1).
 
 ```java
-final Document document = new StandardRegistrationDocument();
+final Document document = new RegistrationDocument();
 document.setText(chunkText);
-document.setMetadata(myMetadataObject); // JSON-serialized by Jackson and restorable via getMetadata(Class)
+document.setMetadata(myMetadataObject); // Kept as a JSON string and converted back to the original type by getMetadata(Class)
 ```
 
 For search results (`ScoredDocument`), use the instance returned by the platform as-is (no need to implement it yourself). Retrieve equivalent information to `getText()`/`getMetadata(Class)` via the `Content`/`ScoredContent` methods (since `ScoredDocument` itself does not have `getMetadata(Class)`, if needed you must deserialize `getMetadata()` (a JSON string) yourself).
@@ -139,17 +140,11 @@ public interface Reranker {
 }
 ```
 
-The platform provides a standard implementation based on RRF (Reciprocal Rank Fusion).
+When no `Reranker` is passed to `hybridSearch`, the results are merged with RRF (Reciprocal Rank Fusion). Implement and pass a `Reranker` only when you want to merge them by a method other than RRF.
 
 ```java
-package jp.co.intra_mart.system.copilot.vectorstore.reranker;
-
-public class StandardRrfReranker implements Reranker {
-    public StandardRrfReranker(); // No-argument constructor
-}
+final List<ScoredDocument> results = vectorStore.hybridSearch(query, topK);
 ```
-
-Pass it directly to `hybridSearch`'s `reranker` argument, as in `VectorStore.hybridSearch(query, new StandardRrfReranker(), topK)`.
 
 ## `TextSplitter`/`RecursiveCharacterTextSplitter`
 

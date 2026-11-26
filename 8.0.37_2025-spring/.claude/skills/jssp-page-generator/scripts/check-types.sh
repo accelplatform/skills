@@ -57,7 +57,7 @@ REL_TARGET="${REL_TARGET#/}"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TSC_BIN="$(node "$SCRIPT_DIR/resolve-tsc.js")" || {
-  echo "Error: typescript が解決できません。.claude/skills/jssp-page-generator/deps/ の依存インストールを確認してください。" >&2
+  echo "Error: typescript が解決できません。プロジェクトルートで \`node .accel/ensure.mjs\`（packageManager が bun の場合は \`bun .accel/ensure.mjs\`）を実行して、スキルの依存をインストールしてください。" >&2
   exit 2
 }
 

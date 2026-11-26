@@ -85,6 +85,7 @@ if (ContextStatus.isAdministrator()) { /* システム管理者 */ }
 | ロールID一覧（サブロール含む） | `AccountContext.getRoleIds()` |
 | ログイン時刻 | `AccountContext.getLoginTime()` |
 | ユーザー表示名・メールアドレス等 | `UserContext.getUserProfile()` の各メソッド |
+| ログインユーザの組織（カレント組織） | `UserContext.getCurrentDepartment()` |
 | 主所属部門 | `UserContext.getMainDepartment()` |
 | 全所属部門 | `UserContext.getAllDepartments()` |
 | 所属会社 | `UserContext.getCompanyList()` |
@@ -147,7 +148,8 @@ if (ContextStatus.isAdministrator()) { /* システム管理者 */ }
 ## 注意事項
 
 - **必須: `Contexts.get()` の戻り値に対する null チェックは行わない（書いても到達しない）。**
-  `Contexts.get()` は該当コンテキストが見つからない場合、null を返すのではなく必ず `ContextNotFoundException`（非チェック例外）をスローする（実ソース・実環境の双方で確認済み）。そのため `if (account == null)` のような分岐は決して真にならない死コードになる。実行環境によっては取得できないコンテキストが存在するため（下記「コンテキスト利用可能範囲」参照）、取得失敗を考慮する場合は null チェックではなく `ContextNotFoundException` の catch を検討すること（ただし `AccountContext` は必須コンテキストのため通常は catch 不要）
+  `Contexts.get()` は該当コンテキストが見つからない場合、null を返すのではなく必ず `ContextNotFoundException`（非チェック例外）をスローする。そのため `if (account == null)` のような分岐は決して真にならない死コードになる。実行環境によっては取得できないコンテキストが存在するため（下記「コンテキスト利用可能範囲」参照）、取得失敗を考慮する場合は null チェックではなく `ContextNotFoundException` の catch を検討すること（ただし `AccountContext` は必須コンテキストのため通常は catch 不要）
+- **必須: ログインユーザの組織を起点にする処理（同じ組織のメンバーの取得、組織による絞り込み等）は、カレント組織（`getCurrentDepartment()`）を使う。** カレント組織はログイン時は主所属で、ユーザが画面のヘッダで組織を切り替えると、そのセッションのあいだは切り替え先になる（主所属は変わらない）。IM-Authz の組織を条件にした認可とヘッダの組織表示もカレント組織を使うため、主所属を起点にするとこれらと食い違う。`getMainDepartment()` は、ユーザが選んでいる組織にかかわらず主所属そのものが必要な場合だけ使う
 - **必須: 認証チェック。** `AccountContext` が取得できても `isAuthenticated()` が `false` の場合がある（未認証ユーザ・システム起動時等）。認証前提の処理では必ず確認すること
 - **禁止: コンテキストのフィールド保持・キャッシュ。** コンテキストはリクエスト（またはスレッド）に紐づく。インスタンスフィールドや `static` フィールドに保持してはならない
   ```java
@@ -176,8 +178,9 @@ if (ContextStatus.isAdministrator()) { /* システム管理者 */ }
 3. コンテキストをインスタンスフィールド・`static` フィールドに保持していないか
 4. `UserProfile` の氏名・メールアドレス等の個人情報をログに出力していないか
 5. インフラストラクチャ層（DAO/Repository）から `Contexts` API を直接呼び出していないか
-6. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
-7. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
+6. ログインユーザの組織を起点にする処理で、`getMainDepartment()` ではなく `getCurrentDepartment()` を使っているか
+7. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
+8. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
 ## コンテキスト利用可能範囲
 

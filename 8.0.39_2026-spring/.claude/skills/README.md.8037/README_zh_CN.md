@@ -25,6 +25,23 @@
   - ⇒ `jssp-im-master-usage`
     - 嵌入用户・公司・组织・职位・公共组・私有组・角色的检索功能
 
+### 想要使用 TypeScript（TSSP）创建画面
+
+- 想用 TypeScript 编写 SSJS，并通过 `tssp build` 转换为 JSSP 进行开发（仅部署到面向 TypeScript 的项目）
+  - ⇒ `tssp-usage`
+    - `.ts` / `.html` 的存放位置、`tssp build` 的处理顺序、基于 d.ts 的类型检查、面向 Rhino 的 lint 的禁止事项、输出目标冲突的修复方法
+- 想用 TSSP（TypeScript）新建业务画面
+  - ⇒ `tssp-page-generator` + `jssp-imds-theme`
+    - 一次性生成功能容器（ts）・展示页面（html）・路由表（xml）。是 `jssp-page-generator` 的 TypeScript 版
+- 想在 TSSP 画面生成后执行验证与修复（由 `tssp-page-generator` 自动委托）
+  - ⇒ `tssp-page-verifier`
+    - 作为子代理负责 `tssp build --dev`（类型检查・面向 Rhino 的 lint）和构建输出的机械验证
+- 想让编码代理对 TSSP 代码进行评审
+  - ⇒ `tssp-code-review`
+    - 除 `jssp-code-review` 的评审视角外，还检查类型（与 interface・d.ts 的一致性）以及对类型检查的规避
+
+> TSSP 的 `.ts` 写法规约请参考 `.claude/rules/tssp-typescript.md`（汇总了将 jssp 规约适用于 TypeScript 时写法发生变化的部分）。
+
 ### 想要使用服务端缓存
 
 - 想在 JSSP（脚本开发模型）的功能容器中，通过缓存检索结果或计算成本较高的处理结果来提升性能
@@ -196,19 +213,21 @@
 - 想用 Java（JavaEE 开发模型）在 intra-mart 上构建 MCP（Model Context Protocol）服务器
   - ⇒ `java-im-mcp-generator`
     - 提供基于 `im_copilot_mcp` 模块的 `@MCPServer`/`@Tool` 注解实现 Streamable HTTP MCP 服务器的实现模式
-    - 包含通过 `SchemaProperties` 定义工具参数、通过 `McpScanPackageFactory`（推荐）/`META-INF/im_services/annotation_classes` 向平台注册的模式
+    - 包含通过 `SchemaProperties` 定义工具参数、通过构建时自动生成的 `META-INF/im_services/annotation_classes` 向平台注册
     - 普通 REST API（非面向 AI 智能体）请使用 `java-im-web-api-maker-usage`
 - 想用 Java（JavaEE 开发模型）构建接收提示词、进行处理并返回响应的 AI 智能体
   - ⇒ `java-im-copilot-agent-generator`
-    - 提供基于 `im_copilot_agent` 模块的 `Agent`/`AgentBuilder` 构建智能体、通过 `UserDefinedTool` 实现自定义工具、集成 `Knowledge`（知识检索）・`SkillEntry`（Markdown 技能）、Structured Output（类型化输出）、通过 `AgentExecutionMiddleware` 介入执行流程的实现模式
+    - 提供基于 `im_copilot_agent` 模块的 `Agent`/`AgentBuilder` 构建智能体、通过 `UserDefinedTool` 实现自定义工具、集成 `Knowledge`（知识检索）、Structured Output（类型化输出）、通过 `AgentExecutionMiddleware` 介入执行流程的实现模式
     - 包含与 IM-Copilot 聊天界面对接时的 `AbstractCopilotAssistant`/`@Assistant` 对接模式（`Agent`/`AgentBuilder` 本身是不依赖 Assistant 框架的独立 Java API）
+    - 包含通过 `@Tool`（代理用，与 MCP 的 `@Tool` 不同），将自定义工具注册为可在管理画面中选择的内置工具的模式（注册通过构建时自动生成的索引进行）
+    - 包含通过 `AgentManagementService` 读取并运行在画面（Accel Agent）中定义的智能体的模式
     - MCP 服务器的实现请使用 `java-im-mcp-generator`，普通 REST API 请使用 `java-im-web-api-maker-usage`
     - 直接使用 `VectorStore`/`ActionFactory` 的低层级 RAG 请使用 `java-im-copilot-rag-generator`，直接使用 `ChatAction`+`ToolConfig` 的低层级 Tool Calling 请使用 `java-im-copilot-toolcalling-generator`
 - 想用 Java（JavaEE 开发模型）直接使用 `VectorStore`/`ActionFactory` 实现 RAG（检索增强生成）
   - ⇒ `java-im-copilot-rag-generator`
     - 提供通过 `VectorStoreBuilder`/`VectorStore` 构建・注册向量存储、以及混合检索/相似度检索/关键词检索，通过 `ActionFactory`/`ChatAction`/`EmbeddingsAction` 调用聊天・嵌入的实现模式
-    - 包含文档标准实现 `StandardRegistrationDocument`、通过 `TextSplitter`（`splitText` 方法）进行分块
-    - 通过 Agent 框架实现的高层级 RAG（`Knowledge`/`RegisteredKnowledge`）请使用 `java-im-copilot-agent-generator`，Tool Calling 请使用 `java-im-copilot-toolcalling-generator`
+    - 包含 `Document` 的自行实现、通过 `TextSplitter`（`splitText` 方法）进行分块
+    - 通过 Agent 框架实现的高层级 RAG（`Knowledge`）请使用 `java-im-copilot-agent-generator`，Tool Calling 请使用 `java-im-copilot-toolcalling-generator`
 - 想用 Java（JavaEE 开发模型）直接使用 `ChatAction`+`ToolConfig` 实现 Tool Calling（函数调用）
   - ⇒ `java-im-copilot-toolcalling-generator`
     - 提供不依赖具体供应商（OpenAI・Azure OpenAI Service・Amazon Bedrock 通用）的 Tool Calling 实现模式，基于 `ToolConfig`/`ToolDefinition`/`ToolChoice`/`ToolCall`（同时支持非流式与流式）

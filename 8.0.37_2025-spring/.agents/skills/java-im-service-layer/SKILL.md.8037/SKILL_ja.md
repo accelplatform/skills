@@ -1,6 +1,6 @@
 ---
 name: java-im-service-layer
-description: Layer of service implementation rules for business logic and orchestration of repository operations. DDD service layer implementation guidelines. Service factory pattern for dependency management. Exception handling and business rule enforcement in service layer. The concise convention summary lives in .agents/requirements/java-service-layer/AGENTS.md — use this skill when full code templates (single-repository / multi-repository transaction patterns) are needed.
+description: Layer of service implementation rules for business logic and orchestration of repository operations. DDD service layer implementation guidelines. Service factory pattern for dependency management. Exception handling and business rule enforcement in service layer. The concise convention summary lives in `java-service-layer` — use this skill when full code templates (single-repository / multi-repository transaction patterns) are needed.
 disable-model-invocation: false
 user-invocable: true
 ---

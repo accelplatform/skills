@@ -143,50 +143,23 @@ public class FooMcpToolGetFoo {
 }
 ```
 
-## Pattern 4: Package Registration (`McpScanPackageFactory`, Recommended)
+## Pattern 4: Registration with the Platform (`META-INF/im_services/annotation_classes`)
 
-Create a single package-designating class for the project (it can cover multiple `@MCPServer` classes at once).
+An `@MCPServer` class is registered with the platform when its fully-qualified name is listed in `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` (the file name is the fully-qualified name of the annotation itself).
 
-```java
-package jp.co.example.foo.mcp;
-
-import java.util.Collection;
-import java.util.Collections;
-
-import jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory;
-
-public class FooMcpScanPackageFactory implements McpScanPackageFactory {
-
-    @Override
-    public Collection<String> getTargetPackages() {
-        return Collections.singletonList("jp.co.example.foo.mcp");
-    }
-}
-```
-
-In `src/main/resources/META-INF/services/jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory`, write the fully-qualified name of the class above on a single line.
-
-```
-jp.co.example.foo.mcp.FooMcpScanPackageFactory
-```
-
-From then on, simply adding `@MCPServer` classes under the `jp.co.example.foo.mcp` package automatically makes them a scan target — no need to edit the configuration file for each addition.
-
-## Pattern 5: Explicit Registration (`META-INF/im_services/annotation_classes`, Alternative)
-
-If you don't want to scan an entire package, or prefer not to use `McpScanPackageFactory`, list the `@MCPServer` classes' fully-qualified names directly.
-
-`src/main/resources/META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` (the filename itself is the annotation's fully-qualified name):
+This file is generated automatically at build time by the annotation processor (`jp.co.intra_mart.tools:im_service_annotation_processor`), so you do not need to write it. The processor is put on the compile-time classpath by the dependencies of `im_copilot_mcp` (via `im_core_base`). After building, confirm that the file has been generated in `target/classes` (or the jar) and lists the fully-qualified name of the `@MCPServer` class, as follows.
 
 ```
 jp.co.example.foo.mcp.FooMcpServer
 ```
 
-**With this method, remember to update this file every time a new `@MCPServer` class is added.** Forgetting to do so means it never gets registered, and the endpoint returns 404 (the same kind of failure as forgetting to update Web API Maker's `META-INF/im_web_api_maker/packages`).
+Only when it is not generated, for example because the annotation processor is disabled (`<proc>none</proc>` in `maven-compiler-plugin`, etc.), create `src/main/resources/META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` manually and write the fully-qualified names of the `@MCPServer` classes one per line. In that case you must add a line each time you add an `@MCPServer` class; a missing entry makes the endpoint return 404.
+
+Do not use `jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory`; it is a non-public API.
 
 ## Notes
 
-- **Simply adding `@MCPServer`/`@Tool` does not make it work.** Register it using either Pattern 4 or Pattern 5
+- **Registration is done through the `META-INF/im_services/annotation_classes` index (Pattern 4).** Confirm that the index has been generated after building
 - **Do not create multiple `@MCPServer` classes with the same `path`.** The one loaded later logs a warning and overwrites the earlier one
 - **A `@Tool` method takes exactly one argument.** If multiple parameters are needed, combine them into a single DTO class (with `SchemaProperties` annotations on its fields) taken as the one argument
 - **A DTO field without a `SchemaProperties` annotation is not exposed in the MCP tool's input schema.** Having a getter/setter is not enough — the corresponding annotation must be present

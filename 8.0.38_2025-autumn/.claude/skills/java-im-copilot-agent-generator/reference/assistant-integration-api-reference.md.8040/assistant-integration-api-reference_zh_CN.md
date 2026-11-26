@@ -32,27 +32,17 @@ public enum AssistantType { STANDARD, USER_DEFINITION }
 - `storeMessage`：是否持久化消息历史。省略时默认为 `false`
 - `metadataFactory`：可省略（默认为 `StandardMetadataFactory`）
 
-## 向平台注册（仅添加 `@Assistant` 不会被识别）
+## 向平台注册
 
-仅添加 `@Assistant` 不会被平台识别，也不会出现在助手一览中。以下两者均为必需。
+`@Assistant` 类通过构建时自动生成的索引被识别。要显示在助手一览中，还需要 IM-Authz 的许可策略。
 
-### 1. `AssistantScanPackageFactory`（注册类路径扫描对象）
+### 1. 通过索引识别（无需 `AssistantScanPackageFactory`）
 
-```java
-package jp.co.intra_mart.foundation.copilot.assistant;
-
-public interface AssistantScanPackageFactory {
-    Collection<String> getTargetPackages();
-}
-```
-
-平台内部的 `AssistantAnnotationLoader`（`jp.co.intra_mart.system.copilot.assistant.impl`）会通过 `ServiceLoaderUtil.loadPriority(AssistantScanPackageFactory.class)` 汇总所有已注册实现返回的目标包，再通过 `WebAppClassScanner.findClassesWithAnnotation(Assistant.class, scanPackages)` 搜索 `@Assistant` 类（与 MCP 服务器的 `McpScanPackageFactory` 设计完全相同）。应创建一个实现类，使其 `getTargetPackages()` 返回包含 `@Assistant` 类的包名，并在 `META-INF/services/jp.co.intra_mart.foundation.copilot.assistant.AssistantScanPackageFactory` 中登记该实现类的完全限定名（一行）。
-
-**该扫描结果会在类首次加载时（实质上即服务器启动时）被缓存到 `StandardAssistantMetadataRepository`（`jp.co.intra_mart.system.copilot.assistant.metadata`）的 `static` 字段中，且仅缓存一次。** 注册后若助手仍未反映，可能不仅需要重新部署应用，还需要重启平台服务器。
+`@Assistant` 类的完全限定名会记载在构建时自动生成的索引 `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.assistant.annotation.Assistant`（文件名即注解的完全限定名）中，平台从该索引读取 `@Assistant` 类。机制与 `@MCPServer`、内置工具的 `@Tool` 相同，索引由注解处理器 `jp.co.intra_mart.tools:im_service_annotation_processor` 生成（`im_copilot_core` 已将 `@Assistant` 注册为索引对象）。无需实现 `AssistantScanPackageFactory`，也无需在 `META-INF/services` 中注册。
 
 ### 2. 在 IM-Authz 中授予权限（仅资源会被自动导入）
 
-`@Assistant` 类被扫描到后，`CopilotAssistantResourceInitializer`（`jp.co.intra_mart.system.copilot.assistant.auth.importer`，属于 `ApplicationInitializer`）会在服务器启动时按租户执行，**自动导入**各助手的授权资源。资源 URI 的格式如下（`CopilotAssistantResourceType`）。
+`@Assistant` 类被识别后，服务器启动时会按租户**自动导入**各助手的授权资源。资源 URI 的格式如下。
 
 ```
 im-copilot-assistant://assistant/<助手ID>
@@ -60,7 +50,7 @@ im-copilot-assistant://assistant/<助手ID>
 
 资源类型 ID：`im-copilot-assistant`，操作：`execute`。
 
-**资源的导入与该资源许可策略的授予是两回事，后者不会被自动化。** 获取助手一览（`CopilotAssistantService#getMetadatas(true)`）时，仅会返回 `listEnable() == true` 且 `AuthorizationClient.authorize(resourceUri, "execute")` 返回许可（`Permit`）的助手。**除非在 IM-Authz 管理界面（或 `java-im-authz-usage` 技能所涉及的 `PolicyManager`）中为目标用户・角色明确设置许可策略，否则即使助手已被扫描到，也不会出现在一览中。**
+**资源的导入与该资源许可策略的授予是两回事，后者不会被自动化。** 获取助手一览（`CopilotAssistantService#getMetadatas(true)`）时，仅会返回 `listEnable() == true` 且 `AuthorizationClient.authorize(resourceUri, "execute")` 返回许可（`Permit`）的助手。**除非在 IM-Authz 管理界面（或 `java-im-authz-usage` 技能所涉及的 `PolicyManager`）中为目标用户・角色明确设置许可策略，否则即使助手已被识别，也不会出现在一览中。**
 
 ## `AbstractCopilotAssistant<T>`
 
@@ -102,7 +92,7 @@ public class AssistantParameter {
 
 - 若无需额外参数，可直接将 `AssistantParameter` 本身作为 `T` 使用
 - 若需要额外参数，应**继承** `AssistantParameter`，仅添加标注了 `@Property`（`jp.co.intra_mart.foundation.copilot.assistant.annotation.Property`）的额外字段，不要重新定义继承而来的 `message`/`threadId`
-- 用户发言字符串应通过 `parameter.getMessage().getContents()` 获取（即使添加了自定义的 `userMessage` 等字段，聊天界面也不会向其写入内容）
+- 用户发言字符串应通过 `parameter.getMessage().getContents()` 获取。返回值为 `Object` 类型，可能包含字符串以外的内容，因此应先确认其为字符串再使用（即使添加了自定义的 `userMessage` 等字段，聊天界面也不会向其写入内容）
 
 ## `AssistantMessage`/`AssistantResult`
 
@@ -151,5 +141,5 @@ public interface AssistantResponseWriter extends AutoCloseable {
 | 需求 | 实现方针 |
 |---|---|
 | 代码侧固定组装的智能体（模型・指令・工具在实现时即已确定） | 在 `doExecute` 内每次调用 `Agent.builder()...build()`，并调用 `run(...)`（同步）。参照 `assets/copilot-agent-basic-usage.md` 模式 8 |
-| 动态加载用户通过 Agent Designer 等定义的智能体定义（JSON） | 使用平台标准的 `AgentDefinitionConverter.fromDefinitionData(...)`（`jp.co.intra_mart.system.copilot.agent.definition.converter`）从智能体定义数据构建 `Agent`。此路径是 Agent Designer「试运行」功能（`AgentTrialRunAssistant`）所使用的特殊模式，通常的应用开发中前者（固定配置）往往已经足够 |
+| 运行在画面（Accel Agent）中定义的智能体 | 在 `doExecute` 内从 `AgentManagementService` 读取公开中版本的 `Agent`，并调用 `run(...)`。参照 `assets/copilot-agent-basic-usage.md` 模式 11 |
 | 需要流式响应 | 使用 `getAssistantContext().getResponseWriter()`，调用 `agent.runStreaming(session, message, runContext, handler)`。`handler` 为 `StreamingResponseHandler` 的实现，负责将数据块写入 `AssistantResponseWriter` |

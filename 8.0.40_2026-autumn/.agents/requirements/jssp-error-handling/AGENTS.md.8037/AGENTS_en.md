@@ -167,7 +167,7 @@ Use `httpResponse.setStatus(sc)` to set the status code.
 For mutation APIs (POST/PUT/DELETE), always verify the secure token as CSRF protection.
 
 - The client sends the token via the `X-Intramart-Secure-Token` request header (see `.agents/requirements/jssp-presentation-page/AGENTS.md`).
-- The server verifies it with `SecureTokenManager.verify(token)` and, on failure, returns **400** with `{error: true, errorMessage}`.
+- The server verifies it with `new SecureTokenManager().verify(token)` and, on failure, returns **400** with `{error: true, errorMessage}`.
 - Missing tokens, verification failures, and expired tokens are all treated as 400.
 - For read-only APIs (GET), apply the same verification when returning sensitive data.
 
@@ -382,7 +382,7 @@ function checkMethod(request) {
 
 /**
  * Verifies the secure token (CSRF protection).
- * Verifies the `X-Intramart-Secure-Token` request header with `SecureTokenManager.verify()`.
+ * Verifies the `X-Intramart-Secure-Token` request header with `new SecureTokenManager().verify()`.
  * Throws 400 on failure.
  *
  * @param {Object} request - Request object

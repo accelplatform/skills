@@ -69,17 +69,17 @@ NOT(S(...))                否定
 
 ### 类别值（最后一个参数的比较运算符）
 
-`imm_department` / `imm_company_post` / `imm_public_grp` / `imm_public_grp_role` 的最后一个参数是针对组织层级的比较运算符：
+`imm_department` / `imm_company_post` / `imm_public_grp` / `imm_public_grp_role` 的最后一个参数是比较运算符。`imm_department` / `imm_public_grp` 按组织・组的层级比较，`imm_company_post` / `imm_public_grp_role` 按职务・角色的等级（值越小越上级）比较（对于职务・角色，下表中的“组织”应理解为上级・下级的职务・角色）：
 
 | 值 | 含义 |
 |---|---|
 | `eq` | equal（仅匹配指定组织） |
-| `lt` | less than（上级组织，不包含自身） |
-| `le` | less than or equal（上级组织 + 自身） |
-| `gt` | greater than（下级组织，不包含自身） |
-| `ge` | greater than or equal（下级组织 + 自身） |
+| `lt` | less than（下级组织，不包含自身） |
+| `le` | less than or equal（下级组织 + 自身） |
+| `gt` | greater than（上级组织，不包含自身） |
+| `ge` | greater than or equal（上级组织 + 自身） |
 
-例如：若要将部门 `dept_other_11` 之下的所有人员作为目标，使用 `ge`；仅自身则使用 `eq`；仅下级（不包含自身）则使用 `gt`。
+例如：若要将部门 `dept_other_11` 之下的所有人员作为目标，使用 `le`；仅自身则使用 `eq`；仅下级（不包含自身）则使用 `lt`。
 
 ### "公司"单位的 subject 指定
 
@@ -89,13 +89,13 @@ NOT(S(...))                否定
 S(imm_department:<公司代码> <公司代码> <公司代码> le)
 ```
 
-将公司代码同时填入第 2 个参数（组织集代码）和第 3 个参数（组织代码），并以类别 `le` 表示"指定组织 + 上级"（因为公司位于顶层，结果就是将公司下的所有组织作为目标）。
+将公司代码同时填入第 2 个参数（组织集代码）和第 3 个参数（组织代码），并以类别 `le` 表示"指定组织 + 下级"（因为公司位于顶层，结果就是将公司下的所有组织作为目标）。
 
 实际示例：
 
 ```
-S(imm_department:comp_sample_01 comp_sample_01 comp_sample_01 le)   # サンプル会社
-S(imm_department:comp_other_01 comp_other_01 comp_other_01 le)      # その他会社
+S(imm_department:comp_sample_01 comp_sample_01 comp_sample_01 le)   # 示例公司
+S(imm_department:comp_other_01 comp_other_01 comp_other_01 le)      # 其他公司
 ```
 
 ### 复合表达式的实际示例
@@ -106,14 +106,6 @@ AND(S(b_m_role:account_manager), NOT(S(imm_user:aoyagi)))
 
 # ueda 或 aoyagi 中的任一人
 OR(S(imm_user:ueda), S(imm_user:aoyagi))
-
-# 组织层级的复合条件（用 AND 组合上级到下级）
-AND(
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 lt),
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 le),
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 gt),
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 ge)
-)
 ```
 
 ### intra-mart 标准已注册的角色（`b_m_role`）
@@ -236,7 +228,7 @@ SHA-256(<flow_route.json 中的 authzUri>)
 - 对于简单情况（允许特定角色），按每个资源一行的方式枚举。`AND` / `OR` / `NOT` **仅在复杂条件（排除特定用户、按组织层级过滤等）时**使用
 - `tenant_manager` 会自动授予到所有 service 资源和所有菜单组（参见上文「默认策略」）。无需在 `authzPolicies` 中书写，**仅记述其他目标角色／用户**
 - 对 `authenticated`（所有已认证用户）授予许可应限定为查询、选择类的轻量服务
-- 将组织层级作为目标进行筛选时，最常用的是 `ge`（自身 + 下级）。需要注意层级边界条件（包含 / 不包含），灵活区分使用 `eq` / `lt` / `le` / `gt` / `ge`
+- 将组织层级作为目标进行筛选时，最常用的是 `le`（自身 + 下级）。需要注意层级边界条件（包含 / 不包含），灵活区分使用 `eq` / `lt` / `le` / `gt` / `ge`
 
 ## 限制事项
 

@@ -497,25 +497,16 @@ document.addEventListener('DOMContentLoaded', function() {
 **検証方法:** 生成した `.html` ファイルで `imdsConfirm(` を grep し、同一ファイル内に `function imdsConfirm(` が存在するか確認する。
 `validate-jssp-code.js` の `JSSP-HTML-015` が自動検出する。
 
-```javascript
-// 各画面に以下の定義を含めること
-function imdsConfirm(message, title, onOk, onCancel, options) {
-  let modal = document.getElementById('confirmModal');
-  document.getElementById('confirmMessage').textContent = message;
-  document.getElementById('confirmTitle').textContent   = title || '確認';
-  modal.style.display = 'flex';
-  document.getElementById('confirmOk').onclick = function() {
-    modal.style.display = 'none';
-    if (typeof onOk === 'function') onOk();
-  };
-  document.getElementById('confirmCancel').onclick = function() {
-    modal.style.display = 'none';
-    if (typeof onCancel === 'function') onCancel();
-  };
-}
-```
+インライン定義は `assets/simple-form.md` の `imdsConfirm` を写す。この定義は `<dialog>` 要素を動的に生成して `showModal()` で表示し、決定ボタンで `true`、キャンセル・×・Escape で `false` に解決する `Promise` を返す。確認モーダル用の HTML を画面に別途置く必要はない。
 
-また、`imdsConfirm` が参照する確認モーダルの HTML（`id="confirmModal"` を持つ `<div>`）も同一ファイルに存在することを確認する。
+```javascript
+// 呼び出し例（第5引数 options で mode を指定する）
+imdsConfirm('登録してもよろしいですか？', '登録', null, null, { mode: 'info', okButton: { text: '登録' } })
+  .then((result) => {
+    if (!result) return;
+    // 決定ボタン押下時の処理
+  });
+```
 
 ### 5-2. 画面間パラメータ渡しは送受両側をセットで実装する
 

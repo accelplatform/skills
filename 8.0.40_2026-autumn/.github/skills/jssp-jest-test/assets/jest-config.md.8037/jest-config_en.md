@@ -4,7 +4,7 @@
 
 ```javascript
 module.exports = {
-  testMatch: ['src/test/jssp/**/*.test.js'],
+  testRegex: '[/\\\\]src[/\\\\]test[/\\\\]jssp[/\\\\].+\\.test\\.js$',
   sourcePathMapping: {
     'src/test/jssp/src/': 'src/main/jssp/src/'
   },
@@ -15,9 +15,13 @@ module.exports = {
 
 ## Configuration Options
 
-### testMatch
+### testRegex
 
-Search pattern for test files. Targets `.test.js` files under `src/test/jssp/src/`.
+Regular expression that selects test files. js-jest applies this regular expression as a partial match to the absolute path of each file under the project root and runs the matching files as tests. The setting above targets `.test.js` files under `src/test/jssp/`.
+
+- The path separator is `/` or `\` depending on the OS, so match both with `[/\\]` (written as `'[/\\\\]'` in a JS string literal)
+- If omitted, every `*.test.js` / `*.spec.js` in the project except `node_modules` is targeted (including tests such as those under `src/test/integration`)
+- js-jest does not use `testMatch` / `testPathIgnorePatterns` to match test files. Use `testRegex` to narrow the targets
 
 ### sourcePathMapping
 

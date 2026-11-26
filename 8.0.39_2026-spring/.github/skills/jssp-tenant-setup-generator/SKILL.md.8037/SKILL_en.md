@@ -286,7 +286,7 @@ Sample: [examples/any_app.spec.json](examples/any_app.spec.json)
   // 8. Database (optional) — DDL is always per-dialect (3 files), DML is switched by dmlPerDialect
   "database": {
     "tables": [
-      { "name": "any_app_data", "comment": "サンプルデータ" }
+      { "name": "any_app_data", "comment": "Sample data" }
     ],
     "dmlPerDialect": false                     // false (default): single DML / true: 3 dialect-specific
   },

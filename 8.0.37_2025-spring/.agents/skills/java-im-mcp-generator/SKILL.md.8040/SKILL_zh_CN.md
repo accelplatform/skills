@@ -1,6 +1,6 @@
 ---
 name: java-im-mcp-generator
-description: 在 intra-mart Accel Platform 上用 Java（JavaEE 开发模型）新建运行的 MCP（Model Context Protocol）服务器。提供基于 `im_copilot_mcp` 模块的 `jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`/`Tool` 注解实现 Streamable HTTP MCP 服务器、通过 `SchemaProperties` 定义工具参数、通过 `McpScanPackageFactory`/`META-INF/im_services/annotation_classes` 向平台注册的实现模式。当用户提及想用 Java 构建 MCP 服务器、想在 intra-mart 上实现 MCP 服务器、想使用 `@MCPServer`/`@Tool`、想在 JavaEE 开发模型中为 AI 智能体发布工具时使用。
+description: 在 intra-mart Accel Platform 上用 Java（JavaEE 开发模型）新建运行的 MCP（Model Context Protocol）服务器。提供基于 `im_copilot_mcp` 模块的 `jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`/`Tool` 注解实现 Streamable HTTP MCP 服务器、通过 `SchemaProperties` 定义工具参数、通过构建时自动生成的 `META-INF/im_services/annotation_classes` 向平台注册。当用户提及想用 Java 构建 MCP 服务器、想在 intra-mart 上实现 MCP 服务器、想使用 `@MCPServer`/`@Tool`、想在 JavaEE 开发模型中为 AI 智能体发布工具时使用。
 ---
 
 # intra-mart MCP 服务器实现支持技能（Java 版）
@@ -9,7 +9,7 @@ description: 在 intra-mart Accel Platform 上用 Java（JavaEE 开发模型）�
 
 支持使用 intra-mart Accel Platform 的 `im_copilot_mcp` 模块提供的注解（`@MCPServer`/`@Tool`），仅通过为 Java 类添加注解即可实现 MCP（Model Context Protocol）服务器（Streamable HTTP 传输）的技能集。
 
-**本技能仅处理 Java 源文件（`.java`）以及注册用的配置文件（`META-INF/services/*` 或 `META-INF/im_services/annotation_classes/*`）。**
+**本技能仅处理 Java 源文件（`.java`）。** 用于向平台注册的索引文件（`META-INF/im_services/annotation_classes/*`）会在构建时自动生成。
 
 ## MCP 服务器的基本概念（重要）
 
@@ -24,7 +24,7 @@ description: 在 intra-mart Accel Platform 上用 Java（JavaEE 开发模型）�
 
 - URL 映射为 `<CONTEXT_PATH>/copilot/mcp<path>`（`path` 为 `@MCPServer.path()` 的值）
 - 工具的输入参数由一个 DTO 类表示，该类的字段上标注 `SchemaProperties`（`StringProperty`/`IntegerProperty`/`BooleanProperty`/`NumberProperty`/`EnumProperty`/`ObjectProperty`/`ArrayProperty`）
-- **仅添加注解并不会被平台识别。** 必须通过 `McpScanPackageFactory`（推荐）或 `META-INF/im_services/annotation_classes` 之一进行明确注册（详见「MCP 服务器的注册」）
+- **`@MCPServer` 类通过构建时自动生成的索引（`META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`）向平台注册。** 若构建产物中不含该索引，则不会被识别（详见「MCP 服务器的注册」）
 
 详细的属性签名、注册方式请务必参照 `reference/mcp-annotation-api-reference.md`（不要凭记忆或推测编写）。
 
@@ -51,12 +51,11 @@ description: 在 intra-mart Accel Platform 上用 Java（JavaEE 开发模型）�
 | MCP 服务器的入口类（`@MCPServer`） | `assets/mcp-server-basic-usage.md` 模式 1 | 最小构成的实现示例 |
 | 工具参数 DTO（各类 `SchemaProperties`） | `assets/mcp-server-basic-usage.md` 模式 2 | String/Integer/Boolean/Array 各属性类型的使用示例 |
 | 使用平台上下文的工具实现 | `assets/mcp-server-basic-usage.md` 模式 3 | 与 `Contexts`/`MessageManager` 的集成 |
-| 包注册（`McpScanPackageFactory`） | `assets/mcp-server-basic-usage.md` 模式 4 | 推荐的注册方式 |
-| 显式注册（`META-INF/im_services/annotation_classes`） | `assets/mcp-server-basic-usage.md` 模式 5 | 备选的注册方式 |
+| 向平台注册（`META-INF/im_services/annotation_classes`） | `assets/mcp-server-basic-usage.md` 模式 4 | 确认自动生成的索引，未生成时手动创建 |
 
 ### 参考资料
 
-- `reference/mcp-annotation-api-reference.md` — `@MCPServer`/`@Tool`/`SchemaProperties`/`SchemaArrayItemProperties`/`McpScanPackageFactory` 的全部属性、签名、依赖声明、URL 映射、注册方式（基于 `im_copilot_mcp` 模块的实际类定义/字节码，不要凭记忆编写）
+- `reference/mcp-annotation-api-reference.md` — `@MCPServer`/`@Tool`/`SchemaProperties`/`SchemaArrayItemProperties` 的全部属性、签名、依赖声明、URL 映射、注册方式（基于 `im_copilot_mcp` 模块的实际类定义/字节码，不要凭记忆编写）
 
 ## 使用时机
 
@@ -74,12 +73,12 @@ description: 在 intra-mart Accel Platform 上用 Java（JavaEE 开发模型）�
 2. 设计包名与类名（遵循 `.agents/requirements/java-naming/AGENTS.md`。入口类为 `Xxx` + `McpServer`，工具实现类为 `Xxx` + `McpTool` + `{ToolName}`，必要时加 `Parameter`）
 3. 在 `pom.xml` 中添加对 `im_copilot_mcp` 的依赖（显式指定版本，参见 `reference/mcp-annotation-api-reference.md` 中的「依赖关系」）。若项目已有该依赖，直接复用，不要重复添加
 4. 参照 `assets/mcp-server-basic-usage.md` 实现 `@MCPServer` 类、工具实现类、参数 DTO（属性签名务必参照 `reference/mcp-annotation-api-reference.md`，不要凭记忆或推测编写）
-5. **进行 MCP 服务器的注册（严禁省略）。** 若项目已存在 `McpScanPackageFactory` 实现，只需将新类放入其目标包下即可。若没有，则按照 `assets/mcp-server-basic-usage.md` 模式 4 新建
+5. **确认 MCP 服务器的注册（严禁省略）。** 构建后，确认 `target/classes`（或 jar）中存在 `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`，且记载了 `@MCPServer` 类的完全限定名。若不存在，则按照 `assets/mcp-server-basic-usage.md` 模式 4 手动创建
 6. 确认是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
 
 ## 注意事项
 
-- **仅添加 `@MCPServer`/`@Tool` 并不会生效。** 必须完成「MCP 服务器的注册」（`McpScanPackageFactory` 或 `META-INF/im_services/annotation_classes`）。生成后务必检查这一点
+- **注册通过 `META-INF/im_services/annotation_classes` 索引完成。** 不要使用非公开 API `jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory`。生成后务必检查索引是否存在
 - **不要创建多个具有相同 `path` 的 `@MCPServer` 类。** 设计时应确保项目内 `path` 不冲突
 - **`@Tool` 方法只能接受一个参数（参数 DTO）。** 多个输入值应汇总到该 DTO 的字段中
 - **DTO 字段若未标注对应的 `SchemaProperties`，则不会在 MCP 工具的输入模式中公开。** 仅有 getter/setter 是不够的
@@ -90,7 +89,7 @@ description: 在 intra-mart Accel Platform 上用 Java（JavaEE 开发模型）�
 
 并非通过自动验证脚本，而是手动确认以下事项。
 
-1. `@MCPServer` 类是否位于某个 `McpScanPackageFactory` 的目标包下，或其完全限定名是否已记载于 `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`
+1. 构建产物中是否存在 `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`，且记载了 `@MCPServer` 类的完全限定名
 2. `path` 是否与项目内其他 `@MCPServer` 类冲突
 3. 参数 DTO 的所有字段是否都标注了与其用途对应的 `SchemaProperties` 注解（`StringProperty`/`IntegerProperty`/`BooleanProperty`/`NumberProperty`/`EnumProperty`/`ObjectProperty`/`ArrayProperty`）
 4. 应为必填的参数是否设置了 `required`

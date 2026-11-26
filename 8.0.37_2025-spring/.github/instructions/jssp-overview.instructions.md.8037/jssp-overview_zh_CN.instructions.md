@@ -1,5 +1,5 @@
 ---
-applyTo: "src/main/jssp/**/*.js,src/main/jssp/**/*.html"
+applyTo: "src/main/jssp/**/*.js,src/main/jssp/**/*.html,src/main/tssp/**/*.ts,src/main/tssp/**/*.html"
 description: "プロジェクト概要・技術スタック"
 ---
 

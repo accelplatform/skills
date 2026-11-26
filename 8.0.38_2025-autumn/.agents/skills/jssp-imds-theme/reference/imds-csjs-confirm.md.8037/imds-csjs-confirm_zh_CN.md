@@ -56,8 +56,8 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
   dialog.innerHTML =
     '<div class="imds-confirm is-' + mode + '">' +
       '<div class="imds-confirm-content-wrapper">' +
-        '<button class="imds-confirm-close imds-button is-ghost">' +
-          '<span class="imds-icon"><i class="fa-solid fa-xmark"></i></span>' +
+        '<button class="imds-confirm-close imds-button is-ghost" aria-label="关闭">' +
+          '<span class="imds-icon" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>' +
         '</button>' +
         '<div class="imds-confirm-content">' +
           '<div class="imds-confirm-message-wrapper">' +
@@ -94,6 +94,16 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
     contentElement.appendChild(document.createTextNode(lines[i]));
   }
 
+  // 打开对话框之前记住触发元素（用于关闭后恢复焦点）
+  const triggerElement = document.activeElement;
+
+  // ARIA 属性
+  dialog.setAttribute('role', 'dialog');
+  dialog.setAttribute('aria-modal', 'true');
+  const titleId = 'imds-confirm-title-' + Date.now();
+  dialog.setAttribute('aria-labelledby', titleId);
+  dialog.querySelector('.imds-confirm-message-title').id = titleId;
+
   document.body.appendChild(dialog);
 
   return new Promise(function(resolve) {
@@ -103,25 +113,34 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
       if (settled) return;
       settled = true;
       imdsConfirm._active = false;
+      dialog.removeEventListener('keydown', onKeyDown);
       dialog.close();
       document.body.removeChild(dialog);
+      // 将焦点恢复到触发元素
+      if (triggerElement && typeof triggerElement.focus === 'function') {
+        triggerElement.focus();
+      }
       resolve(result);
     }
 
+    const okButton = dialog.querySelector('.imds-confirm-ok-button');
+    const cancelButton = dialog.querySelector('.imds-confirm-cancel-button');
+    const closeButton = dialog.querySelector('.imds-confirm-close');
+
     // 确定按钮
-    dialog.querySelector('.imds-confirm-ok-button').addEventListener('click', function() {
+    okButton.addEventListener('click', function() {
       if (typeof onOk === 'function') onOk();
       close(true);
     });
 
     // 取消按钮
-    dialog.querySelector('.imds-confirm-cancel-button').addEventListener('click', function() {
+    cancelButton.addEventListener('click', function() {
       if (typeof onCancel === 'function') onCancel();
       close(false);
     });
 
     // × 按钮（视为取消）
-    dialog.querySelector('.imds-confirm-close').addEventListener('click', function() {
+    closeButton.addEventListener('click', function() {
       if (typeof onCancel === 'function') onCancel();
       close(false);
     });
@@ -133,7 +152,34 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
       close(false);
     });
 
+    // 键盘操作
+    // - Enter:  作为 OK 按钮确认（焦点在取消/× 上时，优先执行该按钮的操作）
+    // - Tab:    原生 dialog 会进行焦点陷阱，无需额外实现
+    // - Escape: 已通过 cancel 事件处理
+    function onKeyDown(e) {
+      if (e.key === 'Enter' && !e.isComposing) {
+        const focused = document.activeElement;
+        if (focused === cancelButton || focused === closeButton) {
+          return;
+        }
+        e.preventDefault();
+        okButton.click();
+      }
+    }
+    dialog.addEventListener('keydown', onKeyDown);
+
     dialog.showModal();
+
+    // 初始焦点
+    // - danger 模式: 为防止误操作，定位到取消按钮
+    // - 其他:        定位到 OK 按钮
+    setTimeout(function() {
+      if (mode === 'danger') {
+        cancelButton.focus();
+      } else {
+        okButton.focus();
+      }
+    }, 0);
   });
 }
 
@@ -204,7 +250,7 @@ imdsConfirm._active = false;
 - **标题（`imds-confirm-message-title` / `title` 参数）**：简洁表示要执行的操作。例：「是否注册定义信息？」「是否删除定义信息？」
 - **消息（`imds-confirm-message-content` / `message` 参数）**：补充标题的说明文字。简洁记载操作影响范围等用户判断所需的信息。例：「更新可能会影响现有的运行。」「删除定义信息后，○○也将被删除。」
 - **按钮标题（`okButton.text`）**：使用能明确表示点击后会发生什么的文字。避免「确定」「OK」等看不出操作内容的标题，使用「注册」「更新」「删除」等实际处理名称（默认为「执行」）。
-- **默认选项**：对于无法挽回的操作（删除等），不要将焦点置于取消以外的按钮上。`imdsConfirm` 的实现将取消按钮置于首位并作为默认焦点，因此遵循此原则。
+- **默认选项**：对于无法挽回的操作（删除等），不要将焦点置于取消以外的按钮上。`imdsConfirm` 的实现在 `mode: 'danger'` 时将初始焦点置于取消按钮，其他情况下置于确定按钮，因此遵循此原则。
 
 ### mode 的使用区别
 

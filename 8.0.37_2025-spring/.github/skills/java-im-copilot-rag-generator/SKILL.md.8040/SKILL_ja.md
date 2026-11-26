@@ -1,6 +1,6 @@
 ---
 name: java-im-copilot-rag-generator
-description: intra-mart IM-Copilot が提供するベクトルストア API（`jp.co.intra_mart.foundation.copilot.vectorstore.*`）とチャット/埋め込みアクション API（`jp.co.intra_mart.foundation.copilot.action.*`）を Java（JavaEE 開発モデル）で使用し、RAG（検索拡張生成）を実装するためのスキルセット。文書のチャンク分割・ベクトル化・ベクトルストアへの登録（データ準備ジョブ）、ハイブリッド検索・類似検索・キーワード検索、検索結果を踏まえた回答生成（Assistant）の実装パターンを提供する。Java で RAG を実装したい、ベクトルストアにドキュメントを登録したい、`VectorStore`/`VectorStoreBuilder` を使いたい、ハイブリッド検索を実装したい、と言及されたときに使用。Tool Calling は `java-im-copilot-toolcalling-generator`、Agent フレームワーク経由の高レベルな RAG（`Knowledge`/`RegisteredKnowledge`）は `java-im-copilot-agent-generator` を使うこと。
+description: intra-mart IM-Copilot が提供するベクトルストア API（`jp.co.intra_mart.foundation.copilot.vectorstore.*`）とチャット/埋め込みアクション API（`jp.co.intra_mart.foundation.copilot.action.*`）を Java（JavaEE 開発モデル）で使用し、RAG（検索拡張生成）を実装するためのスキルセット。文書のチャンク分割・ベクトル化・ベクトルストアへの登録（データ準備ジョブ）、ハイブリッド検索・類似検索・キーワード検索、検索結果を踏まえた回答生成（Assistant）の実装パターンを提供する。Java で RAG を実装したい、ベクトルストアにドキュメントを登録したい、`VectorStore`/`VectorStoreBuilder` を使いたい、ハイブリッド検索を実装したい、と言及されたときに使用。Tool Calling は `java-im-copilot-toolcalling-generator`、Agent フレームワーク経由の高レベルな RAG（`Knowledge`）は `java-im-copilot-agent-generator` を使うこと。
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -16,15 +16,15 @@ intra-mart Accel Platform の IM-Copilot が提供する **ベクトルストア
 |---|---|---|
 | ベクトルストアの構築 | `VectorStoreBuilder` | `jp.co.intra_mart.foundation.copilot.vectorstore.builder` |
 | ベクトルストア本体 | `VectorStore`（登録・削除・各種検索） | `jp.co.intra_mart.foundation.copilot.vectorstore` |
-| 文書情報 | `Document`（実装: `StandardRegistrationDocument`）/`ScoredDocument` | `jp.co.intra_mart.foundation.copilot.vectorstore.document` / `jp.co.intra_mart.system.copilot.vectorstore.document` |
+| 文書情報 | `Document`（自前実装）/`ScoredDocument` | `jp.co.intra_mart.foundation.copilot.vectorstore.document` |
 | エンベディング生成 | `Embedder`（既定実装なし。`EmbeddingsAction` をラップして自前実装） | `jp.co.intra_mart.foundation.copilot.vectorstore.embedder` |
-| 検索ランク融合 | `Reranker`（実装: `StandardRrfReranker`） | `jp.co.intra_mart.foundation.copilot.vectorstore.reranker` / `jp.co.intra_mart.system.copilot.vectorstore.reranker` |
+| 検索ランク融合 | `Reranker`（省略時は RRF で統合） | `jp.co.intra_mart.foundation.copilot.vectorstore.reranker` |
 | テキスト分割 | `TextSplitter`（実装: `RecursiveCharacterTextSplitter`） | `jp.co.intra_mart.foundation.copilot.assistant.splitter` |
 | チャット呼び出し | `ActionFactory`/`ChatAction`/`ChatMessage`/`ChatOption` | `jp.co.intra_mart.foundation.copilot.action` / `.action.chat` |
 | 埋め込み呼び出し | `EmbeddingsAction`/`EmbeddingsOption` | `jp.co.intra_mart.foundation.copilot.action.embeddings` |
 | チャットUI連携 | `AbstractCopilotAssistant<T>` + `@Assistant` | `jp.co.intra_mart.foundation.copilot.assistant` |
 
-**`VectorStore`/`ActionFactory` は `Agent`/`AgentBuilder`（`java-im-copilot-agent-generator` が扱う高レベル API）に依存しない、低レベルな Java API である。** 文書のベクトル化・検索・チャット呼び出しを自分で組み立てる場合に使う。Agent フレームワークの `Knowledge`/`RegisteredKnowledge` を使った、より抽象度の高い RAG 連携が必要な場合は `java-im-copilot-agent-generator` を使うこと（「他スキルとの境界」参照）。
+**`VectorStore`/`ActionFactory` は `Agent`/`AgentBuilder`（`java-im-copilot-agent-generator` が扱う高レベル API）に依存しない、低レベルな Java API である。** 文書のベクトル化・検索・チャット呼び出しを自分で組み立てる場合に使う。Agent フレームワークの `Knowledge` を使った、より抽象度の高い RAG 連携が必要な場合は `java-im-copilot-agent-generator` を使うこと（「他スキルとの境界」参照）。
 
 ## 参照すべき規約
 
@@ -44,13 +44,13 @@ RAG は「データ準備フェーズ」（文書を分割・ベクトル化し�
 
 | 生成対象 | テンプレート | 内容 |
 |---------|------------|------|
-| `Embedder` アダプタの実装 | `assets/rag-basic-usage.md` パターン1 | `EmbeddingsAction` をラップした `Embedder` 実装 |
+| `Embedder` アダプタと `Document` の実装 | `assets/rag-basic-usage.md` パターン1 | `EmbeddingsAction` をラップした `Embedder` 実装、`Document` 実装 |
 | データ準備ジョブ（分割・ベクトル化・登録） | `assets/rag-basic-usage.md` パターン2 | `TextSplitter`、`VectorStoreBuilder`、`VectorStore.add`/`deleteAll` |
 | クエリ応答 Assistant（ハイブリッド検索・ストリーミング回答） | `assets/rag-basic-usage.md` パターン3 | `VectorStore.hybridSearch`、`ChatAction` ストリーミング、`AssistantResponseWriter` |
 
 ### リファレンス
 
-- `reference/vectorstore-api-reference.md` — `VectorStoreBuilder`/`VectorStore`/`Document`/`ScoredDocument`/`Embedder`/`Reranker`/`StandardRrfReranker`/`TextSplitter` の全メソッド・シグネチャ
+- `reference/vectorstore-api-reference.md` — `VectorStoreBuilder`/`VectorStore`/`Document`/`ScoredDocument`/`Embedder`/`Reranker`/`TextSplitter` の全メソッド・シグネチャ
 - `reference/chat-action-api-reference.md` — `ActionFactory`/`ChatAction`/`ChatMessage`/`ChatOption`/`EmbeddingsAction`/`EmbeddingsOption`/`MessageTemplate`/`ChatMessageConverter` の全メソッド・シグネチャ
 
 いずれもプラットフォーム API の実クラス定義に基づく（記憶で書かない）。
@@ -68,27 +68,28 @@ RAG は「データ準備フェーズ」（文書を分割・ベクトル化し�
 
 依頼が以下に該当する場合は、本スキルの対象外である旨を伝える:
 - Tool Calling（関数呼び出し） → `java-im-copilot-toolcalling-generator`
-- Agent フレームワーク（`Agent`/`AgentBuilder`）経由の `Knowledge`/`RegisteredKnowledge` を使った RAG → `java-im-copilot-agent-generator`
+- Agent フレームワーク（`Agent`/`AgentBuilder`）経由の `Knowledge` を使った RAG → `java-im-copilot-agent-generator`
 - MCP サーバの実装 → `java-im-mcp-generator`
 
 ## 実装手順
 
 1. ユーザの要件をヒアリング（対象文書の種類・保存場所、検索方式（ハイブリッド/類似/キーワード）、チャットUI連携の要否）
 2. 対象に応じたメソッドを `reference/vectorstore-api-reference.md`/`reference/chat-action-api-reference.md` で正確に確認する（記憶や推測で書かない）
-3. `assets/rag-basic-usage.md` を参照して実装する。`Embedder` アダプタ（パターン1）→ データ準備ジョブ（パターン2）→ クエリ応答 Assistant（パターン3）の順に実装するとよい
+3. `assets/rag-basic-usage.md` を参照して実装する。`Embedder` アダプタと `Document`（パターン1）→ データ準備ジョブ（パターン2）→ クエリ応答 Assistant（パターン3）の順に実装するとよい
 4. IM-Copilot のチャットUIと連携させる場合、`@Assistant` を付与した `AbstractCopilotAssistant<T>` サブクラスを作成する。**パラメータクラス `T` は `AssistantParameter` 自身、またはそのサブクラスにする**（独自の POJO にするとチャットUIでプロンプトを入力できなくなる）
-5. Assistant を作成した場合、**`AssistantScanPackageFactory` の実装・登録と、IM-Authz での権限付与の両方を必ず行う**（いずれか一方でも欠けるとアシスタント一覧に表示されない。詳細は `java-im-copilot-agent-generator` の `reference/assistant-integration-api-reference.md`「プラットフォームへの登録」を参照。登録の仕組み自体は Agent フレームワークの Assistant と共通）
+5. Assistant を作成した場合、**IM-Authz での権限付与を必ず行う**（権限が無いとアシスタント一覧に表示されない。`@Assistant` クラスはビルド時に自動生成される索引で認識されるので、`AssistantScanPackageFactory` の実装は要らない。詳細は `java-im-copilot-agent-generator` の `reference/assistant-integration-api-reference.md`「プラットフォームへの登録」を参照。登録の仕組み自体は Agent フレームワークの Assistant と共通）
 6. データ準備ジョブは、ジョブスケジューラへの登録（`job-scheduler.xml` 等のテナント設定資材）が必要（`jssp-tenant-setup-generator` の対象）
 7. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか確認
 
 ## 注意事項
 
-- **`Document` は自前実装しない。** プラットフォーム提供の標準実装 `jp.co.intra_mart.system.copilot.vectorstore.document.StandardRegistrationDocument` をそのまま使う
+- **`Document` は自前で実装する。** `jp.co.intra_mart.system.*` 配下の実装クラス（`StandardRegistrationDocument`・`StandardRrfReranker` 等）は非公開 API のため使わない
+- **`hybridSearch` で RRF を使う場合は `Reranker` を渡さない。** `hybridSearch(query, topK)` のように `Reranker` を省略すると RRF で結果を統合する
 - **`TextSplitter` の分割メソッドは `splitText(String)`。** `split(String)` は存在しない
 - **`VectorStoreBuilder.useDefault()` は `embedder(...)` より先に呼ぶこと。** `useDefault()` は内部で `embedder` フィールドをリセットするため、順序を誤ると `Embedder` の設定が失われる
 - **`Embedder` の既定実装はプラットフォームに存在しない。** `EmbeddingsAction`（`ActionFactory.getFactory().getEmbeddingsAction()`）をラップした薄いアダプタを自前実装する必要がある
 - **`AbstractCopilotAssistant<T>` の `T` は `AssistantParameter` 自身、またはそのサブクラスでなければならない。** 独自の POJO を指定すると、チャットUIが送信メッセージの入力欄を組み立てられずプロンプトを入力できなくなる
-- **`@Assistant` を付与しただけではアシスタント一覧に表示されない。** `AssistantScanPackageFactory` の登録と IM-Authz の権限付与の両方が必要（`java-im-copilot-agent-generator` 参照）
+- **`@Assistant` を付与しただけではアシスタント一覧に表示されない。** IM-Authz の権限付与が必要（`@Assistant` クラスの認識はビルド時に自動生成される索引で行われ、`AssistantScanPackageFactory` は要らない。`java-im-copilot-agent-generator` 参照）
 - ファイルからのテキスト抽出（PDF・Word 等のパース）自体は、本スキルが扱うベクトルストア・チャットアクション API の範囲外。対象ファイル形式に応じてアプリ側で実装する
 - ベクトルストアの実バックエンド（Solr・RDB等）はテナント環境設定に依存する。8.0.5 で追加された `list`/`count`/`scanAll` 等の一部メソッドはバックエンドによっては `UnsupportedOperationException` になりうる
 
@@ -96,12 +97,12 @@ RAG は「データ準備フェーズ」（文書を分割・ベクトル化し�
 
 自動検証スクリプトではなく、以下の項目を手動で確認する。
 
-1. `Document` を自前実装していないか（`StandardRegistrationDocument` を使っているか）
+1. `jp.co.intra_mart.system.*` 配下のクラス（`StandardRegistrationDocument`・`StandardRrfReranker` 等）を import していないか
 2. `TextSplitter` の呼び出しメソッド名が `splitText` になっているか
 3. `VectorStoreBuilder` の呼び出し順序が `useDefault()` → `category(...)` → `embedder(...)` → `useScoreNormalize(...)` → `build()` になっているか
 4. `Embedder` アダプタが `EmbeddingsAction` の例外（`CopilotServiceConfigurationException`/`CopilotServiceActionException`）を `EmbedderException` へ変換しているか
 5. Assistant を作成した場合、パラメータクラス `T` が `AssistantParameter` 自身またはそのサブクラスになっているか
-6. Assistant を作成した場合、`AssistantScanPackageFactory` を実装・登録したか、IM-Authz でリソース `im-copilot-assistant://assistant/<アシスタントID>` への許可ポリシーを付与したか
+6. Assistant を作成した場合、ビルド成果物の索引（`META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.assistant.annotation.Assistant`）に `@Assistant` クラスの完全修飾名が載っているか、IM-Authz でリソース `im-copilot-assistant://assistant/<アシスタントID>` への許可ポリシーを付与したか
 7. `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md` に準拠しているか
 8. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 
@@ -111,5 +112,5 @@ RAG は「データ準備フェーズ」（文書を分割・ベクトル化し�
 |------|-----------|
 | **Java（JavaEE 開発モデル）での RAG 実装（`VectorStore`/`ActionFactory` を直接使用）** | **本スキル** |
 | Tool Calling（関数呼び出し。`ChatAction`+`ToolConfig`） | `java-im-copilot-toolcalling-generator` |
-| Agent フレームワーク（`Agent`/`AgentBuilder`）、`Knowledge`/`RegisteredKnowledge` を使った高レベルな RAG 連携 | `java-im-copilot-agent-generator` |
+| Agent フレームワーク（`Agent`/`AgentBuilder`）、`Knowledge` を使った高レベルな RAG 連携 | `java-im-copilot-agent-generator` |
 | MCP サーバの実装（`@MCPServer`/`@Tool`） | `java-im-mcp-generator` |

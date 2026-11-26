@@ -201,6 +201,9 @@ function transferErrorPage(code, message) {
   <script>
   (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
+      // DOM 检索的起点（本画面的根元素；不检索整个页面）
+      const container = document.getElementById('imui-container');
+
       // 始终执行验证检查的标志
       let activeValidation = false;
 
@@ -244,8 +247,8 @@ function transferErrorPage(code, message) {
         dialog.innerHTML =
           '<div class="imds-confirm is-' + mode + '">' +
             '<div class="imds-confirm-content-wrapper">' +
-              '<button class="imds-confirm-close imds-button is-ghost">' +
-                '<span class="imds-icon"><i class="fa-solid fa-xmark"></i></span>' +
+              '<button class="imds-confirm-close imds-button is-ghost" aria-label="关闭">' +
+                '<span class="imds-icon" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>' +
               '</button>' +
               '<div class="imds-confirm-content">' +
                 '<div class="imds-confirm-message-wrapper">' +
@@ -282,6 +285,16 @@ function transferErrorPage(code, message) {
           contentElement.appendChild(document.createTextNode(lines[i]));
         }
 
+        // 打开对话框之前记住触发元素（用于关闭后恢复焦点）
+        const triggerElement = document.activeElement;
+
+        // ARIA 属性
+        dialog.setAttribute('role', 'dialog');
+        dialog.setAttribute('aria-modal', 'true');
+        const titleId = 'imds-confirm-title-' + Date.now();
+        dialog.setAttribute('aria-labelledby', titleId);
+        dialog.querySelector('.imds-confirm-message-title').id = titleId;
+
         document.body.appendChild(dialog);
 
         return new Promise(function(resolve) {
@@ -291,25 +304,34 @@ function transferErrorPage(code, message) {
             if (settled) return;
             settled = true;
             imdsConfirm._active = false;
+            dialog.removeEventListener('keydown', onKeyDown);
             dialog.close();
             document.body.removeChild(dialog);
+            // 将焦点恢复到触发元素
+            if (triggerElement && typeof triggerElement.focus === 'function') {
+              triggerElement.focus();
+            }
             resolve(result);
           }
 
+          const okButton = dialog.querySelector('.imds-confirm-ok-button');
+          const cancelButton = dialog.querySelector('.imds-confirm-cancel-button');
+          const closeButton = dialog.querySelector('.imds-confirm-close');
+
           // 确定按钮
-          dialog.querySelector('.imds-confirm-ok-button').addEventListener('click', function() {
+          okButton.addEventListener('click', function() {
             if (typeof onOk === 'function') onOk();
             close(true);
           });
 
           // 取消按钮
-          dialog.querySelector('.imds-confirm-cancel-button').addEventListener('click', function() {
+          cancelButton.addEventListener('click', function() {
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
 
           // × 按钮（视为取消）
-          dialog.querySelector('.imds-confirm-close').addEventListener('click', function() {
+          closeButton.addEventListener('click', function() {
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
@@ -321,7 +343,34 @@ function transferErrorPage(code, message) {
             close(false);
           });
 
+          // 键盘操作
+          // - Enter:  作为 OK 按钮确认（焦点在取消/× 上时，优先执行该按钮的操作）
+          // - Tab:    原生 dialog 会进行焦点陷阱，无需额外实现
+          // - Escape: 已通过 cancel 事件处理
+          function onKeyDown(e) {
+            if (e.key === 'Enter' && !e.isComposing) {
+              const focused = document.activeElement;
+              if (focused === cancelButton || focused === closeButton) {
+                return;
+              }
+              e.preventDefault();
+              okButton.click();
+            }
+          }
+          dialog.addEventListener('keydown', onKeyDown);
+
           dialog.showModal();
+
+          // 初始焦点
+          // - danger 模式: 为防止误操作，定位到取消按钮
+          // - 其他:        定位到 OK 按钮
+          setTimeout(function() {
+            if (mode === 'danger') {
+              cancelButton.focus();
+            } else {
+              okButton.focus();
+            }
+          }, 0);
         });
       }
 
@@ -343,11 +392,11 @@ function transferErrorPage(code, message) {
 
       // 初始化验证显示
       function clearValidationError() {
-        document.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
+        container.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
           element.classList.remove('imds-validation-error');
         });
 
-        document.querySelectorAll('.imds-error-text').forEach((element) => {
+        container.querySelectorAll('.imds-error-text').forEach((element) => {
           element.style.display = 'none';
         });
       }
@@ -355,12 +404,12 @@ function transferErrorPage(code, message) {
       // 显示验证错误
       function showValidationError(errors) {
         errors.forEach((error) => {
-          const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+          const fieldElement = container.querySelector(`.imds-field[for=":${error.name}:"]`);
           if (fieldElement) {
             fieldElement.classList.add('imds-validation-error');
           }
 
-          const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+          const errorElement = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
           if (errorElement) {
             errorElement.textContent = error.message;
             errorElement.style.display = '';
@@ -468,6 +517,12 @@ function transferErrorPage(code, message) {
         }
       });
 
+      // 返回按钮点击事件
+      // 将跳转目标替换为要返回的画面路径。没有返回目标的画面，请将页眉中的 imds-header-back-button 整体删除
+      document.getElementById('back-button').addEventListener('click', () => {
+        location.href = 'sample/simple_form/list';
+      });
+
       // 注册按钮点击事件
       document.getElementById('register-button').addEventListener('click', () => {
         // 创建参数信息
@@ -509,7 +564,7 @@ function transferErrorPage(code, message) {
   <!-- 头部 -->
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" class="imds-button is-ghost is-large" title="返回">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="返回">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
       </button>
     </div>

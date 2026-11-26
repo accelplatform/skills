@@ -37,7 +37,7 @@ src/main/jssp/src/<key>/initialize/<version>/<key>_import.js
 
 **需包含 `.js` 扩展名**（与 IM-Workflow 不同）。
 
-当 `spec.configNumber >= 2` 时，JS 文件名末尾会被附加 `-<N>` 后缀（例如 `<key>_import-2.js`）。详情请参见 [import-config.md](import-config.md#configNumber--1-のファイル名サフィックス)。
+当 `spec.configNumber >= 2` 时，JS 文件名末尾会被附加 `-<N>` 后缀（例如 `<key>_import-2.js`）。详情请参见 [import-config.md](import-config.md#confignumber--1-时的文件名后缀)。
 `<version>` 的决定优先级：spec.json 的 `"version"` → 项目根目录的 `module.xml` 或 `pom.xml` 的 `<version>` → `1.0.0`。版本升级时，在新版本目录中新生成 JS 并进行切换。
 
 ## 入口点

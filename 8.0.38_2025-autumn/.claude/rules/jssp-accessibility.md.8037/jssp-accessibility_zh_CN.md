@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/main/jssp/**/*.html"
+  - "src/main/tssp/**/*.html"
 ---
 
 # 无障碍规范（屏幕阅读器支持）
@@ -97,14 +98,16 @@ intra-mart Accel Platform 的全局页眉、全局菜单和页脚由**平台（�
 ```
 
 ```javascript
+const container = document.getElementById('imui-container'); // DOM 检索的起点（本画面的根元素）
+
 // 显示错误时
 function showValidationError(errors) {
   errors.forEach((error) => {
-    const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+    const fieldElement = container.querySelector(`.imds-field[for=":${error.name}:"]`);
     if (fieldElement) {
       fieldElement.classList.add('imds-validation-error');
     }
-    const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+    const errorElement = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
     if (errorElement) {
       errorElement.textContent = error.message;
       errorElement.style.display = '';
@@ -119,13 +122,13 @@ function showValidationError(errors) {
 
 // 清除错误时
 function clearValidationError() {
-  document.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => {
+  container.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => {
     el.classList.remove('imds-validation-error');
   });
-  document.querySelectorAll('.imds-error-text').forEach((el) => {
+  container.querySelectorAll('.imds-error-text').forEach((el) => {
     el.style.display = 'none';
   });
-  document.querySelectorAll('[aria-invalid="true"]').forEach((el) => {
+  container.querySelectorAll('[aria-invalid="true"]').forEach((el) => {
     el.removeAttribute('aria-invalid');
   });
 }

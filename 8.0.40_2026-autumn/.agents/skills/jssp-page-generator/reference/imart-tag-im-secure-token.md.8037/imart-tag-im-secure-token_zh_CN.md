@@ -60,5 +60,5 @@
 ## 注意事项
 
 - 会话因超时等原因被销毁时，令牌将失效
-- 函数容器侧的验证使用 `SecureTokenManager.verify()`
+- 函数容器侧的验证使用 `new SecureTokenManager().verify()`（`verify()` 是实例方法；实现示例请参见 `reference/secure-token-check.md`）
 - `useOneTimeToken="true"` 对防止重复提交也有效

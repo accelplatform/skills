@@ -42,6 +42,14 @@ Each convention file states its **application scope** at the top. Use the **scop
 | `.github/instructions/jssp-performance.instructions.md` | Compiler settings / session.js | 🟡 When tuning performance |
 | `.github/instructions/jssp-accessibility.instructions.md` | ARIA / WCAG 2.1 AA / screen readers | 🟠 **Business-requirement-dependent** — apply thickly only when the spec explicitly requires it; otherwise keep to the basics (`imdsConfirm`, basic `aria-label`, etc.) |
 
+### For TSSP (TypeScript)
+
+Deployed only to TypeScript projects.
+
+| File | One-line summary | Scope |
+|------|------------------|-------|
+| `.github/instructions/tssp-typescript.instructions.md` | How to write code when applying the jssp conventions to `.ts` (type annotations / `interface` / d.ts types) | 🟢 Always (when generating `.ts`) |
+
 ### Common (JSSP / Java)
 
 | File | One-line summary | Scope |

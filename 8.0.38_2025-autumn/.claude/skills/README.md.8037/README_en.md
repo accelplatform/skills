@@ -25,6 +25,23 @@ To reduce token consumption by coding agents, it is recommended to pick out only
   - ⇒ `jssp-im-master-usage`
     - Embeds search functions for users, companies, organizations, posts, public groups, private groups, and roles
 
+### I want to build screens in TypeScript (TSSP)
+
+- I want to write SSJS in TypeScript and develop by converting it to JSSP with `tssp build` (deployed only to TypeScript projects)
+  - ⇒ `tssp-usage`
+    - Where to place `.ts` / `.html`, the processing order of `tssp build`, type checking with d.ts, prohibited items in the Rhino lint, and how to fix output destination conflicts
+- I want to newly create a business screen in TSSP (TypeScript)
+  - ⇒ `tssp-page-generator` + `jssp-imds-theme`
+    - Generates function containers (ts), presentation pages (html), and routing tables (xml) in one go. The TypeScript version of `jssp-page-generator`
+- I want to run verification and fixes after TSSP screen generation (automatically delegated from `tssp-page-generator`)
+  - ⇒ `tssp-page-verifier`
+    - Handles, as a sub-agent, `tssp build --dev` (type checking and Rhino lint) and mechanical verification of the build output
+- I want a coding agent to review TSSP code
+  - ⇒ `tssp-code-review`
+    - In addition to the perspectives of `jssp-code-review`, checks types (consistency with interfaces and d.ts) and any circumvention of type checking
+
+> For the conventions on writing TSSP `.ts` files, refer to `.claude/rules/tssp-typescript.md` (it summarizes the points where the way of writing changes when the jssp conventions are applied to TypeScript).
+
 ### I want to use server-side caching
 
 - I want to speed up processing in a JSSP (script development model) function container by caching search results or the results of computationally expensive processing
@@ -196,19 +213,21 @@ To reduce token consumption by coding agents, it is recommended to pick out only
 - I want to build an MCP (Model Context Protocol) server running on intra-mart in Java (JavaEE development model)
   - ⇒ `java-im-mcp-generator`
     - Provides implementation patterns for a Streamable HTTP MCP server using the `@MCPServer`/`@Tool` annotations from the `im_copilot_mcp` module
-    - Includes tool parameter definitions via `SchemaProperties` and registration with the platform via `McpScanPackageFactory` (recommended) / `META-INF/im_services/annotation_classes`
+    - Includes tool parameter definitions via `SchemaProperties` and registration with the platform via `META-INF/im_services/annotation_classes`, which is generated automatically at build time
     - For a regular REST API (not aimed at AI agents), use `java-im-web-api-maker-usage`
 - I want to build an AI agent in Java (JavaEE development model) that receives a prompt, processes it, and returns a response
   - ⇒ `java-im-copilot-agent-generator`
-    - Provides implementation patterns for building an agent with `Agent`/`AgentBuilder` from the `im_copilot_agent` module, implementing custom tools with `UserDefinedTool`, integrating `Knowledge` (knowledge search) and `SkillEntry` (Markdown skills), Structured Output (typed output), and intervening in the execution flow with `AgentExecutionMiddleware`
+    - Provides implementation patterns for building an agent with `Agent`/`AgentBuilder` from the `im_copilot_agent` module, implementing custom tools with `UserDefinedTool`, integrating `Knowledge` (knowledge search), Structured Output (typed output), and intervening in the execution flow with `AgentExecutionMiddleware`
     - Includes the `AbstractCopilotAssistant`/`@Assistant` integration pattern for wiring into the IM-Copilot chat UI (`Agent`/`AgentBuilder` itself is an independent Java API that does not depend on the Assistant framework)
+    - Includes the pattern for registering a custom tool as a built-in tool selectable in the admin screen, using `@Tool` (for agents; different from the MCP `@Tool`); registration is done through an index generated automatically at build time
+    - Includes the pattern for loading and running an agent defined on the screen (Accel Agent) with `AgentManagementService`
     - For MCP server implementation, use `java-im-mcp-generator`; for regular REST APIs, use `java-im-web-api-maker-usage`
     - For low-level RAG that uses `VectorStore`/`ActionFactory` directly, use `java-im-copilot-rag-generator`; for low-level Tool Calling that uses `ChatAction`+`ToolConfig` directly, use `java-im-copilot-toolcalling-generator`
 - I want to implement RAG (Retrieval-Augmented Generation) in Java (JavaEE development model) using `VectorStore`/`ActionFactory` directly
   - ⇒ `java-im-copilot-rag-generator`
     - Provides implementation patterns for building/registering a vector store and hybrid/similarity/keyword search with `VectorStoreBuilder`/`VectorStore`, and for chat/embeddings calls with `ActionFactory`/`ChatAction`/`EmbeddingsAction`
-    - Includes the standard document implementation `StandardRegistrationDocument` and chunk splitting with `TextSplitter` (the `splitText` method)
-    - For high-level RAG via the Agent framework (`Knowledge`/`RegisteredKnowledge`), use `java-im-copilot-agent-generator`; for Tool Calling, use `java-im-copilot-toolcalling-generator`
+    - Includes a self-written `Document` implementation and chunk splitting with `TextSplitter` (the `splitText` method)
+    - For high-level RAG via the Agent framework (`Knowledge`), use `java-im-copilot-agent-generator`; for Tool Calling, use `java-im-copilot-toolcalling-generator`
 - I want to implement Tool Calling (function calling) in Java (JavaEE development model) using `ChatAction`+`ToolConfig` directly
   - ⇒ `java-im-copilot-toolcalling-generator`
     - Provides provider-agnostic (works uniformly across OpenAI, Azure OpenAI Service, and Amazon Bedrock) Tool Calling implementation patterns using `ToolConfig`/`ToolDefinition`/`ToolChoice`/`ToolCall` (both non-streaming and streaming)

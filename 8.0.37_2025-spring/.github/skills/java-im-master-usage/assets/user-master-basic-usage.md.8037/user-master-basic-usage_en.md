@@ -222,8 +222,7 @@ public class DepartmentService {
     }
 
     /**
-     * Registers an organization. Assumes the target DepartmentSet has already been created
-     * (e.g. via an import) beforehand.
+     * Registers an organization. Assumes the target DepartmentSet has already been created (e.g. via an import) beforehand.
      */
     public void register(final String companyCd, final String departmentSetCd, final String departmentCd, final String departmentName) throws BizApiException {
         final CompanyManager companyManager = new CompanyManager();

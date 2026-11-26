@@ -34,7 +34,7 @@ public interface Agent<T> {
 
 - `run(Message/String)` is stateless execution. Each call internally creates a temporary session, so conversation history is not retained
 - `run(Session, ...)` is stateful execution. Reusing the same `Session` accumulates past utterances/responses in `SessionContext`, which are then included in subsequent LLM calls
-- `RunContext` is an object for passing per-run data (such as `inputParameters`, used for `${...}` variable expansion in `Instruction`). It's optional (equivalent to `RunContext.empty()`)
+- `RunContext` is an object for passing per-run data. It's optional (equivalent to `RunContext.empty()`)
 - All methods declare the checked exception `jp.co.intra_mart.foundation.copilot.agent.exception.AgentException`
 
 ## `AgentBuilder<T>`
@@ -54,11 +54,10 @@ public class AgentBuilder<T> {
     public AgentBuilder<T> maxTokens(int maxTokens);
     public AgentBuilder<T> reasoningEffort(String reasoningEffort);
     public AgentBuilder<T> verbosity(String verbosity);
-    public AgentBuilder<T> stops(List<String> stops);
     public AgentBuilder<T> modelConfig(ModelConfig modelConfig); // Sets the above tuning items all at once (unset items revert to null)
 
     // Instruction (system prompt)
-    public AgentBuilder<T> instruction(String instructionText); // Creates a SimpleInstruction
+    public AgentBuilder<T> instruction(String instructionText); // A fixed-text instruction
     public AgentBuilder<T> instruction(Instruction instruction);
 
     // Tools
@@ -85,7 +84,7 @@ public class AgentBuilder<T> {
     public <U> AgentBuilder<U> structuredOutputSchema(String jsonSchema); // + overloads accepting targetClass, maxRetries
 
     // Execution control
-    public AgentBuilder<T> maxIterations(int maxIterations); // Default when unset: 20
+    public AgentBuilder<T> maxIterations(int maxIterations); // Default when unset: 100
     public AgentBuilder<T> timeoutMs(long timeoutMs); // No timeout when unset
     public AgentBuilder<T> autoCompaction(Double triggerRatio); // Greater than 0, up to 1. Trigger ratio for automatic conversation-history compaction
     public AgentBuilder<T> contextWindow(Long contextWindow); // Token count used to compute the auto-compaction threshold
@@ -173,9 +172,15 @@ public interface Instruction {
 }
 ```
 
-Main implementations (in the `jp.co.intra_mart.system.copilot.agent.instruction` package):
-- `SimpleInstruction(String text)` — a fixed text
-- `TemplateInstruction(String template)` — supports `${var}`-style variable expansion. Set values via `InstructionContext` (implementation: `StandardInstructionContext`) using `setVariable(name, value)`, then call `getText(context)` to expand
+Pass the instruction with `AgentBuilder.instruction(String)`. To include run-time values (such as the logged-in user's name), build a string with the values embedded in Java, then pass it. Do not use the non-public `jp.co.intra_mart.system.copilot.agent.instruction` package (`SimpleInstruction`/`TemplateInstruction`/`StandardInstructionContext`).
+
+```java
+// userName is a run-time value obtained by the caller
+final Agent<?> agent = Agent.builder()
+        .model("gpt-4")
+        .instruction("You are the assistant in charge of " + userName + ".")
+        .build();
+```
 
 **The framework automatically injects tool information into the system prompt.** Write only your business logic (the agent's role, response style) into `instruction` — you don't need to write instructions like "use the tool" (this is auto-generated).
 
@@ -191,10 +196,18 @@ public final class RunContext implements java.io.Serializable {
     public Map<String, Object> getInputParameters();
     public String getTraceId();
     public String getParentSpanId();
+
+    public static final class Builder {
+        public Builder inputParameters(Map<String, Object> inputParameters);
+        public Builder putInputParameter(String name, Object value);
+        public Builder traceId(String traceId);
+        public Builder parentSpanId(String parentSpanId);
+        public RunContext build();
+    }
 }
 ```
 
-Use `RunContext.builder().inputParameters(Map)` or `.putInputParameter(name, value)` to pass input parameters used for `${...}` expansion in an `Instruction` (`TemplateInstruction`). Use it as the argument to `run(message, runContext)` / `run(session, message, runContext)`.
+Use it as the argument to `run(message, runContext)` / `run(session, message, runContext)`. Pass the input parameters of an agent defined on the screen with `inputParameters(Map)` (Pattern 11 in `assets/copilot-agent-basic-usage.md`).
 
 ## `ModelConfig`/`AgentConfig`
 
@@ -205,7 +218,6 @@ public class ModelConfig implements java.io.Serializable {
     private Double temperature;      // Unset: model default
     private Integer maxTokens;
     private String reasoningEffort;  // Valid values differ by model
-    private List<String> stops;
     private String verbosity;        // low/medium/high. Supported only by OpenAI/AzureOpenAI
 
     public static ModelConfig.ModelConfigBuilder builder();
@@ -214,6 +226,31 @@ public class ModelConfig implements java.io.Serializable {
 ```
 
 `AgentConfig` is a snapshot of a built agent's configuration, obtained via `Agent#getConfig()` (holds `model`/`modelConfig`/`driver`/`timeoutMs`/`agentDefinitionId`/`agentType`/`additionalParams`/`autoCompactionTriggerRatio`/`contextWindow`, etc.).
+
+## `AgentManagementService` (Loading an Agent Defined on the Screen)
+
+```java
+package jp.co.intra_mart.foundation.copilot.agent.definition;
+
+public abstract class AgentManagementServiceFactory {
+    public static AgentManagementServiceFactory getInstance();
+    public abstract AgentManagementService getService();
+}
+
+public interface AgentManagementService {
+    // Passing null as version returns the number of the latest published version. AgentVersionNotPublishedException if none is published
+    int resolvePublishedVersion(String agentId, Integer version) throws AgentDefinitionPersistenceException;
+    <T> Agent<T> getAgent(String agentId, int version) throws AgentDefinitionPersistenceException;
+    // Loads the latest version regardless of its status (do not use for production calls)
+    <T> Agent<T> getAgent(String agentId) throws AgentDefinitionPersistenceException;
+    // There are also methods for registering/updating definitions, managing versions, and listing (equivalent to screen features; not covered by this skill)
+}
+```
+
+- New versions (registering a new agent or adding a version) are created in the suspended state and are not candidates for `resolvePublishedVersion` until they are published on the screen
+- `AgentManagementService` performs no authorization. Check whether the agent may be run in the caller
+- For an agent whose screen definition has input parameters, pass them in the `RunContext` with `run(Message, RunContext)` (they replace `${...}` in the instruction)
+- See Pattern 11 in `assets/copilot-agent-basic-usage.md` for usage
 
 ## Exceptions
 

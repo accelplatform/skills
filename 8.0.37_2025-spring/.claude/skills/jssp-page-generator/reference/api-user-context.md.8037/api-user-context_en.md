@@ -92,7 +92,30 @@ function getUserProfile() {
 }
 ```
 
+### Getting the Current Department
+
+For processing that starts from the login user's organization (getting members of the same organization, filtering by organization, etc.), use `currentDepartment`. At login the current department is the main department; when the user switches organizations in the screen header, it becomes the selected organization for the rest of that session (`mainDepartment` does not change). IM-Authz authorization conditioned on an organization and the organization shown in the header also use the current department.
+
+```javascript
+function getCurrentDepartment() {
+  let userContext = Contexts.getUserContext();
+  let dept = userContext.currentDepartment;
+
+  if (dept === null) {
+    return null;
+  }
+  return {
+    companyCd: dept.companyCd,
+    departmentSetCd: dept.departmentSetCd,
+    departmentCd: dept.departmentCd,
+    departmentName: dept.departmentName
+  };
+}
+```
+
 ### Getting Primary Organizational Affiliation
+
+Use `mainDepartment` only when you need the main department itself.
 
 ```javascript
 function getMainDepartment() {

@@ -27,7 +27,8 @@
 | imwApplyBaseDate | String | 申請基準日（`yyyy/MM/dd` 形式）。申請・一時保存画面で必須 |
 | imwFlowId | String | フローID。申請・一時保存画面で必須 |
 | imwSystemMatterId | String | システム案件ID。起票案件・再申請・処理・確認画面で必須 |
-| method | String | FORM タグの method 属性 |
+| name | String | FORM タグの name 属性。生成される form の id にも使われる |
+| imwNodeId | String | ノードID。属性の記述は必須。値は空でよい |
 
 ### オプション属性
 
@@ -35,13 +36,12 @@
 |------|------|-----------|------|
 | imwAuthUserCode | String | - | 権限者コード（代理元ユーザコード） |
 | imwUserDataId | String | - | ユーザデータID。一時保存画面で必須 |
-| imwNodeId | String | - | ノードID |
 | imwCallOriginalParams | String | - | 呼出元パラメータ。「戻る」ボタンや処理完了後の遷移時にリクエストパラメータとして使用 |
 | imwNextScriptPath | String | - | 遷移先スクリプトパス（スクリプト開発モデル用） |
 | imwNextApplicationId | String | - | 遷移先アプリケーションID（JavaEE 開発モデル用） |
 | imwNextServiceId | String | - | 遷移先サービスID（JavaEE 開発モデル用） |
 | imwNextPagePath | String | - | 遷移先ページパス（JSP/Servlet 用） |
-| name | String | - | FORM タグの name 属性 |
+| method | String | `POST` | FORM タグの method 属性 |
 | target | String | `_top` | FORM タグの target 属性 |
 | useContextPath | String | `"true"` | URL 生成時にコンテキストパスを含めるか |
 

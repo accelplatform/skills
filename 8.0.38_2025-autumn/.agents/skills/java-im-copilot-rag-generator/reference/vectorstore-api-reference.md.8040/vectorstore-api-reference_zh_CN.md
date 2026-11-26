@@ -48,6 +48,7 @@ public interface VectorStore {
     List<ScoredDocument> hybridSearch(String query, List<String> keywords, LogicalOperator operator,
             Reranker reranker, ThresholdFilterExpression threshold, Integer topK) throws VectorStoreException;
     default List<ScoredDocument> hybridSearch(String query, Reranker reranker, Integer topK) throws VectorStoreException;
+    default List<ScoredDocument> hybridSearch(String query, Integer topK) throws VectorStoreException;
     default List<ScoredDocument> hybridSearch(String query) throws VectorStoreException;
 
     List<ScoredDocument> keywordSearch(List<String> keywords, LogicalOperator operator,
@@ -62,7 +63,7 @@ public interface VectorStore {
 
 - **`add`**：将文档信息（分块）登录到向量数据库。当 `Document.getVector()` 未设置时，内部会使用 `VectorStoreBuilder.embedder(...)` 中指定的 `Embedder` 先进行向量化再登录
 - **`deleteAll`**：删除 `VectorStoreBuilder.category(...)` 指定类别下的全部文档信息。重建索引（全量重刷）时，基本模式是先调用 `deleteAll()` 再调用 `add(...)`
-- **`hybridSearch`**：组合向量相似检索与关键词检索，通过 `Reranker` 对结果进行整合（排序融合）。可通过 `query`（文本，内部自动向量化）或 `vector`（直接指定向量本体）两种方式之一调用。常用的三参数版本为 `hybridSearch(String query, Reranker reranker, Integer topK)`
+- **`hybridSearch`**：组合向量相似检索与关键词检索，通过 `Reranker` 对结果进行整合（排序融合）。可通过 `query`（文本，内部自动向量化）或 `vector`（直接指定向量本体）两种方式之一调用。省略 `Reranker` 的版本（`hybridSearch(String query, Integer topK)` 等）使用 RRF 整合结果
 - **`similaritySearch`**：仅向量相似检索（不含关键词检索）
 - **`keywordSearch`**：仅关键词检索（不含向量检索）
 - `topK` 为检索结果的最大件数，`ThresholdFilterExpression` 为基于评分阈值的过滤条件，`LogicalOperator` 为关键词之间的 `AND`/`OR` 指定
@@ -105,12 +106,12 @@ public interface ScoredContent extends Content {
 }
 ```
 
-**无需自行实现 `Document`。** 平台提供标准实现 `jp.co.intra_mart.system.copilot.vectorstore.document.StandardRegistrationDocument`（`public` 无参构造函数 + 各类 setter，已实现 `Document` 的全部方法）。登录用途直接使用该实现即可。
+**登录用的 `Document` 需自行实现。** 公开 API 中没有 `Document` 的实现类（`jp.co.intra_mart.system.*` 下的实现类属于非公开 API）。请准备一个保存各个字段、并通过 Jackson 将元数据转换为 JSON 字符串保存的类（`assets/rag-basic-usage.md` 模式 1）。
 
 ```java
-final Document document = new StandardRegistrationDocument();
+final Document document = new RegistrationDocument();
 document.setText(chunkText);
-document.setMetadata(myMetadataObject); // 通过 Jackson 序列化为 JSON，可通过 getMetadata(Class) 还原
+document.setMetadata(myMetadataObject); // 以 JSON 字符串保存，通过 getMetadata(Class) 还原为原来的类型
 ```
 
 检索结果（`ScoredDocument`）直接使用平台返回的实例（无需自行实现）。相当于 `getText()`・`getMetadata(Class)` 的信息获取使用 `Content`/`ScoredContent` 的方法（由于 `ScoredDocument` 本身不具有 `getMetadata(Class)`，如有需要须自行对 `getMetadata()`（JSON 字符串）进行反序列化）。
@@ -139,17 +140,11 @@ public interface Reranker {
 }
 ```
 
-平台提供基于 RRF（Reciprocal Rank Fusion）的标准实现。
+不向 `hybridSearch` 传入 `Reranker` 时，使用 RRF（Reciprocal Rank Fusion）整合结果。仅在希望用 RRF 以外的方法整合时，才实现并传入 `Reranker`。
 
 ```java
-package jp.co.intra_mart.system.copilot.vectorstore.reranker;
-
-public class StandardRrfReranker implements Reranker {
-    public StandardRrfReranker(); // 无参构造函数
-}
+final List<ScoredDocument> results = vectorStore.hybridSearch(query, topK);
 ```
-
-如 `VectorStore.hybridSearch(query, new StandardRrfReranker(), topK)` 所示，直接将其传入 `hybridSearch` 的 `reranker` 参数使用。
 
 ## `TextSplitter`/`RecursiveCharacterTextSplitter`
 

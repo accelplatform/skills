@@ -76,7 +76,7 @@ allowed-tools: Bash, Read, Write, Glob
 3. 为工具的参数 DTO 附加 `SchemaProperties` 注解，通过 `ToolDefinition.builder().parametersFromClass(...)` 生成模式
 4. 参照 `assets/toolcalling-basic-usage.md` 进行实现。建议先从非流式（模式 1）着手，如有需要再扩展为流式（模式 2）
 5. 需要与 IM-Copilot 聊天界面对接时，创建标注了 `@Assistant` 的 `AbstractCopilotAssistant<T>` 子类。**参数类 `T` 必须是 `AssistantParameter` 本身，或其子类**（使用自定义 POJO 会导致聊天界面无法输入提示词）
-6. 创建了 Assistant 时，**务必同时完成 `AssistantScanPackageFactory` 的实现・注册，以及 IM-Authz 权限的授予**（二者缺一，助手都不会出现在助手一览中。详情请参照 `java-im-copilot-agent-generator` 的 `reference/assistant-integration-api-reference.md`「向平台注册」）
+6. 创建了 Assistant 时，**务必授予 IM-Authz 权限**（未授予时，助手不会出现在助手一览中。`@Assistant` 类通过构建时自动生成的索引被识别，因此无需实现 `AssistantScanPackageFactory`。详情请参照 `java-im-copilot-agent-generator` 的 `reference/assistant-integration-api-reference.md`「向平台注册」）
 7. 确认是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## 注意事项
@@ -87,7 +87,7 @@ allowed-tools: Bash, Read, Write, Glob
 - **使用 Amazon Bedrock 驱动时存在约束**（`ToolDefinition.strict` 被忽略、`ToolChoice.none()` 不可用、`addImageUrl` 不可用、系统消息仅最新 1 条有效）。若实现需兼容多种驱动，应避免触及这些约束
 - **工具调用的参数不一定完全符合模式定义。** 建议先用 `JsonSchemaValidator.isValid(...)` 校验，再用 `ToolJsonHelper.deserialize(...)` 反序列化
 - **`AbstractCopilotAssistant<T>` 的 `T` 必须是 `AssistantParameter` 本身，或其子类。** 使用自定义 POJO 会导致聊天界面无法输入提示词
-- **仅附加 `@Assistant` 并不会出现在助手一览中。** 需同时完成 `AssistantScanPackageFactory` 的注册，以及 IM-Authz 的权限授予（参照 `java-im-copilot-agent-generator`）
+- **仅附加 `@Assistant` 并不会出现在助手一览中。** 需授予 IM-Authz 权限（`@Assistant` 类通过构建时自动生成的索引被识别，无需 `AssistantScanPackageFactory`。参照 `java-im-copilot-agent-generator`）
 
 ## 生成后的确认
 
@@ -98,7 +98,7 @@ allowed-tools: Bash, Read, Write, Glob
 3. 流式实现时，是否正确地从数据块合并 `ToolCall`（依据有无 `id` 分支处理），以及是否在第 2 次调用用的消息中显式追加了 `assistant` 的工具调用信息
 4. 异常的 `catch` 是否因 `CopilotServiceException` 的继承关系而发生编译错误
 5. 创建了 Assistant 时，参数类 `T` 是否为 `AssistantParameter` 本身或其子类
-6. 创建了 Assistant 时，是否已实现・注册 `AssistantScanPackageFactory`，是否已在 IM-Authz 中为资源 `im-copilot-assistant://assistant/<助手ID>` 授予许可策略
+6. 创建了 Assistant 时，构建产物的索引（`META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.assistant.annotation.Assistant`）中是否记载了 `@Assistant` 类的完全限定名，是否已在 IM-Authz 中为资源 `im-copilot-assistant://assistant/<助手ID>` 授予许可策略
 7. 是否符合 `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 8. `jssp-code-review` / `jssp-security-check` 为 JSSP 专用，不适用于本技能的生成物。若项目另有 Java 专用的代码评审・安全检查技能，请使用该技能
 
@@ -110,4 +110,3 @@ allowed-tools: Bash, Read, Write, Glob
 | RAG（检索增强生成，直接使用 `VectorStore`/`ActionFactory`） | `java-im-copilot-rag-generator` |
 | 使用 Agent 框架（`Agent`/`AgentBuilder`）、`UserDefinedTool` 的高层级 Tool Calling（内置 Agent Loop） | `java-im-copilot-agent-generator` |
 | MCP 服务器的实现（`@MCPServer`/`@Tool`） | `java-im-mcp-generator` |
-</content>

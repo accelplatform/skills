@@ -143,7 +143,8 @@ Holds information related to uploaded files and request data.
 
 ### File Upload Processing Example
 
-Calling `ByteReader.read(buffer, ...)` directly has a pitfall: the bytes are not stored in a JavaScript empty array, so the file is saved as **0 bytes**.
+Calling `ByteReader.read(buffer, ...)` directly has a pitfall: the bytes are not stored in a JavaScript empty array,
+so the file is saved as **0 bytes**.
 For transfer purposes, use `ByteReader.transferTo(writer, chunkSize)`.
 See `reference/api-binary-stream.md` for details.
 

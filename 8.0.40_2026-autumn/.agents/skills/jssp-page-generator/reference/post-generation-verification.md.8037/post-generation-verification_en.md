@@ -497,25 +497,16 @@ document.addEventListener('DOMContentLoaded', function() {
 **Verification method:** Grep for `imdsConfirm(` in the generated `.html` files and confirm that `function imdsConfirm(` exists in the same file.
 `validate-jssp-code.js` `JSSP-HTML-015` automatically detects this.
 
-```javascript
-// Include the following definition in each screen
-function imdsConfirm(message, title, onOk, onCancel, options) {
-  let modal = document.getElementById('confirmModal');
-  document.getElementById('confirmMessage').textContent = message;
-  document.getElementById('confirmTitle').textContent   = title || 'Confirm';
-  modal.style.display = 'flex';
-  document.getElementById('confirmOk').onclick = function() {
-    modal.style.display = 'none';
-    if (typeof onOk === 'function') onOk();
-  };
-  document.getElementById('confirmCancel').onclick = function() {
-    modal.style.display = 'none';
-    if (typeof onCancel === 'function') onCancel();
-  };
-}
-```
+Copy the `imdsConfirm` definition from `assets/simple-form.md` as the inline definition. It dynamically creates a `<dialog>` element, shows it with `showModal()`, and returns a `Promise` that resolves to `true` for the OK button and `false` for Cancel, ×, or Escape. No separate confirmation modal HTML is needed on the screen.
 
-Also confirm that the confirmation modal HTML (a `<div>` with `id="confirmModal"`) referenced by `imdsConfirm` exists in the same file.
+```javascript
+// Call example (specify mode in the 5th argument, options)
+imdsConfirm('Are you sure you want to register?', 'Register', null, null, { mode: 'info', okButton: { text: 'Register' } })
+  .then((result) => {
+    if (!result) return;
+    // Processing when the OK button is pressed
+  });
+```
 
 ### 5-2. Implement Both Sending and Receiving Sides for Screen-to-Screen Parameter Passing
 

@@ -68,7 +68,7 @@ public class ToolCall implements Serializable {
 }
 ```
 
-- `ToolDefinition.parametersFromClass(Class)` 会将附加在目标类字段上的 `SchemaProperties`（与 `java-im-mcp-generator`/`java-im-copilot-agent-generator` 的 `UserDefinedTool` 输入 DTO 使用的是同一注解类）转换为 JSON Schema（内部使用 `jp.co.intra_mart.system.copilot.tool.JsonSchemaGenerator`）
+- `ToolDefinition.parametersFromClass(Class)` 会将附加在目标类字段上的 `SchemaProperties`（与 `java-im-mcp-generator`/`java-im-copilot-agent-generator` 的 `UserDefinedTool` 输入 DTO 使用的是同一注解类）转换为 JSON Schema
 - `parametersAddArgument(name, clazz, required)` 用于向已有的 `parameters` 逐个属性追加（当想将多个参数用类合并到一个工具定义中时使用）
 - `ToolCall.getArguments()` 是表示工具调用参数的 JSON 字符串。使用 `ToolJsonHelper.deserialize(...)` 进行反序列化
 
@@ -140,4 +140,3 @@ public final class ToolJsonHelper {
 - 系统消息（`role: "system"`）仅最新的 1 条有效
 
 以上约束仅在通过 `ChatAction`/`ToolConfig` 使用 Amazon Bedrock 驱动时才相关，OpenAI・Azure OpenAI Service 不受此约束。由于驱动类型取决于租户设置（`conf/im-copilot-driver-config.xml`），若需兼容多种驱动，应确保实现不触及这些约束。
-</content>

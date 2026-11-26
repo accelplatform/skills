@@ -1,6 +1,6 @@
 ---
 name: java-im-architecture
-description: 基于 Clean Architecture/DDD 原则，为 intra-mart 平台（Java / JavaEE 开发模型）上的应用开发提供架构原则、模式与规约。提供分层结构、依赖规则、命名规约、错误处理、工厂模式、安全原则以及全栈实现示例的详细模板。规约要点（精简版）保存在项目的 Java 架构规约文件中——当需要完整的代码模板或反模式目录时使用本技能。
+description: 基于 Clean Architecture/DDD 原则，为 intra-mart 平台（Java / JavaEE 开发模型）上的应用开发提供架构原则、模式与规约。提供分层结构、依赖规则、命名规约、错误处理、工厂模式、安全原则以及全栈实现示例的详细模板。规约要点（精简版）保存在 `java-architecture` 中——当需要完整的代码模板或反模式目录时使用本技能。
 disable-model-invocation: false
 user-invocable: true
 ---

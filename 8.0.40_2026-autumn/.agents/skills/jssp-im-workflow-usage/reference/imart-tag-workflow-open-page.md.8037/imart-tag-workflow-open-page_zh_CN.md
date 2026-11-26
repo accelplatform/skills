@@ -27,7 +27,8 @@
 | imwApplyBaseDate | String | 申请基准日（`yyyy/MM/dd` 格式）。申请/临时保存画面必须 |
 | imwFlowId | String | 流程ID。申请/临时保存画面必须 |
 | imwSystemMatterId | String | 系统案件ID。草稿案件/再申请/处理/确认画面必须 |
-| method | String | FORM 标签的 method 属性 |
+| name | String | FORM 标签的 name 属性。也用作生成的 form 的 id |
+| imwNodeId | String | 节点ID。必须指定该属性，值可以为空 |
 
 ### 可选属性
 
@@ -35,13 +36,12 @@
 |------|------|-----------|------|
 | imwAuthUserCode | String | - | 权限者代码（代理来源用户代码） |
 | imwUserDataId | String | - | 用户数据ID。临时保存画面必须 |
-| imwNodeId | String | - | 节点ID |
 | imwCallOriginalParams | String | - | 调用方参数。"返回"按钮和处理完成后转移时作为请求参数使用 |
 | imwNextScriptPath | String | - | 跳转目标脚本路径（脚本开发模式用） |
 | imwNextApplicationId | String | - | 跳转目标应用程序ID（JavaEE 开发模式用） |
 | imwNextServiceId | String | - | 跳转目标服务ID（JavaEE 开发模式用） |
 | imwNextPagePath | String | - | 跳转目标页面路径（JSP/Servlet 用） |
-| name | String | - | FORM 标签的 name 属性 |
+| method | String | `POST` | FORM 标签的 method 属性 |
 | target | String | `_top` | FORM 标签的 target 属性 |
 | useContextPath | String | `"true"` | URL 生成时是否包含上下文路径 |
 

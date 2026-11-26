@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2015",
+    "lib": ["ES2015"],
+    "types": [],
+    "noEmit": true
+  },
+  "include": ["src", "../../../d.ts/**/*.d.ts"]
+}

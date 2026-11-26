@@ -25,6 +25,23 @@
   - ⇒ `jssp-im-master-usage`
     - ユーザ・会社・組織・役職・パブリックグループ・プライベートグループ・ロールの検索機能を組み込み
 
+### TypeScript（TSSP）で画面を作りたい
+
+- TypeScript で SSJS を書き、`tssp build` で JSSP に変換して開発したい（TypeScript 向けプロジェクトにのみ配備）
+  - ⇒ `tssp-usage`
+    - `.ts` / `.html` の置き場所、`tssp build` の処理順、d.ts による型検査、Rhino 向け lint の禁止事項、出力先の衝突の直し方
+- TSSP（TypeScript）で業務画面を新規作成したい
+  - ⇒ `tssp-page-generator` + `jssp-imds-theme`
+    - ファンクションコンテナ（ts）・プレゼンテーションページ（html）・ルーティングテーブル（xml）を一括生成。`jssp-page-generator` の TypeScript 版
+- TSSP 画面生成後の検証・修正を実行したい（`tssp-page-generator` から自動委譲）
+  - ⇒ `tssp-page-verifier`
+    - `tssp build --dev`（型検査・Rhino 向け lint）とビルド出力の機械的な検証をサブエージェントとして担当
+- TSSP コードのレビューをコーディングエージェントに実行させたい
+  - ⇒ `tssp-code-review`
+    - `jssp-code-review` の観点に加え、型（interface・d.ts との一致）と型検査の回避を確認
+
+> TSSP の `.ts` の書き方の規約は `.github/instructions/tssp-typescript.instructions.md` を参照すること（jssp 規約を TypeScript に適用するときに書き方が変わる点をまとめている）。
+
 ### サーバサイドキャッシュを使いたい
 
 - JSSP（スクリプト開発モデル）のファンクションコンテナで、参照結果や計算コストの高い処理結果をキャッシュして高速化したい
@@ -196,19 +213,21 @@
 - Java（JavaEE 開発モデル）で intra-mart 上に MCP（Model Context Protocol）サーバを作りたい
   - ⇒ `java-im-mcp-generator`
     - `im_copilot_mcp` モジュールの `@MCPServer`/`@Tool` アノテーションによる Streamable HTTP MCP サーバの実装パターンを提供
-    - `SchemaProperties` によるツールパラメータ定義、`McpScanPackageFactory`（推奨）/`META-INF/im_services/annotation_classes` によるプラットフォームへの登録パターンを含む
+    - `SchemaProperties` によるツールパラメータ定義、ビルド時に自動生成される `META-INF/im_services/annotation_classes` によるプラットフォームへの登録を含む
     - 通常の REST API（AI エージェント向けでない）は `java-im-web-api-maker-usage` を使用
 - Java（JavaEE 開発モデル）でプロンプトを受けて処理し応答を返す AI エージェントを作りたい
   - ⇒ `java-im-copilot-agent-generator`
-    - `im_copilot_agent` モジュールの `Agent`/`AgentBuilder` によるエージェント構築、`UserDefinedTool` によるカスタムツール実装、`Knowledge`（ナレッジ検索）・`SkillEntry`（Markdownスキル）の統合、Structured Output（型付き出力）、`AgentExecutionMiddleware` による実行フロー介入の実装パターンを提供
+    - `im_copilot_agent` モジュールの `Agent`/`AgentBuilder` によるエージェント構築、`UserDefinedTool` によるカスタムツール実装、`Knowledge`（ナレッジ検索）の統合、Structured Output（型付き出力）、`AgentExecutionMiddleware` による実行フロー介入の実装パターンを提供
     - IM-Copilot のチャットUIと連携させる場合の `AbstractCopilotAssistant`/`@Assistant` 連携パターンを含む（`Agent`/`AgentBuilder` 自体は Assistant フレームワークに依存しない独立した Java API）
+    - `@Tool`（agent 用。MCP の `@Tool` とは別）によって、カスタムツールを管理画面から選べる組み込みツールとして登録するパターンを含む（登録はビルド時に自動生成される索引で行われる）
+    - 画面（Accel Agent）で定義したエージェントを `AgentManagementService` で読み込んで動かすパターンを含む
     - MCP サーバの実装は `java-im-mcp-generator`、通常の REST API は `java-im-web-api-maker-usage` を使用
     - `VectorStore`/`ActionFactory` を直接使った低レベルな RAG は `java-im-copilot-rag-generator`、`ChatAction`+`ToolConfig` を直接使った低レベルな Tool Calling は `java-im-copilot-toolcalling-generator` を使用
 - Java（JavaEE 開発モデル）で `VectorStore`/`ActionFactory` を直接使って RAG（検索拡張生成）を実装したい
   - ⇒ `java-im-copilot-rag-generator`
     - `VectorStoreBuilder`/`VectorStore` によるベクトルストアの構築・登録・ハイブリッド検索/類似検索/キーワード検索、`ActionFactory`/`ChatAction`/`EmbeddingsAction` によるチャット・埋め込み呼び出しの実装パターンを提供
-    - 文書の標準実装 `StandardRegistrationDocument`、`TextSplitter`（`splitText` メソッド）によるチャンク分割を含む
-    - Agent フレームワーク経由の高レベルな RAG（`Knowledge`/`RegisteredKnowledge`）は `java-im-copilot-agent-generator`、Tool Calling は `java-im-copilot-toolcalling-generator` を使用
+    - `Document` の自前実装、`TextSplitter`（`splitText` メソッド）によるチャンク分割を含む
+    - Agent フレームワーク経由の高レベルな RAG（`Knowledge`）は `java-im-copilot-agent-generator`、Tool Calling は `java-im-copilot-toolcalling-generator` を使用
 - Java（JavaEE 開発モデル）で `ChatAction`+`ToolConfig` を直接使って Tool Calling（関数呼び出し）を実装したい
   - ⇒ `java-im-copilot-toolcalling-generator`
     - `ToolConfig`/`ToolDefinition`/`ToolChoice`/`ToolCall` によるプロバイダ非依存（OpenAI・Azure OpenAI Service・Amazon Bedrock 共通）の Tool Calling 実装パターンを提供（非ストリーミング・ストリーミング両対応）

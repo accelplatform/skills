@@ -76,7 +76,7 @@ If the request falls into the following categories, explain that it is out of sc
 3. Annotate the tool's argument DTO with `SchemaProperties`, and generate the schema with `ToolDefinition.builder().parametersFromClass(...)`
 4. Implement by consulting `assets/toolcalling-basic-usage.md`. Start with non-streaming (Pattern 1), then extend to streaming (Pattern 2) if needed
 5. When integrating with the IM-Copilot chat UI, create an `AbstractCopilotAssistant<T>` subclass annotated with `@Assistant`. **The parameter class `T` must be `AssistantParameter` itself, or a subclass of it** (a bespoke POJO leaves the chat UI unable to accept a prompt)
-6. When an Assistant is created, **always implement/register `AssistantScanPackageFactory` and grant the IM-Authz permission** (omitting either one leaves the assistant missing from the assistant list; see "Registering with the Platform" in `java-im-copilot-agent-generator`'s `reference/assistant-integration-api-reference.md` for details)
+6. When an Assistant is created, **always grant the IM-Authz permission** (without it, the assistant is missing from the assistant list. The `@Assistant` class is recognized through an index generated automatically at build time, so you do not need to implement `AssistantScanPackageFactory`; see "Registering with the Platform" in `java-im-copilot-agent-generator`'s `reference/assistant-integration-api-reference.md` for details)
 7. Verify compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 
 ## Notes
@@ -87,7 +87,7 @@ If the request falls into the following categories, explain that it is out of sc
 - **There are constraints when using the Amazon Bedrock driver** (`ToolDefinition.strict` is ignored, `ToolChoice.none()` is not available, `addImageUrl` is not available, only the most recent system message is effective). For implementations expected to work across multiple drivers, avoid running afoul of these constraints
 - **Tool call arguments are not necessarily guaranteed to match the schema.** It is recommended to validate with `JsonSchemaValidator.isValid(...)` before deserializing with `ToolJsonHelper.deserialize(...)`
 - **The `T` in `AbstractCopilotAssistant<T>` must be `AssistantParameter` itself, or a subclass of it.** A bespoke POJO leaves the chat UI unable to accept a prompt
-- **Merely adding `@Assistant` does not make it appear in the assistant list.** Both registering `AssistantScanPackageFactory` and granting the IM-Authz permission are required (see `java-im-copilot-agent-generator`)
+- **Merely adding `@Assistant` does not make it appear in the assistant list.** Granting the IM-Authz permission is required (the `@Assistant` class is recognized through an index generated automatically at build time, and `AssistantScanPackageFactory` is not needed; see `java-im-copilot-agent-generator`)
 
 ## Post-Generation Verification
 
@@ -98,7 +98,7 @@ Rather than an automated validation script, verify the following items manually.
 3. For a streaming implementation, whether merging `ToolCall` from chunks (branching on whether `id` is present) and explicitly adding the `assistant`'s tool call information to the message for the second call are both done
 4. Whether the `catch` for exceptions causes a compile error due to the inheritance relationship of `CopilotServiceException`
 5. When an Assistant was created, whether the parameter class `T` is `AssistantParameter` itself or a subclass of it
-6. When an Assistant was created, whether `AssistantScanPackageFactory` was implemented/registered, and whether a permit policy was granted for the resource `im-copilot-assistant://assistant/<assistant ID>` in IM-Authz
+6. When an Assistant was created, whether the index in the build output (`META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.assistant.annotation.Assistant`) lists the fully qualified name of the `@Assistant` class, and whether a permit policy was granted for the resource `im-copilot-assistant://assistant/<assistant ID>` in IM-Authz
 7. Whether the code complies with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
 8. `jssp-code-review` / `jssp-security-check` are JSSP-specific and do not apply to this skill's output. If the project has separate Java-specific code review/security check skills, use those instead
 
@@ -110,4 +110,3 @@ Rather than an automated validation script, verify the following items manually.
 | RAG (retrieval-augmented generation, using `VectorStore`/`ActionFactory` directly) | `java-im-copilot-rag-generator` |
 | High-level Tool Calling using the Agent framework (`Agent`/`AgentBuilder`) and `UserDefinedTool` (with an Agent Loop built in) | `java-im-copilot-agent-generator` |
 | MCP server implementation (`@MCPServer`/`@Tool`) | `java-im-mcp-generator` |
-</content>
