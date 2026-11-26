@@ -201,6 +201,9 @@ function transferErrorPage(code, message) {
   <script>
   (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
+      // DOM 検索の起点（自画面のルート要素。ページ全体を検索しない）
+      const container = document.getElementById('imui-container');
+
       // バリデーションチェック常時実行フラグ
       let activeValidation = false;
 
@@ -321,6 +324,22 @@ function transferErrorPage(code, message) {
             close(false);
           });
 
+          // キーボード操作
+          // - Enter:  OK ボタンとして確定（キャンセル/× にフォーカスがある場合はそのボタンの動作を優先）
+          // - Tab:    ネイティブ dialog がフォーカストラップを行うので追加実装不要
+          // - Escape: cancel イベントでハンドリング済み
+          function onKeyDown(e) {
+            if (e.key === 'Enter' && !e.isComposing) {
+              const focused = document.activeElement;
+              if (focused === cancelButton || focused === closeButton) {
+                return;
+              }
+              e.preventDefault();
+              okButton.click();
+            }
+          }
+          dialog.addEventListener('keydown', onKeyDown);
+
           dialog.showModal();
         });
       }
@@ -343,11 +362,11 @@ function transferErrorPage(code, message) {
 
       // バリデーションの表示初期化
       function clearValidationError() {
-        document.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
+        container.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
           element.classList.remove('imds-validation-error');
         });
 
-        document.querySelectorAll('.imds-error-text').forEach((element) => {
+        container.querySelectorAll('.imds-error-text').forEach((element) => {
           element.style.display = 'none';
         });
       }
@@ -355,12 +374,12 @@ function transferErrorPage(code, message) {
       // バリデーションエラー表示
       function showValidationError(errors) {
         errors.forEach((error) => {
-          const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+          const fieldElement = container.querySelector(`.imds-field[for=":${error.name}:"]`);
           if (fieldElement) {
             fieldElement.classList.add('imds-validation-error');
           }
 
-          const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+          const errorElement = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
           if (errorElement) {
             errorElement.textContent = error.message;
             errorElement.style.display = '';
@@ -468,6 +487,12 @@ function transferErrorPage(code, message) {
         }
       });
 
+      // 戻るボタン クリック時イベント
+      // 遷移先は戻り先の画面のパスに置き換える。戻り先が無い画面では、ヘッダの imds-header-back-button ごと削除する
+      document.getElementById('back-button').addEventListener('click', () => {
+        location.href = 'sample/simple_form/list';
+      });
+
       // 登録ボタン クリック時イベント
       document.getElementById('register-button').addEventListener('click', () => {
         // パラメータ情報の作成
@@ -509,7 +534,7 @@ function transferErrorPage(code, message) {
   <!-- ヘッダ -->
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" class="imds-button is-ghost is-large" title="戻る">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="戻る">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
       </button>
     </div>

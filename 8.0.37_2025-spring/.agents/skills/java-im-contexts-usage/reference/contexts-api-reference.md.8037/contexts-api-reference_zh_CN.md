@@ -1,6 +1,7 @@
 # Contexts API 参考（Java 版）
 
-基于 intra-mart Accel Platform 核心源码（`im_core_base` / `im_user_context` / `im_job_scheduler_base` 模块）的实际类定义。不要凭记忆或推测补充方法。
+基于 intra-mart Accel Platform 核心源码（`im_core_base` / `im_user_context` / `im_job_scheduler_base` 模块）
+的实际类定义。不要凭记忆或推测补充方法。
 
 ## 包结构
 
@@ -51,8 +52,7 @@ public final class Contexts {
 
 - 仅有 `private` 构造方法的工具类（不可实例化）
 - 内部将上下文解析委托给 `ContextProducer`（`jp.co.intra_mart.system.context.ContextProducer`）
-- **`ContextNotFoundException` 是 `RuntimeException` 的子类，属于非受检异常。** 方法签名上未附加
-  `throws` 声明（JavaDoc 中的 `@throws` 仅用于文档目的，编译器不强制要求 `catch` 或 `throws` 声明）
+- **`ContextNotFoundException` 是 `RuntimeException` 的子类，属于非受检异常。** 方法签名上未附加 `throws` 声明（JavaDoc 中的 `@throws` 仅用于文档目的，编译器不强制要求 `catch` 或 `throws` 声明）
 
 ## `ContextStatus` 类
 
@@ -148,7 +148,8 @@ public interface AccountContext extends Context {
     TimeZone getTimeZone();
 
     /**
-     * 获取用户代码。系统管理员时返回系统管理员的用户代码，未认证用户时返回表示未认证用户的用户代码。
+     * 获取用户代码。系统管理员时返回系统管理员的用户代码，
+     * 未认证用户时返回表示未认证用户的用户代码。
      * 不要仅凭此代码进行处理，务必与 getUserType() / isAuthenticated() 结合使用。
      */
     String getUserCd();
@@ -364,8 +365,9 @@ public interface UserCategory extends UserCtgItmBizKeyConvertible, Serializable 
 
 包：`jp.co.intra_mart.foundation.job_scheduler`（`im_job_scheduler_base`）
 
-> 任务调度器服务调用任务执行处理时存入存储区的上下文。保存已执行任务网相关信息、用于获取正在
-> 运行的监视器/任务的ID、任务网内共享的运行中参数等与任务网执行相关的全部信息。
+> 任务调度器服务调用任务执行处理时存入存储区的上下文。
+> 保存已执行任务网相关信息、用于获取监视器/任务的ID、任务网内共享的
+> 运行中参数等与任务网执行相关的信息。
 
 ```java
 public interface JobSchedulerContext extends Context {
@@ -422,7 +424,8 @@ public interface JobSchedulerContext extends Context {
 }
 ```
 
-参数优先级为"运行中参数（通过 `putParameter` 添加）> 触发器 > 任务网 > 任务"。若同一键同时设置在任务和任务网上，则任务网一侧的值优先。
+参数优先级为"运行中参数（通过 `putParameter` 添加）> 触发器 > 任务网 > 任务"。
+若同一键同时设置在任务和任务网上，则任务网一侧的值优先。
 
 ## `BaseJob` 类（任务实现的基类）
 
@@ -444,7 +447,8 @@ public abstract class BaseJob implements Job {
     protected String getParameter(final String key) throws InvalidParameterException;
 
     /**
-     * 按指定键获取参数。若无法获取则返回默认值（不抛出异常）。
+     * 按指定键获取参数。若无法获取则返回默认值
+     * （不抛出异常）。
      */
     protected String getParameter(final String key, final String defaultValue);
 

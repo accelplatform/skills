@@ -143,50 +143,23 @@ public class FooMcpToolGetFoo {
 }
 ```
 
-## パターン4: パッケージ登録（`McpScanPackageFactory`、推奨）
+## パターン4: プラットフォームへの登録（`META-INF/im_services/annotation_classes`）
 
-プロジェクトに1つ、パッケージ指定クラスを作成する（複数の `@MCPServer` クラスをまとめてカバーできる）。
+`@MCPServer` クラスは、`META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`（ファイル名がアノテーションの完全修飾名そのもの）に完全修飾名が載っていると、プラットフォームに登録される。
 
-```java
-package jp.co.example.foo.mcp;
-
-import java.util.Collection;
-import java.util.Collections;
-
-import jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory;
-
-public class FooMcpScanPackageFactory implements McpScanPackageFactory {
-
-    @Override
-    public Collection<String> getTargetPackages() {
-        return Collections.singletonList("jp.co.example.foo.mcp");
-    }
-}
-```
-
-`src/main/resources/META-INF/services/jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory` に、上記クラスの完全修飾名を1行で記載する。
-
-```
-jp.co.example.foo.mcp.FooMcpScanPackageFactory
-```
-
-以降、`jp.co.example.foo.mcp` パッケージ配下に `@MCPServer` クラスを追加するだけで自動的にスキャン対象になる。追加のたびに設定ファイルを編集する必要はない。
-
-## パターン5: 明示登録（`META-INF/im_services/annotation_classes`、代替手段）
-
-パッケージ全体をスキャン対象にしたくない場合や、`McpScanPackageFactory` を使わない方針の場合は、`@MCPServer` クラスの完全修飾名を直接列挙する。
-
-`src/main/resources/META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`（ファイル名がアノテーションの完全修飾名そのもの）:
+このファイルは、ビルド時にアノテーションプロセッサ（`jp.co.intra_mart.tools:im_service_annotation_processor`）が自動生成するので、手で書く必要はない。プロセッサは `im_copilot_mcp` の依存関係（`im_core_base` 経由）でコンパイル時クラスパスに入る。ビルド後、`target/classes`（または jar）に生成され、次のように `@MCPServer` クラスの完全修飾名が載っていることを確かめる。
 
 ```
 jp.co.example.foo.mcp.FooMcpServer
 ```
 
-**この方式では、`@MCPServer` クラスを新規追加するたびにこのファイルへの追記を忘れないこと。** 追記漏れは登録漏れとなり、エンドポイントが 404 になる（Web API Maker の `META-INF/im_web_api_maker/packages` 追記漏れと同種の失敗パターン）。
+アノテーションプロセッサを止めている（`maven-compiler-plugin` の `<proc>none</proc>` 等）などで生成されない場合に限り、`src/main/resources/META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` を手で作成し、`@MCPServer` クラスの完全修飾名を1行ずつ書く。この場合は `@MCPServer` クラスを追加するたびに追記が必要で、追記漏れはエンドポイントが 404 になる。
+
+`jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory` は非公開 API なので使わない。
 
 ## 注意事項
 
-- **`@MCPServer`/`@Tool` を付与しただけでは動作しない。** パターン4またはパターン5のいずれかで登録すること
+- **登録は `META-INF/im_services/annotation_classes` の索引で行われる（パターン4）。** ビルド後に索引が生成されていることを確かめること
 - **同一 `path` を持つ `@MCPServer` クラスを複数作らない。** 後から読み込まれた方が警告ログを出しつつ上書きされる
 - **`@Tool` メソッドは引数を1個だけ受け取る。** 複数のパラメータが必要な場合は、それらをまとめた DTO クラス（`SchemaProperties` の各アノテーションをフィールドに付与）を1個受け取る形にする
 - **DTO クラスに `SchemaProperties` を付与していないフィールドは、MCP ツールの入力スキーマに公開されない。** getter/setter があっても、対応するアノテーションが無ければ無視される

@@ -86,6 +86,7 @@ if (ContextStatus.isAdministrator()) { /* system administrator */ }
 | Role IDs (including sub-roles) | `AccountContext.getRoleIds()` |
 | Login time | `AccountContext.getLoginTime()` |
 | Display name, email, etc. | Methods on `UserContext.getUserProfile()` |
+| The login user's organization (current department) | `UserContext.getCurrentDepartment()` |
 | Main department | `UserContext.getMainDepartment()` |
 | All departments | `UserContext.getAllDepartments()` |
 | Companies | `UserContext.getCompanyList()` |
@@ -147,7 +148,8 @@ If it is not explicit whether Java or JSSP is intended, confirm with the user wh
 
 ## Notes
 
-- **Required: do not null-check the return value of `Contexts.get()` (the check would be dead code).** `Contexts.get()` never returns null — when the requested context is not found it always throws `ContextNotFoundException` (unchecked) instead (confirmed both from the actual source and from a live environment). So a branch like `if (account == null)` can never be true. Some contexts are unavailable in certain execution environments (see "Context availability" below); where retrieval failure needs to be handled, catch `ContextNotFoundException` instead of null-checking (though `AccountContext` is a required context, so this exception normally does not occur for it)
+- **Required: do not null-check the return value of `Contexts.get()` (the check would be dead code).** `Contexts.get()` never returns null — when the requested context is not found it always throws `ContextNotFoundException` (unchecked) instead. So a branch like `if (account == null)` can never be true. Some contexts are unavailable in certain execution environments (see "Context availability" below); where retrieval failure needs to be handled, catch `ContextNotFoundException` instead of null-checking (though `AccountContext` is a required context, so this exception normally does not occur for it)
+- **Required: for processing that starts from the login user's organization (getting members of the same organization, filtering by organization, etc.), use the current department (`getCurrentDepartment()`).** At login the current department is the main department; when the user switches organizations in the screen header, it becomes the selected organization for the rest of that session (the main department does not change). IM-Authz authorization conditioned on an organization and the organization shown in the header also use the current department, so starting from the main department makes your processing disagree with them. Use `getMainDepartment()` only when you need the main department itself, regardless of the organization the user has selected
 - **Required: authentication checks.** Even when `AccountContext` is successfully retrieved, `isAuthenticated()` may return `false` (unauthenticated user, system startup, etc.). Always check this for processing that assumes authentication
 - **Forbidden: holding or caching a context.** Contexts are bound to the request (or thread). Never store them in instance fields or `static` fields
   ```java
@@ -176,8 +178,9 @@ Rather than an automated validation script (such as the JSSP version's `validate
 3. No context is held in an instance field or `static` field
 4. No personal information from `UserProfile` (name, email, etc.) is logged
 5. The infrastructure layer (DAO/Repository) never calls the `Contexts` API directly
-6. Compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
-7. `jssp-code-review` / `jssp-security-check` are JSSP-only and do not apply to this skill's output. If the project has separate Java code-review/security-check skills, use those instead
+6. Processing that starts from the login user's organization uses `getCurrentDepartment()`, not `getMainDepartment()`
+7. Compliance with `.github/instructions/java-naming.instructions.md` / `.github/instructions/java-code-style.instructions.md` / `.github/instructions/java-javadoc.instructions.md`
+8. `jssp-code-review` / `jssp-security-check` are JSSP-only and do not apply to this skill's output. If the project has separate Java code-review/security-check skills, use those instead
 
 ## Context Availability
 

@@ -61,8 +61,8 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
   dialog.innerHTML =
     '<div class="imds-confirm is-' + mode + '">' +
       '<div class="imds-confirm-content-wrapper">' +
-        '<button class="imds-confirm-close imds-button is-ghost">' +
-          '<span class="imds-icon"><i class="fa-solid fa-xmark"></i></span>' +
+        '<button class="imds-confirm-close imds-button is-ghost" aria-label="閉じる">' +
+          '<span class="imds-icon" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>' +
         '</button>' +
         '<div class="imds-confirm-content">' +
           '<div class="imds-confirm-message-wrapper">' +
@@ -99,6 +99,16 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
     contentElement.appendChild(document.createTextNode(lines[i]));
   }
 
+  // ダイアログを開く前にトリガ要素を記憶（閉じた後にフォーカスを戻すため）
+  const triggerElement = document.activeElement;
+
+  // ARIA 属性
+  dialog.setAttribute('role', 'dialog');
+  dialog.setAttribute('aria-modal', 'true');
+  const titleId = 'imds-confirm-title-' + Date.now();
+  dialog.setAttribute('aria-labelledby', titleId);
+  dialog.querySelector('.imds-confirm-message-title').id = titleId;
+
   document.body.appendChild(dialog);
 
   return new Promise(function(resolve) {
@@ -108,25 +118,34 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
       if (settled) return;
       settled = true;
       imdsConfirm._active = false;
+      dialog.removeEventListener('keydown', onKeyDown);
       dialog.close();
       document.body.removeChild(dialog);
+      // トリガ要素にフォーカスを戻す
+      if (triggerElement && typeof triggerElement.focus === 'function') {
+        triggerElement.focus();
+      }
       resolve(result);
     }
 
+    const okButton = dialog.querySelector('.imds-confirm-ok-button');
+    const cancelButton = dialog.querySelector('.imds-confirm-cancel-button');
+    const closeButton = dialog.querySelector('.imds-confirm-close');
+
     // 決定ボタン
-    dialog.querySelector('.imds-confirm-ok-button').addEventListener('click', function() {
+    okButton.addEventListener('click', function() {
       if (typeof onOk === 'function') onOk();
       close(true);
     });
 
     // キャンセルボタン
-    dialog.querySelector('.imds-confirm-cancel-button').addEventListener('click', function() {
+    cancelButton.addEventListener('click', function() {
       if (typeof onCancel === 'function') onCancel();
       close(false);
     });
 
     // × ボタン (キャンセル扱い)
-    dialog.querySelector('.imds-confirm-close').addEventListener('click', function() {
+    closeButton.addEventListener('click', function() {
       if (typeof onCancel === 'function') onCancel();
       close(false);
     });
@@ -138,7 +157,34 @@ function imdsConfirm(message, title, onOk, onCancel, options) {
       close(false);
     });
 
+    // キーボード操作
+    // - Enter:  OK ボタンとして確定（キャンセル/× にフォーカスがある場合はそのボタンの動作を優先）
+    // - Tab:    ネイティブ dialog がフォーカストラップを行うので追加実装不要
+    // - Escape: cancel イベントでハンドリング済み
+    function onKeyDown(e) {
+      if (e.key === 'Enter' && !e.isComposing) {
+        const focused = document.activeElement;
+        if (focused === cancelButton || focused === closeButton) {
+          return;
+        }
+        e.preventDefault();
+        okButton.click();
+      }
+    }
+    dialog.addEventListener('keydown', onKeyDown);
+
     dialog.showModal();
+
+    // 初期フォーカス
+    // - danger モード: 誤操作防止のためキャンセルボタンへ
+    // - それ以外:      OK ボタンへ
+    setTimeout(function() {
+      if (mode === 'danger') {
+        cancelButton.focus();
+      } else {
+        okButton.focus();
+      }
+    }, 0);
   });
 }
 
@@ -209,7 +255,7 @@ imdsConfirm._active = false;
 - **タイトル（`imds-confirm-message-title` / `title` 引数）**: 実行する操作を端的に表す。例:「定義情報を登録しますか？」「定義情報を削除しますか？」
 - **メッセージ（`imds-confirm-message-content` / `message` 引数）**: タイトルを補足する説明文。操作の影響範囲などユーザが判断するために必要な情報を簡潔に記載する。例:「更新すると既存の動作に影響を与える可能性があります。」「定義情報を削除すると、○○も削除されます。」
 - **ボタンのキャプション（`okButton.text`）**: クリックした際に何が起こるか明確に表す文言にする。「決定」「OK」のような操作内容が分からないキャプションは避け、「登録」「更新」「削除」等、実際の処理名を使う（デフォルトは「実行」）。
-- **デフォルトの選択肢**: 取り返しのつかない操作（削除等）をキャンセル以外のボタンにフォーカスさせない。`imdsConfirm` はキャンセルボタンを先頭に配置し既定フォーカスとする実装のため、この原則に従っている。
+- **デフォルトの選択肢**: 取り返しのつかない操作（削除等）をキャンセル以外のボタンにフォーカスさせない。`imdsConfirm` は `mode: 'danger'` のときキャンセルボタン、それ以外のときは決定ボタンに初期フォーカスを置く実装のため、この原則に従っている。
 
 ### mode の使い分け
 

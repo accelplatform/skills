@@ -50,7 +50,7 @@ Portlet 的注册通常在门户管理画面中手动进行，此时写入的数
 
 | 字段 | 必须 | 说明 |
 |------|------|------|
-| `portletCd` | YES | Portlet 的唯一 CD。指定在租户内不重复的英数字・下划线 ID。**intra-mart 标准的 `b_m_portlet_info.portlet_cd` 为 VARCHAR(20)，因此必须控制在 20 个字符以内**（超过时会在租户环境设置导入时因 `值は型character varying(20)としては長すぎます` 而失败；`build-setup-import.js` 会在超过时于构建阶段报错） |
+| `portletCd` | YES | Portlet 的唯一 CD。指定在租户内不重复的英数字・下划线 ID。**intra-mart 标准的 `b_m_portlet_info.portlet_cd` 为 VARCHAR(20)，因此必须控制在 20 个字符以内**（超过时会在租户环境设置导入时因 `value too long for type character varying(20)` 而失败；`build-setup-import.js` 会在超过时于构建阶段报错） |
 | `path` | YES | 作为 Portlet 显示的 JSSP 展示页面的路径（与路由配置的 `page` 属性格式相同） |
 | `pageParam` | NO | 传递给 Portlet `init(request)` 的固定查询参数字符串。省略时为空字符串 |
 | `portletModeCd` | NO | `b_m_portlet_mode` 的 CD。省略时为 `<portletCd>_mode`。由于 `b_m_portlet_mode.portlet_mode_cd` 同样为 VARCHAR(20)，因此也**必须控制在 20 个字符以内**（`<portletCd>_mode` 会额外增加 `_mode` 这 5 个字符，因此将 `portletCd` 控制在 15 个字符以内会比较稳妥） |

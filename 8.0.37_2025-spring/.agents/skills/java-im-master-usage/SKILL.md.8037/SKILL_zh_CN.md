@@ -153,6 +153,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 特有�
 ### 用户・公司・组织系
 
 - **`Company`/`DepartmentSet` 的 `updateCompany`/`updateDepartmentSet` 仅是针对既有记录的更新专用，无法新建。** 标准实现仅发出以目标代码为条件的 SQL `UPDATE` 语句，若目标不存在，不会抛出异常，只是在未更新任何内容的情况下正常结束。若需要新建公司・组织集合，须向用户确认是否使用 `importData` 或租户环境搭建资材。注册 `Department` 时，其所引用的 `DepartmentSet` 必须已经预先创建完成
+- **以登录用户的组织为起点进行检索时（获取同一组织的成员等），起点组织应取自当前组织（`UserContext.getCurrentDepartment()`）。** 若以主所属（`getMainDepartment()`）为起点，会与用户在画面页眉切换后的组织不一致（参见 `java-im-contexts-usage`）
 - **`Company` 模型仅含公司代码・排序键等信息，不含多语言公司名称字段。** 若需要显示公司名称，需另行设计（例如在组织侧管理名称）
 - **使用 `set*` 系列方法（`setUser`/`setDepartment`/`setCompanyPost`）新建时（即未设置 `termCd` 时），须同时设置 `startDate`/`endDate`。** 未设置便调用，将抛出 `BizApiException`。**更新时（设置了 `termCd`）也不得省略 `startDate`/`endDate`。** 若保持未设置（null），会被视为与目标数据中已存储的值不一致，从而抛出 `BizApiException`（「対象データと指定されたデータの開始日、終了日が異なります」，即目标数据与指定数据的开始日、结束日不一致）。更新时须显式设置与注册时相同的 `startDate`/`endDate`
 - **`setUserAttach` 的 `term` 参数不可为 `null`。** 须始终传递设置了 `startDate`/`endDate` 的 `jp.co.intra_mart.foundation.master.common.model.Term` 实例
@@ -177,7 +178,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 特有�
 - **货币的 4 种实体中，仅 `CurrencyRate` 具备期间管理（`ITerm`）。** `Currency`/`CurrencyConversion`/`CurrencyPrecision` 的 `set*` 为返回 `void` 的简单 upsert，无需设置 `startDate`/`endDate`（模型中本就不含该字段）
 - **单体获取系（`getCorporation`/`get`（Customer/Item）/`getCurrency*`）在对象不存在时不会抛出异常，而是返回 `null`。** 调用方须务必进行空值检查
 
-### 共通
+### 通用
 
 - `UserManager`/`CompanyManager`、四个分组类、法人・取引方・品目分类・品目・货币这 5 个类的几乎所有方法都会抛出受检异常 `BizApiException`。调用方须务必声明 `throws` 或使用 `try-catch`
 

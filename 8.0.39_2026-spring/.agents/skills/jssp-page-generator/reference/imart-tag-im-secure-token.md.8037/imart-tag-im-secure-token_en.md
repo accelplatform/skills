@@ -60,5 +60,5 @@ The server issues a token for legitimate accesses and sends it to the client. Up
 ## Notes
 
 - If the session is destroyed due to a session timeout, the token will be invalidated
-- Use `SecureTokenManager.verify()` for verification on the function container side
+- Verify with `new SecureTokenManager().verify()` on the function container side (`verify()` is an instance method; see `reference/secure-token-check.md` for an implementation example)
 - `useOneTimeToken="true"` is also effective for preventing double submissions

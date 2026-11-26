@@ -1,6 +1,7 @@
 # Contexts API 基本使用模式（Java 版）
 
-基于 `reference/contexts-api-reference.md` 中方法签名的实现模式集合。实际的方法名和返回值类型务必参考该文档确认，不要凭记忆或推测编写。
+基于 `reference/contexts-api-reference.md` 中方法签名的实现模式集合。
+实际的方法名和返回值类型务必参考该文档确认，不要凭记忆或推测编写。
 
 ## 模式1：在服务层获取用户信息、进行认证检查
 
@@ -51,7 +52,9 @@ final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", locale);
 sdf.setTimeZone(timeZone);
 ```
 
-## 模式3：获取用户所属组织信息
+## 模式3：获取用户所属组织信息（当前组织・主所属）
+
+以登录用户的组织为起点的处理（获取同一组织的成员等）应使用当前组织。当前组织在登录时为主所属；用户在画面页眉切换组织后，在该会话期间会变为切换后的组织。
 
 ```java
 import jp.co.intra_mart.foundation.context.Contexts;
@@ -59,6 +62,17 @@ import jp.co.intra_mart.foundation.user_context.model.Department;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
 
 final UserContext userCtx = Contexts.get(UserContext.class);
+
+// 以登录用户的组织为起点的处理使用当前组织
+final Department currentDept = userCtx.getCurrentDepartment();
+if (currentDept != null) {
+    final String companyCd = currentDept.getCompanyCd();
+    final String departmentSetCd = currentDept.getDepartmentSetCd();
+    final String deptCd = currentDept.getDepartmentCd();
+    final String deptName = currentDept.getDepartmentName();
+}
+
+// 仅在需要主所属本身时使用 getMainDepartment()
 final Department mainDept = userCtx.getMainDepartment();
 if (mainDept != null) {
     final String deptCd = mainDept.getDepartmentCd();
@@ -118,8 +132,9 @@ public class {JobName}Job extends BaseJob {
 
 也可以直接通过 `Contexts.get(JobSchedulerContext.class)` 获取 `JobSchedulerContext`，但若继承了 `BaseJob`，应优先使用其提供的 `protected` 方法（`getParameter()` / `getParameterAsInteger()` 等），这些方法已经实现了空值判断、类型转换、默认值处理。
 
-**`JobResult` 不存在 `SUCCESS` 等常量。** 必须通过静态工厂方法 `success(String)` / `waring(String)`
-（**注意平台实际的拼写是 `waring`，而非 "warning"。调用 `warning(String)` 会因方法不存在而编译失败**）/ `error(String)` 之一并传入消息来生成。详情请参考 `reference/contexts-api-reference.md`。
+**`JobResult` 不存在 `SUCCESS` 等常量。** 必须通过静态工厂方法 `success(String)` /
+`waring(String)`（**注意平台实际的拼写是 `waring`，而非 "warning"。
+调用 `warning(String)` 会因方法不存在而编译失败**）/ `error(String)` 之一并传入消息来生成。详情请参考 `reference/contexts-api-reference.md`。
 
 ## 模式6：客户端类型、外部用户判定
 
@@ -143,6 +158,7 @@ if (externalCtx.isExternalUser()) {
 |---|---|---|
 | 对 `Contexts.get()` 的返回值进行空值检查 | 永远不会执行的死代码（`Contexts.get()` 不会返回 null，无法获取时会抛出 `ContextNotFoundException`） | 不应做空值检查，而应在可能无法获取上下文的运行环境中考虑捕获 `ContextNotFoundException` |
 | 遗漏嵌套 getter 返回值（如 `getMainDepartment()` / `getUserProfile()`）的空值检查 | `NullPointerException` | 与 `Contexts.get()` 本身不同，这些方法按规范确实可能返回 null（`getUserProfile()` 平台自身 JavaDoc 未记载），应加以检查 |
+| 在以登录用户的组织为起点的处理中使用 `getMainDepartment()` | 与用户在页眉切换后的组织不一致（IM-Authz 中以组织为条件的授权及页眉的组织显示使用当前组织） | 使用 `getCurrentDepartment()` |
 | 遗漏认证检查 | 未认证用户也能执行业务处理 | 检查 `isAuthenticated()` |
 | 持有或缓存上下文到字段 | 用户信息在多个请求间混淆 | 在方法内每次重新获取 |
 | 在任务中获取 `UserContext` | 取决于运行环境可能无法获取 | 改用 `JobSchedulerContext`（通过 `BaseJob`） |

@@ -14,6 +14,41 @@
   "rename": [
     {
       "condition": {
+        "and": [
+          {
+            "javascript": false
+          },
+          {
+            "locale": "ja"
+          }
+        ]
+      },
+      "from": "AGENTS_tssp_ja.md",
+      "to": "AGENTS.md"
+    },
+    {
+      "condition": {
+        "and": [
+          {
+            "javascript": false
+          },
+          {
+            "locale": "zh_CN"
+          }
+        ]
+      },
+      "from": "AGENTS_tssp_zh_CN.md",
+      "to": "AGENTS.md"
+    },
+    {
+      "condition": {
+        "javascript": false
+      },
+      "from": "AGENTS_tssp_en.md",
+      "to": "AGENTS.md"
+    },
+    {
+      "condition": {
         "locale": "ja"
       },
       "from": "AGENTS_ja.md",

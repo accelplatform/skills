@@ -39,11 +39,11 @@ declare class ListSearchConditionNoMatterProperty {
   /**
    * ソート条件を追加します。
    *
-   * @param column カラム名（ActvMatterNode 等の定数値を指定）
-   * @param ascending true: 昇順 / false: 降順
+   * @param column カラム名（ApplyFlowList.FLOW_NAME 等の定数値を指定）
+   * @param isASC true: 昇順 / false: 降順
    * @return data に null を格納した WorkflowResultInfo（処理の成否は resultStatus を参照）
    */
-  addSortCondition(column: string, ascending: boolean): WorkflowResultInfo<null>;
+  addOrder(column: string, isASC: boolean): WorkflowResultInfo<null>;
 
   /**
    * 結合条件を設定します。
@@ -56,16 +56,16 @@ declare class ListSearchConditionNoMatterProperty {
   /**
    * レコードの取得件数を設定します。
    *
-   * @param count 取得件数
+   * @param count 取得件数（数値を文字列で指定）
    * @return data に null を格納した WorkflowResultInfo（処理の成否は resultStatus を参照）
    */
-  setCount(count: number): WorkflowResultInfo<null>;
+  setCount(count: string): WorkflowResultInfo<null>;
 
   /**
    * レコードの取得位置を設定します。
    *
-   * @param offset 取得開始位置
+   * @param offset 取得開始位置（数値を文字列で指定）
    * @return data に null を格納した WorkflowResultInfo（処理の成否は resultStatus を参照）
    */
-  setOffset(offset: number): WorkflowResultInfo<null>;
+  setOffset(offset: string): WorkflowResultInfo<null>;
 }

@@ -52,7 +52,7 @@ config-2.xml: extendsImport (plugin registration)
 ```
 
 In this case, generate `sample_import-2.js` for config-2 and add it to the `<extends-import-class>` in config-2.xml.
-See [import-config.md](import-config.md#configNumber--1-のファイル名サフィックス) for details.
+See [import-config.md](import-config.md#file-name-suffix-when-confignumber--1) for details.
 
 ---
 
@@ -151,8 +151,7 @@ function registerLogicFlowPlugin(config, logger) {
             // Delete all existing records (replace-all by logicFlowId)
             let deleteResult = manager.deleteLogicFlow({ logicFlowId: config.logicFlowId });
             if (!deleteResult.resultFlag) {
-                // The string literal starting with "delete" is intentionally rephrased
-                // to avoid a false JSSP-JS-004 warning
+                // The string literal is intentionally rephrased so it does not start with "delete", avoiding a false JSSP-JS-004 warning
                 throw new Error('LogicFlow deletion failed. logicFlowId=' + config.logicFlowId);
             }
 

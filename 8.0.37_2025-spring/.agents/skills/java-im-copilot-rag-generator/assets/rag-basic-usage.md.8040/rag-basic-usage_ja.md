@@ -7,7 +7,7 @@ RAG は大きく2つのフェーズに分かれる。
 1. **データ準備フェーズ**: 文書を分割・ベクトル化してベクトルストアへ登録する（ジョブスケジューラで定期実行）
 2. **クエリ応答フェーズ**: ユーザの質問に対しベクトルストアを検索し、検索結果を踏まえて回答を生成する（Assistant で実装）
 
-## パターン1: `Embedder` アダプタの実装
+## パターン1: `Embedder` アダプタと `Document` の実装
 
 プラットフォームは `Embedder` の既定実装を提供しないため、`EmbeddingsAction` をラップするアダプタをまず用意する。
 
@@ -48,6 +48,106 @@ public class EmbeddingsActionEmbedder implements Embedder {
 }
 ```
 
+登録する文書（`Document`）も自前で実装する。各項目を保持するだけのクラスで、メタデータは Jackson で JSON 文字列にして持つ（`Content.getMetadata()` が JSON 文字列を返す契約のため）。
+
+```java
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jp.co.intra_mart.foundation.copilot.vectorstore.document.Document;
+import jp.co.intra_mart.foundation.copilot.vectorstore.document.exception.DocumentConversionException;
+
+public class RegistrationDocument implements Document {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private String text;
+
+    /** メタデータ（JSON 文字列） */
+    private String metadata;
+
+    private List<Double> vector;
+
+    private String originSourceId;
+
+    private Map<String, Object> indexedMetadata;
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void setText(final String text) {
+        this.text = text;
+    }
+
+    @Override
+    public String getMetadata() {
+        return metadata;
+    }
+
+    @Override
+    public <T> T getMetadata(final Class<T> type) throws DocumentConversionException {
+        if (metadata == null) {
+            return null;
+        }
+        try {
+            return OBJECT_MAPPER.readValue(metadata, type);
+        } catch (final IOException e) {
+            throw new DocumentConversionException("メタデータを変換できません。type=" + type.getName(), e);
+        }
+    }
+
+    @Override
+    public void setMetadata(final Object metadata) throws DocumentConversionException {
+        if (metadata == null) {
+            this.metadata = null;
+            return;
+        }
+        try {
+            this.metadata = OBJECT_MAPPER.writeValueAsString(metadata);
+        } catch (final JsonProcessingException e) {
+            throw new DocumentConversionException("メタデータを JSON に変換できません。", e);
+        }
+    }
+
+    @Override
+    public List<Double> getVector() {
+        return vector;
+    }
+
+    @Override
+    public void setVector(final List<Double> vector) {
+        this.vector = vector;
+    }
+
+    @Override
+    public String getOriginSourceId() {
+        return originSourceId;
+    }
+
+    @Override
+    public void setOriginSourceId(final String originSourceId) {
+        this.originSourceId = originSourceId;
+    }
+
+    @Override
+    public Map<String, Object> getIndexedMetadata() {
+        return indexedMetadata;
+    }
+
+    @Override
+    public void setIndexedMetadata(final Map<String, Object> indexedMetadata) {
+        this.indexedMetadata = indexedMetadata;
+    }
+}
+```
+
 ## パターン2: データ準備ジョブ（文書の分割・ベクトル化・登録）
 
 ```java
@@ -68,7 +168,6 @@ import jp.co.intra_mart.foundation.job_scheduler.exception.JobExecuteException;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.file.Storage;
 import jp.co.intra_mart.foundation.vectorstore.core.exception.VectorStoreException;
-import jp.co.intra_mart.system.copilot.vectorstore.document.StandardRegistrationDocument;
 
 public class RagProcessingPipelineJob extends BaseJob {
 
@@ -125,8 +224,8 @@ public class RagProcessingPipelineJob extends BaseJob {
 
                 final List<Document> documents = new ArrayList<>();
                 for (final String chunkText : chunkTexts) {
-                    // StandardRegistrationDocument はプラットフォーム提供の Document 標準実装
-                    final Document document = new StandardRegistrationDocument();
+                    // RegistrationDocument はパターン1で実装した Document
+                    final Document document = new RegistrationDocument();
                     document.setText(chunkText);
                     documents.add(document);
                 }
@@ -175,7 +274,6 @@ import jp.co.intra_mart.foundation.copilot.vectorstore.builder.VectorStoreBuilde
 import jp.co.intra_mart.foundation.copilot.vectorstore.document.ScoredDocument;
 import jp.co.intra_mart.foundation.copilot.vectorstore.embedder.Embedder;
 import jp.co.intra_mart.foundation.vectorstore.core.exception.VectorStoreException;
-import jp.co.intra_mart.system.copilot.vectorstore.reranker.StandardRrfReranker;
 
 @Assistant(id = "rag_assistant", name = "RAG Assistant",
         type = AssistantType.STANDARD, listEnable = true, storeMessage = false)
@@ -250,18 +348,19 @@ public class RagAssistant extends AbstractCopilotAssistant<AssistantParameter> {
                 .useScoreNormalize(true)
                 .build();
 
-        return vectorStore.hybridSearch(query, new StandardRrfReranker(), RETRIEVAL_COUNT);
+        // Reranker を渡さない場合、RRF（Reciprocal Rank Fusion）で結果を統合する
+        return vectorStore.hybridSearch(query, RETRIEVAL_COUNT);
     }
 }
 ```
 
 - パラメータクラス `T` は `AssistantParameter` を使う（`java-im-copilot-agent-generator` の Assistant 登録の契約と同一。独自 POJO にするとチャットUIでプロンプトを入力できなくなる）
-- `hybridSearch(query, reranker, topK)` は内部でクエリテキストを自動的にベクトル化する（`Embedder` を使う）ため、呼び出し側で明示的にベクトル化する必要はない
+- `hybridSearch(query, topK)` は内部でクエリテキストを自動的にベクトル化する（`Embedder` を使う）ため、呼び出し側で明示的にベクトル化する必要はない
 - ジョブ側とAssistant側で `VectorStoreBuilder` の設定（`category`/`embedder`/`useScoreNormalize`）を一致させること。不一致があるとカテゴリの取り違えやスコア基準のズレにつながる
 
 ## 注意事項
 
-- **`Document` は自前実装しない。** `StandardRegistrationDocument`（プラットフォーム提供の標準実装）をそのまま使う
+- **`Document` は自前で実装する（パターン1）。** `jp.co.intra_mart.system.*` 配下の実装クラスは非公開 API のため使わない
 - **`TextSplitter` の分割メソッドは `splitText(String)`。** `split(String)` という名前のメソッドは存在しない
 - **`VectorStoreBuilder.useDefault()` は `embedder(...)` より先に呼ぶこと。** 後から呼ぶと設定した `Embedder` がリセットされる
 - **`Embedder` の既定実装はプラットフォームに存在しない。** `EmbeddingsAction` をラップしたアダプタ（パターン1）を必ず自前実装する

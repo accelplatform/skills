@@ -54,8 +54,7 @@ function saveUpload(uploadedFile, fileKey) {
 
 `ByteReader.read()` 相当于 Java 的 `InputStream.read(byte[], int, int)`，
 **要求调用方传入预分配容量的数组**。
-传入 JavaScript 的空数组 `[]` 时，字节不会被写入，结果是
-**始终返回 0 次读取**，导致输出文件为 **0 字节**。
+传入 JavaScript 的空数组 `[]` 时，字节不会被写入，结果是**始终返回 0 次读取**，导致输出文件为 **0 字节**。
 
 ```javascript
 // NG：导致 0 字节保存的陷阱

@@ -48,6 +48,7 @@ public interface VectorStore {
     List<ScoredDocument> hybridSearch(String query, List<String> keywords, LogicalOperator operator,
             Reranker reranker, ThresholdFilterExpression threshold, Integer topK) throws VectorStoreException;
     default List<ScoredDocument> hybridSearch(String query, Reranker reranker, Integer topK) throws VectorStoreException;
+    default List<ScoredDocument> hybridSearch(String query, Integer topK) throws VectorStoreException;
     default List<ScoredDocument> hybridSearch(String query) throws VectorStoreException;
 
     List<ScoredDocument> keywordSearch(List<String> keywords, LogicalOperator operator,
@@ -62,7 +63,7 @@ public interface VectorStore {
 
 - **`add`**: 文書情報（チャンク）をベクトルデータベースに登録する。`Document.getVector()` が未設定の場合、内部で `VectorStoreBuilder.embedder(...)` に指定した `Embedder` を使ってベクトル化してから登録する
 - **`deleteAll`**: `VectorStoreBuilder.category(...)` で指定したカテゴリの文書情報を全件削除する。再インデックス（全件洗い替え）時は `deleteAll()` の後に `add(...)` を呼ぶパターンが基本
-- **`hybridSearch`**: ベクトル類似検索とキーワード検索を組み合わせ、`Reranker` で結果を統合（ランク融合）する。`query`（テキスト、内部で自動ベクトル化）または `vector`（ベクトル本体を直接指定）のいずれかの系統で呼び出す。よく使う3引数版は `hybridSearch(String query, Reranker reranker, Integer topK)`
+- **`hybridSearch`**: ベクトル類似検索とキーワード検索を組み合わせ、`Reranker` で結果を統合（ランク融合）する。`query`（テキスト、内部で自動ベクトル化）または `vector`（ベクトル本体を直接指定）のいずれかの系統で呼び出す。`Reranker` を省略した版（`hybridSearch(String query, Integer topK)` 等）は RRF で結果を統合する
 - **`similaritySearch`**: ベクトル類似検索のみ（キーワード検索なし）
 - **`keywordSearch`**: キーワード検索のみ（ベクトル検索なし）
 - `topK` は検索結果の最大件数、`ThresholdFilterExpression` はスコアしきい値によるフィルタ、`LogicalOperator` はキーワード同士の `AND`/`OR` 指定
@@ -105,12 +106,12 @@ public interface ScoredContent extends Content {
 }
 ```
 
-**`Document` を自前実装する必要はない。** プラットフォームが標準実装 `jp.co.intra_mart.system.copilot.vectorstore.document.StandardRegistrationDocument`（`public` 引数なしコンストラクタ + 各種 setter、`Document` の全メソッドを実装済み）を提供している。登録用途はこれをそのまま使う。
+**登録用の `Document` は自前で実装する。** 公開 API に `Document` の実装クラスはない（`jp.co.intra_mart.system.*` 配下の実装クラスは非公開 API）。各項目を保持し、メタデータを Jackson で JSON 文字列にして持つクラスを用意する（`assets/rag-basic-usage.md` パターン1）。
 
 ```java
-final Document document = new StandardRegistrationDocument();
+final Document document = new RegistrationDocument();
 document.setText(chunkText);
-document.setMetadata(myMetadataObject); // Jackson でJSONシリアライズされ getMetadata(Class) で復元可能
+document.setMetadata(myMetadataObject); // JSON 文字列にして保持し、getMetadata(Class) で元の型に戻す
 ```
 
 検索結果（`ScoredDocument`）はプラットフォームが返すインスタンスをそのまま使う（自前実装は不要）。`getText()`・`getMetadata(Class)` 相当の情報取得は `Content`/`ScoredContent` のメソッドで行う（`ScoredDocument` 自体は `getMetadata(Class)` を持たないため、必要な場合は `getMetadata()`（JSON文字列）を自前でデシリアライズする）。
@@ -139,17 +140,11 @@ public interface Reranker {
 }
 ```
 
-プラットフォームは RRF（Reciprocal Rank Fusion）による標準実装を提供する。
+`hybridSearch` に `Reranker` を渡さないと、RRF（Reciprocal Rank Fusion）で結果を統合する。RRF 以外の方法で統合したい場合だけ `Reranker` を実装して渡す。
 
 ```java
-package jp.co.intra_mart.system.copilot.vectorstore.reranker;
-
-public class StandardRrfReranker implements Reranker {
-    public StandardRrfReranker(); // 引数なしコンストラクタ
-}
+final List<ScoredDocument> results = vectorStore.hybridSearch(query, topK);
 ```
-
-`VectorStore.hybridSearch(query, new StandardRrfReranker(), topK)` のように、`hybridSearch` の `reranker` 引数へそのまま渡して使う。
 
 ## `TextSplitter`/`RecursiveCharacterTextSplitter`
 

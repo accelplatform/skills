@@ -20,8 +20,8 @@ API (.js)
 
 ### セキュアトークンの生成
 
-`<imart type="head">` 内に `<imart type="imSecureToken" />` を配置する。
-これにより、HTML 内に `<input type="hidden">` タグが生成される。
+`<imart type="head">` 内に `<meta name="im_secure_token">` を配置し、`content` 属性に `<imart type="imSecureToken" mode="value" />` でトークンの値を出力する。
+`mode="value"` はトークンの値だけを出力する（`mode` を省略した場合は `<input type="hidden">` タグを出力する）。
 
 ```html
 <imart type="head">
@@ -32,7 +32,7 @@ API (.js)
 
 ### セキュアトークンの取得
 
-生成された `<input>` タグから、セキュアトークンを取得する。
+`meta` タグの `content` 属性から、セキュアトークンを取得する。
 
 ```javascript
 // セキュアトークンを取得する
@@ -91,5 +91,36 @@ function main(request, httpResponse) {
     // TODO: ここにセキュアトークン検証エラー時の処理を追加
   }
 
+}
+```
+
+## フォーム送信（通常 POST）
+
+`<form>` を通常の POST で送信する画面では、トークンをリクエストパラメータで送り、ファンクションコンテナで検証する。
+
+### プレゼンテーションページ側
+
+フォーム内に `<imart type="imSecureToken" />` を配置する。`mode` を省略すると `<input type="hidden" name="im_secure_token" value="...">` が出力され、フォーム送信時にリクエストパラメータ `im_secure_token` としてトークンが送られる。
+
+```html
+<form action="sample/form/submit" method="POST">
+  <imart type="imSecureToken" />
+  <!-- 入力項目 -->
+  <button type="submit">送信</button>
+</form>
+```
+
+### ファンクションコンテナ側
+
+`verify()` を引数なしで呼ぶ。`token` を省略すると、リクエストパラメータ `im_secure_token` からトークンを取得して検証する。
+
+```javascript
+function init(request) {
+  let result = new SecureTokenManager().verify();
+  if (result.error || !result.data) {
+    // TODO: ここにセキュアトークン検証エラー時の処理を追加
+    return;
+  }
+  // 登録処理
 }
 ```

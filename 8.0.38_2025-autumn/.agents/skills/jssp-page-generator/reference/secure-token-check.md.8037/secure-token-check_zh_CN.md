@@ -20,8 +20,8 @@ API (.js)
 
 ### 安全令牌的生成
 
-在 `<imart type="head">` 内放置 `<imart type="imSecureToken" />`。
-这样会在 HTML 内生成 `<input type="hidden">` 标签。
+在 `<imart type="head">` 内放置 `<meta name="im_secure_token">`，并通过 `<imart type="imSecureToken" mode="value" />` 将令牌值输出到其 `content` 属性中。
+`mode="value"` 仅输出令牌值（省略 `mode` 时输出 `<input type="hidden">` 标签）。
 
 ```html
 <imart type="head">
@@ -32,7 +32,7 @@ API (.js)
 
 ### 安全令牌的获取
 
-从生成的 `<input>` 标签获取安全令牌。
+从 `meta` 标签的 `content` 属性获取安全令牌。
 
 ```javascript
 // 获取安全令牌
@@ -91,5 +91,36 @@ function main(request, httpResponse) {
     // TODO: 在此处添加安全令牌验证错误时的处理
   }
 
+}
+```
+
+## 表单提交（普通 POST）
+
+对于以普通 POST 提交 `<form>` 的画面，通过请求参数发送令牌，并在函数容器中进行验证。
+
+### 展示页面侧
+
+在表单内放置 `<imart type="imSecureToken" />`。省略 `mode` 时会输出 `<input type="hidden" name="im_secure_token" value="...">`，提交表单时令牌将作为请求参数 `im_secure_token` 发送。
+
+```html
+<form action="sample/form/submit" method="POST">
+  <imart type="imSecureToken" />
+  <!-- 输入项目 -->
+  <button type="submit">提交</button>
+</form>
+```
+
+### 函数容器侧
+
+不带参数调用 `verify()`。省略 `token` 时，会从请求参数 `im_secure_token` 获取令牌并进行验证。
+
+```javascript
+function init(request) {
+  let result = new SecureTokenManager().verify();
+  if (result.error || !result.data) {
+    // TODO: 在此处添加安全令牌验证错误时的处理
+    return;
+  }
+  // 注册处理
 }
 ```

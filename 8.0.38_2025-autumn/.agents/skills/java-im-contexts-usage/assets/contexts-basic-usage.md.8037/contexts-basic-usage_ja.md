@@ -52,7 +52,9 @@ final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", locale);
 sdf.setTimeZone(timeZone);
 ```
 
-## パターン3: ユーザー所属組織情報の取得
+## パターン3: ユーザー所属組織情報の取得（カレント組織・主所属）
+
+ログインユーザの組織を起点にする処理（同じ組織のメンバーの取得等）は、カレント組織を使う。カレント組織はログイン時は主所属で、ユーザが画面のヘッダで組織を切り替えると、そのセッションのあいだは切り替え先になる。
 
 ```java
 import jp.co.intra_mart.foundation.context.Contexts;
@@ -60,6 +62,17 @@ import jp.co.intra_mart.foundation.user_context.model.Department;
 import jp.co.intra_mart.foundation.user_context.model.UserContext;
 
 final UserContext userCtx = Contexts.get(UserContext.class);
+
+// ログインユーザの組織を起点にする処理はカレント組織を使う
+final Department currentDept = userCtx.getCurrentDepartment();
+if (currentDept != null) {
+    final String companyCd = currentDept.getCompanyCd();
+    final String departmentSetCd = currentDept.getDepartmentSetCd();
+    final String deptCd = currentDept.getDepartmentCd();
+    final String deptName = currentDept.getDepartmentName();
+}
+
+// 主所属そのものが必要な場合だけ getMainDepartment() を使う
 final Department mainDept = userCtx.getMainDepartment();
 if (mainDept != null) {
     final String deptCd = mainDept.getDepartmentCd();
@@ -145,6 +158,7 @@ if (externalCtx.isExternalUser()) {
 |---|---|---|
 | `Contexts.get()` の戻り値を null チェックする | 到達しない死コード（`Contexts.get()` は null を返さず、取得できない場合は `ContextNotFoundException` をスローする） | null チェックではなく、取得できない可能性がある実行環境では `ContextNotFoundException` の catch を検討する |
 | ネストした getter の戻り値（`getMainDepartment()` / `getUserProfile()` 等）の null チェック漏れ | `NullPointerException` | これらは `Contexts.get()` 自体とは別に、仕様として null を返し得るためチェックする（`getUserProfile()` がこの挙動を持つことはプラットフォームの JavaDoc に未記載） |
+| ログインユーザの組織を起点にする処理で `getMainDepartment()` を使う | ユーザがヘッダで切り替えた組織と食い違う（IM-Authz の組織を条件にした認可・ヘッダの組織表示はカレント組織を使う） | `getCurrentDepartment()` を使う |
 | 認証チェック漏れ | 未認証ユーザーで業務処理を実行してしまう | `isAuthenticated()` を確認する |
 | コンテキストのフィールド保持・キャッシュ | リクエスト間でユーザー情報が混在する | メソッド内で都度取得する |
 | ジョブで `UserContext` を取得 | 実行環境によって取得できない場合がある | `JobSchedulerContext`（`BaseJob` 経由）を使う |

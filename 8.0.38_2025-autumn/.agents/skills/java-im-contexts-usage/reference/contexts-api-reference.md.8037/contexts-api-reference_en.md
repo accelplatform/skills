@@ -1,6 +1,7 @@
 # Contexts API Reference (Java Version)
 
-Based on the actual class definitions in the intra-mart Accel Platform core source (`im_core_base` / `im_user_context` / `im_job_scheduler_base` modules). Do not supplement methods from memory or guesswork.
+Based on the actual class definitions in the intra-mart Accel Platform core source (`im_core_base` / `im_user_context` / `im_job_scheduler_base` modules).
+Do not supplement methods from memory or guesswork.
 
 ## Package Structure
 
@@ -51,8 +52,7 @@ public final class Contexts {
 
 - A utility class with only a `private` constructor (cannot be instantiated)
 - Internally delegates context resolution to `ContextProducer` (`jp.co.intra_mart.system.context.ContextProducer`)
-- **`ContextNotFoundException` is a subclass of `RuntimeException` — an unchecked exception.** The method
-  signature carries no `throws` declaration (the `@throws` in the JavaDoc is documentation only; the compiler does not require a `catch` or `throws` declaration)
+- **`ContextNotFoundException` is a subclass of `RuntimeException` — an unchecked exception.** The method signature carries no `throws` declaration (the `@throws` in the JavaDoc is documentation only; the compiler does not require a `catch` or `throws` declaration)
 
 ## The `ContextStatus` Class
 
@@ -82,8 +82,7 @@ public final class ContextStatus {
 Package: `jp.co.intra_mart.foundation.context.model` (`im_core_base`)
 
 > An access context holding information about the accessing account. Provides account information such as
-> the user code and locale, and the authentication state. **A required access context, always retrievable
-> while the system is running.**
+> the user code and locale, and the authentication state. **A required access context, always retrievable while the system is running.**
 > Each setting value is resolved in the order: account settings → tenant account settings → browser info →
 > system default account settings → server environment settings.
 
@@ -97,8 +96,7 @@ public interface AccountContext extends Context {
     String getCalendarId();
 
     /**
-     * Returns the list of date/time display formats. Used by internal APIs; you typically do not need
-     * to use this directly.
+     * Returns the list of date/time display formats. Used by internal APIs; you typically do not need to use this directly.
      * @see jp.co.intra_mart.foundation.i18n.datetime.format.SystemDateTimeFormat#getFormats
      */
     Map<String, String> getDateTimeFormats();
@@ -110,8 +108,7 @@ public interface AccountContext extends Context {
     String getEncoding();
 
     /**
-     * Returns the first day of the week. The returned value matches one of
-     * java.util.Calendar#SUNDAY through SATURDAY.
+     * Returns the first day of the week. The returned value matches one of java.util.Calendar#SUNDAY through SATURDAY.
      */
     int getFirstDayOfWeek();
 
@@ -207,9 +204,8 @@ public interface ExternalUserContext extends Context {
 
 Package: `jp.co.intra_mart.foundation.user_context.model` (`im_user_context`)
 
-> Retrieves the user information from the IM Common Master for the user identified by
-> `AccountContext.getUserCd()`. **Organization affiliation information is limited to the default
-> organization set — sets other than the default cannot be handled.**
+> Retrieves the user information from the IM Common Master for the user identified by `AccountContext.getUserCd()`.
+> **Organization affiliation information is limited to the default organization set — sets other than the default cannot be handled.**
 
 ```java
 public interface UserContext extends Context {
@@ -428,7 +424,8 @@ public interface JobSchedulerContext extends Context {
 }
 ```
 
-Parameter priority is "running parameters (added via `putParameter`) > trigger > jobnet > job". If the same key is set on both the job and the jobnet, the jobnet's value takes precedence.
+Parameter priority is "running parameters (added via `putParameter`) > trigger > jobnet > job".
+If the same key is set on both the job and the jobnet, the jobnet's value takes precedence.
 
 ## The `BaseJob` Class (Base Class for Job Implementations)
 
@@ -466,10 +463,9 @@ public abstract class BaseJob implements Job {
 }
 ```
 
-- Job implementations (classes implementing the `Job` interface) typically extend `BaseJob` and implement
-  `execute()` as the standard pattern
-- Retrieving parameters via `BaseJob`'s `protected` methods saves you from re-implementing null checks,
-  type conversion, and default-value handling every time, compared to retrieving `JobSchedulerContext` directly via `Contexts.get()`
+- Job implementations (classes implementing the `Job` interface) typically extend `BaseJob` and implement `execute()` as the standard pattern
+- Compared to retrieving `JobSchedulerContext` directly via `Contexts.get()`, retrieving parameters via `BaseJob`'s `protected` methods
+  saves you from re-implementing null checks, type conversion, and default-value handling every time
 
 ## The `JobResult` Class (`execute()`'s Return Type)
 
@@ -485,16 +481,14 @@ public class JobResult {
     public static JobResult success(final String message);
 
     /**
-     * Creates an execution result indicating a warning occurred during job processing (an error the
-     * jobnet can continue past). When this result is returned, the job scheduler service continues the
-     * jobnet.
+     * Creates an execution result indicating a warning occurred during job processing (an error the jobnet can continue past).
+     * When this result is returned, the job scheduler service continues the jobnet.
      */
     public static JobResult waring(final String message);
 
     /**
-     * Creates an execution result indicating an error occurred during job processing (an error the
-     * jobnet cannot continue past). When this result is returned, the job scheduler service ends the
-     * jobnet without continuing.
+     * Creates an execution result indicating an error occurred during job processing (an error the jobnet cannot continue past).
+     * When this result is returned, the job scheduler service ends the jobnet without continuing.
      */
     public static JobResult error(final String message);
 
@@ -503,8 +497,8 @@ public class JobResult {
 }
 ```
 
-- **There is no constant such as `JobResult.SUCCESS`.** Always create an instance via one of the static
-  factory methods `success(String)` / `waring(String)` / `error(String)`, passing a message
+- **There is no constant such as `JobResult.SUCCESS`.** Always pass a message to one of `success(String)` / `waring(String)` /
+  `error(String)` static factory methods to create an instance
 - **The warning method's actual spelling is `waring` (not "warning").** This is how the platform's own
   implementation spells it; calling `warning(String)` fails to compile since no such method exists. Do not "correct" the spelling when calling it
 

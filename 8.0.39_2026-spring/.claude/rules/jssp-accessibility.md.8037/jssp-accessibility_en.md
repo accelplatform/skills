@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/main/jssp/**/*.html"
+  - "src/main/tssp/**/*.html"
 ---
 
 # Accessibility Guidelines (Screen Reader Support)
@@ -97,14 +98,16 @@ Follow the standard pattern from `jssp-presentation-page.md` (`.imds-field` + `.
 ```
 
 ```javascript
+const container = document.getElementById('imui-container'); // Starting point for DOM searches (this screen's root element)
+
 // When showing an error
 function showValidationError(errors) {
   errors.forEach((error) => {
-    const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+    const fieldElement = container.querySelector(`.imds-field[for=":${error.name}:"]`);
     if (fieldElement) {
       fieldElement.classList.add('imds-validation-error');
     }
-    const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+    const errorElement = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
     if (errorElement) {
       errorElement.textContent = error.message;
       errorElement.style.display = '';
@@ -119,13 +122,13 @@ function showValidationError(errors) {
 
 // When clearing errors
 function clearValidationError() {
-  document.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => {
+  container.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => {
     el.classList.remove('imds-validation-error');
   });
-  document.querySelectorAll('.imds-error-text').forEach((el) => {
+  container.querySelectorAll('.imds-error-text').forEach((el) => {
     el.style.display = 'none';
   });
-  document.querySelectorAll('[aria-invalid="true"]').forEach((el) => {
+  container.querySelectorAll('[aria-invalid="true"]').forEach((el) => {
     el.removeAttribute('aria-invalid');
   });
 }

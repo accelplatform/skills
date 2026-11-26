@@ -37,7 +37,7 @@ The `<extends-import-class>` within `import-<artifactId>-config-1.xml` is writte
 
 **The `.js` extension must be included** (this differs from IM-Workflow).
 
-When `spec.configNumber >= 2`, a `-<N>` suffix is appended to the end of the JS file name (e.g. `<key>_import-2.js`). See [import-config.md](import-config.md#configNumber--1-のファイル名サフィックス) for details.
+When `spec.configNumber >= 2`, a `-<N>` suffix is appended to the end of the JS file name (e.g. `<key>_import-2.js`). See [import-config.md](import-config.md#file-name-suffix-when-confignumber--1) for details.
 Resolution priority for `<version>`: `"version"` in spec.json → `<version>` in the project root's `module.xml` or `pom.xml` → `1.0.0`. On a version upgrade, generate a new JS file under the new version directory and switch to it.
 
 ## Entry Point

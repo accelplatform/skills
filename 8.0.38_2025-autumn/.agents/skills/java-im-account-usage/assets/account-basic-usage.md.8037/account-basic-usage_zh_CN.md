@@ -378,10 +378,10 @@ accountRoleInfo.setRoleValidEndDate(new Date(Long.MAX_VALUE));
 // 设置 null 即可自动重置为系统最大日期，手动计算既无必要，也可能被当作非法日期处理
 
 // NG: 混淆直接匹配检索与考虑层级的检索
-accountInfoManager.getUserCdsByAccountRoleId(parentRoleId);
+accountInfoManager.getUserCdsByAccountRoleId(subRoleId);
 // getUserCdsByAccountRoleId() 仅为直接匹配，不会追溯角色层级。
-// 若想以父角色ID检索子角色持有者，结果可能为空。
-// 需要考虑层级时应使用 getUserCdsByRoleId(roleId, date)
+// 仅被分配了父角色的用户，以子角色ID检索时不会包含在结果中。
+// 需要同时包含父角色持有者时应使用 getUserCdsByRoleId(subRoleId, date)
 
 // NG: 使用已标记 @Deprecated 的 isUpdate(Date) 判断是否发生了更新
 if (accountInfoManager.isUpdate(someDate)) {

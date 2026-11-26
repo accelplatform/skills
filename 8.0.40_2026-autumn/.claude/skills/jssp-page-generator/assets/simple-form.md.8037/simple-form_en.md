@@ -201,6 +201,9 @@ function transferErrorPage(code, message) {
   <script>
   (function($data) {
     document.addEventListener('DOMContentLoaded', () => {
+      // Starting point for DOM searches (this screen's root element; do not search the whole page)
+      const container = document.getElementById('imui-container');
+
       // Flag to always run validation check
       let activeValidation = false;
 
@@ -282,6 +285,16 @@ function transferErrorPage(code, message) {
           contentElement.appendChild(document.createTextNode(lines[i]));
         }
 
+        // Remember the trigger element before opening the dialog (to return focus after closing)
+        const triggerElement = document.activeElement;
+
+        // ARIA attributes
+        dialog.setAttribute('role', 'dialog');
+        dialog.setAttribute('aria-modal', 'true');
+        const titleId = 'imds-confirm-title-' + Date.now();
+        dialog.setAttribute('aria-labelledby', titleId);
+        dialog.querySelector('.imds-confirm-message-title').id = titleId;
+
         document.body.appendChild(dialog);
 
         return new Promise(function(resolve) {
@@ -293,6 +306,10 @@ function transferErrorPage(code, message) {
             imdsConfirm._active = false;
             dialog.close();
             document.body.removeChild(dialog);
+            // Return focus to the trigger element
+            if (triggerElement && typeof triggerElement.focus === 'function') {
+              triggerElement.focus();
+            }
             resolve(result);
           }
 
@@ -309,7 +326,7 @@ function transferErrorPage(code, message) {
           });
 
           // X button (treated as cancel)
-          dialog.querySelector('.imds-confirm-close').addEventListener('click', function() {
+          closeButton.addEventListener('click', function() {
             if (typeof onCancel === 'function') onCancel();
             close(false);
           });
@@ -321,7 +338,34 @@ function transferErrorPage(code, message) {
             close(false);
           });
 
+          // Keyboard operation
+          // - Enter:  Confirm as the OK button (if the Cancel / x button has focus, that button's action takes precedence)
+          // - Tab:    The native dialog traps focus, so no additional implementation is needed
+          // - Escape: Already handled by the cancel event
+          function onKeyDown(e) {
+            if (e.key === 'Enter' && !e.isComposing) {
+              const focused = document.activeElement;
+              if (focused === cancelButton || focused === closeButton) {
+                return;
+              }
+              e.preventDefault();
+              okButton.click();
+            }
+          }
+          dialog.addEventListener('keydown', onKeyDown);
+
           dialog.showModal();
+
+          // Initial focus
+          // - danger mode: the Cancel button, to prevent accidental operation
+          // - otherwise:   the OK button
+          setTimeout(function() {
+            if (mode === 'danger') {
+              cancelButton.focus();
+            } else {
+              okButton.focus();
+            }
+          }, 0);
         });
       }
 
@@ -343,11 +387,11 @@ function transferErrorPage(code, message) {
 
       // Initialize validation display
       function clearValidationError() {
-        document.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
+        container.querySelectorAll('.imds-field.imds-validation-error').forEach((element) => {
           element.classList.remove('imds-validation-error');
         });
 
-        document.querySelectorAll('.imds-error-text').forEach((element) => {
+        container.querySelectorAll('.imds-error-text').forEach((element) => {
           element.style.display = 'none';
         });
       }
@@ -355,12 +399,12 @@ function transferErrorPage(code, message) {
       // Show validation error
       function showValidationError(errors) {
         errors.forEach((error) => {
-          const fieldElement = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+          const fieldElement = container.querySelector(`.imds-field[for=":${error.name}:"]`);
           if (fieldElement) {
             fieldElement.classList.add('imds-validation-error');
           }
 
-          const errorElement = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+          const errorElement = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
           if (errorElement) {
             errorElement.textContent = error.message;
             errorElement.style.display = '';
@@ -468,6 +512,12 @@ function transferErrorPage(code, message) {
         }
       });
 
+      // Back button click event
+      // Replace the destination with the path of the screen to return to. On screens with no return destination, remove the whole imds-header-back-button from the header
+      document.getElementById('back-button').addEventListener('click', () => {
+        location.href = 'sample/simple_form/list';
+      });
+
       // Register button click event
       document.getElementById('register-button').addEventListener('click', () => {
         // Create parameter information
@@ -509,7 +559,7 @@ function transferErrorPage(code, message) {
   <!-- Header -->
   <header class="imds-header">
     <div class="imds-header-back-button">
-      <button type="button" class="imds-button is-ghost is-large" title="Back">
+      <button type="button" id="back-button" class="imds-button is-ghost is-large" title="Back">
         <span class="imds-icon is-small"><i class="fa-solid fa-arrow-left"></i></span>
       </button>
     </div>

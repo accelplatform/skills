@@ -584,13 +584,14 @@ const COMMON_FUNCTION_RULES = {
     {
       id: 'JSSP-HTML-014',
       description: 'ホワイトリスト外の imart type 値',
-      message: '未定義の imart type が使用されています（使用可否を要確認）。使用可能な type: head, string, imSecureToken, imuiCalendar, message, workflowOpenPage, workflowOpenPageCsjs, imACMSearch, hidden, tag',
+      message: '未定義の imart type が使用されています（使用可否を要確認）。使用可能な type: head, string, imSecureToken, imuiCalendar, message, workflowOpenPage, workflowOpenPageCsjs, workflowMatterDetailLink, imACMSearch, hidden, tag',
       severity: 'error',
       check: function (content, lines) {
         let findings = [];
         let WHITELIST = [
           'head', 'string', 'imSecureToken', 'imuiCalendar', 'message',
           'workflowOpenPage', 'workflowOpenPageCsjs', 'imACMSearch', 'hidden', 'tag',
+          'workflowMatterDetailLink',  // IM-Workflow の案件詳細を開くリンク（im_workflow_core の ImartTag4WorkflowMatterDetailLink）
           'chart'  // chart は JSSP-HTML-007 で別途 warning 報告するためここではスキップ
         ];
         let typePattern = /<imart\s[^>]*type\s*=\s*["']([^"']+)["']/g;
@@ -607,7 +608,7 @@ const COMMON_FUNCTION_RULES = {
         return findings.map(function (f) {
           return {
             line: f.line,
-            overrideMessage: '未定義の imart type="' + f.typeVal + '" が使用されています（使用可否を要確認）。使用可能な type: head, string, imSecureToken, imuiCalendar, message, workflowOpenPage, workflowOpenPageCsjs, imACMSearch, hidden, tag'
+            overrideMessage: '未定義の imart type="' + f.typeVal + '" が使用されています（使用可否を要確認）。使用可能な type: head, string, imSecureToken, imuiCalendar, message, workflowOpenPage, workflowOpenPageCsjs, workflowMatterDetailLink, imACMSearch, hidden, tag'
           };
         });
       }

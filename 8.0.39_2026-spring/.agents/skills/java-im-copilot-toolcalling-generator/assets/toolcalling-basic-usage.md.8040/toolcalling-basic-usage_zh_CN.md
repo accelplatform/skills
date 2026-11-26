@@ -35,7 +35,7 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
 
     /** get_weather 工具的参数。 */
     public static class GetWeatherArgument {
-        @StringProperty(description = "都市名。例: 東京", required = true)
+        @StringProperty(description = "城市名。例: 东京", required = true)
         private String city;
 
         public String getCity() {
@@ -57,7 +57,7 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
         try {
             final ToolDefinition weatherTool = ToolDefinition.builder()
                     .name("get_weather")
-                    .description("指定した都市の現在の天気を取得する")
+                    .description("获取指定城市的当前天气")
                     .parametersFromClass(GetWeatherArgument.class)
                     .build();
             final List<ToolDefinition> tools = new ArrayList<>();
@@ -66,7 +66,7 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
             final ChatAction chatAction = ActionFactory.getFactory().getChatAction();
 
             final List<ChatMessage> messages = ChatMessage.builder()
-                    .newMessage().withRole("system").addTextContent("あなたは天気案内アシスタントです。必要に応じて get_weather ツールを使ってください。")
+                    .newMessage().withRole("system").addTextContent("你是一个天气助手。请根据需要使用 get_weather 工具。")
                     .newMessage().withRole("user").addTextContent(userMessage)
                     .build();
 
@@ -91,11 +91,11 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
             for (final ToolCall toolCall : toolCalls) {
                 final JsonSchemaValidator validator = new JsonSchemaValidator(weatherTool.getParameters());
                 if (!validator.isValid(toolCall.getArguments())) {
-                    throw new CopilotAssistantException("ツール呼び出しの引数が不正です: " + validator.validate(toolCall.getArguments()));
+                    throw new CopilotAssistantException("工具调用参数不正确: " + validator.validate(toolCall.getArguments()));
                 }
                 final GetWeatherArgument args = ToolJsonHelper.deserialize(toolCall.getArguments(), GetWeatherArgument.class);
                 // 在此处执行实际的工具（外部 API 调用等）。本示例返回固定字符串
-                final String weatherText = args.getCity() + "の天気は晴れです。";
+                final String weatherText = args.getCity() + "的天气是晴天。";
                 toolResultBuilder.addToolTextContent(weatherText, toolCall.getId());
             }
 
@@ -108,7 +108,7 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
                     .finishReason("stop")
                     .build();
         } catch (final CopilotServiceException e) {
-            throw new CopilotAssistantException("Tool Calling 実行に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("Tool Calling 执行失败: " + e.getMessage(), e);
         }
     }
 }
@@ -160,7 +160,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
             final ChatAction chatAction = ActionFactory.getFactory().getChatAction();
 
             final List<ChatMessage> messages = ChatMessage.builder()
-                    .newMessage().withRole("system").addTextContent("あなたは天気案内アシスタントです。必要に応じて get_weather ツールを使ってください。")
+                    .newMessage().withRole("system").addTextContent("你是一个天气助手。请根据需要使用 get_weather 工具。")
                     .newMessage().withRole("user").addTextContent(userMessage)
                     .build();
             final ChatOption option = ChatOption.builder().build();
@@ -195,7 +195,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
                         .newMessage().withRole("assistant").toolCalls(toolCalls)
                         .newMessage().withRole("tool");
                 for (final ToolCall toolCall : toolCalls) {
-                    final String weatherText = "晴れです。"; // 替换为实际的工具执行结果
+                    final String weatherText = "晴天。"; // 替换为实际的工具执行结果
                     toolResultBuilder.addToolTextContent(weatherText, toolCall.getId());
                 }
 
@@ -211,7 +211,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
                         .build());
             }
         } catch (final CopilotServiceException | java.io.IOException e) {
-            throw new CopilotAssistantException("Tool Calling 実行に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("Tool Calling 执行失败: " + e.getMessage(), e);
         }
 
         return null;
@@ -219,7 +219,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
 
     /** get_weather 工具的参数。 */
     public static class GetWeatherArgument {
-        @StringProperty(description = "都市名。例: 東京", required = true)
+        @StringProperty(description = "城市名。例: 东京", required = true)
         private String city;
 
         public String getCity() {
@@ -235,7 +235,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
         final List<ToolDefinition> tools = new ArrayList<>();
         tools.add(ToolDefinition.builder()
                 .name("get_weather")
-                .description("指定した都市の現在の天気を取得する")
+                .description("获取指定城市的当前天气")
                 .parametersFromClass(GetWeatherArgument.class)
                 .build());
         return tools;
@@ -272,4 +272,3 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
 - **流式方式下不会返回响应消息。** 工具调用信息需从数据块自行累积，并在第 2 次调用用的消息中显式追加 `assistant` 的工具调用信息（非流式方式下可以直接沿用 `response`（返回值），无需这一步骤）
 - **使用 Amazon Bedrock 驱动时存在部分约束**（`strict` 被忽略、`ToolChoice.none()` 不可用、`addImageUrl` 不可用等）。若实现需兼容多种驱动，请确认 `reference/toolcalling-api-reference.md`「使用 Amazon Bedrock 驱动时的约束」
 - 工具调用的参数（`ToolCall.getArguments()`）不一定完全符合模式定义。建议先用 `JsonSchemaValidator` 校验，再用 `ToolJsonHelper.deserialize` 反序列化
-</content>

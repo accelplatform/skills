@@ -240,8 +240,7 @@ public class AccountAttributeService {
 
     /**
      * Sets the account's employee number attribute.<br>
-     * None of userCd, the attribute name, or the attribute value may be null or an empty string
-     * (it is updated if it exists, or created if it does not).
+     * None of userCd, the attribute name, or the attribute value may be null or an empty string (it is updated if it exists, or created if it does not).
      *
      * @param userCd User code
      * @param employeeNumber Employee number
@@ -276,15 +275,13 @@ import jp.co.example.foo.exception.AccountRoleAssignmentException;
 
 /**
  * Provides processing for assigning roles to users.<br>
- * Operating on role definitions themselves (new registration, hierarchy, categories) is out of scope.
- * Use a separate skill (java-im-role-usage) for operating on role definitions.
+ * Operating on role definitions themselves (new registration, hierarchy, categories) is out of scope. Use a separate skill (java-im-role-usage) for operating on role definitions.
  */
 public class AccountRoleAssignmentService {
 
     /**
      * Assigns a role to a user.<br>
-     * The valid period is evaluated as "start date &lt;= evaluation date &lt; end date." Setting the end date
-     * to null resets it to the system's maximum date.
+     * The valid period is evaluated as "start date &lt;= evaluation date &lt; end date." Setting the end date to null resets it to the system's maximum date.
      *
      * @param userCd User code
      * @param roleId Role ID (the role definition must already exist)
@@ -326,8 +323,7 @@ public class AccountRoleAssignmentService {
 
     /**
      * Recursively retrieves the list of valid role IDs a user holds, including sub-roles (child roles).<br>
-     * The difference from {@link #getDirectRoleIds(String, Date)} is that sub-roles beneath directly assigned
-     * roles are also included in the result.
+     * The difference from {@link #getDirectRoleIds(String, Date)} is that sub-roles beneath directly assigned roles are also included in the result.
      *
      * @param userCd User code
      * @param date The evaluation date/time
@@ -379,14 +375,13 @@ try {
 
 // NG: Manually computing a far-future date for the role's valid end date, intending it to mean "indefinite"
 accountRoleInfo.setRoleValidEndDate(new Date(Long.MAX_VALUE));
-// Setting null resets it to the system's maximum date automatically, so manual computation is unnecessary
-// and may be treated as an invalid date
+// Setting null resets it to the system's maximum date automatically, so manual computation is unnecessary and may be treated as an invalid date
 
 // NG: Confusing direct-match search with hierarchy-aware search
-accountInfoManager.getUserCdsByAccountRoleId(parentRoleId);
+accountInfoManager.getUserCdsByAccountRoleId(subRoleId);
 // getUserCdsByAccountRoleId() is a direct match only and does not traverse the role hierarchy.
-// Searching for holders of a child role by supplying a parent role ID may return an empty result.
-// Use getUserCdsByRoleId(roleId, date) instead when hierarchy needs to be accounted for
+// Users assigned only a parent role are not included when searching by the sub-role ID.
+// Use getUserCdsByRoleId(subRoleId, date) to also include holders of parent roles
 
 // NG: Using the @Deprecated isUpdate(Date) to determine whether an update occurred
 if (accountInfoManager.isUpdate(someDate)) {

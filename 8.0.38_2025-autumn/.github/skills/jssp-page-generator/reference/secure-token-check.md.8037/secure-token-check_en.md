@@ -26,8 +26,8 @@ API (.js)
 
 ### Secure Token Generation
 
-Place `<imart type="imSecureToken" />` inside `<imart type="head">`.
-This generates an `<input type="hidden">` tag within the HTML.
+Place `<meta name="im_secure_token">` inside `<imart type="head">`, and output the token value into its `content` attribute with `<imart type="imSecureToken" mode="value" />`.
+`mode="value"` outputs only the token value (when `mode` is omitted, an `<input type="hidden">` tag is output).
 
 ```html
 <imart type="head">
@@ -38,7 +38,7 @@ This generates an `<input type="hidden">` tag within the HTML.
 
 ### Secure Token Retrieval
 
-Retrieve the secure token from the generated `<input>` tag.
+Retrieve the secure token from the `content` attribute of the `meta` tag.
 
 ```javascript
 // Retrieve the secure token
@@ -97,5 +97,36 @@ function main(request, httpResponse) {
     // TODO: Add processing for secure token verification error here
   }
 
+}
+```
+
+## Form Submission (Regular POST)
+
+On screens that submit a `<form>` with a regular POST, send the token as a request parameter and verify it in the function container.
+
+### Presentation Page Side
+
+Place `<imart type="imSecureToken" />` inside the form. When `mode` is omitted, `<input type="hidden" name="im_secure_token" value="...">` is output, and the token is sent as the request parameter `im_secure_token` when the form is submitted.
+
+```html
+<form action="sample/form/submit" method="POST">
+  <imart type="imSecureToken" />
+  <!-- Input fields -->
+  <button type="submit">Submit</button>
+</form>
+```
+
+### Function Container Side
+
+Call `verify()` with no arguments. When `token` is omitted, the token is taken from the request parameter `im_secure_token` and verified.
+
+```javascript
+function init(request) {
+  let result = new SecureTokenManager().verify();
+  if (result.error || !result.data) {
+    // TODO: Add processing for secure token verification error here
+    return;
+  }
+  // Registration processing
 }
 ```

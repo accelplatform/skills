@@ -44,7 +44,7 @@ src/
 
 ```javascript
 module.exports = {
-    testMatch: ["src/test/jssp/**/*.test.js"],
+    testRegex: "[/\\\\]src[/\\\\]test[/\\\\]jssp[/\\\\].+\\.test\\.js$",
     sourcePathMapping: {
         "src/test/jssp/src/": "src/main/jssp/src/"
     },
@@ -55,7 +55,7 @@ module.exports = {
 
 | 配置项 | 说明 |
 |--------|------|
-| `testMatch` | 测试文件的搜索模式 |
+| `testRegex` | 用于匹配测试文件的正则表达式（对绝对路径进行部分匹配）。js-jest 不使用 `testMatch` / `testPathIgnorePatterns` 进行匹配，因此通过此项限定目标。省略时，项目内所有 `*.test.js` / `*.spec.js` 均为目标 |
 | `sourcePathMapping` | 测试路径到源路径的对应关系。与测试文件相同相对路径的源文件会自动加载到作用域中 |
 | `collectCoverage` | 启用覆盖率收集 |
 | `coverageDirectory` | 覆盖率报告的输出目录 |

@@ -69,17 +69,17 @@ NOT(S(...))                否定
 
 ### カテゴリ値（最終引数の比較演算子）
 
-`imm_department` / `imm_company_post` / `imm_public_grp` / `imm_public_grp_role` の最終引数は、組織階層に対する比較演算子:
+`imm_department` / `imm_company_post` / `imm_public_grp` / `imm_public_grp_role` の最終引数は比較演算子。`imm_department` / `imm_public_grp` は組織・グループの階層、`imm_company_post` / `imm_public_grp_role` は役職・役割のランク（値が小さいほど上位）で比較する（下表の「組織」は役職・役割の場合は上位・下位の役職・役割と読み替える）:
 
 | 値 | 意味 |
 |---|---|
 | `eq` | equal（指定組織と一致するもののみ） |
-| `lt` | less than（上位組織、自身を除く） |
-| `le` | less than or equal（上位組織 + 自身） |
-| `gt` | greater than（下位組織、自身を除く） |
-| `ge` | greater than or equal（下位組織 + 自身） |
+| `lt` | less than（下位組織、自身を除く） |
+| `le` | less than or equal（下位組織 + 自身） |
+| `gt` | greater than（上位組織、自身を除く） |
+| `ge` | greater than or equal（上位組織 + 自身） |
 
-例: 部署 `dept_other_11` 配下の全員を対象としたい場合は `ge`、自身のみは `eq`、配下のみ（自身は除く）は `gt`。
+例: 部署 `dept_other_11` 配下の全員を対象としたい場合は `le`、自身のみは `eq`、配下のみ（自身は除く）は `lt`。
 
 ### 「会社」単位の subject 指定
 
@@ -89,7 +89,7 @@ intra-mart の組織体系では「会社」は組織ツリーのトップレベ
 S(imm_department:<会社コード> <会社コード> <会社コード> le)
 ```
 
-第 2 引数（組織セットコード）と第 3 引数（組織コード）に会社コードと同じ値を入れ、カテゴリ `le` で「指定組織 + 上位」を表す（会社はトップなので、結果として会社配下の全組織が対象）。
+第 2 引数（組織セットコード）と第 3 引数（組織コード）に会社コードと同じ値を入れ、カテゴリ `le` で「指定組織 + 下位」を表す（会社はトップなので、結果として会社配下の全組織が対象）。
 
 実例:
 
@@ -106,14 +106,6 @@ AND(S(b_m_role:account_manager), NOT(S(imm_user:aoyagi)))
 
 # ueda または aoyagi のいずれか
 OR(S(imm_user:ueda), S(imm_user:aoyagi))
-
-# 組織階層の複合条件（上位～下位を AND で組合せ）
-AND(
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 lt),
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 le),
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 gt),
-  S(imm_department:comp_other_01 comp_other_01 dept_other_11 ge)
-)
 ```
 
 ### intra-mart 標準で登録済みのロール（`b_m_role`）
@@ -236,7 +228,7 @@ SHA-256(<flow_route.json の authzUri>)
 - 単純なケース（特定ロールへの許可）は 1 リソース 1 行ずつ列挙する。`AND` / `OR` / `NOT` は **複雑な条件（特定ユーザの除外、組織階層フィルタ等）の場合のみ** 使う
 - `tenant_manager` は全 service リソース・全メニューグループに自動付与される（前節「既定ポリシー」参照）。`authzPolicies` に明示的に書く必要はなく、**それ以外の対象ロール／ユーザのみを記述**する
 - `authenticated`（認証済全ユーザ）に許可するのは、検索系・選択系の軽量サービスに限定する
-- 組織階層を対象に絞り込む場合、`ge`（自身+配下）の使用が最も一般的。階層の境界条件（含む/含まない）を意識して `eq` / `lt` / `le` / `gt` / `ge` を使い分ける
+- 組織階層を対象に絞り込む場合、`le`（自身+配下）の使用が最も一般的。階層の境界条件（含む/含まない）を意識して `eq` / `lt` / `le` / `gt` / `ge` を使い分ける
 
 ## 制限事項
 

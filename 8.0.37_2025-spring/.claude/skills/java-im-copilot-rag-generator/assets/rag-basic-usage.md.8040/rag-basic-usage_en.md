@@ -7,7 +7,7 @@ RAG is broadly divided into two phases.
 1. **Data preparation phase**: Split and vectorize documents, then register them to the vector store (run periodically via the job scheduler)
 2. **Query response phase**: Search the vector store for the user's question and generate an answer based on the search results (implemented via an Assistant)
 
-## Pattern 1: Implementing an `Embedder` Adapter
+## Pattern 1: Implementing an `Embedder` Adapter and a `Document`
 
 Since the platform does not provide a default implementation of `Embedder`, first prepare an adapter wrapping `EmbeddingsAction`.
 
@@ -48,6 +48,106 @@ public class EmbeddingsActionEmbedder implements Embedder {
 }
 ```
 
+Implement the `Document` to register yourself as well. It is a class that simply holds each field, keeping the metadata as a JSON string produced by Jackson (because the `Content.getMetadata()` contract returns a JSON string).
+
+```java
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jp.co.intra_mart.foundation.copilot.vectorstore.document.Document;
+import jp.co.intra_mart.foundation.copilot.vectorstore.document.exception.DocumentConversionException;
+
+public class RegistrationDocument implements Document {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private String text;
+
+    /** Metadata (JSON string) */
+    private String metadata;
+
+    private List<Double> vector;
+
+    private String originSourceId;
+
+    private Map<String, Object> indexedMetadata;
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void setText(final String text) {
+        this.text = text;
+    }
+
+    @Override
+    public String getMetadata() {
+        return metadata;
+    }
+
+    @Override
+    public <T> T getMetadata(final Class<T> type) throws DocumentConversionException {
+        if (metadata == null) {
+            return null;
+        }
+        try {
+            return OBJECT_MAPPER.readValue(metadata, type);
+        } catch (final IOException e) {
+            throw new DocumentConversionException("Failed to convert metadata. type=" + type.getName(), e);
+        }
+    }
+
+    @Override
+    public void setMetadata(final Object metadata) throws DocumentConversionException {
+        if (metadata == null) {
+            this.metadata = null;
+            return;
+        }
+        try {
+            this.metadata = OBJECT_MAPPER.writeValueAsString(metadata);
+        } catch (final JsonProcessingException e) {
+            throw new DocumentConversionException("Failed to convert metadata to JSON.", e);
+        }
+    }
+
+    @Override
+    public List<Double> getVector() {
+        return vector;
+    }
+
+    @Override
+    public void setVector(final List<Double> vector) {
+        this.vector = vector;
+    }
+
+    @Override
+    public String getOriginSourceId() {
+        return originSourceId;
+    }
+
+    @Override
+    public void setOriginSourceId(final String originSourceId) {
+        this.originSourceId = originSourceId;
+    }
+
+    @Override
+    public Map<String, Object> getIndexedMetadata() {
+        return indexedMetadata;
+    }
+
+    @Override
+    public void setIndexedMetadata(final Map<String, Object> indexedMetadata) {
+        this.indexedMetadata = indexedMetadata;
+    }
+}
+```
+
 ## Pattern 2: Data Preparation Job (Document Splitting, Vectorization, Registration)
 
 ```java
@@ -68,7 +168,6 @@ import jp.co.intra_mart.foundation.job_scheduler.exception.JobExecuteException;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.file.Storage;
 import jp.co.intra_mart.foundation.vectorstore.core.exception.VectorStoreException;
-import jp.co.intra_mart.system.copilot.vectorstore.document.StandardRegistrationDocument;
 
 public class RagProcessingPipelineJob extends BaseJob {
 
@@ -87,10 +186,10 @@ public class RagProcessingPipelineJob extends BaseJob {
         final Storage<?> parentStorage = new PublicStorage(storageRootPath);
         try {
             if (!parentStorage.exists() || !parentStorage.isDirectory()) {
-                return JobResult.error("対象ディレクトリが存在しません: " + storageRootPath);
+                return JobResult.error("Target directory does not exist: " + storageRootPath);
             }
         } catch (final IOException e) {
-            return JobResult.error("対象ディレクトリへのアクセスに失敗しました: " + e.getLocalizedMessage());
+            return JobResult.error("Failed to access target directory: " + e.getLocalizedMessage());
         }
 
         // Chunk splitter. The method name is splitText (not split)
@@ -111,7 +210,7 @@ public class RagProcessingPipelineJob extends BaseJob {
                     .useScoreNormalize(true)
                     .build();
         } catch (final VectorStoreException e) {
-            return JobResult.error("ベクトルストアの初期化に失敗しました: " + e.getLocalizedMessage());
+            return JobResult.error("Failed to initialize vector store: " + e.getLocalizedMessage());
         }
 
         try {
@@ -125,15 +224,15 @@ public class RagProcessingPipelineJob extends BaseJob {
 
                 final List<Document> documents = new ArrayList<>();
                 for (final String chunkText : chunkTexts) {
-                    // StandardRegistrationDocument is the platform-provided standard implementation of Document
-                    final Document document = new StandardRegistrationDocument();
+                    // RegistrationDocument is the Document implemented in Pattern 1
+                    final Document document = new RegistrationDocument();
                     document.setText(chunkText);
                     documents.add(document);
                 }
                 vectorStore.add(documents);
             }
         } catch (final VectorStoreException e) {
-            return JobResult.error("ベクトルストアへの登録に失敗しました: " + e.getLocalizedMessage());
+            return JobResult.error("Failed to register to vector store: " + e.getLocalizedMessage());
         }
 
         LOGGER.info("Completed RAG processing pipeline job");
@@ -142,7 +241,7 @@ public class RagProcessingPipelineJob extends BaseJob {
 
     private List<String> loadDocumentTexts(final Storage<?> parentStorage) {
         // Implement on the application side: scan the files under the directory and return the text of each file
-        throw new UnsupportedOperationException("実装例では省略");
+        throw new UnsupportedOperationException("Omitted in this example");
     }
 }
 ```
@@ -175,7 +274,6 @@ import jp.co.intra_mart.foundation.copilot.vectorstore.builder.VectorStoreBuilde
 import jp.co.intra_mart.foundation.copilot.vectorstore.document.ScoredDocument;
 import jp.co.intra_mart.foundation.copilot.vectorstore.embedder.Embedder;
 import jp.co.intra_mart.foundation.vectorstore.core.exception.VectorStoreException;
-import jp.co.intra_mart.system.copilot.vectorstore.reranker.StandardRrfReranker;
 
 @Assistant(id = "rag_assistant", name = "RAG Assistant",
         type = AssistantType.STANDARD, listEnable = true, storeMessage = false)
@@ -198,14 +296,14 @@ public class RagAssistant extends AbstractCopilotAssistant<AssistantParameter> {
         try {
             chatAction = ActionFactory.getFactory().getChatAction();
         } catch (final CopilotServiceConfigurationException e) {
-            throw new CopilotAssistantException("チャットアクションの取得に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("Failed to get chat action: " + e.getMessage(), e);
         }
 
         final List<ScoredDocument> searchResults;
         try {
             searchResults = searchVectorStore(userMessage);
         } catch (final VectorStoreException e) {
-            throw new CopilotAssistantException("ベクトルストアの検索に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("Failed to search vector store: " + e.getMessage(), e);
         }
 
         final StringBuilder context = new StringBuilder();
@@ -214,7 +312,7 @@ public class RagAssistant extends AbstractCopilotAssistant<AssistantParameter> {
         }
 
         final List<ChatMessage> messages = ChatMessage.builder()
-                .newMessage().withRole("system").addTextContent("以下の検索結果を参考にユーザの質問に回答してください。\n" + context)
+                .newMessage().withRole("system").addTextContent("Answer the user's question using the following search results.\n" + context)
                 .newMessage().withRole("user").addTextContent(userMessage)
                 .build();
 
@@ -234,7 +332,7 @@ public class RagAssistant extends AbstractCopilotAssistant<AssistantParameter> {
         } catch (final CopilotServiceActionException | java.io.IOException e) {
             // AssistantResponseWriter is AutoCloseable, and its close() declares IOException,
             // so when using try-with-resources you must also catch this exception for the implicit close() call
-            throw new CopilotAssistantException("チャット実行に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("Chat execution failed: " + e.getMessage(), e);
         }
 
         return null;
@@ -250,18 +348,19 @@ public class RagAssistant extends AbstractCopilotAssistant<AssistantParameter> {
                 .useScoreNormalize(true)
                 .build();
 
-        return vectorStore.hybridSearch(query, new StandardRrfReranker(), RETRIEVAL_COUNT);
+        // When no Reranker is passed, results are merged with RRF (Reciprocal Rank Fusion)
+        return vectorStore.hybridSearch(query, RETRIEVAL_COUNT);
     }
 }
 ```
 
 - The parameter class `T` uses `AssistantParameter` (the same contract as the Assistant registration in `java-im-copilot-agent-generator` — a bespoke POJO leaves the chat UI unable to accept a prompt)
-- `hybridSearch(query, reranker, topK)` automatically vectorizes the query text internally (using the `Embedder`), so the caller does not need to vectorize it explicitly
+- `hybridSearch(query, topK)` automatically vectorizes the query text internally (using the `Embedder`), so the caller does not need to vectorize it explicitly
 - Make sure the `VectorStoreBuilder` settings (`category`/`embedder`/`useScoreNormalize`) match between the job side and the Assistant side. A mismatch leads to category mix-ups or discrepancies in score criteria
 
 ## Notes
 
-- **Do not implement `Document` yourself.** Use `StandardRegistrationDocument` (the platform-provided standard implementation) as-is
+- **Implement `Document` yourself (Pattern 1).** Implementation classes under `jp.co.intra_mart.system.*` are non-public APIs, so do not use them
 - **`TextSplitter`'s split method is `splitText(String)`.** There is no method named `split(String)`
 - **Call `VectorStoreBuilder.useDefault()` before `embedder(...)`.** Calling it afterward resets the `Embedder` you set
 - **There is no default implementation of `Embedder` in the platform.** You must always implement an adapter wrapping `EmbeddingsAction` yourself (Pattern 1)

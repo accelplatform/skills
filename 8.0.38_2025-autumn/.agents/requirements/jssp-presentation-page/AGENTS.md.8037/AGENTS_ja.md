@@ -28,10 +28,6 @@
   <!-- プレゼンテーションページの独自スタイル -->
   <style>
     /* TODO: ここにカスタムスタイルを追加します */
-    .button-spacing {
-      display: flex;
-      gap: 3em;
-    }
   </style>
   <!-- プレゼンテーションページのスクリプト（$data をグローバル領域に置かず IIFE でスコープ化する） -->
   <script>
@@ -489,16 +485,17 @@ if (!userCode || userCode.length === 0) {
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
   let activeValidation = false; // 初回表示時はエラー非表示
+  const container = document.getElementById('imui-container'); // DOM 検索の起点（自画面のルート要素）
 
   function clearValidationError() {
-    document.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => el.classList.remove('imds-validation-error'));
-    document.querySelectorAll('.imds-error-text').forEach((el) => { el.style.display = 'none'; });
+    container.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => el.classList.remove('imds-validation-error'));
+    container.querySelectorAll('.imds-error-text').forEach((el) => { el.style.display = 'none'; });
   }
   function showValidationError(errors) {
     errors.forEach((error) => {
-      const field = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+      const field = container.querySelector(`.imds-field[for=":${error.name}:"]`);
       if (field) field.classList.add('imds-validation-error');
-      const msg = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+      const msg = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
       if (msg) { msg.textContent = error.message; msg.style.display = ''; }
     });
     activeValidation = true; // 以降はリアルタイム再バリデーション
@@ -662,13 +659,16 @@ document.getElementById('register-button').addEventListener('click', () => {
   imdsConfirm(
     '登録してもよろしいですか？',     // メッセージ
     '登録',                         // ダイアログのタイトル
-    async () => {                   // OKボタンクリック時の処理
-      const isSuccess = await register(request);
-      if (isSuccess) {
-        clearValidationError();
-      }
+    null,
+    null,
+    { mode: 'info', okButton: { text: '登録' } }
+  ).then(async (result) => {      // OKボタンクリック時の処理
+    if (!result) return;
+    const isSuccess = await register(request);
+    if (isSuccess) {
+      clearValidationError();
     }
-  );
+  });
 });
 ```
 
@@ -687,7 +687,7 @@ document.getElementById('register-button').addEventListener('click', () => {
   - `info`（デフォルト）: 通常の確認（登録、検索など）
   - `warning`: UNDO できないデータ更新の確認
   - `danger`: データ削除の確認（`okButton.text` に「削除」を指定すること）
-- OKボタンクリック時、第3引数のコールバックが実行される
+- OKボタンクリック時、`imdsConfirm()` が返す Promise が `true` に解決される（キャンセル・×・Escape では `false`）
   1. API を呼び出す
   2. API 処理が成功した場合、`clearValidationError()` で画面上のバリデーションエラーを解除する
 

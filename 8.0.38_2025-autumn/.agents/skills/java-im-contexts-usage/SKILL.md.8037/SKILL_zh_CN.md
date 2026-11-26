@@ -85,6 +85,7 @@ if (ContextStatus.isAdministrator()) { /* 系统管理员 */ }
 | 角色ID列表（含子角色） | `AccountContext.getRoleIds()` |
 | 登录时间 | `AccountContext.getLoginTime()` |
 | 用户显示名、邮箱等 | `UserContext.getUserProfile()` 的各方法 |
+| 登录用户的组织（当前组织） | `UserContext.getCurrentDepartment()` |
 | 主所属部门 | `UserContext.getMainDepartment()` |
 | 全部所属部门 | `UserContext.getAllDepartments()` |
 | 所属公司 | `UserContext.getCompanyList()` |
@@ -146,7 +147,8 @@ if (ContextStatus.isAdministrator()) { /* 系统管理员 */ }
 
 ## 注意事项
 
-- **必须：不要对 `Contexts.get()` 的返回值进行空值检查（该检查是永远不会执行的死代码）。** `Contexts.get()` 绝不会返回 null——找不到对应上下文时，始终会抛出 `ContextNotFoundException`（非受检异常）（已通过实际源码与实际运行环境双重确认）。因此 `if (account == null)` 这样的分支永远不会为真。某些上下文在特定运行环境中可能无法获取（参见下文"上下文可用范围"），需要处理获取失败的情况时，应捕获 `ContextNotFoundException` 而非进行空值检查（不过 `AccountContext` 是必需上下文，通常不会抛出该异常）
+- **必须：不要对 `Contexts.get()` 的返回值进行空值检查（该检查是永远不会执行的死代码）。** `Contexts.get()` 绝不会返回 null——找不到对应上下文时，始终会抛出 `ContextNotFoundException`（非受检异常）。因此 `if (account == null)` 这样的分支永远不会为真。某些上下文在特定运行环境中可能无法获取（参见下文"上下文可用范围"），需要处理获取失败的情况时，应捕获 `ContextNotFoundException` 而非进行空值检查（不过 `AccountContext` 是必需上下文，通常不会抛出该异常）
+- **必须：以登录用户的组织为起点的处理（获取同一组织的成员、按组织筛选等）应使用当前组织（`getCurrentDepartment()`）。** 当前组织在登录时为主所属；用户在画面页眉切换组织后，在该会话期间会变为切换后的组织（主所属不变）。IM-Authz 中以组织为条件的授权以及页眉显示的组织也使用当前组织，因此若以主所属为起点，会与它们不一致。`getMainDepartment()` 仅在无论用户选择了哪个组织、都需要主所属本身时使用
 - **必须：认证检查。** 即使成功获取 `AccountContext`，`isAuthenticated()` 也可能返回 `false`（未认证用户、系统启动时等）。以认证为前提的处理必须进行确认
 - **禁止：持有或缓存上下文。** 上下文绑定于请求（或线程）。不得保存在实例字段或 `static` 字段中
   ```java
@@ -175,8 +177,9 @@ if (ContextStatus.isAdministrator()) { /* 系统管理员 */ }
 3. 是否将上下文保存在实例字段或 `static` 字段中
 4. 是否将 `UserProfile` 中的姓名、邮箱等个人信息输出到日志
 5. 基础设施层（DAO/Repository）是否直接调用了 `Contexts` API
-6. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
-7. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。如果项目另有面向 Java 的代码评审/安全检查技能，请使用那些技能
+6. 以登录用户的组织为起点的处理是否使用了 `getCurrentDepartment()` 而非 `getMainDepartment()`
+7. 是否符合 `.agents/requirements/java-naming/AGENTS.md` / `.agents/requirements/java-code-style/AGENTS.md` / `.agents/requirements/java-javadoc/AGENTS.md`
+8. `jssp-code-review` / `jssp-security-check` 仅适用于 JSSP，不适用于本技能的生成物。如果项目另有面向 Java 的代码评审/安全检查技能，请使用那些技能
 
 ## 上下文可用范围
 

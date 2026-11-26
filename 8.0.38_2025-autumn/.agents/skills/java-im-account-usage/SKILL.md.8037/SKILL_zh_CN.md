@@ -80,7 +80,7 @@ description: 用于在 Java（JavaEE 开发模型）中使用 intra-mart 专有�
 - **密码采用哈希化保存时，`getAccountInfo()`/`getAccountInfos()`/`searchAccountInfos()` 返回的 `password` 为 `null`。** 密码校验必须使用 `AccountPasswordAdapter#collate()`（不要直接比较 `AccountInfo.password`）
 - **当 `AccountInfo.password` 为 `null` 时，`updateAccountInfo()` 仅更新密码以外的字段。** 若想在保留密码的同时更新其他字段，应保持已获取的 `AccountInfo` 的 `password` 不变并原样传入；反之，若误将空字符串等非 null 值设置进去，会导致密码被意外覆盖
 - **`AccountRoleInfo` 的有效期判定为"开始日 &lt;= 判定日 &lt; 结束日"。** 将结束日设置为 `null` 会重置为系统最大日期（注意这并不等同于"无限期"，系统最大日期只是被当作事实上的无限期处理）
-- **仅查看角色"分配"直接匹配的 `getUserCdsByAccountRoleId()`，与考虑层级・有效期的 `getUserCdsByRoleId()`，行为不同。** 若想连同父角色下的子角色持有者一起检索，应使用后者。同样，`getAccountRoleIds()`（仅直接分配）与 `getAccountRoleIdsRecursively()`（含子角色）也需要根据场景区分使用
+- **仅查看角色"分配"直接匹配的 `getUserCdsByAccountRoleId()`，与考虑层级・有效期的 `getUserCdsByRoleId()`，行为不同。** 后者除指定角色外，还会返回其所有父角色的持有者（通过父角色持有指定角色的用户）。同样，`getAccountRoleIds()`（仅直接分配）与 `getAccountRoleIdsRecursively()`（含子角色）也需要根据场景区分使用
 - **`isUpdate(Date)` 已标记为 `@Deprecated`**（自 8.0.4 起始终返回 `true`）。不要用它判断是否发生了更新
 - **当 `canDecrypt()` 为 `false`（不可逆＝哈希化）时，`AccountPasswordAdapter#decrypt()` 返回 `null`。** 若实现前提是可以解密，应事先确认 `canDecrypt()`
 - `AccountInfoManager` 的全部方法均抛出受检异常 `AdminException`，`AccountPasswordAdapter` 的全部方法均抛出受检异常 `PasswordException`。**二者是不同的异常类体系**，若在同一方法中同时使用这两个 API，需要分别 `catch`，或通过共同的父类统一捕获

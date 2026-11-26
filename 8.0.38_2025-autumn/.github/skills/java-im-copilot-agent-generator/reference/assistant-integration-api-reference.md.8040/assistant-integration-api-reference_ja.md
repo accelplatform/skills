@@ -32,27 +32,17 @@ public enum AssistantType { STANDARD, USER_DEFINITION }
 - `storeMessage`: メッセージ履歴を永続化するかどうか。省略時は `false`
 - `metadataFactory`: 省略可（既定は `StandardMetadataFactory`）
 
-## プラットフォームへの登録（`@Assistant` を付与しただけでは認識されない）
+## プラットフォームへの登録
 
-`@Assistant` を付与しただけではプラットフォームに認識されず、アシスタント一覧にも表示されない。以下の両方が必須である。
+`@Assistant` クラスはビルド時に自動生成される索引で認識される。アシスタント一覧に表示するには、IM-Authz の許可ポリシーも要る。
 
-### 1. `AssistantScanPackageFactory`（クラスパススキャン対象の登録）
+### 1. 索引による認識（`AssistantScanPackageFactory` は要らない）
 
-```java
-package jp.co.intra_mart.foundation.copilot.assistant;
-
-public interface AssistantScanPackageFactory {
-    Collection<String> getTargetPackages();
-}
-```
-
-プラットフォーム内部の `AssistantAnnotationLoader`（`jp.co.intra_mart.system.copilot.assistant.impl`）は、`ServiceLoaderUtil.loadPriority(AssistantScanPackageFactory.class)` で登録済みの全実装から対象パッケージを集約し、`WebAppClassScanner.findClassesWithAnnotation(Assistant.class, scanPackages)` で `@Assistant` クラスを探索する（MCP サーバの `McpScanPackageFactory` と同一の設計）。`@Assistant` クラスを含むパッケージを `getTargetPackages()` で返す実装クラスを作成し、`META-INF/services/jp.co.intra_mart.foundation.copilot.assistant.AssistantScanPackageFactory` に完全修飾名を1行で登録する。
-
-**この結果は `StandardAssistantMetadataRepository`（`jp.co.intra_mart.system.copilot.assistant.metadata`）の `static` フィールドに、クラス初回ロード時（実質的にサーバ起動時）に一度だけキャッシュされる。** 登録後にアシスタントが反映されない場合、アプリケーションの再デプロイだけでなく、プラットフォームサーバの再起動が必要になることがある。
+`@Assistant` クラスの完全修飾名は、ビルド時に自動生成される索引 `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.assistant.annotation.Assistant`（ファイル名がアノテーションの完全修飾名）に載り、プラットフォームはこの索引から `@Assistant` クラスを読み込む。`@MCPServer`・組み込みツールの `@Tool` と同じ仕組みで、索引はアノテーションプロセッサ `jp.co.intra_mart.tools:im_service_annotation_processor` が生成する（`im_copilot_core` が `@Assistant` を索引の対象として登録している）。`AssistantScanPackageFactory` の実装と `META-INF/services` への登録は要らない。
 
 ### 2. IM-Authz での権限付与（自動インポートされるのはリソースのみ）
 
-`@Assistant` クラスがスキャンされると、`CopilotAssistantResourceInitializer`（`jp.co.intra_mart.system.copilot.assistant.auth.importer`、`ApplicationInitializer`）がサーバ起動時にテナントごと実行され、各アシスタントの認可リソースを**自動的にインポート**する。リソースURIの形式は以下の通り（`CopilotAssistantResourceType`）。
+`@Assistant` クラスが認識されると、サーバ起動時にテナントごとに、各アシスタントの認可リソースが**自動的にインポート**される。リソースURIの形式は以下の通り。
 
 ```
 im-copilot-assistant://assistant/<アシスタントID>
@@ -60,7 +50,7 @@ im-copilot-assistant://assistant/<アシスタントID>
 
 リソースタイプID: `im-copilot-assistant`、アクション: `execute`。
 
-**リソースのインポートと、そのリソースへの許可ポリシー付与は別物であり、後者は自動化されない。** アシスタント一覧の取得（`CopilotAssistantService#getMetadatas(true)`）は、`listEnable() == true` かつ `AuthorizationClient.authorize(resourceUri, "execute")` が許可（`Permit`）を返したものだけを返す。**IM-Authz の管理画面（または `java-im-authz-usage` スキルが扱う `PolicyManager`）で、対象ユーザ・ロールに対する許可ポリシーを明示的に設定しない限り、アシスタントはスキャンされていても一覧に表示されない。**
+**リソースのインポートと、そのリソースへの許可ポリシー付与は別物であり、後者は自動化されない。** アシスタント一覧の取得（`CopilotAssistantService#getMetadatas(true)`）は、`listEnable() == true` かつ `AuthorizationClient.authorize(resourceUri, "execute")` が許可（`Permit`）を返したものだけを返す。**IM-Authz の管理画面（または `java-im-authz-usage` スキルが扱う `PolicyManager`）で、対象ユーザ・ロールに対する許可ポリシーを明示的に設定しない限り、アシスタントは認識されていても一覧に表示されない。**
 
 ## `AbstractCopilotAssistant<T>`
 
@@ -102,7 +92,7 @@ public class AssistantParameter {
 
 - 追加のパラメータが不要な場合は `AssistantParameter` をそのまま `T` として使ってよい
 - 追加のパラメータが必要な場合は `AssistantParameter` を**継承**し、`@Property`（`jp.co.intra_mart.foundation.copilot.assistant.annotation.Property`）を付与した追加フィールドのみを持たせる。継承元の `message`/`threadId` は再定義しない
-- ユーザの発話文字列は `parameter.getMessage().getContents()` から取得する（独自の `userMessage` 等のフィールドを追加しても、チャットUIはそこに書き込まない）
+- ユーザの発話文字列は `parameter.getMessage().getContents()` から取得する。戻り値は `Object` 型で文字列以外が入る場合があるため、文字列であることを確かめてから使う（独自の `userMessage` 等のフィールドを追加しても、チャットUIはそこに書き込まない）
 
 ## `AssistantMessage`/`AssistantResult`
 
@@ -151,5 +141,5 @@ public interface AssistantResponseWriter extends AutoCloseable {
 | 要件 | 実装方針 |
 |---|---|
 | コード側で固定的に組み立てたエージェント（モデル・インストラクション・ツールが実装時点で決まっている） | `doExecute` 内で毎回 `Agent.builder()...build()` し、`run(...)`（同期）を呼ぶ。`assets/copilot-agent-basic-usage.md` パターン8 |
-| Agent Designer 等でユーザが定義したエージェント定義（JSON）を動的に読み込む | プラットフォーム標準の `AgentDefinitionConverter.fromDefinitionData(...)`（`jp.co.intra_mart.system.copilot.agent.definition.converter`）でエージェント定義データから `Agent` を構築する。この経路は Agent Designer の「試し実行」機能（`AgentTrialRunAssistant`）が使う特殊なパターンであり、通常のアプリケーション開発では前者（固定構成）で十分なことが多い |
+| 画面（Accel Agent）で定義したエージェントを動かす | `doExecute` 内で `AgentManagementService` から公開中の版の `Agent` を読み込み、`run(...)` を呼ぶ。`assets/copilot-agent-basic-usage.md` パターン11 |
 | ストリーミング応答が必要 | `getAssistantContext().getResponseWriter()` を使い、`agent.runStreaming(session, message, runContext, handler)` を呼ぶ。`handler` は `StreamingResponseHandler` の実装で、`AssistantResponseWriter` へチャンクを書き込む |

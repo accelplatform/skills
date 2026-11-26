@@ -1,6 +1,6 @@
 # MCP Server Implementation API Reference (Java)
 
-Based on the actual class definitions of the `im_copilot_mcp` module (`jp.co.intra_mart.foundation.copilot.mcp.*` / `jp.co.intra_mart.system.copilot.mcp.*`). Do not supplement methods/attributes from memory or guesswork.
+Based on the actual class definitions of the `im_copilot_mcp` module (`jp.co.intra_mart.foundation.copilot.mcp.*`). Do not supplement methods/attributes from memory or guesswork.
 
 `im_copilot_mcp` is a submodule of the `im_copilot` (IM-Copilot) module, providing functionality to implement a Model Context Protocol (MCP) Streamable HTTP server purely through annotations.
 
@@ -107,6 +107,7 @@ public final class SchemaProperties {
         String name() default "";
         String pattern() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface IntegerProperty {
@@ -118,6 +119,7 @@ public final class SchemaProperties {
         double minimum() default Double.NEGATIVE_INFINITY;
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface NumberProperty {
@@ -129,24 +131,28 @@ public final class SchemaProperties {
         double minimum() default Double.NEGATIVE_INFINITY;
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface BooleanProperty {
         String description() default "";
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface EnumProperty {
         String description() default "";
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface ObjectProperty {
         String description() default "";
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface ArrayProperty {
@@ -159,6 +165,7 @@ public final class SchemaProperties {
         SchemaArrayItemProperties.ItemNumberProperty numberItems() default ...;
         boolean required() default false;
         SchemaArrayItemProperties.ItemStringProperty stringItems() default ...;
+        String summary() default "";
     }
 }
 ```
@@ -166,6 +173,7 @@ public final class SchemaProperties {
 - `name`: Specify this if you want the JSON/MCP property name to differ from the field name (the field name is used as-is if omitted)
 - `required`: Whether to expose this as a required field in the MCP tool's input schema
 - `description`: Used by the LLM to understand what the parameter is for. Write it concretely
+- `summary`: Shown as the input parameter's description in the admin screen for built-in tools of Copilot agents (it is not included in the MCP tool's input schema). If you specify a message key, the message for the locale is shown (otherwise the string is shown as written)
 - The numeric types (`IntegerProperty`/`NumberProperty`) have both `minimum`/`maximum` (inclusive bounds) and `exclusiveMinimum`/`exclusiveMaximum` (exclusive bounds)
 - `ArrayProperty` specifies constraints per array element type via `stringItems`/`integerItems`/`numberItems`/`arrayItems` (2D arrays). Each `Item*Property` is under `SchemaArrayItemProperties` (it has no `name`/`description`/`required`, since an element itself has no notion of a name or a required flag)
 
@@ -213,36 +221,17 @@ public final class SchemaArrayItemProperties {
 
 ## Registering the MCP Server (Making the Platform Recognize It)
 
-Simply adding `@MCPServer`/`@Tool` does not make the platform recognize the class. **You must explicitly register it using one of the following methods.**
-
-### Method A: Package scanning via `McpScanPackageFactory` (recommended)
-
-```java
-package jp.co.intra_mart.system.copilot.mcp.annotation;
-
-public interface McpScanPackageFactory {
-    Collection<String> getTargetPackages();
-}
-```
-
-Create a class implementing this interface, and register it using the standard `java.util.ServiceLoader` convention (write the implementation class's fully-qualified name, one line, in `META-INF/services/jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory`). At platform startup, classes annotated with `@MCPServer` are automatically scanned under the packages returned by `getTargetPackages()`.
-
-- The same design philosophy as IM-LogicDesigner's `ElementScanPackageFactory` (see the `java-im-logic-generator` skill). Adding a new `@MCPServer` class does not require this registration again — just place it under the target package
-- One instance is enough for the project (it can cover multiple `@MCPServer` classes)
-
-### Method B: Explicit registration via `META-INF/im_services/annotation_classes`
-
-Under a file named `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` (the filename itself is the annotation's fully-qualified name), list the fully-qualified names of `@MCPServer`-annotated classes, one per line.
+An `@MCPServer` class is registered with the platform when its fully-qualified name is listed in `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` (the file name itself is the fully-qualified name of the annotation). Requests to a `path` that is not listed return 404.
 
 ```
 jp.co.intra_mart.sample.example.mcp.SampleMcpServer
 ```
 
-- Unlike Method A, which scans the entire classpath, only the classes listed here are targeted. **Every time a new `@MCPServer` class is added, this file must be updated**
-- The internal platform implementation that reads this file (`WebAppClassScanner#findClassesWithAnnotation`) is a general-purpose mechanism shared across annotation scanning, not specific to `@MCPServer`
-- If `jp.co.intra_mart.tools:im_service_annotation_processor` is present on the compile-time classpath, javac's annotation processing (the `javax.annotation.processing.Processor` SPI) kicks in and **this file is auto-generated at build time** for classes annotated with `@MCPServer` (no manual authoring needed). However, `im_service_annotation_processor` is not itself a dependency of `im_copilot_mcp` — it may only be present as an incidental transitive dependency when other modules (e.g. `im_workflow`) are also used. In a minimal project that depends only on `im_copilot_mcp`, it may not be auto-generated. **Do not assume it is present — register explicitly via Method A or by hand-writing this file when needed**
-
-**The two methods are not mutually exclusive and can be combined** (listing the same class in both does not cause duplicate registration). For new projects, use **Method A (`McpScanPackageFactory`) as the default**, since it works regardless of the dependency configuration and carries a lower risk of forgetting to register.
+- This file is generated automatically at build time by the annotation processor `jp.co.intra_mart.tools:im_service_annotation_processor` (`javax.annotation.processing.Processor` SPI). Because `im_copilot_mcp` registers `jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` in `META-INF/im_services/annotations`, classes annotated with `@MCPServer` are listed in the index
+- The processor is included in the dependencies of `im_core_base` (compile scope), so it is transitively on the compile-time classpath even in a project that depends only on `im_copilot_mcp` (`im_copilot_mcp` → `im_copilot_core` → `im_master` → … → `im_core_base`)
+- If it is not generated, for example because the annotation processor is disabled (`<proc>none</proc>` in `maven-compiler-plugin`, etc.), create the same file manually under `src/main/resources` and write the fully-qualified names one per line. In that case you must add a line each time you add an `@MCPServer` class
+- The mechanism that reads the index (`WebAppClassScanner#findClassesWithAnnotation`) is not specific to `@MCPServer`; it is shared by scans for other annotations as well
+- Do not use `jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory` (package specification registered via `META-INF/services`); it is a non-public API
 
 ## `@Resource` / `@Prompt` / `@Completion` (MCP Primitives Other Than Tool)
 

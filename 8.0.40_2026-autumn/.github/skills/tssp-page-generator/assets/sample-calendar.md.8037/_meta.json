@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "type": "file",
+  "conditions": {
+    "accelplatformVersion": ">=8.0.37"
+  },
+  "rename": [
+    {
+      "condition": {
+        "locale": "ja"
+      },
+      "from": "sample-calendar_ja.md",
+      "to": "sample-calendar.md"
+    },
+    {
+      "condition": {
+        "locale": "zh_CN"
+      },
+      "from": "sample-calendar_zh_CN.md",
+      "to": "sample-calendar.md"
+    },
+    {
+      "from": "sample-calendar_en.md",
+      "to": "sample-calendar.md"
+    }
+  ],
+  "replacements": [
+    {
+      "type": "section",
+      "heading": "imds テンプレートとの対応",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "Correspondence with imds Templates",
+      "condition": {
+        "feature": "imds"
+      }
+    },
+    {
+      "type": "section",
+      "heading": "与 imds 模板的对应关系",
+      "condition": {
+        "feature": "imds"
+      }
+    }
+  ]
+}

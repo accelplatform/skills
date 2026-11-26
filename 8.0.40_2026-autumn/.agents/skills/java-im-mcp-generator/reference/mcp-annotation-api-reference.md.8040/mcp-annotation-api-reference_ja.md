@@ -1,6 +1,6 @@
 # MCP サーバ実装 API リファレンス（Java 版）
 
-`im_copilot_mcp` モジュール（`jp.co.intra_mart.foundation.copilot.mcp.*` / `jp.co.intra_mart.system.copilot.mcp.*`）の実クラス定義に基づく。記憶や推測でメソッド・属性を補わないこと。
+`im_copilot_mcp` モジュール（`jp.co.intra_mart.foundation.copilot.mcp.*`）の実クラス定義に基づく。記憶や推測でメソッド・属性を補わないこと。
 
 `im_copilot_mcp` は `im_copilot`（IM-Copilot）モジュールのサブモジュールで、Model Context Protocol（MCP）の Streamable HTTP サーバをアノテーションだけで実装するための機能を提供する。
 
@@ -107,6 +107,7 @@ public final class SchemaProperties {
         String name() default "";
         String pattern() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface IntegerProperty {
@@ -118,6 +119,7 @@ public final class SchemaProperties {
         double minimum() default Double.NEGATIVE_INFINITY;
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface NumberProperty {
@@ -129,24 +131,28 @@ public final class SchemaProperties {
         double minimum() default Double.NEGATIVE_INFINITY;
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface BooleanProperty {
         String description() default "";
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface EnumProperty {
         String description() default "";
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface ObjectProperty {
         String description() default "";
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface ArrayProperty {
@@ -159,6 +165,7 @@ public final class SchemaProperties {
         SchemaArrayItemProperties.ItemNumberProperty numberItems() default ...;
         boolean required() default false;
         SchemaArrayItemProperties.ItemStringProperty stringItems() default ...;
+        String summary() default "";
     }
 }
 ```
@@ -166,6 +173,7 @@ public final class SchemaProperties {
 - `name`: JSON/MCP 上のプロパティ名をフィールド名と変えたい場合に指定する（省略時はフィールド名をそのまま使用）
 - `required`: MCP ツールの入力スキーマ上、必須項目として公開するかどうか
 - `description`: LLM がパラメータの用途を理解するために使う。具体的に書くこと
+- `summary`: Copilot エージェントの組み込みツールの管理画面で、入力パラメータの説明として表示される（MCP ツールの入力スキーマには含まれない）。メッセージキーを指定すると、ロケールに応じたメッセージで表示される（キーでなければ書いた文字列のまま表示される）
 - 数値系（`IntegerProperty`/`NumberProperty`）は `minimum`/`maximum`（境界値を含む）と `exclusiveMinimum`/`exclusiveMaximum`（境界値を含まない）の両方を持つ
 - `ArrayProperty` は配列要素の型ごとに `stringItems`/`integerItems`/`numberItems`/`arrayItems`（2次元配列）で制約を指定する。各 `Item*Property` は `SchemaArrayItemProperties` 配下（`name`/`description`/`required` を持たない。要素自体には名前や必須フラグの概念が無いため）
 
@@ -213,36 +221,17 @@ public final class SchemaArrayItemProperties {
 
 ## MCP サーバの登録（プラットフォームへの認識）
 
-`@MCPServer`/`@Tool` を付与しただけではプラットフォームに認識されない。**以下のいずれかの方法で明示的に登録する必要がある。**
-
-### 方法A: `McpScanPackageFactory` によるパッケージスキャン（推奨）
-
-```java
-package jp.co.intra_mart.system.copilot.mcp.annotation;
-
-public interface McpScanPackageFactory {
-    Collection<String> getTargetPackages();
-}
-```
-
-このインタフェースを実装したクラスを作成し、`java.util.ServiceLoader` の標準規約（`META-INF/services/jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory` に実装クラスの完全修飾名を1行で記載）で登録する。プラットフォーム起動時、`getTargetPackages()` が返すパッケージ配下から `@MCPServer` を付与したクラスを自動的にスキャンする。
-
-- IM-LogicDesigner の `ElementScanPackageFactory`（`java-im-logic-generator` スキル参照）と同じ設計思想。新しい `@MCPServer` クラスを追加してもこの登録は不要（対象パッケージ配下に置くだけでよい）
-- プロジェクトに1つあれば足りる（複数の `@MCPServer` クラスをカバーできる）
-
-### 方法B: `META-INF/im_services/annotation_classes` への明示登録
-
-`META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` というファイル名（ファイル名自体がアノテーションの完全修飾名）に、`@MCPServer` を付与したクラスの完全修飾名を1行ずつ記載する。
+`@MCPServer` クラスは、`META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`（ファイル名自体がアノテーションの完全修飾名）に完全修飾名が載っていると、プラットフォームに登録される。載っていない `path` へのリクエストは 404 になる。
 
 ```
 jp.co.intra_mart.sample.example.mcp.SampleMcpServer
 ```
 
-- クラスパス全体を走査する方法Aと異なり、列挙したクラスのみが対象になる。**新しい `@MCPServer` クラスを追加するたびにこのファイルへの追記が必要**
-- プラットフォーム内部実装（`WebAppClassScanner#findClassesWithAnnotation`）がこのファイルを読み込む処理は、`@MCPServer` に限らず他のアノテーションスキャンでも共通で使われる汎用機構である
-- `jp.co.intra_mart.tools:im_service_annotation_processor` がコンパイル時クラスパスに存在する場合、javac の annotation processing（`javax.annotation.processing.Processor` SPI）が働き、`@MCPServer` を付与したクラスに対応するこのファイルが**ビルド時に自動生成される**（手書き不要になる）。ただし `im_service_annotation_processor` は `im_copilot_mcp` 自体の依存関係には含まれず、`im_workflow` 等の他モジュールを併用している場合に推移的依存として存在することがある偶発的なもの。`im_copilot_mcp` のみに依存する最小構成のプロジェクトでは自動生成されない場合があるため、**存在を前提にせず、必要であれば方法Aまたはこのファイルの手動記載で明示的に登録すること**
-
-**両方式は排他ではなく併用可能**（同一クラスが両方に含まれていても重複登録にはならない）。新規プロジェクトでは、依存関係の構成に左右されず登録漏れのリスクが低い**方法A（`McpScanPackageFactory`）を基本とする**。
+- このファイルは、ビルド時にアノテーションプロセッサ `jp.co.intra_mart.tools:im_service_annotation_processor`（`javax.annotation.processing.Processor` SPI）が自動生成する。`im_copilot_mcp` が `META-INF/im_services/annotations` に `jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` を登録しているため、`@MCPServer` を付けたクラスが索引に載る
+- プロセッサは `im_core_base` の依存関係（compile スコープ）に含まれ、`im_copilot_mcp` だけに依存するプロジェクトでも推移的にコンパイル時クラスパスに入る（`im_copilot_mcp` → `im_copilot_core` → `im_master` → … → `im_core_base`）
+- アノテーションプロセッサを止めている（`maven-compiler-plugin` の `<proc>none</proc>` 等）などで生成されない場合は、`src/main/resources` 配下に同じファイルを手で作成し、完全修飾名を1行ずつ書く。この場合は `@MCPServer` クラスを追加するたびに追記が必要
+- 索引を読み込む仕組み（`WebAppClassScanner#findClassesWithAnnotation`）は `@MCPServer` 専用ではなく、他のアノテーションの走査でも共通で使われる
+- `jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory`（`META-INF/services` で登録するパッケージ指定）は非公開 API なので使わない
 
 ## `@Resource` / `@Prompt` / `@Completion`（Tool 以外の MCP プリミティブ）
 

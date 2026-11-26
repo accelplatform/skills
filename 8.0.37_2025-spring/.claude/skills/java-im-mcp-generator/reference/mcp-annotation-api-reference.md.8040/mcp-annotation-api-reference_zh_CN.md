@@ -1,6 +1,6 @@
 # MCP 服务器实现 API 参考（Java 版）
 
-基于 `im_copilot_mcp` 模块（`jp.co.intra_mart.foundation.copilot.mcp.*` / `jp.co.intra_mart.system.copilot.mcp.*`）的实际类定义。不要凭记忆或推测补充方法・属性。
+基于 `im_copilot_mcp` 模块（`jp.co.intra_mart.foundation.copilot.mcp.*`）的实际类定义。不要凭记忆或推测补充方法・属性。
 
 `im_copilot_mcp` 是 `im_copilot`（IM-Copilot）模块的子模块，提供仅通过注解即可实现 Model Context Protocol（MCP）Streamable HTTP 服务器的功能。
 
@@ -107,6 +107,7 @@ public final class SchemaProperties {
         String name() default "";
         String pattern() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface IntegerProperty {
@@ -118,6 +119,7 @@ public final class SchemaProperties {
         double minimum() default Double.NEGATIVE_INFINITY;
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface NumberProperty {
@@ -129,24 +131,28 @@ public final class SchemaProperties {
         double minimum() default Double.NEGATIVE_INFINITY;
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface BooleanProperty {
         String description() default "";
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface EnumProperty {
         String description() default "";
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface ObjectProperty {
         String description() default "";
         String name() default "";
         boolean required() default false;
+        String summary() default "";
     }
 
     public @interface ArrayProperty {
@@ -159,6 +165,7 @@ public final class SchemaProperties {
         SchemaArrayItemProperties.ItemNumberProperty numberItems() default ...;
         boolean required() default false;
         SchemaArrayItemProperties.ItemStringProperty stringItems() default ...;
+        String summary() default "";
     }
 }
 ```
@@ -166,6 +173,7 @@ public final class SchemaProperties {
 - `name`：希望 JSON/MCP 上的属性名与字段名不同时指定（省略时直接使用字段名）
 - `required`：是否在 MCP 工具的输入模式中公开为必填项
 - `description`：供 LLM 理解参数用途。应具体编写
+- `summary`：在 Copilot 代理的内置工具管理画面中，作为输入参数的说明显示（不包含在 MCP 工具的输入模式中）。指定消息键时，按区域设置显示对应的消息（不是消息键时按原样显示所写的字符串）
 - 数值类型（`IntegerProperty`/`NumberProperty`）同时具有 `minimum`/`maximum`（含边界值）与 `exclusiveMinimum`/`exclusiveMaximum`（不含边界值）
 - `ArrayProperty` 通过 `stringItems`/`integerItems`/`numberItems`/`arrayItems`（二维数组）按数组元素类型指定约束。各 `Item*Property` 位于 `SchemaArrayItemProperties` 下（不含 `name`/`description`/`required`，因为元素本身没有名称或必填标志的概念）
 
@@ -213,36 +221,17 @@ public final class SchemaArrayItemProperties {
 
 ## MCP 服务器的注册（使平台识别）
 
-仅标注 `@MCPServer`/`@Tool` 并不会被平台识别。**必须通过以下任一方式明确注册。**
-
-### 方式 A：通过 `McpScanPackageFactory` 进行包扫描（推荐）
-
-```java
-package jp.co.intra_mart.system.copilot.mcp.annotation;
-
-public interface McpScanPackageFactory {
-    Collection<String> getTargetPackages();
-}
-```
-
-创建实现该接口的类，并按照 `java.util.ServiceLoader` 的标准规约进行注册（在 `META-INF/services/jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory` 中以一行记载实现类的完全限定名）。平台启动时，会自动扫描 `getTargetPackages()` 返回的包下标注了 `@MCPServer` 的类。
-
-- 与 IM-LogicDesigner 的 `ElementScanPackageFactory`（参见 `java-im-logic-generator` 技能）采用相同的设计思路。新增 `@MCPServer` 类时无需再次进行此注册（只需放置在目标包下即可）
-- 项目中拥有一个即可（可覆盖多个 `@MCPServer` 类）
-
-### 方式 B：通过 `META-INF/im_services/annotation_classes` 进行显式注册
-
-在名为 `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` 的文件（文件名本身即为该注解的完全限定名）中，逐行记载标注了 `@MCPServer` 的类的完全限定名。
+当 `@MCPServer` 类的完全限定名记载于 `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`（文件名本身即注解的完全限定名）中时，该类会被注册到平台。对未记载的 `path` 的请求会返回 404。
 
 ```
 jp.co.intra_mart.sample.example.mcp.SampleMcpServer
 ```
 
-- 与方式 A 扫描整个类路径不同，此方式仅以列出的类为对象。**每次新增 `@MCPServer` 类时都必须追加到该文件中**
-- 读取此文件的平台内部实现（`WebAppClassScanner#findClassesWithAnnotation`）是跨注解扫描通用的机制，并非 `@MCPServer` 专用
-- 若编译时类路径中存在 `jp.co.intra_mart.tools:im_service_annotation_processor`，javac 的注解处理（`javax.annotation.processing.Processor` SPI）会生效，针对标注了 `@MCPServer` 的类**在构建时自动生成此文件**（无需手动编写）。但 `im_service_annotation_processor` 本身并非 `im_copilot_mcp` 的依赖项，只有在同时使用 `im_workflow` 等其他模块时，才可能作为偶然的传递依赖存在。在仅依赖 `im_copilot_mcp` 的最小化项目中，该文件可能不会被自动生成。**不要假定其必然存在，需要时应通过方式 A 或手动编写该文件进行明确注册**
-
-**两种方式并非互斥，可以并用**（同一个类同时出现在两处也不会造成重复注册）。新项目中，建议**以方式 A（`McpScanPackageFactory`）为基本方案**，因其不受依赖构成影响，遗漏注册的风险更低。
+- 该文件由注解处理器 `jp.co.intra_mart.tools:im_service_annotation_processor`（`javax.annotation.processing.Processor` SPI）在构建时自动生成。由于 `im_copilot_mcp` 在 `META-INF/im_services/annotations` 中注册了 `jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`，标注了 `@MCPServer` 的类会被记入索引
+- 该处理器包含在 `im_core_base` 的依赖关系（compile 作用域）中，即使项目仅依赖 `im_copilot_mcp`，也会传递性地进入编译时类路径（`im_copilot_mcp` → `im_copilot_core` → `im_master` → … → `im_core_base`）
+- 若因停用注解处理器（`maven-compiler-plugin` 的 `<proc>none</proc>` 等）等原因未生成，则在 `src/main/resources` 下手动创建同一文件，并逐行写入完全限定名。此时每次新增 `@MCPServer` 类都需要追加
+- 读取索引的机制（`WebAppClassScanner#findClassesWithAnnotation`）并非 `@MCPServer` 专用，其他注解的扫描也共用该机制
+- `jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory`（通过 `META-INF/services` 注册的包指定）是非公开 API，不要使用
 
 ## `@Resource` / `@Prompt` / `@Completion`（Tool 以外的 MCP 原语）
 

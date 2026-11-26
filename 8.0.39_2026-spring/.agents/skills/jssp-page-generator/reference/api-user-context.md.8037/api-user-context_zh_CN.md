@@ -87,7 +87,30 @@ function getUserProfile() {
 }
 ```
 
+### 获取当前组织
+
+以登录用户的组织为起点的处理（获取同一组织的成员、按组织筛选等）应使用 `currentDepartment`。当前组织在登录时为主所属；用户在画面页眉切换组织后，在该会话期间会变为切换后的组织（`mainDepartment` 不变）。IM-Authz 中以组织为条件的授权以及页眉显示的组织也使用当前组织。
+
+```javascript
+function getCurrentDepartment() {
+  let userContext = Contexts.getUserContext();
+  let dept = userContext.currentDepartment;
+
+  if (dept === null) {
+    return null;
+  }
+  return {
+    companyCd: dept.companyCd,
+    departmentSetCd: dept.departmentSetCd,
+    departmentCd: dept.departmentCd,
+    departmentName: dept.departmentName
+  };
+}
+```
+
 ### 获取主所属组织
+
+仅在需要主所属本身时使用 `mainDepartment`。
 
 ```javascript
 function getMainDepartment() {

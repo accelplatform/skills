@@ -497,25 +497,16 @@ document.addEventListener('DOMContentLoaded', function() {
 **验证方法：** 在生成的 `.html` 文件中 grep `imdsConfirm(`，确认同一文件中存在 `function imdsConfirm(`。
 `validate-jssp-code.js` 的 `JSSP-HTML-015` 自动检测。
 
-```javascript
-// 各画面中包含以下定义
-function imdsConfirm(message, title, onOk, onCancel, options) {
-  let modal = document.getElementById('confirmModal');
-  document.getElementById('confirmMessage').textContent = message;
-  document.getElementById('confirmTitle').textContent   = title || '确认';
-  modal.style.display = 'flex';
-  document.getElementById('confirmOk').onclick = function() {
-    modal.style.display = 'none';
-    if (typeof onOk === 'function') onOk();
-  };
-  document.getElementById('confirmCancel').onclick = function() {
-    modal.style.display = 'none';
-    if (typeof onCancel === 'function') onCancel();
-  };
-}
-```
+内联定义照搬 `assets/simple-form.md` 中的 `imdsConfirm`。该定义会动态生成 `<dialog>` 元素并通过 `showModal()` 显示，返回一个 `Promise`：点击确定按钮时解析为 `true`，点击取消、× 或按 Escape 时解析为 `false`。无需在画面中另行放置确认模态框的 HTML。
 
-同时确认 `imdsConfirm` 引用的确认模态框 HTML（拥有 `id="confirmModal"` 的 `<div>`）也存在于同一文件中。
+```javascript
+// 调用示例（通过第5个参数 options 指定 mode）
+imdsConfirm('确定要注册吗？', '注册', null, null, { mode: 'info', okButton: { text: '注册' } })
+  .then((result) => {
+    if (!result) return;
+    // 点击确定按钮时的处理
+  });
+```
 
 ### 5-2. 画面间参数传递需要同时实现发送和接收两侧
 

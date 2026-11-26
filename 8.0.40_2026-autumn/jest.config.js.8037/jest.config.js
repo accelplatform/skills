@@ -1,5 +1,5 @@
 module.exports = {
-  testMatch: ["src/test/jssp/**/*.test.js"],
+  testRegex: "[/\\\\]src[/\\\\]test[/\\\\]jssp[/\\\\].+\\.test\\.js$",
   sourcePathMapping: {
     "src/test/jssp/src/": "src/main/jssp/src/"
   },

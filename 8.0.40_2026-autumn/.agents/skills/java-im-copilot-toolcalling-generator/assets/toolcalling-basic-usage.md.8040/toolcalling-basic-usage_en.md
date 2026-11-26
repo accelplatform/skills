@@ -35,7 +35,7 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
 
     /** Arguments for the get_weather tool. */
     public static class GetWeatherArgument {
-        @StringProperty(description = "都市名。例: 東京", required = true)
+        @StringProperty(description = "City name. e.g. Tokyo", required = true)
         private String city;
 
         public String getCity() {
@@ -57,7 +57,7 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
         try {
             final ToolDefinition weatherTool = ToolDefinition.builder()
                     .name("get_weather")
-                    .description("指定した都市の現在の天気を取得する")
+                    .description("Gets the current weather for the specified city")
                     .parametersFromClass(GetWeatherArgument.class)
                     .build();
             final List<ToolDefinition> tools = new ArrayList<>();
@@ -66,7 +66,7 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
             final ChatAction chatAction = ActionFactory.getFactory().getChatAction();
 
             final List<ChatMessage> messages = ChatMessage.builder()
-                    .newMessage().withRole("system").addTextContent("あなたは天気案内アシスタントです。必要に応じて get_weather ツールを使ってください。")
+                    .newMessage().withRole("system").addTextContent("You are a weather assistant. Use the get_weather tool as needed.")
                     .newMessage().withRole("user").addTextContent(userMessage)
                     .build();
 
@@ -91,11 +91,11 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
             for (final ToolCall toolCall : toolCalls) {
                 final JsonSchemaValidator validator = new JsonSchemaValidator(weatherTool.getParameters());
                 if (!validator.isValid(toolCall.getArguments())) {
-                    throw new CopilotAssistantException("ツール呼び出しの引数が不正です: " + validator.validate(toolCall.getArguments()));
+                    throw new CopilotAssistantException("Invalid tool call arguments: " + validator.validate(toolCall.getArguments()));
                 }
                 final GetWeatherArgument args = ToolJsonHelper.deserialize(toolCall.getArguments(), GetWeatherArgument.class);
                 // Execute the actual tool (e.g., an external API call) here. This example returns a fixed string
-                final String weatherText = args.getCity() + "の天気は晴れです。";
+                final String weatherText = args.getCity() + ": the weather is sunny.";
                 toolResultBuilder.addToolTextContent(weatherText, toolCall.getId());
             }
 
@@ -108,7 +108,7 @@ public class WeatherToolCallingAssistant extends AbstractCopilotAssistant<Assist
                     .finishReason("stop")
                     .build();
         } catch (final CopilotServiceException e) {
-            throw new CopilotAssistantException("Tool Calling 実行に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("Tool Calling execution failed: " + e.getMessage(), e);
         }
     }
 }
@@ -160,7 +160,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
             final ChatAction chatAction = ActionFactory.getFactory().getChatAction();
 
             final List<ChatMessage> messages = ChatMessage.builder()
-                    .newMessage().withRole("system").addTextContent("あなたは天気案内アシスタントです。必要に応じて get_weather ツールを使ってください。")
+                    .newMessage().withRole("system").addTextContent("You are a weather assistant. Use the get_weather tool as needed.")
                     .newMessage().withRole("user").addTextContent(userMessage)
                     .build();
             final ChatOption option = ChatOption.builder().build();
@@ -195,7 +195,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
                         .newMessage().withRole("assistant").toolCalls(toolCalls)
                         .newMessage().withRole("tool");
                 for (final ToolCall toolCall : toolCalls) {
-                    final String weatherText = "晴れです。"; // Replace with the actual tool execution result
+                    final String weatherText = "It is sunny."; // Replace with the actual tool execution result
                     toolResultBuilder.addToolTextContent(weatherText, toolCall.getId());
                 }
 
@@ -211,7 +211,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
                         .build());
             }
         } catch (final CopilotServiceException | java.io.IOException e) {
-            throw new CopilotAssistantException("Tool Calling 実行に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("Tool Calling execution failed: " + e.getMessage(), e);
         }
 
         return null;
@@ -219,7 +219,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
 
     /** Arguments for the get_weather tool. */
     public static class GetWeatherArgument {
-        @StringProperty(description = "都市名。例: 東京", required = true)
+        @StringProperty(description = "City name. e.g. Tokyo", required = true)
         private String city;
 
         public String getCity() {
@@ -235,7 +235,7 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
         final List<ToolDefinition> tools = new ArrayList<>();
         tools.add(ToolDefinition.builder()
                 .name("get_weather")
-                .description("指定した都市の現在の天気を取得する")
+                .description("Gets the current weather for the specified city")
                 .parametersFromClass(GetWeatherArgument.class)
                 .build());
         return tools;
@@ -272,4 +272,3 @@ public class WeatherToolCallingStreamAssistant extends AbstractCopilotAssistant<
 - **Streaming does not return a response message.** Tool call information must be accumulated from the chunks yourself, and the `assistant`'s tool call information must be explicitly added to the message used for the second call (non-streaming does not require this extra step, since the `response` return value can be reused as-is)
 - **There are some constraints when using the Amazon Bedrock driver** (`strict` is ignored, `ToolChoice.none()` is unavailable, `addImageUrl` is unavailable, etc.). For implementations expected to work across multiple drivers, check "Constraints When Using the Amazon Bedrock Driver" in `reference/toolcalling-api-reference.md`
 - Tool call arguments (`ToolCall.getArguments()`) are not necessarily guaranteed to match the schema. It is recommended to validate with `JsonSchemaValidator` before deserializing with `ToolJsonHelper.deserialize`
-</content>

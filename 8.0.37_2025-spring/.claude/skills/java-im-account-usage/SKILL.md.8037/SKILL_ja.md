@@ -81,7 +81,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けのア
 - **パスワードのハッシュ化保存時は `getAccountInfo()`/`getAccountInfos()`/`searchAccountInfos()` で `password` が `null` になる。** パスワード照合は必ず `AccountPasswordAdapter#collate()` を使うこと（`AccountInfo.password` を直接比較しない）
 - **`updateAccountInfo()` は `AccountInfo.password` が `null` の場合、パスワード以外のみが更新される。** 意図せずパスワードを保持したまま更新したい場合は、取得した `AccountInfo` の `password` を触らずそのまま渡す。逆に空文字などの非 null 値を誤って設定すると、意図せずパスワードが上書きされる
 - **`AccountRoleInfo` の有効期間は「開始日 &lt;= 判定日 &lt; 終了日」で判定される。** 終了日を `null` 設定するとシステム最大日付にリセットされる（無期限にはならない点に注意。システム最大日付が事実上の無期限として扱われる）
-- **ロール「割当」の直接一致のみを見る `getUserCdsByAccountRoleId()` と、階層・有効期間を考慮する `getUserCdsByRoleId()` は挙動が異なる。** 親ロールの配下にあるサブロール保有者も含めて検索したい場合は後者を使う。同様に `getAccountRoleIds()`（直接割当のみ）と `getAccountRoleIdsRecursively()`（サブロール含む）も使い分けが必要
+- **ロール「割当」の直接一致のみを見る `getUserCdsByAccountRoleId()` と、階層・有効期間を考慮する `getUserCdsByRoleId()` は挙動が異なる。** 後者は指定ロールに加え、その全親ロールの保有者（親ロール経由で指定ロールを保有するユーザ）も返す。同様に `getAccountRoleIds()`（直接割当のみ）と `getAccountRoleIdsRecursively()`（サブロール含む）も使い分けが必要
 - **`isUpdate(Date)` は `@Deprecated`（8.0.4 以降は常に `true` を返す）。** 更新有無の判定には使わない
 - **`AccountPasswordAdapter#decrypt()` は `canDecrypt()` が `false`（不可逆＝ハッシュ化）の場合 `null` を返す。** 復号を前提にした実装をする場合は事前に `canDecrypt()` を確認すること
 - `AccountInfoManager` の全メソッドは `AdminException`（チェック例外）を、`AccountPasswordAdapter` の全メソッドは `PasswordException`（チェック例外）をスローする。**両者は別系統の例外クラス**のため、同一メソッド内で両方の API を使う場合は `catch` を分けるか共通の親クラスでまとめて捕捉する

@@ -76,7 +76,7 @@ intra-mart Accel Platform の IM-Copilot が提供する **プロバイダ非依
 3. ツールの引数DTOに `SchemaProperties` アノテーションを付与し、`ToolDefinition.builder().parametersFromClass(...)` でスキーマを生成する
 4. `assets/toolcalling-basic-usage.md` を参照して実装する。非ストリーミング（パターン1）から着手し、必要であればストリーミング（パターン2）へ拡張するとよい
 5. IM-Copilot のチャットUIと連携させる場合、`@Assistant` を付与した `AbstractCopilotAssistant<T>` サブクラスを作成する。**パラメータクラス `T` は `AssistantParameter` 自身、またはそのサブクラスにする**（独自の POJO にするとチャットUIでプロンプトを入力できなくなる）
-6. Assistant を作成した場合、**`AssistantScanPackageFactory` の実装・登録と、IM-Authz での権限付与の両方を必ず行う**（いずれか一方でも欠けるとアシスタント一覧に表示されない。詳細は `java-im-copilot-agent-generator` の `reference/assistant-integration-api-reference.md`「プラットフォームへの登録」を参照）
+6. Assistant を作成した場合、**IM-Authz での権限付与を必ず行う**（権限が無いとアシスタント一覧に表示されない。`@Assistant` クラスはビルド時に自動生成される索引で認識されるので、`AssistantScanPackageFactory` の実装は要らない。詳細は `java-im-copilot-agent-generator` の `reference/assistant-integration-api-reference.md`「プラットフォームへの登録」を参照）
 7. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認
 
 ## 注意事項
@@ -87,7 +87,7 @@ intra-mart Accel Platform の IM-Copilot が提供する **プロバイダ非依
 - **Amazon Bedrock ドライバ利用時は制約がある**（`ToolDefinition.strict` 無視、`ToolChoice.none()` 不可、`addImageUrl` 不可、システムメッセージは最新1件のみ有効）。複数ドライバでの動作を想定する実装では、これらの制約に抵触しないようにする
 - **ツール呼び出しの引数は必ずしもスキーマ通りとは限らない。** `JsonSchemaValidator.isValid(...)` で検証してから `ToolJsonHelper.deserialize(...)` でデシリアライズすることを推奨する
 - **`AbstractCopilotAssistant<T>` の `T` は `AssistantParameter` 自身、またはそのサブクラスでなければならない。** 独自の POJO にするとチャットUIでプロンプトを入力できなくなる
-- **`@Assistant` を付与しただけではアシスタント一覧に表示されない。** `AssistantScanPackageFactory` の登録と IM-Authz の権限付与の両方が必要（`java-im-copilot-agent-generator` 参照）
+- **`@Assistant` を付与しただけではアシスタント一覧に表示されない。** IM-Authz の権限付与が必要（`@Assistant` クラスの認識はビルド時に自動生成される索引で行われ、`AssistantScanPackageFactory` は要らない。`java-im-copilot-agent-generator` 参照）
 
 ## 生成後の確認
 
@@ -98,7 +98,7 @@ intra-mart Accel Platform の IM-Copilot が提供する **プロバイダ非依
 3. ストリーミング実装の場合、チャンクからの `ToolCall` マージ（`id` の有無での分岐）と、2回目呼び出し用メッセージへの `assistant` ツール呼び出し情報の明示的な追加が行われているか
 4. 例外の `catch` で `CopilotServiceException` の継承関係によるコンパイルエラーが発生していないか
 5. Assistant を作成した場合、パラメータクラス `T` が `AssistantParameter` 自身またはそのサブクラスになっているか
-6. Assistant を作成した場合、`AssistantScanPackageFactory` を実装・登録したか、IM-Authz でリソース `im-copilot-assistant://assistant/<アシスタントID>` への許可ポリシーを付与したか
+6. Assistant を作成した場合、ビルド成果物の索引（`META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.assistant.annotation.Assistant`）に `@Assistant` クラスの完全修飾名が載っているか、IM-Authz でリソース `im-copilot-assistant://assistant/<アシスタントID>` への許可ポリシーを付与したか
 7. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか
 8. `jssp-code-review` / `jssp-security-check` は JSSP 専用のため本スキルの生成物には適用されない。プロジェクトに Java 向けのコードレビュー・セキュリティチェックスキルが別途存在する場合はそちらを利用する
 

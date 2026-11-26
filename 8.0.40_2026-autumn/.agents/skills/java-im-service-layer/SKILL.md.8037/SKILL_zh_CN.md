@@ -1,6 +1,6 @@
 ---
 name: java-im-service-layer
-description: Layer of service implementation rules for business logic and orchestration of repository operations. DDD service layer implementation guidelines. Service factory pattern for dependency management. Exception handling and business rule enforcement in service layer. The concise convention summary lives in the java-service-layer coding convention reference — use this skill when full code templates (single-repository / multi-repository transaction patterns) are needed.
+description: Layer of service implementation rules for business logic and orchestration of repository operations. DDD service layer implementation guidelines. Service factory pattern for dependency management. Exception handling and business rule enforcement in service layer. The concise convention summary lives in `java-service-layer` — use this skill when full code templates (single-repository / multi-repository transaction patterns) are needed.
 disable-model-invocation: false
 user-invocable: true
 ---
@@ -42,9 +42,8 @@ public class Standard{ServiceName}Service implements {ServiceName}Service {
     public {ResultType} process{BusinessOperation}({InputType} input) throws {ServiceName}ServiceException {
         validateInput(input);
         // SessionCallback<T, E> 的 E 只能推断为单一的受检异常类型，
-        // 因此 lambda 内产生的受检异常应在发生的当场（每次仓储调用之后）
-        // 立即转换为 {ServiceName}ServiceException 再抛出。这样从 lambda 传播出去的
-        // 受检异常就统一为 {ServiceName}ServiceException 一种类型，
+        // 因此 lambda 内产生的受检异常应在发生的当场（每次仓储调用之后）立即转换为 {ServiceName}ServiceException
+        // 再抛出。这样从 lambda 传播出去的受检异常就统一为 {ServiceName}ServiceException 一种类型，
         // SessionTemplate.execute() 也就不再需要用 try/catch 包裹。
         return SessionTemplate.execute(s -> {
             final {DomainModel} entity;

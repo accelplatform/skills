@@ -32,7 +32,8 @@ Used in conjunction with the `<imart type="workflowOpenPageCsjs" />` tag, callin
 | imwApplyBaseDate | String | Application base date (`yyyy/MM/dd` format). Required for application and temporary save screens |
 | imwFlowId | String | Flow ID. Required for application and temporary save screens |
 | imwSystemMatterId | String | System matter ID. Required for draft matter, re-application, processing, and confirmation screens |
-| method | String | FORM tag method attribute |
+| name | String | FORM tag name attribute. Also used as the id of the generated form |
+| imwNodeId | String | Node ID. The attribute must be specified; its value may be empty |
 
 ### Optional Attributes
 
@@ -40,13 +41,12 @@ Used in conjunction with the `<imart type="workflowOpenPageCsjs" />` tag, callin
 |------|------|-----------|------|
 | imwAuthUserCode | String | - | Authority user code (proxy source user code) |
 | imwUserDataId | String | - | User data ID. Required for temporary save screen |
-| imwNodeId | String | - | Node ID |
 | imwCallOriginalParams | String | - | Caller parameters. Used as request parameters when "Back" button or transition after processing completion |
 | imwNextScriptPath | String | - | Destination script path (for script development model) |
 | imwNextApplicationId | String | - | Destination application ID (for JavaEE development model) |
 | imwNextServiceId | String | - | Destination service ID (for JavaEE development model) |
 | imwNextPagePath | String | - | Destination page path (for JSP/Servlet) |
-| name | String | - | FORM tag name attribute |
+| method | String | `POST` | FORM tag method attribute |
 | target | String | `_top` | FORM tag target attribute |
 | useContextPath | String | `"true"` | Whether to include context path in URL generation |
 

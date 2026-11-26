@@ -68,7 +68,7 @@ public class ToolCall implements Serializable {
 }
 ```
 
-- `ToolDefinition.parametersFromClass(Class)` converts `SchemaProperties` (the same annotation class used by `UserDefinedTool` input DTOs in `java-im-mcp-generator`/`java-im-copilot-agent-generator`) applied to the target class's fields into a JSON Schema (internally uses `jp.co.intra_mart.system.copilot.tool.JsonSchemaGenerator`)
+- `ToolDefinition.parametersFromClass(Class)` converts `SchemaProperties` (the same annotation class used by `UserDefinedTool` input DTOs in `java-im-mcp-generator`/`java-im-copilot-agent-generator`) applied to the target class's fields into a JSON Schema
 - `parametersAddArgument(name, clazz, required)` adds one property at a time to the existing `parameters` (used when you want to combine multiple parameter classes into a single tool definition)
 - `ToolCall.getArguments()` is the JSON string representing the tool call's arguments. Deserialize it with `ToolJsonHelper.deserialize(...)`
 
@@ -140,4 +140,3 @@ Because the model does not necessarily return a value that matches the schema, i
 - Only the most recent system message (`role: "system"`) is effective
 
 These constraints apply only when using the Amazon Bedrock driver via `ChatAction`/`ToolConfig`; they do not apply to OpenAI or Azure OpenAI Service. Since the driver type depends on the tenant configuration (`conf/im-copilot-driver-config.xml`), implementations expected to work across multiple drivers should avoid running afoul of these constraints.
-</content>

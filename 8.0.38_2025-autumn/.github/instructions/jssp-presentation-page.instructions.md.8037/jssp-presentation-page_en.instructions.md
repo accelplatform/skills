@@ -1,5 +1,5 @@
 ---
-applyTo: "src/main/jssp/**/*.html"
+applyTo: "src/main/jssp/**/*.html,src/main/tssp/**/*.html"
 description: "プレゼンテーションページの実装方針"
 ---
 
@@ -33,10 +33,6 @@ description: "プレゼンテーションページの実装方針"
   <!-- Custom styles for the presentation page -->
   <style>
     /* TODO: Add custom styles here */
-    .button-spacing {
-      display: flex;
-      gap: 3em;
-    }
   </style>
   <!-- Scripts for the presentation page ($data is scoped with an IIFE instead of the global scope) -->
   <script>
@@ -494,16 +490,17 @@ Overview of the architecture (see `.github/skills/jssp-page-generator/assets/sim
 ```javascript
 document.addEventListener('DOMContentLoaded', () => {
   let activeValidation = false; // Do not show errors on initial display
+  const container = document.getElementById('imui-container'); // Starting point for DOM searches (this screen's root element)
 
   function clearValidationError() {
-    document.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => el.classList.remove('imds-validation-error'));
-    document.querySelectorAll('.imds-error-text').forEach((el) => { el.style.display = 'none'; });
+    container.querySelectorAll('.imds-field.imds-validation-error').forEach((el) => el.classList.remove('imds-validation-error'));
+    container.querySelectorAll('.imds-error-text').forEach((el) => { el.style.display = 'none'; });
   }
   function showValidationError(errors) {
     errors.forEach((error) => {
-      const field = document.querySelector(`.imds-field[for=":${error.name}:"]`);
+      const field = container.querySelector(`.imds-field[for=":${error.name}:"]`);
       if (field) field.classList.add('imds-validation-error');
-      const msg = document.querySelector(`.imds-error-text[for=":${error.name}:"]`);
+      const msg = container.querySelector(`.imds-error-text[for=":${error.name}:"]`);
       if (msg) { msg.textContent = error.message; msg.style.display = ''; }
     });
     activeValidation = true; // Enable real-time re-validation from this point
@@ -667,13 +664,16 @@ document.getElementById('register-button').addEventListener('click', () => {
   imdsConfirm(
     'Are you sure you want to register?',  // Message
     'Register',                            // Dialog title
-    async () => {                          // Processing when OK button is clicked
-      const isSuccess = await register(request);
-      if (isSuccess) {
-        clearValidationError();
-      }
+    null,
+    null,
+    { mode: 'info', okButton: { text: 'Register' } }
+  ).then(async (result) => {             // Processing when OK button is clicked
+    if (!result) return;
+    const isSuccess = await register(request);
+    if (isSuccess) {
+      clearValidationError();
     }
-  );
+  });
 });
 ```
 
@@ -692,7 +692,7 @@ document.getElementById('register-button').addEventListener('click', () => {
   - `info` (default): Normal confirmation (registration, search, etc.)
   - `warning`: Confirmation for data updates that cannot be undone
   - `danger`: Confirmation for data deletion (specify "Delete" for `okButton.text`)
-- When the OK button is clicked, the callback in the 3rd argument is executed
+- When the OK button is clicked, the Promise returned by `imdsConfirm()` resolves to `true` (`false` for Cancel, ×, or Escape)
   1. Call the API
   2. If the API processing is successful, clear the validation errors on the screen using `clearValidationError()`
 

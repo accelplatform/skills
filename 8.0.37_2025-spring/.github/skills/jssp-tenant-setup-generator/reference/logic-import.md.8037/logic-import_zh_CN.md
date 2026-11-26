@@ -145,7 +145,7 @@ database → tenant-master(authz / menu / job) → extends-import(doImport)
 | `config-1.xml` | 通过 `logicImport` 加载 LogicDesigner（生成 URI 资源） |
 | `config-2.xml` | 仅记述面向 LogicDesigner 路由的 `authzPolicies`（引用既有资源） |
 
-build 脚本在 `configNumber >= 2` 时，会在文件名 base 部分的末尾追加 `-<N>` 后缀（例：`equip-authz-policy-2.xml`）。详情请参见 [import-config.md](import-config.md#configNumber--1-のファイル名サフィックス)。
+build 脚本在 `configNumber >= 2` 时，会在文件名 base 部分的末尾追加 `-<N>` 后缀（例：`equip-authz-policy-2.xml`）。详情请参见 [import-config.md](import-config.md#confignumber--1-时的文件名后缀)。
 
 ### spec.json 的配置示例
 

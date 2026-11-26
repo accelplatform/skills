@@ -1,6 +1,6 @@
 ---
 name: java-im-mcp-generator
-description: intra-mart Accel Platform 上で動作する MCP（Model Context Protocol）サーバを Java（JavaEE 開発モデル）で新規実装する。`im_copilot_mcp` モジュールが提供する `jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`/`Tool` アノテーションによる Streamable HTTP MCP サーバの実装、`SchemaProperties` によるツールパラメータ定義、`McpScanPackageFactory`/`META-INF/im_services/annotation_classes` によるプラットフォームへの登録パターンを提供する。Java で MCP サーバを作りたい、intra-mart で MCP サーバを実装したい、`@MCPServer`/`@Tool` を使いたい、JavaEE 開発モデルで AI エージェント向けツールを公開したい、と言及されたときに使用。
+description: intra-mart Accel Platform 上で動作する MCP（Model Context Protocol）サーバを Java（JavaEE 開発モデル）で新規実装する。`im_copilot_mcp` モジュールが提供する `jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`/`Tool` アノテーションによる Streamable HTTP MCP サーバの実装、`SchemaProperties` によるツールパラメータ定義、ビルド時に自動生成される `META-INF/im_services/annotation_classes` によるプラットフォームへの登録を提供する。Java で MCP サーバを作りたい、intra-mart で MCP サーバを実装したい、`@MCPServer`/`@Tool` を使いたい、JavaEE 開発モデルで AI エージェント向けツールを公開したい、と言及されたときに使用。
 allowed-tools: Bash, Read, Write, Glob
 ---
 
@@ -10,7 +10,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 intra-mart Accel Platform の `im_copilot_mcp` モジュールが提供するアノテーション（`@MCPServer`/`@Tool`）を使い、Java クラスへのアノテーション付与のみで MCP（Model Context Protocol）サーバ（Streamable HTTP トランスポート）を実装するためのスキルセット。
 
-**このスキルが扱うのは Java ソースファイル（`.java`）と、登録用の設定ファイル（`META-INF/services/*` または `META-INF/im_services/annotation_classes/*`）のみ。**
+**このスキルが扱うのは Java ソースファイル（`.java`）のみ。** プラットフォームへの登録に使う索引ファイル（`META-INF/im_services/annotation_classes/*`）はビルド時に自動生成される。
 
 ## MCP サーバの基本概念（最重要）
 
@@ -25,7 +25,7 @@ intra-mart Accel Platform の `im_copilot_mcp` モジュールが提供するア
 
 - URL は `<CONTEXT_PATH>/copilot/mcp<path>`（`path` は `@MCPServer.path()` の値）にマッピングされる
 - ツールへの入力パラメータは、`SchemaProperties`（`StringProperty`/`IntegerProperty`/`BooleanProperty`/`NumberProperty`/`EnumProperty`/`ObjectProperty`/`ArrayProperty`）をフィールドに付与した DTO クラス1個で表す
-- **アノテーションを付与しただけではプラットフォームに認識されない。** `McpScanPackageFactory`（推奨）または `META-INF/im_services/annotation_classes` のいずれかで明示的に登録する必要がある（詳細は「MCP サーバの登録」参照）
+- **`@MCPServer` クラスは、ビルド時に自動生成される索引（`META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`）でプラットフォームに登録される。** 索引がビルド成果物に含まれていないと認識されない（詳細は「MCP サーバの登録」参照）
 
 詳細な属性シグネチャ・登録方式は `reference/mcp-annotation-api-reference.md` を必ず参照すること（記憶や推測で書かない）。
 
@@ -52,12 +52,11 @@ intra-mart Accel Platform の `im_copilot_mcp` モジュールが提供するア
 | MCP サーバのエントリポイントクラス（`@MCPServer`） | `assets/mcp-server-basic-usage.md` パターン1 | 最小構成の実装例 |
 | ツールパラメータ DTO（`SchemaProperties` 各種） | `assets/mcp-server-basic-usage.md` パターン2 | String/Integer/Boolean/Array 各プロパティ型の使用例 |
 | プラットフォームコンテキストを使うツール実装 | `assets/mcp-server-basic-usage.md` パターン3 | `Contexts`/`MessageManager` 連携 |
-| パッケージ登録（`McpScanPackageFactory`） | `assets/mcp-server-basic-usage.md` パターン4 | 推奨の登録方式 |
-| 明示登録（`META-INF/im_services/annotation_classes`） | `assets/mcp-server-basic-usage.md` パターン5 | 代替の登録方式 |
+| プラットフォームへの登録（`META-INF/im_services/annotation_classes`） | `assets/mcp-server-basic-usage.md` パターン4 | 自動生成された索引の確認、生成されない場合の手動作成 |
 
 ### リファレンス
 
-- `reference/mcp-annotation-api-reference.md` — `@MCPServer`/`@Tool`/`SchemaProperties`/`SchemaArrayItemProperties`/`McpScanPackageFactory` の全属性・シグネチャ、依存関係宣言、URL マッピング、登録方式（`im_copilot_mcp` モジュールの実クラス定義・バイトコードに基づく。記憶で書かない）
+- `reference/mcp-annotation-api-reference.md` — `@MCPServer`/`@Tool`/`SchemaProperties`/`SchemaArrayItemProperties` の全属性・シグネチャ、依存関係宣言、URL マッピング、登録方式（`im_copilot_mcp` モジュールの実クラス定義・バイトコードに基づく。記憶で書かない）
 
 ## 使用タイミング
 
@@ -75,12 +74,12 @@ intra-mart Accel Platform の `im_copilot_mcp` モジュールが提供するア
 2. パッケージ・クラス名を設計（`.claude/rules/java-naming.md` に準拠。エントリポイントクラスは `Xxx` + `McpServer`、ツール実装クラスは `Xxx` + `McpTool` + `{ToolName}` + 必要なら `Parameter`）
 3. `pom.xml` に `im_copilot_mcp` への依存を追加する（バージョンを明示指定。`reference/mcp-annotation-api-reference.md` の「依存関係」参照）。プロジェクトに既存の依存があれば流用し、重複追加しない
 4. `assets/mcp-server-basic-usage.md` を参照して `@MCPServer` クラス・ツール実装クラス・パラメータ DTO を実装する（属性のシグネチャは `reference/mcp-annotation-api-reference.md` を必ず参照し、記憶や推測で書かない）
-5. **MCP サーバの登録を行う（省略厳禁）。** プロジェクトに `McpScanPackageFactory` 実装が既に存在すれば、対象パッケージ配下に新しいクラスを置くだけでよい。無ければ `assets/mcp-server-basic-usage.md` パターン4に従い新規作成する
+5. **MCP サーバの登録を確認する（省略厳禁）。** ビルド後、`target/classes`（または jar）に `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` があり、`@MCPServer` クラスの完全修飾名が載っていることを確かめる。無ければ `assets/mcp-server-basic-usage.md` パターン4に従い手で作成する
 6. `.claude/rules/java-naming.md` / `java-code-style.md` / `java-javadoc.md` に準拠しているか確認する
 
 ## 注意事項
 
-- **`@MCPServer`/`@Tool` を付与しただけでは動作しない。** 「MCP サーバの登録」（`McpScanPackageFactory` または `META-INF/im_services/annotation_classes`）を必ず行う。生成後の確認で必ずチェックする
+- **登録は `META-INF/im_services/annotation_classes` の索引で行われる。** 非公開 API の `jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory` は使わない。生成後の確認で索引の有無を必ずチェックする
 - **同一 `path` を持つ `@MCPServer` クラスを複数作らない。** プロジェクト内で `path` が重複しないよう設計する
 - **`@Tool` メソッドの引数は1個（パラメータ DTO）のみ。** 複数の入力値は DTO のフィールドにまとめる
 - **DTO のフィールドに `SchemaProperties` のアノテーションを付与し忘れると、そのフィールドは MCP ツールの入力スキーマに公開されない。** getter/setter があるだけでは不十分
@@ -91,7 +90,7 @@ intra-mart Accel Platform の `im_copilot_mcp` モジュールが提供するア
 
 自動検証スクリプトではなく、以下の項目を手動で確認する。
 
-1. `@MCPServer` クラスが `McpScanPackageFactory` の対象パッケージ配下にあるか、または `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` に完全修飾名が記載されているか
+1. ビルド成果物に `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer` があり、`@MCPServer` クラスの完全修飾名が記載されているか
 2. `path` がプロジェクト内の他の `@MCPServer` クラスと重複していないか
 3. パラメータ DTO の全フィールドに、用途に対応する `SchemaProperties` アノテーション（`StringProperty`/`IntegerProperty`/`BooleanProperty`/`NumberProperty`/`EnumProperty`/`ObjectProperty`/`ArrayProperty`）が付与されているか
 4. `required = true` にすべき必須パラメータに `required` が付いているか

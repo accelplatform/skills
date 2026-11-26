@@ -68,7 +68,7 @@ public class ToolCall implements Serializable {
 }
 ```
 
-- `ToolDefinition.parametersFromClass(Class)` は、対象クラスのフィールドに付与された `SchemaProperties`（`java-im-mcp-generator`/`java-im-copilot-agent-generator` の `UserDefinedTool` 入力DTOと同一のアノテーションクラス）を JSON Schema に変換する（内部で `jp.co.intra_mart.system.copilot.tool.JsonSchemaGenerator` を使用）
+- `ToolDefinition.parametersFromClass(Class)` は、対象クラスのフィールドに付与された `SchemaProperties`（`java-im-mcp-generator`/`java-im-copilot-agent-generator` の `UserDefinedTool` 入力DTOと同一のアノテーションクラス）を JSON Schema に変換する
 - `parametersAddArgument(name, clazz, required)` は、既存の `parameters` に対して1プロパティずつ追加する（複数のパラメータ用クラスを1つのツール定義にまとめたい場合に使う）
 - `ToolCall.getArguments()` はツール呼び出しの引数を表す JSON 文字列。`ToolJsonHelper.deserialize(...)` でデシリアライズする
 

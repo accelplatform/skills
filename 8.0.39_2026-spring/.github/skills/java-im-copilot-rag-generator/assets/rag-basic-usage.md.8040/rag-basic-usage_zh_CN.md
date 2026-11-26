@@ -7,7 +7,7 @@ RAG 大致分为两个阶段。
 1. **数据准备阶段**：对文档进行分块・向量化并登录到向量存储（由作业调度器定期执行）
 2. **查询应答阶段**：对用户的提问检索向量存储，基于检索结果生成回答（通过 Assistant 实现）
 
-## 模式 1：`Embedder` 适配器的实现
+## 模式 1：`Embedder` 适配器与 `Document` 的实现
 
 由于平台不提供 `Embedder` 的默认实现，需要先准备一个包装 `EmbeddingsAction` 的适配器。
 
@@ -48,6 +48,106 @@ public class EmbeddingsActionEmbedder implements Embedder {
 }
 ```
 
+要登录的文档（`Document`）也需自行实现。该类只保存各个字段，元数据通过 Jackson 转换为 JSON 字符串保存（因为 `Content.getMetadata()` 的约定是返回 JSON 字符串）。
+
+```java
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jp.co.intra_mart.foundation.copilot.vectorstore.document.Document;
+import jp.co.intra_mart.foundation.copilot.vectorstore.document.exception.DocumentConversionException;
+
+public class RegistrationDocument implements Document {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private String text;
+
+    /** 元数据（JSON 字符串） */
+    private String metadata;
+
+    private List<Double> vector;
+
+    private String originSourceId;
+
+    private Map<String, Object> indexedMetadata;
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void setText(final String text) {
+        this.text = text;
+    }
+
+    @Override
+    public String getMetadata() {
+        return metadata;
+    }
+
+    @Override
+    public <T> T getMetadata(final Class<T> type) throws DocumentConversionException {
+        if (metadata == null) {
+            return null;
+        }
+        try {
+            return OBJECT_MAPPER.readValue(metadata, type);
+        } catch (final IOException e) {
+            throw new DocumentConversionException("无法转换元数据。type=" + type.getName(), e);
+        }
+    }
+
+    @Override
+    public void setMetadata(final Object metadata) throws DocumentConversionException {
+        if (metadata == null) {
+            this.metadata = null;
+            return;
+        }
+        try {
+            this.metadata = OBJECT_MAPPER.writeValueAsString(metadata);
+        } catch (final JsonProcessingException e) {
+            throw new DocumentConversionException("无法将元数据转换为 JSON。", e);
+        }
+    }
+
+    @Override
+    public List<Double> getVector() {
+        return vector;
+    }
+
+    @Override
+    public void setVector(final List<Double> vector) {
+        this.vector = vector;
+    }
+
+    @Override
+    public String getOriginSourceId() {
+        return originSourceId;
+    }
+
+    @Override
+    public void setOriginSourceId(final String originSourceId) {
+        this.originSourceId = originSourceId;
+    }
+
+    @Override
+    public Map<String, Object> getIndexedMetadata() {
+        return indexedMetadata;
+    }
+
+    @Override
+    public void setIndexedMetadata(final Map<String, Object> indexedMetadata) {
+        this.indexedMetadata = indexedMetadata;
+    }
+}
+```
+
 ## 模式 2：数据准备作业（文档的分块・向量化・登录）
 
 ```java
@@ -68,7 +168,6 @@ import jp.co.intra_mart.foundation.job_scheduler.exception.JobExecuteException;
 import jp.co.intra_mart.foundation.service.client.file.PublicStorage;
 import jp.co.intra_mart.foundation.service.client.file.Storage;
 import jp.co.intra_mart.foundation.vectorstore.core.exception.VectorStoreException;
-import jp.co.intra_mart.system.copilot.vectorstore.document.StandardRegistrationDocument;
 
 public class RagProcessingPipelineJob extends BaseJob {
 
@@ -87,10 +186,10 @@ public class RagProcessingPipelineJob extends BaseJob {
         final Storage<?> parentStorage = new PublicStorage(storageRootPath);
         try {
             if (!parentStorage.exists() || !parentStorage.isDirectory()) {
-                return JobResult.error("対象ディレクトリが存在しません: " + storageRootPath);
+                return JobResult.error("目标目录不存在: " + storageRootPath);
             }
         } catch (final IOException e) {
-            return JobResult.error("対象ディレクトリへのアクセスに失敗しました: " + e.getLocalizedMessage());
+            return JobResult.error("访问目标目录失败: " + e.getLocalizedMessage());
         }
 
         // 分块器。方法名为 splitText（不是 split）
@@ -111,7 +210,7 @@ public class RagProcessingPipelineJob extends BaseJob {
                     .useScoreNormalize(true)
                     .build();
         } catch (final VectorStoreException e) {
-            return JobResult.error("ベクトルストアの初期化に失敗しました: " + e.getLocalizedMessage());
+            return JobResult.error("初始化向量存储失败: " + e.getLocalizedMessage());
         }
 
         try {
@@ -125,15 +224,15 @@ public class RagProcessingPipelineJob extends BaseJob {
 
                 final List<Document> documents = new ArrayList<>();
                 for (final String chunkText : chunkTexts) {
-                    // StandardRegistrationDocument 是平台提供的 Document 标准实现
-                    final Document document = new StandardRegistrationDocument();
+                    // RegistrationDocument 是模式 1 中实现的 Document
+                    final Document document = new RegistrationDocument();
                     document.setText(chunkText);
                     documents.add(document);
                 }
                 vectorStore.add(documents);
             }
         } catch (final VectorStoreException e) {
-            return JobResult.error("ベクトルストアへの登録に失敗しました: " + e.getLocalizedMessage());
+            return JobResult.error("注册到向量存储失败: " + e.getLocalizedMessage());
         }
 
         LOGGER.info("Completed RAG processing pipeline job");
@@ -142,7 +241,7 @@ public class RagProcessingPipelineJob extends BaseJob {
 
     private List<String> loadDocumentTexts(final Storage<?> parentStorage) {
         // 应用侧实现：遍历目录下的文件，返回各文件的文本
-        throw new UnsupportedOperationException("実装例では省略");
+        throw new UnsupportedOperationException("实现示例中省略");
     }
 }
 ```
@@ -175,7 +274,6 @@ import jp.co.intra_mart.foundation.copilot.vectorstore.builder.VectorStoreBuilde
 import jp.co.intra_mart.foundation.copilot.vectorstore.document.ScoredDocument;
 import jp.co.intra_mart.foundation.copilot.vectorstore.embedder.Embedder;
 import jp.co.intra_mart.foundation.vectorstore.core.exception.VectorStoreException;
-import jp.co.intra_mart.system.copilot.vectorstore.reranker.StandardRrfReranker;
 
 @Assistant(id = "rag_assistant", name = "RAG Assistant",
         type = AssistantType.STANDARD, listEnable = true, storeMessage = false)
@@ -198,14 +296,14 @@ public class RagAssistant extends AbstractCopilotAssistant<AssistantParameter> {
         try {
             chatAction = ActionFactory.getFactory().getChatAction();
         } catch (final CopilotServiceConfigurationException e) {
-            throw new CopilotAssistantException("チャットアクションの取得に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("获取聊天操作失败: " + e.getMessage(), e);
         }
 
         final List<ScoredDocument> searchResults;
         try {
             searchResults = searchVectorStore(userMessage);
         } catch (final VectorStoreException e) {
-            throw new CopilotAssistantException("ベクトルストアの検索に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("检索向量存储失败: " + e.getMessage(), e);
         }
 
         final StringBuilder context = new StringBuilder();
@@ -214,7 +312,7 @@ public class RagAssistant extends AbstractCopilotAssistant<AssistantParameter> {
         }
 
         final List<ChatMessage> messages = ChatMessage.builder()
-                .newMessage().withRole("system").addTextContent("以下の検索結果を参考にユーザの質問に回答してください。\n" + context)
+                .newMessage().withRole("system").addTextContent("请参考以下检索结果回答用户的问题。\n" + context)
                 .newMessage().withRole("user").addTextContent(userMessage)
                 .build();
 
@@ -234,7 +332,7 @@ public class RagAssistant extends AbstractCopilotAssistant<AssistantParameter> {
         } catch (final CopilotServiceActionException | java.io.IOException e) {
             // AssistantResponseWriter 是 AutoCloseable，且 close() 声明抛出 IOException，
             // 使用 try-with-resources 时也需要捕获这个异常
-            throw new CopilotAssistantException("チャット実行に失敗しました: " + e.getMessage(), e);
+            throw new CopilotAssistantException("聊天执行失败: " + e.getMessage(), e);
         }
 
         return null;
@@ -250,18 +348,19 @@ public class RagAssistant extends AbstractCopilotAssistant<AssistantParameter> {
                 .useScoreNormalize(true)
                 .build();
 
-        return vectorStore.hybridSearch(query, new StandardRrfReranker(), RETRIEVAL_COUNT);
+        // 不传入 Reranker 时，使用 RRF（Reciprocal Rank Fusion）整合结果
+        return vectorStore.hybridSearch(query, RETRIEVAL_COUNT);
     }
 }
 ```
 
 - 参数类 `T` 使用 `AssistantParameter`（与 `java-im-copilot-agent-generator` 的 Assistant 注册约定相同。使用自定义 POJO 会导致聊天界面无法输入提示词）
-- `hybridSearch(query, reranker, topK)` 内部会自动对查询文本进行向量化（使用 `Embedder`），调用方无需显式向量化
+- `hybridSearch(query, topK)` 内部会自动对查询文本进行向量化（使用 `Embedder`），调用方无需显式向量化
 - 应使作业侧与 Assistant 侧的 `VectorStoreBuilder` 设置（`category`/`embedder`/`useScoreNormalize`）保持一致。不一致会导致类别错配或评分基准偏差
 
 ## 注意事项
 
-- **`Document` 不应自行实现。** 直接使用 `StandardRegistrationDocument`（平台提供的标准实现）
+- **`Document` 需自行实现（模式 1）。** `jp.co.intra_mart.system.*` 下的实现类属于非公开 API，不要使用
 - **`TextSplitter` 的分割方法为 `splitText(String)`。** 不存在名为 `split(String)` 的方法
 - **`VectorStoreBuilder.useDefault()` 应在 `embedder(...)` 之前调用。** 若之后调用，已设置的 `Embedder` 会被重置
 - **平台不存在 `Embedder` 的默认实现。** 必须自行实现一个包装 `EmbeddingsAction` 的适配器（模式 1）

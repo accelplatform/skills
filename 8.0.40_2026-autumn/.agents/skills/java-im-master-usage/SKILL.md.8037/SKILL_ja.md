@@ -153,6 +153,7 @@ intra-mart Accel Platform が提供する **JavaEE 開発モデル**向けの IM
 ### ユーザ・会社・組織系
 
 - **`Company`/`DepartmentSet` の `updateCompany`/`updateDepartmentSet` は既存レコードの更新専用であり、新規作成はできない。** 標準実装は対象コードを条件とした SQL `UPDATE` のみを発行し、対象が存在しない場合は例外を送出せず何も更新せずに終了する。新規の会社・組織セットが必要な場合は `importData` またはテナントセットアップ資材経由での投入をユーザに確認する。`Department` を登録する際は、参照先の `DepartmentSet` が事前に作成済みである必要がある
+- **ログインユーザの組織を起点に検索する場合（同じ組織のメンバーの取得等）は、起点の組織をカレント組織（`UserContext.getCurrentDepartment()`）から取る。** 主所属（`getMainDepartment()`）を起点にすると、ユーザが画面のヘッダで切り替えた組織と食い違う（`java-im-contexts-usage` 参照）
 - **`Company` モデルは会社コード・ソートキー等のみで、多言語の会社名フィールドを持たない。** 会社名の表示が必要な場合は組織側で名称を管理する等、別途設計が必要
 - **`set*` 系メソッド（`setUser`/`setDepartment`/`setCompanyPost`）で新規登録する場合（`termCd` 未設定時）は `startDate`/`endDate` の両方の設定が必須。** 未設定のまま呼び出すと `BizApiException` が送出される。**更新の場合（`termCd` 設定時）も、`startDate`/`endDate` を省略してはならない。** 未設定（null）のままだと、対象データに格納されている値との不一致とみなされ「対象データと指定されたデータの開始日、終了日が異なります」という `BizApiException` が送出される。更新時は、登録時に使用した `startDate`/`endDate` と同じ値を明示的に設定すること
 - **`setUserAttach` の `term` 引数に `null` は渡せない。** 常に `startDate`/`endDate` を設定した `jp.co.intra_mart.foundation.master.common.model.Term` インスタンスを渡す必要がある

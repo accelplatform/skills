@@ -2,6 +2,8 @@
 paths:
   - "src/main/jssp/**/*.js"
   - "src/main/jssp/**/*.html"
+  - "src/main/tssp/**/*.ts"
+  - "src/main/tssp/**/*.html"
 ---
 
 # Script Development Model Overview

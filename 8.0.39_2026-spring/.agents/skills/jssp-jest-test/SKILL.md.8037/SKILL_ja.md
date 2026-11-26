@@ -45,7 +45,7 @@ mvn jp.co.intra_mart:js-jest:test
 
 - プロジェクトルート（`pom.xml` のある階層）で実行する
 - ゴールは `test`（`jp.co.intra_mart:js-jest:test`）
-- 対象・設定は `jest.config.js` の `testMatch` / `sourcePathMapping` に従う
+- 対象・設定は `jest.config.js` の `testRegex` / `sourcePathMapping` に従う
 - 実行結果にテスト件数・カバレッジ（`target/coverage/` に出力）が表示される
 - **テストコードを生成・修正したら必ず実行し、全件パスすることを確認する**
 

@@ -143,50 +143,23 @@ public class FooMcpToolGetFoo {
 }
 ```
 
-## 模式 4：包注册（`McpScanPackageFactory`，推荐）
+## 模式 4：向平台注册（`META-INF/im_services/annotation_classes`）
 
-为项目创建一个包指定类（可覆盖多个 `@MCPServer` 类）。
+当 `@MCPServer` 类的完全限定名记载于 `META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`（文件名即注解的完全限定名）中时，该类会被注册到平台。
 
-```java
-package jp.co.example.foo.mcp;
-
-import java.util.Collection;
-import java.util.Collections;
-
-import jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory;
-
-public class FooMcpScanPackageFactory implements McpScanPackageFactory {
-
-    @Override
-    public Collection<String> getTargetPackages() {
-        return Collections.singletonList("jp.co.example.foo.mcp");
-    }
-}
-```
-
-在 `src/main/resources/META-INF/services/jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory` 中，以一行记载上述类的完全限定名。
-
-```
-jp.co.example.foo.mcp.FooMcpScanPackageFactory
-```
-
-此后，只需在 `jp.co.example.foo.mcp` 包下添加 `@MCPServer` 类，即可自动成为扫描对象，无需每次都修改配置文件。
-
-## 模式 5：显式注册（`META-INF/im_services/annotation_classes`，备选方案）
-
-若不希望将整个包设为扫描对象，或方针上不使用 `McpScanPackageFactory`，可直接列出 `@MCPServer` 类的完全限定名。
-
-`src/main/resources/META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`（文件名本身即为该注解的完全限定名）：
+该文件由注解处理器（`jp.co.intra_mart.tools:im_service_annotation_processor`）在构建时自动生成，无需手写。该处理器通过 `im_copilot_mcp` 的依赖关系（经由 `im_core_base`）进入编译时类路径。构建后，请确认 `target/classes`（或 jar）中已生成该文件，并如下记载了 `@MCPServer` 类的完全限定名。
 
 ```
 jp.co.example.foo.mcp.FooMcpServer
 ```
 
-**采用此方式时，每次新增 `@MCPServer` 类都不要忘记追加到该文件中。** 遗漏追加即意味着未注册成功，端点会返回 404（与遗漏更新 Web API Maker 的 `META-INF/im_web_api_maker/packages` 属于同类失败模式）。
+仅在因停用注解处理器（`maven-compiler-plugin` 的 `<proc>none</proc>` 等）等原因未生成时，才手动创建 `src/main/resources/META-INF/im_services/annotation_classes/jp.co.intra_mart.foundation.copilot.mcp.annotation.MCPServer`，并逐行写入 `@MCPServer` 类的完全限定名。此时每次新增 `@MCPServer` 类都需要追加，遗漏追加会导致端点返回 404。
+
+`jp.co.intra_mart.system.copilot.mcp.annotation.McpScanPackageFactory` 是非公开 API，不要使用。
 
 ## 注意事项
 
-- **仅添加 `@MCPServer`/`@Tool` 并不会生效。** 须通过模式 4 或模式 5 之一进行注册
+- **注册通过 `META-INF/im_services/annotation_classes` 索引完成（模式 4）。** 构建后请确认已生成索引
 - **不要创建多个具有相同 `path` 的 `@MCPServer` 类。** 后加载的一方会输出警告日志并覆盖先前的
 - **`@Tool` 方法只能接受一个参数。** 若需要多个输入值，应将其汇总到一个 DTO 类（在字段上标注 `SchemaProperties`）中，作为唯一参数传入
 - **DTO 字段若未标注 `SchemaProperties`，则不会在 MCP 工具的输入模式中公开。** 仅有 getter/setter 是不够的，必须存在对应的注解

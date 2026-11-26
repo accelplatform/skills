@@ -92,7 +92,30 @@ function getUserProfile() {
 }
 ```
 
+### カレント組織の取得
+
+ログインユーザの組織を起点にする処理（同じ組織のメンバーの取得、組織による絞り込み等）は、`currentDepartment` を使う。カレント組織はログイン時は主所属で、ユーザが画面のヘッダで組織を切り替えると、そのセッションのあいだは切り替え先になる（`mainDepartment` は変わらない）。IM-Authz の組織を条件にした認可とヘッダの組織表示もカレント組織を使う。
+
+```javascript
+function getCurrentDepartment() {
+  let userContext = Contexts.getUserContext();
+  let dept = userContext.currentDepartment;
+
+  if (dept === null) {
+    return null;
+  }
+  return {
+    companyCd: dept.companyCd,
+    departmentSetCd: dept.departmentSetCd,
+    departmentCd: dept.departmentCd,
+    departmentName: dept.departmentName
+  };
+}
+```
+
 ### 主所属組織の取得
+
+主所属そのものが必要な場合だけ `mainDepartment` を使う。
 
 ```javascript
 function getMainDepartment() {
